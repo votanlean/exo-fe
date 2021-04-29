@@ -1,0 +1,16 @@
+.header {
+  background: #0f0f0f;
+  height: 92px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  transition: all 0.3s ease-in-out;
+  &.smallHeader {
+    height: 62px;
+  }
+  div {
+    height: 100%;
+  }
+}

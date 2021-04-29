@@ -1,0 +1,55 @@
+@import '../../../styles/base/variables';
+
+.poolItem {
+  flex-grow: 0;
+  max-width: 33.333333%;
+  flex-basis: 33.333333%;
+  .item {
+    border: 1px solid rgb(161, 169, 214);
+    border-radius: 20px;
+    background: rgb(255, 255, 255);
+    max-width: 380px;
+    margin: 0px auto;
+    padding: 30px;
+  }
+  .icon {
+    height: 48px;
+  }
+  .title {
+    font-weight: 700;
+    font-size: 20px;
+  }
+  .pTitle {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .wallet {
+    margin-top: 32px;
+    padding-top: 8px;
+    border-top: 1px solid rgb(161, 169, 214);
+  }
+  .poolButton {
+    margin-top: 30px;
+  }
+  .button {
+    text-transform: none;
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: rgb(255, 255, 255);
+    width: 100%;
+    background: $blue-primary;
+    box-shadow: none;
+    line-height: 1.75;
+  }
+  .colorLight {
+    color: $danube;
+  }
+}
+.poolItemGrid {
+  padding: 12px;
+}
+.spacing {
+  margin: -12px;
+}

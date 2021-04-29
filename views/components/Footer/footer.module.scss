@@ -1,0 +1,45 @@
+@import '~styles/base/variables';
+.footer {
+  padding: 70px 0;
+  font-family: 'Roboto', sans-serif;
+  .info {
+    p {
+      font-weight: 300;
+      margin: 25px 0;
+    }
+    ul {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      img {
+        width: 24px;
+      }
+    }
+  }
+  .newsletter {
+    font-size: 15px;
+    line-height: 24px;
+    p {
+      font-weight: 400;
+      margin-bottom: 20px;
+    }
+    .input {
+      padding: 0 16px;
+      height: 48px;
+      align-items: center;
+      border: 1px solid #cbcbcb;
+      border-radius: 4px;
+      min-width: 268px;
+      margin-right: 32px;
+    }
+    .btnSubmit {
+      height: 48px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #cbcbcb;
+      border-radius: 4px;
+      min-width: 168px;
+      font-weight: 700;
+    }
+  }
+}
