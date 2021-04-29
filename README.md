@@ -26,8 +26,8 @@
 ## How to use
 
 ```javascript
-npm i
-npm run dev
+yarn install
+yarn dev
 ```
 
 ## Environment variables
