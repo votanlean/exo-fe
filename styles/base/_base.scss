@@ -34,10 +34,18 @@ body {
 // Large
 @media (min-width: 992px) {
   .container {
-    margin-left: 10vw;
-    margin-right: 10vw;
+    margin-left: 5vw;
+    margin-right: 5vw;
   }
 }
+
+@media (min-width: 1200px) {
+  .container {
+    margin-left: 10vw;
+    margin-right: 10vw;	
+  }
+}
+
 // Extra large
 @media (min-width: 1441px) {
   .container {
