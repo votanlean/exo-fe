@@ -54,7 +54,7 @@ function PoolItem({ data }) {
               className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
             >
               <button type="button" className={styles.button}>
-                Approve
+                Stake
               </button>
             </div>
           </div>
