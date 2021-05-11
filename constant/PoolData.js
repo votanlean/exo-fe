@@ -1,8 +1,8 @@
 export const poolData = [
   {
     id: 1,
-    icon: '/static/images/pool/wBNB.png',
-    title: 'wBNB Pool',
+    icon: '/static/images/pool/USDT.png',
+    title: 'USDT',
     myStake: '0 wBNB',
     myRewards: '0 DBP',
     totalStaked: '823.188 wBNB',
