@@ -7,7 +7,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '823.188 wBNB',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 wBNB',
+    symbol: 'USDT',
   },
   {
     id: 2,
@@ -17,7 +19,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '12.261 BTCB',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 BTCB',
+    symbol: 'BTCB',
   },
   {
     id: 3,
@@ -27,7 +31,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '9702.008 CAKE',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 CAKE',
+    symbol: 'USDT',
   },
   {
     id: 4,
@@ -37,7 +43,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '2257.872 GRT',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 GRT',
+    symbol: 'USDT',
   },
   {
     id: 5,
@@ -47,7 +55,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '458197.144 XVS',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 XVS',
+    symbol: 'USDT',
   },
   {
     id: 6,
@@ -57,7 +67,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '2013.835 SXP',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 SXP',
+    symbol: 'USDT',
   },
   {
     id: 7,
@@ -67,7 +79,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '30880.990 SFP',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 SFP',
+    symbol: 'USDT',
   },
   {
     id: 8,
@@ -77,7 +91,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '11369.942 BUNNY',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 BUNNY',
+    symbol: 'USDT',
   },
   {
     id: 9,
@@ -87,7 +103,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '1.589 AUTO',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 AUTO',
+    symbol: 'USDT',
   },
   {
     id: 10,
@@ -97,7 +115,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '81.895 BELT',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 BELT',
+    symbol: 'USDT',
   },
   {
     id: 11,
@@ -107,7 +127,9 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '109275.552 BIFI',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 BIFI',
+    symbol: 'USDT',
   },
   {
     id: 12,
@@ -117,6 +139,8 @@ export const poolData = [
     myRewards: '0 DBP',
     totalStaked: '269831.033 EGG',
     apr: 'N/A%',
+    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     walletBalance: '0 EGG',
+    symbol: 'USDT',
   },
 ]

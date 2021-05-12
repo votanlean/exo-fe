@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import PoolItem from '~views/components/PoolItem'
 import { poolData } from '../../constant/PoolData'
+import tUSDTInstance from 'binance/tUSDT'
+import {poolToken} from '../../binance/tokenFactory';
 function Pool() {
 
   return (
@@ -11,10 +13,11 @@ function Pool() {
 
       <div className="container pool-container">
         <div className="pool-grid">
-          {poolData.map(pool => (
-            pool.id == 1 &&
-            <PoolItem data={pool} key={pool.id} />
-          ))}
+          {poolToken.map(pool => {
+              return <PoolItem data={pool} key={pool.id}/>
+          }
+
+          )}
         </div>
       </div>
     </>
