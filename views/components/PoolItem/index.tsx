@@ -3,7 +3,7 @@ import web3 from '../../../binance/web3'
 import { useEffect, useState } from 'react'
 import tEXOTokenInstance from 'binance/tEXOToken'
 import orchestratorInstance from 'binance/orchestrator'
-import tUSDTInstance from 'binance/tUSDT'
+// import tUSDTInstance from 'binance/tUSDT'
 
 
 function PoolItem({ data }) {
@@ -12,14 +12,14 @@ function PoolItem({ data }) {
     icon,
     title,
     apr,
+    tokenInstance,
+    symbol,
   } = data || {}
 
   const [totalSupply, setTotalSupply] = useState(0)
   const [myStake, setMyStake] = useState(0)
   const [currentReward, setCurrentReward] = useState(0)
   const [walletBalance, setWalletBalance] = useState(0)
-  const [open, setOpen] = useState(false)
-  const [close, setClose] = useState(true)
 
 
   const tEXOTokenAddress = '0x3bbabe10348e557690c41794392e811d41d18511';
@@ -30,7 +30,7 @@ function PoolItem({ data }) {
   const handleClickApprove = async () => {
     const accounts = await web3.eth.getAccounts();
     console.log('account staker', accounts);
-    tUSDTInstance.methods.approve(orchestratorAddress, web3.utils.toWei('8', 'ether')).send({ from: accounts[0] });
+    tokenInstance.methods.approve(orchestratorAddress, web3.utils.toWei('8', 'ether')).send({ from: accounts[0] });
   }
 
   const handleClickStake = async () => {
@@ -60,7 +60,7 @@ function PoolItem({ data }) {
     const getTotalSupply = async () => {
       const accounts = await web3.eth.getAccounts();
       if (accounts[0]) {
-        const totalSupply = await tUSDTInstance.methods.balanceOf(orchestratorAddress).call();
+        const totalSupply = await tokenInstance.methods.balanceOf(orchestratorAddress).call();
         console.log('totalSupply', totalSupply);
         setTotalSupply(totalSupply / Math.pow(10, 18));
       }
@@ -80,7 +80,7 @@ function PoolItem({ data }) {
     const getWalletBalance = async () => {
       const accounts = await web3.eth.getAccounts();
       if (accounts[0]) {
-        const walletBalance = await tUSDTInstance.methods.balanceOf(accounts[0]).call();
+        const walletBalance = await tokenInstance.methods.balanceOf(accounts[0]).call();
         console.log('walletBalance', walletBalance);
         setWalletBalance(web3.utils.fromWei(walletBalance, 'ether'));
       }
@@ -117,7 +117,7 @@ function PoolItem({ data }) {
                   className={`d-flex items-center justify-between font-bold ${styles.colorLight}`}
                 >
                   <p className={styles.pTitle}>My Stake</p>
-                  <p>{myStake} USDT</p>
+                  <p>{myStake} {symbol}</p>
                 </div>
                 <div
                   className={`d-flex items-center justify-between font-bold ${styles.colorLight}`}
@@ -127,13 +127,13 @@ function PoolItem({ data }) {
                 </div>
                 <div className="d-flex items-center justify-between">
                   <p className={styles.pTitle}>Total Staked</p>
-                  <p>{totalSupply} USDT </p>
+                  <p>{totalSupply} {symbol} </p>
                 </div>
                 <div
                   className={`d-flex items-center justify-between ${styles.wallet}`}
                 >
                   <p className={styles.pTitle}>Wallet Balance</p>
-                  <p>{walletBalance} USDT </p>
+                  <p>{walletBalance} {symbol} </p>
                 </div>
               </div>
               <div
