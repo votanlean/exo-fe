@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import PoolItem from '~views/components/PoolItem'
 import { poolData } from '../../constant/PoolData'
-import tUSDTInstance from 'binance/tUSDT'
 import {poolToken} from '../../binance/tokenFactory';
 function Pool() {
 
