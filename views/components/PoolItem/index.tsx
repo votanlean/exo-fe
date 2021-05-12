@@ -79,14 +79,18 @@ function PoolItem({ data }) {
     getCurrentReward();
   })
 
+  const renderPoolAllocPoint = (
+    currentPool
+  ) =>  <div className={styles.poolAllocationPoint}>
+          <p>{currentPool.allocPoint} X</p>
+        </div>;
+
   return (
       <div className={styles.poolItem}>
         <div className={styles.poolItemGrid}>
           <div className={styles.item}>
             <div className={`${styles.spacing} d-flex items-center column`}>
-              <div className={styles.poolAllocationPoint}>
-                <p>{currentPool && currentPool.allocPoint} X</p>
-              </div>
+              { renderPoolAllocPoint(currentPool) }
               <div className={styles.poolItemGrid}>
                 <img src={icon} alt={title} className={styles.icon} />
               </div>
