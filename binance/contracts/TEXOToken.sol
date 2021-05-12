@@ -935,6 +935,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     struct PoolInfo {
         IBEP20 lpToken; // Address of LP token contract.
         uint256 allocPoint; // How many allocation points assigned to this pool. tEXOs to distribute per block.
+        uint256 startBlock; // Block number at which to start counting the rewards.
         uint256 lastRewardBlock; // Last block number that PLUMs distribution occurs.
         uint256 accTEXOPerShare; // Accumulated tEXOs per share, times 1e12. See below.
         uint16 depositFeeBP; // Deposit fee in basis points
@@ -955,8 +956,6 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     mapping(uint256 => mapping(address => UserInfo)) public userInfo;
     // Total allocation points. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
-    // The block number when tEXO mining starts.
-    uint256 public startBlock;
     // Referral Bonus in basis points. Initially set to 2%
     uint256 public refBonusBP = 200;
     // Max deposit fee: 10%.
@@ -1009,7 +1008,6 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         devAddr = _devAddr;
         feeAddress = _feeAddress;
         tEXOPerBlock = INITIAL_EMISSION_RATE;
-        startBlock = block.number;
     }
 
     // Get number of pools added.
@@ -1033,23 +1031,26 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         uint256 _allocPoint,
         IBEP20 _lpToken,
         uint16 _depositFeeBP,
-        bool _withUpdate
+        bool _withUpdate,
+        uint256 _poolStartBlock
     ) public onlyOwner nonDuplicated(_lpToken) {
         require(_depositFeeBP <= MAXIMUM_DEPOSIT_FEE_BP, "add: invalid deposit fee basis points");
         if (_withUpdate) {
             massUpdatePools();
         }
-        uint256 lastRewardBlock = block.number > startBlock ? block.number : startBlock;
+
+        uint256 lastRewardBlock = block.number > _poolStartBlock ? block.number : _poolStartBlock;
         totalAllocPoint = totalAllocPoint.add(_allocPoint);
         poolExistence[_lpToken] = true;
         poolInfo.push(
-            PoolInfo({
-        lpToken: _lpToken,
-        allocPoint: _allocPoint,
-        lastRewardBlock: lastRewardBlock,
-        accTEXOPerShare: 0,
-        depositFeeBP: _depositFeeBP
-        })
+                    PoolInfo({
+                lpToken: _lpToken,
+                allocPoint: _allocPoint,
+                lastRewardBlock: lastRewardBlock,
+                accTEXOPerShare: 0,
+                depositFeeBP: _depositFeeBP,
+                startBlock: _poolStartBlock ? _poolStartBlock : block.number
+            })
         );
         poolIdForLpAddress[_lpToken] = poolInfo.length - 1;
     }
@@ -1059,7 +1060,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         uint256 _pid,
         uint256 _allocPoint,
         uint16 _depositFeeBP,
-        bool _withUpdate
+        bool _withUpdate,
+        uint256 _newStartBlock
     ) public onlyOwner {
         require(_depositFeeBP <= MAXIMUM_DEPOSIT_FEE_BP, "set: invalid deposit fee basis points");
         if (_withUpdate) {
@@ -1070,6 +1072,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         );
         poolInfo[_pid].allocPoint = _allocPoint;
         poolInfo[_pid].depositFeeBP = _depositFeeBP;
+        poolInfo[_pid].startBlock = _newStartBlock;
     }
 
     // Return reward multiplier over the given _from to _to block.
@@ -1092,7 +1095,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         uint256 accTEXOPerShare = pool.accTEXOPerShare;
         uint256 lpSupply = pool.lpToken.balanceOf(address(this));
 
-        if (block.number > pool.lastRewardBlock && lpSupply != 0) {
+        if (block.number > pool.startBlock && block.number > pool.lastRewardBlock && lpSupply != 0) {
             uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
             uint256 tEXOReward = multiplier
             .mul(tEXOPerBlock)
@@ -1126,11 +1129,13 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         }
         uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number); // For each block has passed, the reward will be multiplied.
         uint256 tEXOReward = multiplier
-        .mul(tEXOPerBlock)
-        .mul(pool.allocPoint)
-        .div(totalAllocPoint);
+            .mul(tEXOPerBlock)
+            .mul(pool.allocPoint)
+            .div(totalAllocPoint);
+
         tEXO.mint(devAddr, tEXOReward.div(10)); // Reward dev 10% of the tEXO reward created for each block.
-        tEXO.mint(address(this), tEXOReward); // Increase the number of tEXO this pool has
+        tEXO.mint(address(this), tEXOReward); // Increase the number of tEXO this pool has.
+
         pool.accTEXOPerShare = pool.accTEXOPerShare
         .add(
             tEXOReward
