@@ -7,13 +7,6 @@ export const poolData = [
     symbol: 'USDT',
   },
   {
-    id: 1,
-    icon: '/static/images/icon-white.svg',
-    title: 'tEXO Pool',
-    address: '0x3bbabe10348e557690c41794392e811d41d18511',
-    symbol: 'tEXO',
-  },
-  {
     id: 2,
     icon: '/static/images/pool/wBNB.png',
     title: 'wBNB Pool',

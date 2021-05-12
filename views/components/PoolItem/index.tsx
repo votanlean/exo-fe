@@ -1,7 +1,6 @@
 import styles from './poolItem.module.scss'
 import web3 from '../../../binance/web3'
 import { useEffect, useState } from 'react'
-import tEXOTokenInstance from 'binance/tEXOToken'
 import orchestratorInstance from 'binance/orchestrator'
 
 function PoolItem({ data }) {
@@ -13,6 +12,7 @@ function PoolItem({ data }) {
     symbol,
   } = data || {}
 
+  const [currentPool, setCurrentPool] = useState(null);
   const [totalSupply, setTotalSupply] = useState(0)
   const [myStake, setMyStake] = useState(0)
   const [currentReward, setCurrentReward] = useState(0)
@@ -34,64 +34,63 @@ function PoolItem({ data }) {
     orchestratorInstance.methods.deposit(poolId, 0).send({ from: accounts[0] });
   }
 
+  const getTotalSupply = async () => {
+    const accounts = await web3.eth.getAccounts();
+    if (accounts[0]) {
+      const totalSupply = await tokenInstance.methods.balanceOf(orchestratorAddress).call();
+      setTotalSupply(totalSupply / Math.pow(10, 18));
+    }
+  }
 
-  // const account = useContext(AccountContext);
+  const getMyStake = async () => {
+    const accounts = await web3.eth.getAccounts();
+    if (accounts[0]) {
+      const myStake = await orchestratorInstance.methods.userInfo(poolId, accounts[0]).call();
+      setMyStake(myStake[0] / Math.pow(10, 18));
+    }
+  }
+
+  const getWalletBalance = async () => {
+    const accounts = await web3.eth.getAccounts();
+    if (accounts[0]) {
+      const walletBalance = await tokenInstance.methods.balanceOf(accounts[0]).call();
+      setWalletBalance(web3.utils.fromWei(walletBalance, 'ether'));
+    }
+  }
+
+  const getCurrentReward = async () => {
+    const accounts = await web3.eth.getAccounts();
+    if (accounts[0]) {
+      const currentReward = await orchestratorInstance.methods.pendingTEXO(poolId, accounts[0]).call();
+      setCurrentReward(web3.utils.fromWei(currentReward, 'ether'));
+    }
+  }
+
+  const getPoolInfo = async () => {
+    const currentPool = await orchestratorInstance.methods.poolInfo(poolId).call();
+    setCurrentPool(currentPool);
+  }
 
   useEffect(() => {
-    const getAllowance = async () => {
-      const accounts = await web3.eth.getAccounts();
-      if (accounts[0]) {
-        const allowance = await tEXOTokenInstance.methods.allowance(accounts[0], orchestratorAddress).call();
-      }
-
-    }
-    getAllowance();
-
-    const getTotalSupply = async () => {
-      const accounts = await web3.eth.getAccounts();
-      if (accounts[0]) {
-        const totalSupply = await tokenInstance.methods.balanceOf(orchestratorAddress).call();
-        setTotalSupply(totalSupply / Math.pow(10, 18));
-      }
-    }
+    getPoolInfo();
     getTotalSupply();
-
-    const getMyStake = async () => {
-      const accounts = await web3.eth.getAccounts();
-      if (accounts[0]) {
-        const myStake = await orchestratorInstance.methods.userInfo(poolId, accounts[0]).call();
-        setMyStake(myStake[0] / Math.pow(10, 18));
-      }
-    }
     getMyStake();
-
-    const getWalletBalance = async () => {
-      const accounts = await web3.eth.getAccounts();
-      if (accounts[0]) {
-        const walletBalance = await tokenInstance.methods.balanceOf(accounts[0]).call();
-        setWalletBalance(web3.utils.fromWei(walletBalance, 'ether'));
-      }
-    }
     getWalletBalance();
-
-    const getCurrentReward = async () => {
-      const accounts = await web3.eth.getAccounts();
-      if (accounts[0]) {
-        const currentReward = await orchestratorInstance.methods.pendingTEXO(poolId, accounts[0]).call();
-        setCurrentReward(web3.utils.fromWei(currentReward, 'ether'));
-      }
-    }
     getCurrentReward();
-
   })
 
-
+  const poolAllocPointDiv = currentPool
+    ? <div className={styles.poolAllocationPoint}>
+        <p>{currentPool.allocPoint} X</p>
+      </div>
+    : null;
 
   return (
       <div className={styles.poolItem}>
         <div className={styles.poolItemGrid}>
           <div className={styles.item}>
             <div className={`${styles.spacing} d-flex items-center column`}>
+              { poolAllocPointDiv }
               <div className={styles.poolItemGrid}>
                 <img src={icon} alt={title} className={styles.icon} />
               </div>
