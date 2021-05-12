@@ -6,7 +6,7 @@ import orchestratorInstance from 'binance/orchestrator'
 
 function PoolItem({ data }) {
   const {
-    id,
+    id: poolId,
     icon,
     title,
     tokenInstance,
@@ -26,12 +26,12 @@ function PoolItem({ data }) {
 
   const handleClickStake = async () => {
     const accounts = await web3.eth.getAccounts();
-    orchestratorInstance.methods.deposit(id, web3.utils.toWei('1', 'ether')).send({ from: accounts[0] });
+    orchestratorInstance.methods.deposit(poolId, web3.utils.toWei('1', 'ether')).send({ from: accounts[0] });
   }
 
   const handleClickClaimRewards = async () => {
     const accounts = await web3.eth.getAccounts();
-    orchestratorInstance.methods.deposit(id, 0).send({ from: accounts[0] });
+    orchestratorInstance.methods.deposit(poolId, 0).send({ from: accounts[0] });
   }
 
 
@@ -59,7 +59,7 @@ function PoolItem({ data }) {
     const getMyStake = async () => {
       const accounts = await web3.eth.getAccounts();
       if (accounts[0]) {
-        const myStake = await orchestratorInstance.methods.userInfo(id, accounts[0]).call();
+        const myStake = await orchestratorInstance.methods.userInfo(poolId, accounts[0]).call();
         setMyStake(myStake[0] / Math.pow(10, 18));
       }
     }
@@ -77,7 +77,7 @@ function PoolItem({ data }) {
     const getCurrentReward = async () => {
       const accounts = await web3.eth.getAccounts();
       if (accounts[0]) {
-        const currentReward = await orchestratorInstance.methods.pendingTEXO(0, accounts[0]).call();
+        const currentReward = await orchestratorInstance.methods.pendingTEXO(poolId, accounts[0]).call();
         setCurrentReward(web3.utils.fromWei(currentReward, 'ether'));
       }
     }
