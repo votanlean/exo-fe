@@ -36,6 +36,7 @@
     text-transform: none;
     border-radius: 12px;
     padding: 10px;
+    margin: 10px 0;
     font-size: 20px;
     font-weight: 700;
     color: rgb(255, 255, 255);
@@ -43,6 +44,7 @@
     background: $blue-primary;
     box-shadow: none;
     line-height: 1.75;
+    cursor: pointer;
   }
   .colorLight {
     color: $danube;
