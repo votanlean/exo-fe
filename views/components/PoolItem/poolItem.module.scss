@@ -53,6 +53,7 @@
 .poolItemGrid {
   padding: 12px;
 }
+
 .poolAllocationPoint {
   height: 20px;
   padding: 10px;
@@ -70,4 +71,8 @@
 }
 .spacing {
   margin: -12px;
+}
+
+.disabled {
+  background-color: darkgray !important;
 }
