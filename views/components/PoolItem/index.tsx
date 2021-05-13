@@ -2,6 +2,8 @@ import styles from './poolItem.module.scss'
 import web3 from '../../../binance/web3'
 import { useEffect, useState } from 'react'
 import orchestratorInstance from 'binance/orchestrator'
+import StakeDialog from './StakeDialog'
+import { Grid } from '@material-ui/core';
 
 function PoolItem({ data, selectedAccount }) {
   const {
@@ -12,6 +14,9 @@ function PoolItem({ data, selectedAccount }) {
     symbol,
   } = data || {};
 
+	const [openStakeDialog, setOpenStakeDialog] = useState(false);
+	const [openUnstakeDialog, setOpenUnstakeDialog] = useState(false);
+
   const [currentPool, setCurrentPool] = useState(null);
   const [totalSupply, setTotalSupply] = useState(0);
   const [myStake, setMyStake] = useState(0);
@@ -21,6 +26,7 @@ function PoolItem({ data, selectedAccount }) {
   const [walletBalance, setWalletBalance] = useState(0);
 
   const orchestratorAddress = '0x7c3203Bc44e6b49c3cbfBc0F472Ae35E3aa23012';
+
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods.approve(orchestratorAddress, web3.utils.toWei('8', 'ether')).send({ from: selectedAccount });
     approvalEventEmitter.on('receipt', (data) => {
@@ -35,7 +41,19 @@ function PoolItem({ data, selectedAccount }) {
   }
 
   const handleClickStake = async () => {
-    const stakeEventEmitter = orchestratorInstance.methods.deposit(poolId, web3.utils.toWei('0.05', 'ether')).send({ from: selectedAccount });
+		if (selectedAccount) {
+			setOpenStakeDialog(true);
+		}
+  }
+
+	const handleCloseStakeDialog = async () => {
+		if (selectedAccount) {
+			setOpenStakeDialog(false);
+		}
+  }
+
+	const handleConfirmStake = async (amount) => {
+		const stakeEventEmitter = orchestratorInstance.methods.deposit(poolId, amount).send({ from: selectedAccount });
     stakeEventEmitter.on('receipt', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
@@ -45,7 +63,28 @@ function PoolItem({ data, selectedAccount }) {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
     });
+	}
+
+	const handleClickUnstake = () => {
+		setOpenUnstakeDialog(true);
+	}
+
+	const handleCloseUnstakeDialog = async () => {
+		setOpenUnstakeDialog(false);
   }
+
+	const handleConfirmUnstake = async (amount) => {
+		const unstakeEventEmitter = orchestratorInstance.methods.withdraw(poolId, amount).send({ from: selectedAccount });
+    unstakeEventEmitter.on('receipt', (data) => {
+      const blockNumber = data.blockNumber;
+      setCurrentBlockHeight(blockNumber);
+    });
+
+    unstakeEventEmitter.on('error', (data) => {
+      const blockNumber = data.blockNumber;
+      setCurrentBlockHeight(blockNumber);
+    });
+	}
 
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods.deposit(poolId, 0).send({ from: selectedAccount });
@@ -125,6 +164,7 @@ function PoolItem({ data, selectedAccount }) {
     : null;
 
   return (
+		<>
       <div className={styles.poolItem}>
         <div className={styles.poolItemGrid}>
           <div className={styles.item}>
@@ -171,13 +211,36 @@ function PoolItem({ data, selectedAccount }) {
                   >
                     Claim Rewards
                   </button>
-                  <button
-                    type="button"
-                    className={styles.button}
-                    onClick={handleClickStake}
-                  >
-                    Stake
-                  </button>
+                  {selectedAccount && myStake > 0 ? (
+										<Grid container>
+											<Grid item xs={6}>
+													<button
+														type="button"
+														className={`${styles.button} ${styles.unstakeButton}`}
+														onClick={handleClickUnstake}
+													>
+														Unstake
+													</button>
+												</Grid>
+											<Grid item xs={6}>
+												<button
+													type="button"
+													className={`${styles.button} ${styles.stakeButton}`}
+													onClick={handleClickStake}
+												>
+													Stake
+												</button>
+											</Grid>
+										</Grid>
+									) : (
+										<button
+											type="button"
+											className={styles.button}
+											onClick={handleClickStake}
+										>
+											Stake
+										</button>
+									)}
                   <button
                     type="button"
                     className={styles.button}
@@ -191,6 +254,23 @@ function PoolItem({ data, selectedAccount }) {
           </div>
         </div>
       </div>
+			<StakeDialog
+				open={openStakeDialog}
+				title="Stake"
+				onClose={handleCloseStakeDialog}
+				onConfirm={handleConfirmStake}
+				unit={symbol}
+				maxAmount={walletBalance}
+			/>
+			<StakeDialog
+				open={openUnstakeDialog}
+				title="Unstake"
+				onClose={handleCloseUnstakeDialog}
+				onConfirm={handleConfirmUnstake}
+				unit={symbol}
+				maxAmount={myStake}
+			/>
+		</>
   )
 }
 
