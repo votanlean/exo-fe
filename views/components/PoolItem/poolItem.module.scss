@@ -45,6 +45,19 @@
     box-shadow: none;
     line-height: 1.75;
     cursor: pointer;
+		&:hover {
+			background: rgb(0, 88, 170);
+		}
+		&.stakeButton {
+			border-top-left-radius: 0px;
+			border-bottom-left-radius: 0px;
+			border-left: 1px solid rgb(161, 169, 214);
+		}
+		&.unstakeButton {
+			border-top-right-radius: 0px;
+			border-bottom-right-radius: 0px;
+			border-right: 1px solid rgb(161, 169, 214);
+		}
   }
   .colorLight {
     color: $danube;
@@ -75,4 +88,5 @@
 
 .disabled {
   background-color: darkgray !important;
+	cursor: auto !important;
 }
