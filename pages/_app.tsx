@@ -7,20 +7,18 @@ import MainLayout from './layout'
 import '~styles/main.scss'
 
 import AccountContextProvider from 'Context/context';
-
+import {BlockchainContextProvider} from 'store/blockchain';
 class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props
 		return (
-			<AccountContextProvider>
 				<Web3ReactProvider getLibrary={getLibrary}>
 					<ApolloProvider client={apollo}>
-						<MainLayout>
-							<Component {...pageProps} />
-						</MainLayout>
+							<MainLayout>
+								<Component {...pageProps} />
+							</MainLayout>
 					</ApolloProvider>
 				</Web3ReactProvider>
-			</AccountContextProvider>
     )
   }
 }

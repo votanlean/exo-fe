@@ -2,6 +2,7 @@ import styles from './poolItem.module.scss'
 import web3 from '../../../binance/web3'
 import { useEffect, useState } from 'react'
 import orchestratorInstance from 'binance/orchestrator'
+import { useWeb3React } from '@web3-react/core'
 
 function PoolItem({ data, selectedAccount }) {
   const {
@@ -20,8 +21,12 @@ function PoolItem({ data, selectedAccount }) {
   const [currentReward, setCurrentReward] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
 
+  const blockchainCtx = useWeb3React();
+
   const orchestratorAddress = '0x7c3203Bc44e6b49c3cbfBc0F472Ae35E3aa23012';
   const handleClickApprove = async () => {
+    console.log('selectedAccount', selectedAccount);
+
     const approvalEventEmitter = tokenInstance.methods.approve(orchestratorAddress, web3.utils.toWei('8', 'ether')).send({ from: selectedAccount });
     approvalEventEmitter.on('receipt', (data) => {
       const blockNumber = data.blockNumber;
@@ -110,6 +115,7 @@ function PoolItem({ data, selectedAccount }) {
   };
 
   useEffect(() => {
+
     const interval = setInterval(getCurrentBlockHeight, 500);
 
     return () => clearInterval(interval);
@@ -117,6 +123,13 @@ function PoolItem({ data, selectedAccount }) {
 
   useEffect(listenForBlockHeightChange, [currentBlockHeight])
 
+  // useEffect(() => {
+  //   (async () => {
+  //     const foo = await blockchainCtx.connector.getProvider();
+  //     const bar = await foo.enable();
+  //     console.log('blockchainCtx.connector.getProvider()', foo, bar);
+  //   })()
+  // })
 
   const poolAllocPointDiv = currentPool
     ? <div className={styles.poolAllocationPoint}>

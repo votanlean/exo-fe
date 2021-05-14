@@ -1,32 +1,34 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useWeb3React } from '@web3-react/core'
-import web3 from 'binance/web3'
 import { getErrorMessage } from '~lib/error'
 import Nav from '../Nav/Nav'
 import styles from './header.module.scss'
-import { AccountContext } from '../../../Context/context'
+import {metamask, bsc} from '~lib/connector'
 
 const Header = () => {
-  // const { account: accountData, updateAccount } = useContext(AccountContext);
-  // console.log('testAccountContext', accountData)
-
-  const [active, setActive] = useState(false)
-  const [account, setAccount] = useState('')
-  const [errorMesage, setErrorMessage] = useState<string | undefined | null>()
   const [openPopup, setOpenPopup] = useState(false)
-  const { error, activate, deactivate } = useWeb3React()
+  const { error} = useWeb3React()
+
+  const { chainId, account, activate, deactivate, active } = useWeb3React()
 
   const onClickConnect = async () => {
-    const accounts = await web3.eth.getAccounts()
-    setAccount(accounts[0])
     setOpenPopup(true)
-    // updateAccount(accounts[0]);
+  }
+
+  const handleConnectMetamask = async () => {
+    await activate(metamask)
+    setOpenPopup(false)
+  }
+
+  const handleConnectBinanceChainWallet = async () => {
+    await activate(bsc);
+
+    setOpenPopup(false)
   }
 
   const onDeactivate = async () => {
-    setAccount(null)
-    // updateAccount(null);
+    deactivate()
   }
 
   const handleClosePopup = () => {
@@ -35,30 +37,9 @@ const Header = () => {
 
   useEffect(() => {
     if (error) {
-      setErrorMessage(getErrorMessage(error))
+      alert(getErrorMessage(error))
     }
   }, [error])
-
-  useEffect(() => {
-    if (errorMesage) {
-      alert(errorMesage)
-      setErrorMessage(null)
-    }
-  }, [errorMesage])
-
-  const onScroll = e => {
-    if (e.target.documentElement.scrollTop > 400) {
-      setActive(true)
-    } else {
-      setActive(false)
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('scroll', onScroll)
-
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   return (
     <>
@@ -98,14 +79,14 @@ const Header = () => {
             </button>
           </div>
           <div className={styles.popupMain}>
-            <button>
+            <button onClick={handleConnectMetamask}>
               <h3>Metamask</h3>
               <img
                 src="/static/images/metamask-logo.jpeg"
                 alt="metamask-logo"
               />
             </button>
-            <button>
+            <button onClick={handleConnectBinanceChainWallet}>
               <h3>Binance Chain Wallet</h3>
               <img
                 src="/static/images/binance-chain-wallet-logo.jpeg"
