@@ -1,83 +1,145 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useWeb3React } from '@web3-react/core'
-import web3  from 'binance/web3';
 import { getErrorMessage } from '~lib/error'
 import Nav from '../Nav/Nav'
 import styles from './header.module.scss'
-import { AccountContext } from '../../../Context/context'
+import { metamask, bsc } from '~lib/connector'
 
 const Header = () => {
+  const [openPopup, setOpenPopup] = useState(false)
+  const [openLogoutPopup, setOpenLogoutPopup] = useState(false)
+  const { error } = useWeb3React()
 
-  // const { account: accountData, updateAccount } = useContext(AccountContext);
-  // console.log('testAccountContext', accountData)
+  const { chainId, account, activate, deactivate, active } = useWeb3React()
 
-
-  const [active, setActive] = useState(false)
-  const [account, setAccount] = useState('')
-	const [errorMesage, setErrorMessage] = useState<string | undefined | null>();
-	const { error, activate, deactivate } = useWeb3React();
-
-
-	const onClickConnect = async () => {
-	  const accounts = await web3.eth.getAccounts()
-    setAccount(accounts[0])
-    // updateAccount(accounts[0]);
-	}
-
-	const onDeactivate = async () => {
-		setAccount(null);
-    // updateAccount(null);
-	}
-
-	useEffect(() => {
-		if (error) {
-			setErrorMessage(getErrorMessage(error));
-		}
-	}, [error])
-
-	useEffect(() => {
-		if (errorMesage) {
-			alert(errorMesage)
-			setErrorMessage(null)
-		}
-	}, [errorMesage])
-
-  const onScroll = (e) => {
-    if (e.target.documentElement.scrollTop > 400) {
-      setActive(true)
-    } else {
-      setActive(false)
-    }
+  //Handle Connect
+  const onClickConnect = () => {
+    setOpenPopup(true)
   }
 
-  useEffect(() => {
-    window.addEventListener('scroll', onScroll)
+  const handleClosePopup = () => {
+    setOpenPopup(false)
+  }
 
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const handleConnectMetamask = async () => {
+    await activate(metamask)
+    setOpenPopup(false)
+  }
+
+  const handleConnectBinanceChainWallet = async () => {
+    await activate(bsc)
+    setOpenPopup(false)
+  }
+
+  //Handle Logout
+  const onDeactivate = () => {
+    setOpenLogoutPopup(true)
+  }
+
+  const handleCloseLogoutPopup = () => {
+    setOpenLogoutPopup(false)
+  }
+
+  const onClickLogout = () => {
+    deactivate()
+    setOpenLogoutPopup(false)
+  }
+
+  //If have error
+  useEffect(() => {
+    if (error) {
+      alert(getErrorMessage(error))
+    }
+  }, [error])
+
+  //Handle click outside when have popup
+  const useOutside = ref => {
+    useEffect(() => {
+      const handleClickOutside = () => {
+        if (ref.current && !ref.current.contains(event.target)) {
+          setOpenPopup(false)
+          setOpenLogoutPopup(false)
+        }
+      }
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }, [ref])
+  }
+
+  const wrapperRef = useRef(null)
+  useOutside(wrapperRef)
 
   return (
-        <header className={`${styles.header} ${active ? styles.smallHeader : ''}`}>
-          <div className="container" >
-            <div className="d-flex items-center justify-between">
-              <Link href="/">
-                <a className={styles.logo}>
-                  <img src="/static/images/logo.svg" alt="logo" />
-                </a>
-              </Link>
-              <Nav />
-              <button className={styles.connectButton} onClick={!account ? onClickConnect : onDeactivate}>
-                {account === null
-                  ? 'Connect'
-                  : account
-                    ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}`
-                    : 'Connect'}
-              </button>
-            </div>
+    <>
+      <header
+        className={`${styles.header} ${active ? styles.smallHeader : ''}`}
+      >
+        <div className="container">
+          <div className="d-flex items-center justify-between">
+            <Link href="/">
+              <a className={styles.logo}>
+                <img src="/static/images/logo.svg" alt="logo" />
+              </a>
+            </Link>
+            <Nav />
+            <button
+              className={styles.connectButton}
+              onClick={!account ? onClickConnect : onDeactivate}
+            >
+              {account === null
+                ? 'Connect'
+                : account
+                ? `${account.substring(0, 6)}...${account.substring(
+                    account.length - 4,
+                  )}`
+                : 'Connect'}
+            </button>
           </div>
-        </header>
+        </div>
+      </header>
 
+      {/* Connect Popup */}
+      {openPopup && (
+        <div className={styles.connectPopup} ref={wrapperRef}>
+          <div className={styles.popupHeader}>
+            <h2>Connect to wallet</h2>
+            <button onClick={handleClosePopup}>
+              <span>&times;</span>
+            </button>
+          </div>
+          <div className={styles.popupMain}>
+            <button onClick={handleConnectMetamask}>
+              <h3>Metamask</h3>
+              <img
+                src="/static/images/metamask-logo.jpeg"
+                alt="metamask-logo"
+              />
+            </button>
+            <button onClick={handleConnectBinanceChainWallet}>
+              <h3>Binance Chain Wallet</h3>
+              <img
+                src="/static/images/binance-chain-wallet-logo.jpeg"
+                alt="binance-chain-wallet-logo"
+              />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Logout Popup */}
+      {openLogoutPopup && (
+        <div className={styles.connectPopup} ref={wrapperRef}>
+          <div className={styles.popupMain}>
+            <button className={styles.logoutButton} onClick={onClickLogout}>
+              <h3>Log out</h3>
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 

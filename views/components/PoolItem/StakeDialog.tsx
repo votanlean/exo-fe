@@ -100,7 +100,7 @@ const StakeDialog = ({
 		setDisbaleButton(true);
 		await onConfirm(amount.toString())
 		onClose();
-		setAmount("");
+		setAmount('');
 		setDisbaleButton(false);
 	}
 
