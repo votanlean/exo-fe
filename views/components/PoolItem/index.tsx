@@ -21,12 +21,10 @@ function PoolItem({ data, selectedAccount }) {
   const [currentReward, setCurrentReward] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
 
-  const blockchainCtx = useWeb3React();
+  const { active } = useWeb3React();
 
   const orchestratorAddress = '0x7c3203Bc44e6b49c3cbfBc0F472Ae35E3aa23012';
   const handleClickApprove = async () => {
-    console.log('selectedAccount', selectedAccount);
-
     const approvalEventEmitter = tokenInstance.methods.approve(orchestratorAddress, web3.utils.toWei('8', 'ether')).send({ from: selectedAccount });
     approvalEventEmitter.on('receipt', (data) => {
       const blockNumber = data.blockNumber;
@@ -123,14 +121,6 @@ function PoolItem({ data, selectedAccount }) {
 
   useEffect(listenForBlockHeightChange, [currentBlockHeight])
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const foo = await blockchainCtx.connector.getProvider();
-  //     const bar = await foo.enable();
-  //     console.log('blockchainCtx.connector.getProvider()', foo, bar);
-  //   })()
-  // })
-
   const poolAllocPointDiv = currentPool
     ? <div className={styles.poolAllocationPoint}>
         <p>{currentPool.allocPoint} X</p>
@@ -180,20 +170,23 @@ function PoolItem({ data, selectedAccount }) {
                   <button
                     type="button"
                     className={`${styles.button} ${canClaimReward ? '' : styles.disabled}`}
-                    onClick={canClaimReward ? handleClickClaimRewards : null}
+                    disabled={!canClaimReward}
+                    onClick={handleClickClaimRewards}
                   >
                     Claim Rewards
                   </button>
                   <button
                     type="button"
-                    className={styles.button}
+                    className={`${styles.button} ${active ? '' : styles.disabled}`}
+                    disabled={!active}
                     onClick={handleClickStake}
                   >
                     Stake
                   </button>
                   <button
                     type="button"
-                    className={styles.button}
+                    className={`${styles.button} ${active ? '' : styles.disabled}`}
+                    disabled={!active}
                     onClick={handleClickApprove}
                   >
                     Approve
