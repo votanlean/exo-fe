@@ -5,7 +5,6 @@ import { useWeb3React } from '@web3-react/core'
 
 function Pool() {
   const {account} = useWeb3React();
-  console.log('account', account)
   return (
     <>
       <Head>

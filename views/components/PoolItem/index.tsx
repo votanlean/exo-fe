@@ -28,7 +28,7 @@ function PoolItem({ data, selectedAccount }) {
 
   const { active } = useWeb3React();
 
-  const orchestratorAddress = '0x7c3203Bc44e6b49c3cbfBc0F472Ae35E3aa23012';
+  const orchestratorAddress = '0x0858D45821a181Db523c06bfDC54d2B13dce5f7C';
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods.approve(orchestratorAddress, web3.utils.toWei('8', 'ether')).send({ from: selectedAccount });
@@ -151,7 +151,6 @@ function PoolItem({ data, selectedAccount }) {
   };
 
   useEffect(() => {
-
     const interval = setInterval(getCurrentBlockHeight, 500);
 
     return () => clearInterval(interval);
