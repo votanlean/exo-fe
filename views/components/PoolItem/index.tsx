@@ -17,7 +17,7 @@ function PoolItem({ data, selectedAccount }) {
   } = data || {};
 
 	const [openStakeDialog, setOpenStakeDialog] = useState(false);
-	const [openUnstakeDialog, setOpenUnstakeDialog] = useState(false);
+	const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
 
   const [currentPool, setCurrentPool] = useState(null);
   const [totalSupply, setTotalSupply] = useState(0);
@@ -70,26 +70,26 @@ function PoolItem({ data, selectedAccount }) {
     });
   }
 
-  const handleClickUnstake = () => {
-    setOpenUnstakeDialog(true);
+  const handleClickWithdraw = () => {
+    setOpenWithdrawDialog(true);
   }
 
-  const handleCloseUnstakeDialog = async () => {
-    setOpenUnstakeDialog(false);
+  const handleCloseWithdrawDialog = async () => {
+    setOpenWithdrawDialog(false);
   }
 
-  const handleConfirmUnstake = async (amount) => {
-    const unstakeEventEmitter = orchestratorInstance.methods.withdraw(poolId, web3.utils.toWei(amount, 'ether')).send({ from: selectedAccount });
-    unstakeEventEmitter.on('receipt', (data) => {
+  const handleConfirmWithdraw = async (amount) => {
+    const withdrawEventEmitter = orchestratorInstance.methods.withdraw(poolId, web3.utils.toWei(amount, 'ether')).send({ from: selectedAccount });
+    withdrawEventEmitter.on('receipt', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
-      unstakeEventEmitter.removeAllListeners();
+      withdrawEventEmitter.removeAllListeners();
     });
 
-    unstakeEventEmitter.on('error', (data) => {
+    withdrawEventEmitter.on('error', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
-      unstakeEventEmitter.removeAllListeners();
+      withdrawEventEmitter.removeAllListeners();
     });
   }
 
@@ -228,10 +228,10 @@ function PoolItem({ data, selectedAccount }) {
                       <Grid item xs={6}>
                         <button
                           type="button"
-                          className={`${styles.button} ${styles.unstakeButton}`}
-                          onClick={handleClickUnstake}
+                          className={`${styles.button} ${styles.withdrawButton}`}
+                          onClick={handleClickWithdraw}
                         >
-                          Unstake
+                          Withdraw
                         </button>
                       </Grid>
                       <Grid item xs={6}>
@@ -277,10 +277,10 @@ function PoolItem({ data, selectedAccount }) {
 				maxAmount={walletBalance}
 			/>
 			<StakeDialog
-				open={openUnstakeDialog}
-				title="Unstake"
-				onClose={handleCloseUnstakeDialog}
-				onConfirm={handleConfirmUnstake}
+				open={openWithdrawDialog}
+				title="Withdraw"
+				onClose={handleCloseWithdrawDialog}
+				onConfirm={handleConfirmWithdraw}
 				unit={symbol}
 				maxAmount={myStake}
 			/>
