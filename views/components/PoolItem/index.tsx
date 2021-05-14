@@ -5,6 +5,7 @@ import orchestratorInstance from 'binance/orchestrator'
 import { useWeb3React } from '@web3-react/core'
 import StakeDialog from './StakeDialog'
 import { Grid } from '@material-ui/core';
+import { EventEmitter } from 'events'
 
 function PoolItem({ data, selectedAccount }) {
   const {
@@ -55,15 +56,17 @@ function PoolItem({ data, selectedAccount }) {
   }
 
   const handleConfirmStake = async (amount) => {
-    const stakeEventEmitter = orchestratorInstance.methods.deposit(poolId, amount).send({ from: selectedAccount });
+    const stakeEventEmitter: EventEmitter = orchestratorInstance.methods.deposit(poolId, web3.utils.toWei(amount, 'ether')).send({ from: selectedAccount });
     stakeEventEmitter.on('receipt', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
+      stakeEventEmitter.removeAllListeners();
     });
 
     stakeEventEmitter.on('error', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
+      stakeEventEmitter.removeAllListeners();
     });
   }
 
@@ -76,15 +79,17 @@ function PoolItem({ data, selectedAccount }) {
   }
 
   const handleConfirmUnstake = async (amount) => {
-    const unstakeEventEmitter = orchestratorInstance.methods.withdraw(poolId, amount).send({ from: selectedAccount });
+    const unstakeEventEmitter = orchestratorInstance.methods.withdraw(poolId, web3.utils.toWei(amount, 'ether')).send({ from: selectedAccount });
     unstakeEventEmitter.on('receipt', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
+      unstakeEventEmitter.removeAllListeners();
     });
 
     unstakeEventEmitter.on('error', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
+      unstakeEventEmitter.removeAllListeners();
     });
   }
 
@@ -93,11 +98,13 @@ function PoolItem({ data, selectedAccount }) {
     claimRewardsEventEmitter.on('receipt', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
+      claimRewardsEventEmitter.removeAllListeners();
     });
 
     claimRewardsEventEmitter.on('error', (data) => {
       const blockNumber = data.blockNumber;
       setCurrentBlockHeight(blockNumber);
+      claimRewardsEventEmitter.removeAllListeners();
     });
   }
 
@@ -132,9 +139,12 @@ function PoolItem({ data, selectedAccount }) {
 
   const getPoolInfo = async () => {
     const currentPool = await orchestratorInstance.methods.poolInfo(poolId).call();
-    const poolStartClaimRewardBlock = currentPool.startBlock;
+    const blockToReceiveReward = currentPool.blockToReceiveReward;
     setCurrentPool(currentPool);
-    setCanClaimReward(currentBlockHeight >= poolStartClaimRewardBlock);
+
+    if (selectedAccount) {
+      setCanClaimReward(currentBlockHeight >= blockToReceiveReward);
+    }
   }
 
   const getCurrentBlockHeight = async () => {
