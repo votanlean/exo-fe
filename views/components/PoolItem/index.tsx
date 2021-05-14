@@ -2,6 +2,7 @@ import styles from './poolItem.module.scss'
 import web3 from '../../../binance/web3'
 import { useEffect, useState } from 'react'
 import orchestratorInstance from 'binance/orchestrator'
+import { useWeb3React } from '@web3-react/core'
 
 function PoolItem({ data, selectedAccount }) {
   const {
@@ -19,6 +20,8 @@ function PoolItem({ data, selectedAccount }) {
   const [currentBlockHeight, setCurrentBlockHeight] = useState(0);
   const [currentReward, setCurrentReward] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
+
+  const { active } = useWeb3React();
 
   const orchestratorAddress = '0x7c3203Bc44e6b49c3cbfBc0F472Ae35E3aa23012';
   const handleClickApprove = async () => {
@@ -110,13 +113,13 @@ function PoolItem({ data, selectedAccount }) {
   };
 
   useEffect(() => {
+
     const interval = setInterval(getCurrentBlockHeight, 500);
 
     return () => clearInterval(interval);
   }, []);
 
   useEffect(listenForBlockHeightChange, [currentBlockHeight])
-
 
   const poolAllocPointDiv = currentPool
     ? <div className={styles.poolAllocationPoint}>
@@ -167,20 +170,23 @@ function PoolItem({ data, selectedAccount }) {
                   <button
                     type="button"
                     className={`${styles.button} ${canClaimReward ? '' : styles.disabled}`}
-                    onClick={canClaimReward ? handleClickClaimRewards : null}
+                    disabled={!canClaimReward}
+                    onClick={handleClickClaimRewards}
                   >
                     Claim Rewards
                   </button>
                   <button
                     type="button"
-                    className={styles.button}
+                    className={`${styles.button} ${active ? '' : styles.disabled}`}
+                    disabled={!active}
                     onClick={handleClickStake}
                   >
                     Stake
                   </button>
                   <button
                     type="button"
-                    className={styles.button}
+                    className={`${styles.button} ${active ? '' : styles.disabled}`}
+                    disabled={!active}
                     onClick={handleClickApprove}
                   >
                     Approve
