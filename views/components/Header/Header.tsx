@@ -5,6 +5,7 @@ import { getErrorMessage } from '~lib/error'
 import Nav from '../Nav/Nav'
 import styles from './header.module.scss'
 import { metamask, bsc } from '~lib/connector'
+import Router from 'next/router'
 
 const Header = () => {
   const [openPopup, setOpenPopup] = useState(false)
@@ -43,6 +44,8 @@ const Header = () => {
 
   const onClickLogout = () => {
     deactivate()
+    // @ts-ignore
+    Router.reload(window.location.pathname);
     setOpenLogoutPopup(false)
   }
 
