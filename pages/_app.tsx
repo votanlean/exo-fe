@@ -6,8 +6,6 @@ import { getLibrary } from '~lib/web3';
 import MainLayout from './layout'
 import '~styles/main.scss'
 
-import AccountContextProvider from 'Context/context';
-import {BlockchainContextProvider} from 'store/blockchain';
 class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props
