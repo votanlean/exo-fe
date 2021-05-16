@@ -7,7 +7,7 @@ import styles from './nav.module.scss'
 const data = [
   { title: 'Home', path: '/' },
   { title: 'Pool', path: '/pool' },
-  { title: 'Exchange', path: '#/exchange' },
+  { title: 'Exchange', path: '/exchange' },
   { title: 'Mint', path: '#/mint' },
   { title: 'Bridge', path: '#/bridge' },
   { title: 'Governance', path: '#/governance' },
