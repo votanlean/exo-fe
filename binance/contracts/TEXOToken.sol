@@ -954,6 +954,11 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     // Block height at which to reduce emission rate
     uint256 blockToStartReducingEmissionRate;
 
+    uint256 globalBlockToUnlockClaimingRewards;
+
+    // Block when mining starts
+    uint256 startBlock;
+
     // Info of each pool.
     PoolInfo[] public poolInfo;
     // Info of each user that stakes LP tokens.
@@ -1007,13 +1012,17 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         TEXOToken _tEXO,
         address _devAddr,
         address _feeAddress,
-        uint256 _blockToStartReducingEmissionRate
+        uint256 _startBlockCountFromNow,
+        uint256 _blockCountToStartReducingEmissionRateFromNow,
+        uint256 _blockCountToUnlockClaimingRewardsFromNow
     ) public {
         tEXO = _tEXO;
         devAddr = _devAddr;
         feeAddress = _feeAddress;
         tEXOPerBlock = INITIAL_EMISSION_RATE;
-        blockToStartReducingEmissionRate = block.number + _blockToStartReducingEmissionRate; // Allow reduce emission rate from now
+        startBlock = block.number + _startBlockCountFromNow;
+        blockToStartReducingEmissionRate = block.number + _blockCountToStartReducingEmissionRateFromNow;
+        globalBlockToUnlockClaimingRewards = block.number + _blockCountToUnlockClaimingRewardsFromNow;
     }
 
     // Get number of pools added.
@@ -1021,8 +1030,12 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         return poolInfo.length;
     }
 
-    function setBlockToStartReducingEmissionRate(uint256 _blockToStartReducingEmissionRate) external onlyOwner {
-        blockToStartReducingEmissionRate = block.number + _blockToStartReducingEmissionRate;
+    function setBlockToStartReducingEmissionRate(uint256 _blockCountToStartReducingEmissionRateFromNow) external onlyOwner {
+        blockToStartReducingEmissionRate = block.number + _blockCountToStartReducingEmissionRateFromNow;
+    }
+
+    function setGlobalBlockToUnlockClaimingRewards(uint256 _blockCountToUnlockClaimingRewardsFromNow) external onlyOwner {
+        globalBlockToUnlockClaimingRewards = block.number + _blockCountToUnlockClaimingRewardsFromNow;
     }
 
     function getPoolIdForLpToken(IBEP20 _lpToken) external view returns (uint256) {
@@ -1042,7 +1055,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         IBEP20 _lpToken,
         uint16 _depositFeeBP,
         bool _withUpdate,
-        uint256 _blockToReceiveReward
+        uint256 _blockCountToReceiveRewardFromNow
     ) public onlyOwner nonDuplicated(_lpToken) {
         require(_depositFeeBP <= MAXIMUM_DEPOSIT_FEE_BP, "add: invalid deposit fee basis points");
 
@@ -1050,7 +1063,12 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
             massUpdatePools();
         }
 
-        uint256 blockToReceiveReward = block.number + _blockToReceiveReward;
+        uint256 blockToReceiveReward = globalBlockToUnlockClaimingRewards;
+
+        if (_blockCountToReceiveRewardFromNow > 0) {
+            blockToReceiveReward = block.number + _blockCountToReceiveRewardFromNow;
+        }
+
 
         totalAllocPoint = totalAllocPoint.add(_allocPoint);
         poolExistence[_lpToken] = true;
@@ -1059,7 +1077,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
             PoolInfo({
                 lpToken: _lpToken,
                 allocPoint: _allocPoint,
-                lastRewardBlock: blockToReceiveReward,
+                lastRewardBlock: block.number > startBlock ? block.number : startBlock,
                 accTEXOPerShare: 0,
                 depositFeeBP: _depositFeeBP,
                 blockToReceiveReward: blockToReceiveReward
@@ -1075,18 +1093,26 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         uint256 _allocPoint,
         uint16 _depositFeeBP,
         bool _withUpdate,
-        uint256 _newBlockToReceiveReward
+        uint256 _blockCountToReceiveRewardFromNow
     ) public onlyOwner {
         require(_depositFeeBP <= MAXIMUM_DEPOSIT_FEE_BP, "set: invalid deposit fee basis points");
         if (_withUpdate) {
             massUpdatePools();
         }
+
+        uint256 blockToReceiveReward = globalBlockToUnlockClaimingRewards;
+
+        if (_blockCountToReceiveRewardFromNow > 0) {
+            blockToReceiveReward = block.number + _blockCountToReceiveRewardFromNow;
+        }
+
         totalAllocPoint = totalAllocPoint.sub(poolInfo[_pid].allocPoint).add(
             _allocPoint
         );
+
         poolInfo[_pid].allocPoint = _allocPoint;
         poolInfo[_pid].depositFeeBP = _depositFeeBP;
-        poolInfo[_pid].blockToReceiveReward = block.number + _newBlockToReceiveReward;
+        poolInfo[_pid].blockToReceiveReward = blockToReceiveReward;
     }
 
     // Return reward multiplier over the given _from to _to block.
@@ -1325,6 +1351,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
 
         user.amount = 0;
         user.rewardDebt = 0;
+        user.isAlreadyStaked = false;
     }
 
     // Safe tEXO transfer function, just in case if rounding error causes pool to not have enough tEXOs.
@@ -1398,7 +1425,12 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     }
 
     function setEmissionRate(uint256 newEmissionRate) public onlyOwner {
+        uint256 previousEmissionRate = tEXOPerBlock;
         tEXOPerBlock = newEmissionRate;
+
+        massUpdatePools();
+
+        emit EmissionRateUpdated(msg.sender, previousEmissionRate, newEmissionRate);
     }
 
     // Set Referral Address for a user
