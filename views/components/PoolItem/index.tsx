@@ -1,13 +1,24 @@
-import styles from './poolItem.module.scss'
-import web3 from '../../../binance/web3'
-import { useEffect, useState } from 'react'
-import orchestratorInstance from 'binance/orchestrator'
-import { useWeb3React } from '@web3-react/core'
-import StakeDialog from './StakeDialog'
+import styles from './poolItem.module.scss';
+import web3 from '../../../binance/web3';
+import { useEffect, useState } from 'react';
+import orchestratorInstance from 'binance/orchestrator';
+import { useWeb3React } from '@web3-react/core';
+import StakeDialog from './StakeDialog';
 import { Grid } from '@material-ui/core';
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'events';
+import WithdrawDialog from './WithdrawDialog';
 
-function PoolItem({ data, selectedAccount }) {
+function formatDepositFee(depositFee, decimals = 4) {
+  if (!depositFee) {
+    return '0%';
+  }
+
+  const actualDepositFee = depositFee * 100 / Math.pow(10, decimals);
+
+  return `${actualDepositFee.toFixed(2)}%`;
+}
+
+function PoolItem({ data, selectedAccount, currentBlockHeight, onPoolStateChange }) {
   const {
     id: poolId,
     icon,
@@ -22,25 +33,25 @@ function PoolItem({ data, selectedAccount }) {
   const [currentPool, setCurrentPool] = useState(null);
   const [totalSupply, setTotalSupply] = useState(0);
   const [myStake, setMyStake] = useState(0);
+  const [timeToClaimReward, setTimeToClaimReward] = useState(0);
   const [canClaimReward, setCanClaimReward] = useState(false);
-  const [currentBlockHeight, setCurrentBlockHeight] = useState(0);
   const [currentReward, setCurrentReward] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
 
   const { active } = useWeb3React();
 
-  const orchestratorAddress = '0x0858D45821a181Db523c06bfDC54d2B13dce5f7C';
+  const orchestratorAddress = '0xdA181fE906Ee2ee23042B73fb0691086bF64e0f9';
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods.approve(orchestratorAddress, web3.utils.toWei('8', 'ether')).send({ from: selectedAccount });
     approvalEventEmitter.on('receipt', (data) => {
-      const blockNumber = data.blockNumber;
-      setCurrentBlockHeight(blockNumber);
+      onPoolStateChange();
+      approvalEventEmitter.removeAllListeners();
     });
 
     approvalEventEmitter.on('error', (data) => {
-      const blockNumber = data.blockNumber;
-      setCurrentBlockHeight(blockNumber);
+      onPoolStateChange();
+      approvalEventEmitter.removeAllListeners();
     });
   }
 
@@ -58,14 +69,13 @@ function PoolItem({ data, selectedAccount }) {
   const handleConfirmStake = async (amount) => {
     const stakeEventEmitter: EventEmitter = orchestratorInstance.methods.deposit(poolId, web3.utils.toWei(amount, 'ether')).send({ from: selectedAccount });
     stakeEventEmitter.on('receipt', (data) => {
-      const blockNumber = data.blockNumber;
-      setCurrentBlockHeight(blockNumber);
+      onPoolStateChange();
       stakeEventEmitter.removeAllListeners();
     });
 
     stakeEventEmitter.on('error', (data) => {
       const blockNumber = data.blockNumber;
-      setCurrentBlockHeight(blockNumber);
+      onPoolStateChange();
       stakeEventEmitter.removeAllListeners();
     });
   }
@@ -81,14 +91,12 @@ function PoolItem({ data, selectedAccount }) {
   const handleConfirmWithdraw = async (amount) => {
     const withdrawEventEmitter = orchestratorInstance.methods.withdraw(poolId, web3.utils.toWei(amount, 'ether')).send({ from: selectedAccount });
     withdrawEventEmitter.on('receipt', (data) => {
-      const blockNumber = data.blockNumber;
-      setCurrentBlockHeight(blockNumber);
+      onPoolStateChange();
       withdrawEventEmitter.removeAllListeners();
     });
 
     withdrawEventEmitter.on('error', (data) => {
-      const blockNumber = data.blockNumber;
-      setCurrentBlockHeight(blockNumber);
+      onPoolStateChange();
       withdrawEventEmitter.removeAllListeners();
     });
   }
@@ -96,14 +104,12 @@ function PoolItem({ data, selectedAccount }) {
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods.deposit(poolId, 0).send({ from: selectedAccount });
     claimRewardsEventEmitter.on('receipt', (data) => {
-      const blockNumber = data.blockNumber;
-      setCurrentBlockHeight(blockNumber);
+      onPoolStateChange();
       claimRewardsEventEmitter.removeAllListeners();
     });
 
     claimRewardsEventEmitter.on('error', (data) => {
-      const blockNumber = data.blockNumber;
-      setCurrentBlockHeight(blockNumber);
+      onPoolStateChange();
       claimRewardsEventEmitter.removeAllListeners();
     });
   }
@@ -147,11 +153,6 @@ function PoolItem({ data, selectedAccount }) {
     }
   }
 
-  const getCurrentBlockHeight = async () => {
-    const currentBlockHeight = await web3.eth.getBlockNumber();
-    setCurrentBlockHeight(currentBlockHeight);
-  }
-
   const listenForBlockHeightChange = () => {
     getPoolInfo();
     getTotalSupply();
@@ -159,12 +160,6 @@ function PoolItem({ data, selectedAccount }) {
     getWalletBalance();
     getCurrentReward();
   };
-
-  useEffect(() => {
-    const interval = setInterval(getCurrentBlockHeight, 500);
-
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(listenForBlockHeightChange, [currentBlockHeight])
 
@@ -193,6 +188,12 @@ function PoolItem({ data, selectedAccount }) {
                 >
                   <p className={styles.pTitle}>My Stake</p>
                   <p>{myStake} {symbol}</p>
+                </div>
+                <div
+                  className={`d-flex items-center justify-between font-bold ${styles.colorLight}`}
+                >
+                  <p className={styles.pTitle}>Deposit Fee</p>
+                  <p>{formatDepositFee(currentPool && currentPool.depositFeeBP)}</p>
                 </div>
                 <div
                   className={`d-flex items-center justify-between font-bold ${styles.colorLight}`}
@@ -274,9 +275,10 @@ function PoolItem({ data, selectedAccount }) {
 				onClose={handleCloseStakeDialog}
 				onConfirm={handleConfirmStake}
 				unit={symbol}
+        depositFee={currentPool && currentPool.depositFeeBP}
 				maxAmount={walletBalance}
 			/>
-			<StakeDialog
+			<WithdrawDialog
 				open={openWithdrawDialog}
 				title="Withdraw"
 				onClose={handleCloseWithdrawDialog}

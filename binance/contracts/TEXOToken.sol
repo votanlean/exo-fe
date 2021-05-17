@@ -952,9 +952,9 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     address public feeAddress;
 
     // Block height at which to reduce emission rate
-    uint256 blockToStartReducingEmissionRate;
+    uint256 public blockToStartReducingEmissionRate;
 
-    uint256 globalBlockToUnlockClaimingRewards;
+    uint256 public globalBlockToUnlockClaimingRewards;
 
     // Block when mining starts
     uint256 startBlock;
