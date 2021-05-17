@@ -9,6 +9,8 @@ import { useWeb3React } from '@web3-react/core';
 import orchestratorInstance from 'binance/orchestrator';
 import Countdown from 'countdown';
 import dayjs from 'dayjs';
+import Statistic from '../../views/components/Statistic';
+
 
 function getClaimRewardsDate(currentBlockHeight, canClaimRewardBlockHeight, startDate) {
   if (!currentBlockHeight || !canClaimRewardBlockHeight) {
@@ -81,7 +83,7 @@ function Pool() {
         <h1 style={{ marginBottom: '10px' }}>Count Down To Claim Rewards</h1>
         <h2>{countDownString}</h2>
       </div>
-      
+
       <div className="container pool-container">
         <div className="pool-grid">
           {
@@ -94,7 +96,9 @@ function Pool() {
             />)
           }
         </div>
+        <Statistic/>
       </div>
+
     </>
   )
 }
