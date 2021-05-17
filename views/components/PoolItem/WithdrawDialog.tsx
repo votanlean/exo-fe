@@ -11,10 +11,6 @@ import {
 } from '@material-ui/core'
 import NumberFormat from 'react-number-format';
 
-function calculateDepositFee(amount, depositFeeBP, decimals = 4) {
-	return amount * depositFeeBP / Math.pow(10, decimals);
-}
-
 const useStyles = makeStyles((theme) => {
 	const augmentBlue = theme.palette.augmentColor({ main: '#007EF3' })
 	return({
@@ -72,14 +68,13 @@ function NumberFormatCustom(props) {
   );
 }
 
-const StakeDialog = ({
+const WithdrawDialog = ({
 	title,
 	open,
 	maxAmount = 10,
 	unit,
 	onClose,
 	onConfirm,
-	depositFee,
 }) => {
 	const classes: any = useStyles();
 	const [amount, setAmount] = useState(0);
@@ -118,7 +113,7 @@ const StakeDialog = ({
 						label={title}
 						value={amount}
 						onChange={onChangeAmount}
-						helperText={`Balance: ${unit} ${maxAmount}. \n Deposit fee: ${calculateDepositFee(amount, depositFee)} ${unit}`}
+						helperText={`Balance: ${unit} ${maxAmount}`}
 						fullWidth
 						placeholder={unit}
 						FormHelperTextProps={{
@@ -147,4 +142,4 @@ const StakeDialog = ({
 	)
 }
 
-export default StakeDialog;
+export default WithdrawDialog;

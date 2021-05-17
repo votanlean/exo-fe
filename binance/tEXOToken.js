@@ -3,7 +3,7 @@ import TEXOToken from './build/TEXOToken.json';
 
 const instance = new web3.eth.Contract(
   TEXOToken.abi,
-  '0x2D74216E8dB912C497A8775A74ea8166124b44F2'
+  '0x69E191beB3607072A45ac83eF6B7bc76F2420EF5'
 );
 
 export default instance;

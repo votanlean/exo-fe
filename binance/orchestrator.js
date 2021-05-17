@@ -3,7 +3,7 @@ import Orchestrator from './build/TEXOOrchestrator.json';
 
 const instance = new web3.eth.Contract(
   Orchestrator.abi,
-  '0x0858D45821a181Db523c06bfDC54d2B13dce5f7C'
+  '0xdA181fE906Ee2ee23042B73fb0691086bF64e0f9'
 );
 
 export default instance;
