@@ -48,7 +48,10 @@ function Pool() {
     getGlobalCanClaimRewardsBlockHeight();
     const interval = setInterval(getCurrentBlockHeight, 500);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval)
+      clearInterval(countDownInterval);
+    };
   }, []);
 
   useEffect(() => {
@@ -56,18 +59,15 @@ function Pool() {
       return;
     }
 
-    const startDate = dayjs();
+    const claimRewardDate = getClaimRewardsDate(currentBlockHeight, canClaimRewardBlockHeight, dayjs()).toDate();
 
     const interval = setInterval(() => {
-      const claimRewardDate = getClaimRewardsDate(currentBlockHeight, canClaimRewardBlockHeight, startDate);
-      const countDownString = Countdown(new Date(), claimRewardDate.toDate()).toString();
+      const countDownString = Countdown(new Date(), claimRewardDate).toString();
 
       setCountDownString(countDownString);
     }, 1000);
 
     setCountDownInterval(interval);
-
-    return () => clearInterval(interval);
   }, [canClaimRewardBlockHeight, currentBlockHeight]);
 
 
