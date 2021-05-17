@@ -7,6 +7,9 @@ import StakeDialog from './StakeDialog';
 import { Grid } from '@material-ui/core';
 import { EventEmitter } from 'events';
 import WithdrawDialog from './WithdrawDialog';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -25,6 +28,7 @@ function PoolItem({ data, selectedAccount, currentBlockHeight, onPoolStateChange
     title,
     tokenInstance,
     symbol,
+    bsScanLink,
   } = data || {};
 
 	const [openStakeDialog, setOpenStakeDialog] = useState(false);
@@ -33,7 +37,7 @@ function PoolItem({ data, selectedAccount, currentBlockHeight, onPoolStateChange
   const [currentPool, setCurrentPool] = useState(null);
   const [totalSupply, setTotalSupply] = useState(0);
   const [myStake, setMyStake] = useState(0);
-  const [timeToClaimReward, setTimeToClaimReward] = useState(0);
+  const [isDisplayDetails, setIsDisplayDetails] = useState(false);
   const [canClaimReward, setCanClaimReward] = useState(false);
   const [currentReward, setCurrentReward] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
@@ -153,6 +157,10 @@ function PoolItem({ data, selectedAccount, currentBlockHeight, onPoolStateChange
     }
   }
 
+  const toggleDisplayDetails = () => {
+    setIsDisplayDetails(!isDisplayDetails);
+  }
+
   const listenForBlockHeightChange = () => {
     getPoolInfo();
     getTotalSupply();
@@ -169,6 +177,21 @@ function PoolItem({ data, selectedAccount, currentBlockHeight, onPoolStateChange
       </div>
     : null;
 
+  
+  const poolDetailsDiv = isDisplayDetails
+    ? <div className={styles.detailsContainer}>
+        <div style={{ marginBottom: '10px' }} className={styles.detailsContainer__row}>
+          <h3>Deposit:</h3>
+          <h3>{symbol}</h3>
+        </div>
+        <div style={{ marginBottom: '10px' }} className={styles.detailsContainer__row}>
+          <h3>Total liquidity:</h3>
+          <h3>1,482,192$</h3>
+        </div>
+        <a style={{ fontSize: '19px', color: '#007EF3' }} href={bsScanLink} target='_blank'>View on Bscan</a>
+      </div>
+    : null;
+
   return (
 		<>
       <div className={styles.poolItem}>
@@ -179,9 +202,11 @@ function PoolItem({ data, selectedAccount, currentBlockHeight, onPoolStateChange
               <div className={styles.poolItemGrid}>
                 <img src={icon} alt={title} className={styles.icon} />
               </div>
+
               <div className={styles.poolItemGrid}>
                 <p className={styles.title}>{title}</p>
               </div>
+
               <div className={`${styles.poolItemGrid} w-full`}>
                 <div
                   className={`d-flex items-center justify-between font-bold ${styles.colorLight}`}
@@ -212,6 +237,7 @@ function PoolItem({ data, selectedAccount, currentBlockHeight, onPoolStateChange
                   <p>{walletBalance} {symbol} </p>
                 </div>
               </div>
+
               <div
                 className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
               >
@@ -265,6 +291,15 @@ function PoolItem({ data, selectedAccount, currentBlockHeight, onPoolStateChange
                   </button>
                 </>
               </div>
+
+              <div
+                className={styles.detailsButtonContainer}
+                onClick={toggleDisplayDetails}
+              >
+                <h3>Details</h3>
+                {isDisplayDetails ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+              </div>
+              {poolDetailsDiv}
             </div>
           </div>
         </div>

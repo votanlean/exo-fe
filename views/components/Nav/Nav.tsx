@@ -11,7 +11,6 @@ const data = [
   { title: 'Mint', path: '#/mint' },
   { title: 'Bridge', path: '#/bridge' },
   { title: 'Governance', path: '#/governance' },
-  { title: 'FAQ', path: '#/faq' },
 ]
 
 const Nav = () => {
@@ -27,6 +26,9 @@ const Nav = () => {
             </ActiveLink>
           </li>
         ))}
+        <li>
+          <a href='https://texo.gitbook.io/exoniumdex' target='_blank' className={`${styles.menuLink} menu-link`}>FAQ</a>
+        </li>
       </ul>
     </nav>
   )
