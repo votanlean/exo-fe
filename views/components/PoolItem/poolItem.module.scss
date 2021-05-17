@@ -90,3 +90,25 @@
   background-color: darkgray !important;
 	cursor: auto !important;
 }
+
+.detailsButtonContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.detailsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.detailsContainer__row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+}
