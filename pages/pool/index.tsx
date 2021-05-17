@@ -2,7 +2,7 @@ import Head from 'next/head'
 import PoolItem from '~views/components/PoolItem'
 import {poolToken} from '../../binance/tokenFactory';
 import { useWeb3React } from '@web3-react/core'
-
+import Statistic from '../../views/components/Statistic';
 function Pool() {
   const {account} = useWeb3React();
   return (
@@ -21,7 +21,9 @@ function Pool() {
             />)
           }
         </div>
+        <Statistic/>
       </div>
+
     </>
   )
 }
