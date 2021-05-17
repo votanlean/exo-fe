@@ -1,70 +1,151 @@
+import {
+  Avatar,
+  Box,
+  Button,
+  Grid,
+  makeStyles,
+  Typography,
+} from '@material-ui/core'
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Box, FormLabel, Grid, makeStyles, Paper, TextField, Typography, Button, Avatar } from '@material-ui/core'
 
-Statistic.propTypes = {}
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
+    marginTop: theme.spacing(5),
+    paddingTop: theme.spacing(4),
+    borderTop: '1px solid rgb(161, 169, 214)',
   },
-  paper: {
-    height: 140,
-    width: 100,
-  },
-  control: {
+  box: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+
+    height: '200px',
+    margin: theme.spacing(1.5),
     padding: theme.spacing(2),
+
+    bgcolor: 'white',
+    color: '#6A98C9',
+    borderRadius: '20px',
+    border: '1px solid rgb(161, 169, 214)',
   },
-  layout: {
-    flexGrow: 1,
+  avatar: {
+    margin: theme.spacing(1.5, 0),
+  },
+  fadeText: {
+    color: theme.palette.text.disabled,
+    margin: theme.spacing(1, 0),
+  },
+  btn: {
+    textTransform: 'none',
+    borderRadius: '12px',
+    padding: '10px',
+    fontSize: '20px',
+    fontWeight: '700',
+  },
+  boldText: {
+    fontWeight: '700',
   },
 }))
 
 function Statistic(props) {
-  const [spacing, setSpacing] = React.useState(2)
   const classes = useStyles()
 
   return (
-    <Grid container className={classes.layout}>
-      <Grid item  xs={12} sm={6} md={4} lg={4}>
-        <Box bgcolor='white' color='black' borderRadius='20px' border='1px solid rgb(161, 169, 214)'>
-          <Typography variant='h4'>
+    <Grid container className={classes.root}>
+      <Grid item xs={12} sm={6} md={4} lg={4}>
+        <Box
+          bgcolor="white"
+          borderRadius="20px"
+          border="1px solid rgb(161, 169, 214)"
+          m={1.5}
+          p={2}
+        >
+          <Typography variant="h4" className={classes.boldText}>
             Farms & Staking
           </Typography>
-          <Avatar alt='tEXO' src='/static/images/logo-dark.svg' />
+          <Avatar
+            alt="tEXO"
+            src="/static/images/logo-dark.svg"
+            className={classes.avatar}
+          />
 
-          <Typography variant='body1'>
-            Gator to Harvest
-          </Typography>
-          <Typography variant='body1'>
-            LOCKED
-          </Typography>
-          <Typography variant='body1'>
-            ~$0.00
-          </Typography>
-          <Button variant='contained' color='primary'>Unlock Wallet</Button>
+          <Typography>tEXO to Harvest</Typography>
+          <Typography className={classes.fadeText}>LOCKED</Typography>
+          <Typography gutterBottom>~$0.00</Typography>
+
+          <Typography>tEXO to Wallet</Typography>
+          <Typography className={classes.fadeText}>LOCKED</Typography>
+          <Typography gutterBottom>~$0.00</Typography>
+
+          <Button
+            className={classes.btn}
+            variant="contained"
+            color="primary"
+            fullWidth
+          >
+            Unlock Wallet
+          </Button>
         </Box>
       </Grid>
-      <Grid item  xs={12} sm={6} md={4} lg={4}>
-        <Box bgcolor='white' color='black' borderRadius='20px' border='1px solid rgb(161, 169, 214)' margin={2}>
-          <Typography variant='h4'>
+
+      <Grid item xs={12} sm={6} md={4} lg={4}>
+        <Box className={classes.box}>
+          <Typography
+            variant="h4"
+            color="textPrimary"
+            className={classes.boldText}
+            gutterBottom
+          >
             TEXO Stats
           </Typography>
-          <Grid justify="space-around" direction={'row'}>
-            <Typography>Total Gator Supply</Typography>
-            <Typography>6,913,340</Typography>
-          </Grid>
+
+          <Box display="flex" justifyContent="space-between">
+            <Typography className={classes.boldText}>
+              Total tEXO Supply
+            </Typography>
+            <Typography className={classes.boldText}>6,913,340</Typography>
+          </Box>
+
+          <Box display="flex" justifyContent="space-between">
+            <Typography className={classes.boldText}>Max Tx Amount</Typography>
+            <Typography className={classes.boldText}>41,402</Typography>
+          </Box>
+
+          <Box display="flex" justifyContent="space-between">
+            <Typography className={classes.boldText}>Market Cap</Typography>
+            <Typography className={classes.boldText}>$1,049,754</Typography>
+          </Box>
+
+          <Box display="flex" justifyContent="space-between">
+            <Typography className={classes.boldText}>
+              Total tEXO Burned
+            </Typography>
+            <Typography className={classes.boldText}>1,205,310</Typography>
+          </Box>
+
+          <Box display="flex" justifyContent="space-between">
+            <Typography className={classes.boldText}>New tEXO/block</Typography>
+            <Typography className={classes.boldText}>100</Typography>
+          </Box>
         </Box>
       </Grid>
-      <Grid item  xs={12} sm={6} md={4} lg={4}>
-        <Box bgcolor='white' color='black' borderRadius='20px' border='1px solid rgb(161, 169, 214)' margin={2}>
-          <Typography variant='h4'>
+
+      <Grid item xs={12} sm={6} md={4} lg={4}>
+        <Box className={classes.box}>
+          <Typography
+            variant="h5"
+            color="textPrimary"
+            className={classes.boldText}
+            gutterBottom
+          >
             Total Value Locked (TVL)
           </Typography>
-          <Typography variant='h4'>
+
+          <Typography variant="h4" className={classes.boldText}>
             $16,293,407.17
           </Typography>
-          <Typography variant='h4'>
+
+          <Typography color="textPrimary" className={classes.boldText}>
             Across all Farms and Pools
           </Typography>
         </Box>
