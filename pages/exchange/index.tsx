@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Head from 'next/head'
 import { makeStyles } from '@material-ui/core/styles'
 import {
@@ -11,6 +12,10 @@ import {
   Avatar,
 } from '@material-ui/core'
 import { Tune, History, ExpandMore } from '@material-ui/icons'
+import SelectTokenDialog from '../../views/components/Exchange/SelectTokenDialog'
+import HistoryDialog from '../../views/components/Exchange/HistoryDialog'
+import SettingsDialog from '../../views/components/Exchange/SettingsDialog'
+import { poolToken } from '../../binance/tokenFactory'
 
 const useStyles = makeStyles({
   root: {
@@ -47,6 +52,39 @@ const useStyles = makeStyles({
 
 function Pool() {
   const classes = useStyles()
+  const [isOpenTokenDialog, setOpenTokenDialog] = useState(false)
+  const [isOpenHistoryDialog, setOpenHistoryDialog] = useState(false)
+  const [isOpenSettingsDialog, setOpenSettingsDialog] = useState(false)
+  const [fromValue, setFromValue] = useState(poolToken[0])
+  const [toValue, setToValue] = useState(poolToken[1])
+  const [fromTo, setFromTo] = useState('')
+
+  const toggleTokenDialog = value => {
+    setOpenTokenDialog(true)
+    setFromTo(value)
+  }
+
+  const onCloseTokenDialog = () => {
+    setOpenTokenDialog(false)
+  }
+
+  const toggleHistoryDialog = () => {
+    setOpenHistoryDialog(!isOpenHistoryDialog)
+  }
+
+  const handleConfirmTokenModal = value => {
+    fromTo === 'from' ? setFromValue(value) : setToValue(value)
+    onCloseTokenDialog()
+  }
+
+  const toggleSettingsDialog = () => {
+    setOpenSettingsDialog(!isOpenSettingsDialog)
+  }
+
+  const handleSwapToken = () => {
+    setFromValue(toValue)
+    setToValue(fromValue)
+  }
 
   return (
     <>
@@ -63,10 +101,10 @@ function Pool() {
               subheader="Trade tokens in an instant"
               action={
                 <Box display="flex" alignItems="center">
-                  <IconButton>
+                  <IconButton onClick={toggleSettingsDialog}>
                     <Tune color="primary" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton onClick={toggleHistoryDialog}>
                     <History color="primary" />
                   </IconButton>
                 </Box>
@@ -83,19 +121,24 @@ function Pool() {
                     marginTop={1.5}
                   >
                     <Typography variant="body1">0.0</Typography>
-                    <Button>
+                    <Button onClick={() => toggleTokenDialog('from')}>
                       <Avatar
                         className={classes.iconAva}
-                        src="/static/images/pool/USDT.png"
+                        src={fromValue.icon}
                       />
-                      <Typography variant="subtitle2">USDT</Typography>
+                      <Typography variant="subtitle2">
+                        {fromValue.symbol}
+                      </Typography>
                       <ExpandMore color="primary" />
                     </Button>
                   </Box>
                 </Box>
 
                 <Box>
-                  <Button className={classes.iconDown}>
+                  <Button
+                    className={classes.iconDown}
+                    onClick={handleSwapToken}
+                  >
                     <svg
                       viewBox="0 0 24 24"
                       color="#007EF3"
@@ -116,12 +159,11 @@ function Pool() {
                     marginTop={1.5}
                   >
                     <Typography variant="body1">0.0</Typography>
-                    <Button>
-                      <Avatar
-                        className={classes.iconAva}
-                        src="/static/images/pool/USDT.png"
-                      />
-                      <Typography variant="subtitle2">USDT</Typography>
+                    <Button onClick={() => toggleTokenDialog('to')}>
+                      <Avatar className={classes.iconAva} src={toValue.icon} />
+                      <Typography variant="subtitle2">
+                        {toValue.symbol}
+                      </Typography>
                       <ExpandMore color="primary" />
                     </Button>
                   </Box>
@@ -136,6 +178,19 @@ function Pool() {
           </Card>
         </div>
       </div>
+
+      <SelectTokenDialog
+        open={isOpenTokenDialog}
+        title="Select a token"
+        onClose={onCloseTokenDialog}
+        onConfirm={handleConfirmTokenModal}
+        fromTo={fromTo}
+      />
+      <HistoryDialog open={isOpenHistoryDialog} onClose={toggleHistoryDialog} />
+      <SettingsDialog
+        open={isOpenSettingsDialog}
+        onClose={toggleSettingsDialog}
+      />
     </>
   )
 }
