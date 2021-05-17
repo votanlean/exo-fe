@@ -8,9 +8,9 @@ const data = [
   { title: 'Home', path: '/' },
   { title: 'Pool', path: '/pool' },
   { title: 'Exchange', path: '/exchange' },
-  { title: 'Mint', path: '#/mint' },
-  { title: 'Bridge', path: '#/bridge' },
-  { title: 'Governance', path: '#/governance' },
+  { title: 'Mint', path: '/mint' },
+  { title: 'Bridge', path: '/bridge' },
+  { title: 'Governance', path: '/governance' },
 ]
 
 const Nav = () => {
@@ -27,7 +27,7 @@ const Nav = () => {
           </li>
         ))}
         <li>
-          <a href='https://texo.gitbook.io/exoniumdex' target='_blank' className={`${styles.menuLink} menu-link`}>FAQ</a>
+          <a href='https://texo.gitbook.io/exoniumdex' target='_blank' className={`${styles.menuLink} menu-link`}>Docs</a>
         </li>
       </ul>
     </nav>
