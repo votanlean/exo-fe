@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import React from 'react'
+import { useWeb3React } from '@web3-react/core'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,6 +50,7 @@ const useStyles = makeStyles(theme => ({
 
 function Statistic(props) {
   const classes = useStyles()
+  const {active} = useWeb3React();
 
   return (
     <Grid container className={classes.root}>
@@ -70,17 +72,17 @@ function Statistic(props) {
           />
 
           <Typography>tEXO to Harvest</Typography>
-          <Typography className={classes.fadeText}>LOCKED</Typography>
+          <Typography className={classes.fadeText}>{active ? 0.00 : 'LOCKED'}</Typography>
           <Typography gutterBottom>~$0.00</Typography>
 
           <Typography>tEXO to Wallet</Typography>
-          <Typography className={classes.fadeText}>LOCKED</Typography>
+          <Typography className={classes.fadeText}>{active ? 0.00 : 'LOCKED'}</Typography>
           <Typography gutterBottom>~$0.00</Typography>
 
           <Button
             className={classes.btn}
             variant="contained"
-            color="primary"
+            color="rgb(255, 255, 255)"
             fullWidth
           >
             Unlock Wallet
