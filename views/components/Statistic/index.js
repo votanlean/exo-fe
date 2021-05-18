@@ -24,7 +24,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1.5),
     padding: theme.spacing(2),
 
-    bgcolor: 'white',
     color: '#6A98C9',
     borderRadius: '20px',
     border: '1px solid rgb(161, 169, 214)',
@@ -67,7 +66,7 @@ function Statistic(props) {
           </Typography>
           <Avatar
             alt="tEXO"
-            src="/static/images/logo-dark.svg"
+            src="/static/images/tEXO-Icon.png"
             className={classes.avatar}
           />
 
@@ -110,11 +109,6 @@ function Statistic(props) {
               Total tEXO Supply
             </Typography>
             <Typography className={classes.boldText}>6,913,340</Typography>
-          </Box>
-
-          <Box display="flex" justifyContent="space-between">
-            <Typography className={classes.boldText}>Max Tx Amount</Typography>
-            <Typography className={classes.boldText}>41,402</Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">

@@ -103,7 +103,7 @@ export const poolData = [
 export const liquidityPool = [
   {
     id: 0,
-    icon: '/static/images/pool/USDT.png',
+    icon: '/static/images/Swap_tEXO-BNB.png',
     title: 'tEXO/BNB LP',
     address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     symbol: 'tEXO/BNB',
@@ -112,7 +112,7 @@ export const liquidityPool = [
   },
   {
     id: 2,
-    icon: '/static/images/pool/USDT.png',
+    icon: '/static/images/Swap_tEXO-BUSD.png',
     title: 'tEXO/BUSD LP',
     address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     symbol: 'tEXO/BUSD',
