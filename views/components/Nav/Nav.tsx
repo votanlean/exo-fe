@@ -19,15 +19,33 @@ const Nav = () => {
   return (
     <nav>
       <ul className={styles.menu}>
-        {data.map((menu, index) => (
-          <li key={index}>
-            <ActiveLink href={menu.path}>
-              <a className={`${styles.menuLink} menu-link`}>{menu.title}</a>
-            </ActiveLink>
-          </li>
-        ))}
+        {data.map((menu, index) =>
+          menu.title === 'Bridge' ? (
+            <li>
+              <a
+                href="https://www.binance.org/en/bridge"
+                target="_blank"
+                className={`${styles.menuLink} menu-link`}
+              >
+                Bridge
+              </a>
+            </li>
+          ) : (
+            <li key={index}>
+              <ActiveLink href={menu.path}>
+                <a className={`${styles.menuLink} menu-link`}>{menu.title}</a>
+              </ActiveLink>
+            </li>
+          ),
+        )}
         <li>
-          <a href='https://texo.gitbook.io/exoniumdex' target='_blank' className={`${styles.menuLink} menu-link`}>Docs</a>
+          <a
+            href="https://texo.gitbook.io/exoniumdex"
+            target="_blank"
+            className={`${styles.menuLink} menu-link`}
+          >
+            Docs
+          </a>
         </li>
       </ul>
     </nav>
