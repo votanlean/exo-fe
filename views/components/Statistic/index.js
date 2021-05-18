@@ -11,9 +11,9 @@ import { useWeb3React } from '@web3-react/core'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: theme.spacing(5),
-    paddingTop: theme.spacing(4),
-    borderTop: '1px solid rgb(161, 169, 214)',
+    // marginTop: theme.spacing(5),
+    paddingBottom: theme.spacing(4),
+    borderBottom: '1px solid rgb(161, 169, 214)',
   },
   box: {
     display: 'flex',
@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
 
 function Statistic(props) {
   const classes = useStyles()
-  const {active} = useWeb3React();
+  const { active } = useWeb3React()
 
   return (
     <Grid container className={classes.root}>
@@ -72,11 +72,15 @@ function Statistic(props) {
           />
 
           <Typography>tEXO to Harvest</Typography>
-          <Typography className={classes.fadeText}>{active ? 0.00 : 'LOCKED'}</Typography>
+          <Typography className={classes.fadeText}>
+            {active ? 0.0 : 'LOCKED'}
+          </Typography>
           <Typography gutterBottom>~$0.00</Typography>
 
           <Typography>tEXO to Wallet</Typography>
-          <Typography className={classes.fadeText}>{active ? 0.00 : 'LOCKED'}</Typography>
+          <Typography className={classes.fadeText}>
+            {active ? 0.0 : 'LOCKED'}
+          </Typography>
           <Typography gutterBottom>~$0.00</Typography>
 
           <Button
