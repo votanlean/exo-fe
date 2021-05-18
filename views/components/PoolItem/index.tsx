@@ -1,3 +1,4 @@
+import React from 'react'
 import styles from './poolItem.module.scss'
 import web3 from '../../../binance/web3'
 import { useEffect, useState } from 'react'
@@ -9,6 +10,7 @@ import { EventEmitter } from 'events'
 import WithdrawDialog from './WithdrawDialog'
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
+import ROIDialog from './ROIDialog'
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -33,6 +35,7 @@ function PoolItem(poolData: any) {
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false)
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false)
+  const [openRoiDialog, setOpenRoiDialog] = useState(false)
 
   const [currentPool, setCurrentPool] = useState(null)
   const [totalSupply, setTotalSupply] = useState(0)
@@ -186,6 +189,10 @@ function PoolItem(poolData: any) {
     getCurrentReward()
   }
 
+  const onToggleRoiDialog = () => {
+    setOpenRoiDialog(!openRoiDialog)
+  }
+
   useEffect(listenForBlockHeightChange, [currentBlockHeight])
 
   const poolAllocPointDiv = currentPool ? (
@@ -230,15 +237,7 @@ function PoolItem(poolData: any) {
         {currentPool && currentPool.depositFeeBP > 0 ? (
           <div className={`d-flex items-center justify-end`}>
             <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
-              <svg
-                viewBox="0 0 24 24"
-                color="text"
-                width="20px"
-                xmlns="http://www.w3.org/2000/svg"
-                className={styles.verifiedIcon}
-              >
-                <path d="M23 12L20.56 9.21L20.9 5.52L17.29 4.7L15.4 1.5L12 2.96L8.6 1.5L6.71 4.69L3.1 5.5L3.44 9.2L1 12L3.44 14.79L3.1 18.49L6.71 19.31L8.6 22.5L12 21.03L15.4 22.49L17.29 19.3L20.9 18.48L20.56 14.79L23 12ZM9.38 16.01L7 13.61C6.61 13.22 6.61 12.59 7 12.2L7.07 12.13C7.46 11.74 8.1 11.74 8.49 12.13L10.1 13.75L15.25 8.59C15.64 8.2 16.28 8.2 16.67 8.59L16.74 8.66C17.13 9.05 17.13 9.68 16.74 10.07L10.82 16.01C10.41 16.4 9.78 16.4 9.38 16.01Z"></path>
-              </svg>
+              <img src="/static/images/verified.svg" />
               <p>No Fees</p>
             </div>
             {poolAllocPointDiv}
@@ -271,42 +270,61 @@ function PoolItem(poolData: any) {
               )}
 
               <div className={`${styles.poolItemGrid} w-full`}>
-                <div
-                  className={`d-flex items-center justify-between font-bold ${styles.colorLight}`}
+                <RowPoolItem
+                  title="APR"
+                  containerStyle={`${styles.colorLight}`}
                 >
-                  <p className={styles.pTitle}>My Stake</p>
+                  <div className={`d-flex items-center`}>
+                    <div
+                      className={styles.calAPRButton}
+                      onClick={onToggleRoiDialog}
+                    >
+                      <img src="/static/images/calculate.svg" />
+                    </div>
+                    <p>35.53%</p>
+                  </div>
+                </RowPoolItem>
+                <RowPoolItem
+                  title="My Stake"
+                  containerStyle={`${styles.colorLight}`}
+                >
                   <p>
                     {myStake} {symbol}
                   </p>
-                </div>
-                <div
-                  className={`d-flex items-center justify-between font-bold ${styles.colorLight}`}
+                </RowPoolItem>
+                <RowPoolItem
+                  title="Deposit Fee"
+                  containerStyle={`${styles.colorLight}`}
                 >
-                  <p className={styles.pTitle}>Deposit Fee</p>
                   <p>
                     {formatDepositFee(currentPool && currentPool.depositFeeBP)}
                   </p>
-                </div>
-                <div
-                  className={`d-flex items-center justify-between font-bold ${styles.colorLight}`}
+                </RowPoolItem>
+                <RowPoolItem
+                  title="My Rewards"
+                  containerStyle={`${styles.colorLight}`}
                 >
-                  <p className={styles.pTitle}>My Rewards</p>
                   <p>{currentReward} tEXO</p>
-                </div>
-                <div className="d-flex items-center justify-between">
-                  <p className={styles.pTitle}>Total Staked</p>
-                  <p>
-                    {totalSupply} {symbol}{' '}
-                  </p>
-                </div>
-                <div
-                  className={`d-flex items-center justify-between ${styles.wallet}`}
+                </RowPoolItem>
+                <RowPoolItem
+                  title="My Rewards"
+                  containerStyle={`${styles.colorLight}`}
                 >
-                  <p className={styles.pTitle}>Wallet Balance</p>
+                  <p>{currentReward} tEXO</p>
+                </RowPoolItem>
+                <RowPoolItem title="Total Staked">
                   <p>
-                    {walletBalance} {symbol}{' '}
+                    {totalSupply} {symbol}
                   </p>
-                </div>
+                </RowPoolItem>
+                <RowPoolItem
+                  title="Wallet Balance"
+                  containerStyle={`${styles.wallet}`}
+                >
+                  <p>
+                    {walletBalance} {symbol}
+                  </p>
+                </RowPoolItem>
               </div>
 
               <div
@@ -398,8 +416,21 @@ function PoolItem(poolData: any) {
         unit={symbol}
         maxAmount={myStake}
       />
+      <ROIDialog open={openRoiDialog} onClose={onToggleRoiDialog} />
     </>
   )
 }
+
+const RowPoolItem = React.memo(function RowPoolItem(props: any) {
+  const { containerStyle, title, children } = props || {}
+  return (
+    <div
+      className={`d-flex items-center justify-between font-bold ${containerStyle}`}
+    >
+      <p className={styles.pTitle}>{title}</p>
+      {children}
+    </div>
+  )
+})
 
 export default PoolItem
