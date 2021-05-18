@@ -23,7 +23,7 @@
   }
   .pTitle {
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 2;
   }
   .wallet {
     margin-top: 32px;
@@ -80,6 +80,7 @@
   line-height: 1.5;
   padding: 0px 8px;
   white-space: nowrap;
+  margin-left: auto;
 
   p {
     font-weight: bold;
@@ -159,5 +160,19 @@
   }
   .verifiedIcon {
     fill: $success;
+  }
+}
+
+.calAPRButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(90, 141, 238, 0.15);
   }
 }
