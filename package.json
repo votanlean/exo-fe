@@ -46,6 +46,7 @@
     "apollo-link-http": "^1.5.16",
     "apollo-server-express": "^2.9.7",
     "autoprefixer": "^9.7.3",
+    "bignumber.js": "^9.0.1",
     "compression": "^1.7.4",
     "countdown": "^2.6.0",
     "cross-env": "^7.0.0",
