@@ -29,7 +29,7 @@ const Home = () => (
             designed to be a unifying exchange of all cryptocurrencies and
             synthetic assets.
           </p>
-          <Link href="/">
+          <Link href="tEXO-Whitepaper.pdf">
             <a className="button btn-cta">READ THE WHITEPAPER</a>
           </Link>
         </div>
