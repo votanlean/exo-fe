@@ -17,6 +17,7 @@
     "baseUrl": "./",
     "paths": {
       "~types/*": ["./@types/*"],
+      "config": ["./config"],
       "~graphql/*": ["./graphql/*"],
       "~graphqlQ/*": ["./graphql/queries/*"],
       "~graphqlM/*": ["./graphql/mutations/*"],
