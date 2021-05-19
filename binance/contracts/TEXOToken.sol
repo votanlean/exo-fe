@@ -965,8 +965,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     mapping(uint256 => mapping(address => UserInfo)) public userInfo;
     // Total allocation points. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
-    // Referral Bonus in basis points. Initially set to 2%
-    uint256 public refBonusBP = 200;
+    // Referral Bonus in basis points. Initially set to 1%
+    uint256 public refBonusBP = 100;
     // Max deposit fee: 10%.
     uint16 public constant MAXIMUM_DEPOSIT_FEE_BP = 1000;
     // Max referral commission rate: 20%.
@@ -982,13 +982,13 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     // Initial emission rate: 0.5 tEXO per block.
     uint256 public constant INITIAL_EMISSION_RATE = 500 finney;
 
-    // Minimum emission rate: 0.05 tEXO per block.
-    uint256 public constant MINIMUM_EMISSION_RATE = 50 finney;
+    // Minimum emission rate: 0.1 tEXO per block.
+    uint256 public constant MINIMUM_EMISSION_RATE = 100 finney;
 
-    // Reduce emission every 14,400 blocks ~ 12 hours.
-    uint256 public constant EMISSION_REDUCTION_PERIOD_BLOCKS = 14400;
-    // Emission reduction rate per period in basis points: 3%.
-    uint256 public constant EMISSION_REDUCTION_RATE_PER_PERIOD = 300;
+    // Reduce emission every 28,800 blocks ~ 24 hours.
+    uint256 public constant EMISSION_REDUCTION_PERIOD_BLOCKS = 28800;
+    // Emission reduction rate per period in basis points: 15%.
+    uint256 public constant EMISSION_REDUCTION_RATE_PER_PERIOD = 1500;
     // Last reduction period index
     uint256 public lastReductionPeriodIndex = 0;
 
