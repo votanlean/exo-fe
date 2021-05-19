@@ -3,8 +3,8 @@ const Web3 = require('web3');
 const compiledTEXOToken = require('./build/TEXOToken.json');
 
 const provider = new HDWalletProvider(
-  'breeze moral tent state fiscal host tank approve kiss clap certain lunar',
-  'https://data-seed-prebsc-1-s1.binance.org:8545'
+  process.env.MNEMONIC,
+  process.env.BLOCKCHAIN_HOST
 );
 const web3 = new Web3(provider);
 
