@@ -1,35 +1,3 @@
-.header {
-  background: #0f0f0f;
-  height: 92px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
-  transition: all 0.3s ease-in-out;
-  &.smallHeader {
-    height: 62px;
-  }
-  div {
-    height: 100%;
-  }
-}
-
-.connectButton {
-  background: white;
-  font-weight: bold;
-  color: #007ef3;
-  border-radius: 12px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-  &:hover {
-    background-color: rgb(178, 178, 178);
-  }
-  width: 120px;
-}
-
 .connectPopup {
   position: fixed;
   width: 360px;
