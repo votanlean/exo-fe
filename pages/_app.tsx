@@ -6,7 +6,7 @@ import apollo from '~lib/apolloClient'
 import { getLibrary } from '~lib/web3'
 import '~styles/main.scss'
 import MainLayout from './layout'
-import theme from './theme/theme'
+import theme from '../lib/theme/theme'
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
