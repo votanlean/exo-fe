@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
 import { useWeb3React } from '@web3-react/core'
+import Link from 'next/link'
+import Router from 'next/router'
+import React, { useEffect, useRef, useState } from 'react'
 import { getErrorMessage } from '~lib/error'
+import ConnectPopup from '../ConnectPopup'
 import Nav from '../Nav/Nav'
 import styles from './header.module.scss'
-import { metamask, bsc } from '~lib/connector'
-import Router from 'next/router'
 
 const Header = () => {
   const [openPopup, setOpenPopup] = useState(false)
@@ -15,22 +15,8 @@ const Header = () => {
   const { chainId, account, activate, deactivate, active } = useWeb3React()
 
   //Handle Connect
-  const onClickConnect = () => {
-    setOpenPopup(true)
-  }
-
-  const handleClosePopup = () => {
-    setOpenPopup(false)
-  }
-
-  const handleConnectMetamask = async () => {
-    await activate(metamask)
-    setOpenPopup(false)
-  }
-
-  const handleConnectBinanceChainWallet = async () => {
-    await activate(bsc)
-    setOpenPopup(false)
+  const handleConnectPopup = popupState => {
+    setOpenPopup(popupState)
   }
 
   //Handle Logout
@@ -43,9 +29,10 @@ const Header = () => {
   }
 
   const onClickLogout = () => {
+    console.log('not yet')
     deactivate()
     // @ts-ignore
-    Router.reload(window.location.pathname);
+    Router.reload(window.location.pathname)
     setOpenLogoutPopup(false)
   }
 
@@ -61,7 +48,6 @@ const Header = () => {
     useEffect(() => {
       const handleClickOutside = () => {
         if (ref.current && !ref.current.contains(event.target)) {
-          setOpenPopup(false)
           setOpenLogoutPopup(false)
         }
       }
@@ -90,7 +76,7 @@ const Header = () => {
             <Nav />
             <button
               className={styles.connectButton}
-              onClick={!account ? onClickConnect : onDeactivate}
+              onClick={!account ? handleConnectPopup : onDeactivate}
             >
               {account === null
                 ? 'Connect'
@@ -105,32 +91,7 @@ const Header = () => {
       </header>
 
       {/* Connect Popup */}
-      {openPopup && (
-        <div className={styles.connectPopup} ref={wrapperRef}>
-          <div className={styles.popupHeader}>
-            <h2>Connect to wallet</h2>
-            <button onClick={handleClosePopup}>
-              <span>&times;</span>
-            </button>
-          </div>
-          <div className={styles.popupMain}>
-            <button onClick={handleConnectMetamask}>
-              <h3>Metamask</h3>
-              <img
-                src="/static/images/metamask-logo.jpeg"
-                alt="metamask-logo"
-              />
-            </button>
-            <button onClick={handleConnectBinanceChainWallet}>
-              <h3>Binance Chain Wallet</h3>
-              <img
-                src="/static/images/binance-chain-wallet-logo.jpeg"
-                alt="binance-chain-wallet-logo"
-              />
-            </button>
-          </div>
-        </div>
-      )}
+      {openPopup && <ConnectPopup connectPopup={handleConnectPopup} />}
 
       {/* Logout Popup */}
       {openLogoutPopup && (
