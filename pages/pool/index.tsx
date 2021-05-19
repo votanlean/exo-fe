@@ -11,6 +11,7 @@ import Countdown from 'countdown'
 import dayjs from 'dayjs'
 import Statistic from '../../views/components/Statistic'
 import { liquidityPool } from '../../constant/PoolData'
+import { Typography } from '@material-ui/core'
 
 function getClaimRewardsDate(
   currentBlockHeight,
@@ -94,10 +95,7 @@ function Pool() {
 
       <div className="container pool-container">
         <Statistic />
-        <div className={styles.countdownContainer}>
-          <h1 style={{ marginBottom: '10px' }}>Count Down To Claim Rewards</h1>
-          <h2>{countDownString}</h2>
-        </div>
+
         <div className="pool-grid">
           {liquidityPool.map(pool => (
             <PoolItem
@@ -110,6 +108,16 @@ function Pool() {
             />
           ))}
         </div>
+
+        <div className={styles.countdownContainer}>
+          <Typography variant="h4" style={{ marginBottom: '10px' }}>
+            Count Down To Claim Rewards and Farming
+          </Typography>
+          <Typography variant="h3" color="primary">
+            {countDownString}
+          </Typography>
+        </div>
+
         <div className="pool-grid">
           {poolToken.map(pool => (
             <PoolItem
