@@ -6,9 +6,10 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core'
-import React from 'react'
+import React, { useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { BIG_TEN } from 'config';
+import ConnectPopup from '../ConnectPopup';
 
 function calculateMarketCap(tEXOPrice, totalSupply) {
   if (!tEXOPrice || !totalSupply) {
@@ -20,8 +21,8 @@ function calculateMarketCap(tEXOPrice, totalSupply) {
 
 const useStyles = makeStyles(theme => ({
   root: {
-    // marginTop: theme.spacing(5),
     paddingBottom: theme.spacing(4),
+    marginBottom: theme.spacing(5),
     borderBottom: '1px solid rgb(161, 169, 214)',
   },
   box: {
@@ -76,6 +77,11 @@ function Statistic(props) {
 
   const classes = useStyles()
   const { active } = useWeb3React()
+  const [openPopup, setOpenPopup] = useState(false)
+
+  const handleConnectPopup = popupState => {
+    setOpenPopup(popupState)
+  }
 
   return (
     <Grid container className={classes.root}>
@@ -107,15 +113,17 @@ function Statistic(props) {
             {active ? 0.0 : 'LOCKED'}
           </Typography>
           <Typography gutterBottom>~$0.00</Typography>
-
-          <Button
-            className={classes.btn}
-            variant="contained"
-            color="rgb(255, 255, 255)"
-            fullWidth
-          >
-            Unlock Wallet
-          </Button>
+          {!active && (
+            <Button
+              className={classes.btn}
+              variant="contained"
+              color="rgb(255, 255, 255)"
+              fullWidth
+              onClick={handleConnectPopup}
+            >
+              Unlock Wallet
+            </Button>
+          )}
         </Box>
       </Grid>
 
@@ -180,6 +188,7 @@ function Statistic(props) {
           </Typography>
         </Box>
       </Grid>
+      {openPopup && <ConnectPopup connectPopup={handleConnectPopup} />}
     </Grid>
   )
 }

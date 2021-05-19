@@ -14,6 +14,7 @@ import { liquidityPool } from '../../constant/PoolData'
 import BigNumber from 'bignumber.js';
 import tEXOInstance from '../../binance/tEXOToken';
 import { fetchPrices } from '~server/shared/prices'
+import { Typography } from '@material-ui/core';
 
 function getClaimRewardsDate(
   currentBlockHeight,
@@ -129,6 +130,8 @@ function Pool() {
           <h1 style={{ marginBottom: '10px' }}>Count Down To Claim Rewards</h1>
           <h2>{countDownString}</h2>
         </div>
+        <Statistic />
+
         <div className="pool-grid">
           {liquidityPool.map(pool => (
             <PoolItem
@@ -143,6 +146,16 @@ function Pool() {
             />
           ))}
         </div>
+
+        <div className={styles.countdownContainer}>
+          <Typography variant="h4" style={{ marginBottom: '10px' }}>
+            Count Down To Claim Rewards and Farming
+          </Typography>
+          <Typography variant="h3" color="primary">
+            {countDownString}
+          </Typography>
+        </div>
+
         <div className="pool-grid">
           {poolToken.map(pool => (
             <PoolItem
