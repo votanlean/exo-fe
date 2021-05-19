@@ -12,8 +12,8 @@ import ConnectPopup from '../ConnectPopup'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    // marginTop: theme.spacing(5),
     paddingBottom: theme.spacing(4),
+    marginBottom: theme.spacing(5),
     borderBottom: '1px solid rgb(161, 169, 214)',
   },
   box: {
