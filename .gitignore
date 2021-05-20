@@ -27,6 +27,3 @@ yarn-error.log*
 
 #idea
 .idea
-
-#blockchain contract abi build
-./binance/build

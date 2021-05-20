@@ -1,7 +1,7 @@
 require('dotenv').config(); // Load .env
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
-const compiledTEXOToken = require('./build/TEXOToken.json');
+const compiledContract = require('./build/Timelock.json');
 
 const provider = new HDWalletProvider(
   process.env.MNEMONIC,
@@ -10,8 +10,8 @@ const provider = new HDWalletProvider(
 const web3 = new Web3(provider);
 
 // Initialization
-const bytecode = compiledTEXOToken.evm.bytecode.object;
-const abi = compiledTEXOToken.abi;
+const bytecode = compiledContract.evm.bytecode.object;
+const abi = compiledContract.abi;
 
 
 const deploy = async () => {
