@@ -2,7 +2,7 @@
  *Submitted for verification at BscScan.com on 2021-05-10
 */
 
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity 0.6.12;
 
 /**
  * @dev Wrappers over Solidity's arithmetic operations with added overflow
@@ -1128,7 +1128,9 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         uint256 accTEXOPerShare = pool.accTEXOPerShare;
         uint256 lpSupply = pool.lpToken.balanceOf(address(this));
 
-        if (block.number > pool.lastRewardBlock && lpSupply != 0) {
+        bool canWithdrawReward = canWithdrawReward(_pid);
+
+        if (!canWithdrawReward && block.number > pool.lastRewardBlock && lpSupply != 0) {
             uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
             uint256 tEXOReward = multiplier
                 .mul(tEXOPerBlock)
@@ -1162,6 +1164,12 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         PoolInfo storage pool = poolInfo[_pid];
 
         if (block.number <= pool.lastRewardBlock) {
+            return;
+        }
+
+        bool canWithdrawReward = canWithdrawReward(_pid);
+
+        if (canWithdrawReward) {
             return;
         }
 
