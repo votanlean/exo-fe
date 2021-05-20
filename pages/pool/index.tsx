@@ -11,7 +11,10 @@ import Countdown from 'countdown'
 import dayjs from 'dayjs'
 import Statistic from '../../views/components/Statistic'
 import { liquidityPool } from '../../constant/PoolData'
-import { Typography } from '@material-ui/core'
+import BigNumber from 'bignumber.js';
+import tEXOInstance from '../../binance/tEXOToken';
+import { fetchPrices } from '~server/shared/prices'
+import { Typography } from '@material-ui/core';
 
 function getClaimRewardsDate(
   currentBlockHeight,
@@ -37,8 +40,15 @@ function Pool() {
   const { account } = useWeb3React()
   const [currentBlockHeight, setCurrentBlockHeight] = useState(0)
   const [countDownString, setCountDownString] = useState('')
+  const [burnAmount, setBurnAmount] = useState(new BigNumber(0));
+  const [allTokenPrices, setAllTokenPrices] = useState({})
+  const [currentTEXOPerBlock, setCurrentTEXOPerBlock] = useState(new BigNumber(0));
+  const [tEXOTotalSupply, setTEXOTotalSupply] = useState(new BigNumber(0))
   const [countDownInterval, setCountDownInterval] = useState(null)
   const [canClaimRewardBlockHeight, setCanClaimRewardBlockHeight] = useState(0)
+
+  const tEXOAddress = '0x69E191beB3607072A45ac83eF6B7bc76F2420EF5';
+  const burnAddress = '0x000000000000000000000000000000000000dEaD';
 
   const getCurrentBlockHeight = async () => {
     const currentBlockHeight = await web3.eth.getBlockNumber()
@@ -53,8 +63,26 @@ function Pool() {
     setCanClaimRewardBlockHeight(globalCanClaimRewardsBlockHeight)
   }
 
+  const initTokenInfo = async () => {
+    const tEXOTotalSupply = await tEXOInstance.methods.totalSupply().call();
+    const tExoPerBlock = await orchestratorInstance.methods.tEXOPerBlock().call();
+    const tEXOBurned = await tEXOInstance.methods.balanceOf(burnAddress).call();
+
+    setTEXOTotalSupply(new BigNumber(tEXOTotalSupply));
+    setCurrentTEXOPerBlock(new BigNumber(tExoPerBlock));
+    setBurnAmount(new BigNumber(tEXOBurned));
+  }
+
+  const getTokenPrices = async () => {
+    const prices = await fetchPrices();
+
+    setAllTokenPrices(prices);
+  }
+
   useEffect(() => {
     getGlobalCanClaimRewardsBlockHeight()
+    getTokenPrices();
+    initTokenInfo();
     const interval = setInterval(getCurrentBlockHeight, 500)
 
     return () => {
@@ -68,9 +96,7 @@ function Pool() {
       !canClaimRewardBlockHeight ||
       !currentBlockHeight ||
       countDownInterval
-    ) {
-      return
-    }
+    ) { return }
 
     const claimRewardDate = getClaimRewardsDate(
       currentBlockHeight,
@@ -94,6 +120,16 @@ function Pool() {
       </Head>
 
       <div className="container pool-container">
+        <Statistic
+          tEXOPrice={allTokenPrices[tEXOAddress]}
+          totalSupply={tEXOTotalSupply}
+          currentTEXOPerBlock={currentTEXOPerBlock}
+          burnAmount={burnAmount}
+        />
+        <div className={styles.countdownContainer}>
+          <h1 style={{ marginBottom: '10px' }}>Count Down To Claim Rewards</h1>
+          <h2>{countDownString}</h2>
+        </div>
         <Statistic />
 
         <div className="pool-grid">
@@ -102,6 +138,8 @@ function Pool() {
               selectedAccount={account}
               currentBlockHeight={currentBlockHeight}
               onPoolStateChange={getCurrentBlockHeight}
+              stakingTokenPrice={allTokenPrices[pool.address] || 0}
+              tEXOPrice={allTokenPrices[tEXOAddress] || 0}
               data={pool}
               key={pool.id}
               liquidityPool

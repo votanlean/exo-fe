@@ -11,6 +11,7 @@ import WithdrawDialog from './WithdrawDialog'
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import ROIDialog from './ROIDialog'
+import { getPoolApr } from '~server/shared/apr';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -28,6 +29,8 @@ function PoolItem(poolData: any) {
     selectedAccount,
     currentBlockHeight,
     onPoolStateChange,
+    stakingTokenPrice,
+    tEXOPrice,
     liquidityPool,
   } = poolData
   const { id: poolId, icon, title, tokenInstance, symbol, bsScanLink } =
@@ -39,6 +42,7 @@ function PoolItem(poolData: any) {
 
   const [currentPool, setCurrentPool] = useState(null)
   const [totalSupply, setTotalSupply] = useState(0)
+  const [apr, setAPR] = useState(0);
   const [myStake, setMyStake] = useState(0)
   const [isDisplayDetails, setIsDisplayDetails] = useState(false)
   const [canClaimReward, setCanClaimReward] = useState(false)
@@ -84,7 +88,6 @@ function PoolItem(poolData: any) {
     })
 
     stakeEventEmitter.on('error', data => {
-      const blockNumber = data.blockNumber
       onPoolStateChange()
       stakeEventEmitter.removeAllListeners()
     })
@@ -111,6 +114,11 @@ function PoolItem(poolData: any) {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
     })
+  }
+
+  const calculateAPR = () => {
+    const apr = getPoolApr(stakingTokenPrice, tEXOPrice, totalSupply, 0.5);
+    setAPR(apr);
   }
 
   const handleClickClaimRewards = async () => {
@@ -192,6 +200,10 @@ function PoolItem(poolData: any) {
   const onToggleRoiDialog = () => {
     setOpenRoiDialog(!openRoiDialog)
   }
+
+  useEffect(() => {
+    calculateAPR();
+  }, [tEXOPrice, stakingTokenPrice]);
 
   useEffect(listenForBlockHeightChange, [currentBlockHeight])
 
@@ -283,7 +295,7 @@ function PoolItem(poolData: any) {
                     >
                       <img src="/static/images/calculate.svg" />
                     </div>
-                    <p>35.53%</p>
+                    <p>{apr ? `${apr}%` : 'N/A'}</p>
                   </div>
                 </RowPoolItem>
                 <RowPoolItem

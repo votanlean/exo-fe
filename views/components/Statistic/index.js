@@ -8,7 +8,16 @@ import {
 } from '@material-ui/core'
 import React, { useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import ConnectPopup from '../ConnectPopup'
+import { BIG_TEN } from 'config';
+import ConnectPopup from '../ConnectPopup';
+
+function calculateMarketCap(tEXOPrice, totalSupply) {
+  if (!tEXOPrice || !totalSupply) {
+    return 0;
+  }
+
+  return totalSupply.times(tEXOPrice);
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,7 +57,24 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
+function normalizeBigNumber(bigNum) {
+  return bigNum.div(BIG_TEN.pow(18)).toNumber();
+}
+
 function Statistic(props) {
+  const {
+    totalSupply,
+    tEXOPrice,
+    currentTEXOPerBlock,
+    burnAmount,
+  } = props;
+
+  const normalizedTotalSupply = normalizeBigNumber(totalSupply);
+  const normalizedEmissionRate = normalizeBigNumber(currentTEXOPerBlock);
+  const normalizedBurnAmount = normalizeBigNumber(burnAmount);
+
+  // console.log(totalSupply.div(BIG_TEN.pow(18)));
+
   const classes = useStyles()
   const { active } = useWeb3React()
   const [openPopup, setOpenPopup] = useState(false)
@@ -116,24 +142,28 @@ function Statistic(props) {
             <Typography className={classes.boldText}>
               Total tEXO Supply
             </Typography>
-            <Typography className={classes.boldText}>6,913,340</Typography>
+            <Typography className={classes.boldText}>
+              {Math.round(normalizedTotalSupply)}
+            </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={classes.boldText}>Market Cap</Typography>
-            <Typography className={classes.boldText}>$1,049,754</Typography>
+            <Typography className={classes.boldText}>
+              ${calculateMarketCap(tEXOPrice, normalizedTotalSupply)}
+            </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={classes.boldText}>
               Total tEXO Burned
             </Typography>
-            <Typography className={classes.boldText}>1,205,310</Typography>
+            <Typography className={classes.boldText}>{normalizedBurnAmount}</Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={classes.boldText}>New tEXO/block</Typography>
-            <Typography className={classes.boldText}>100</Typography>
+            <Typography className={classes.boldText}>{normalizedEmissionRate}</Typography>
           </Box>
         </Box>
       </Grid>
