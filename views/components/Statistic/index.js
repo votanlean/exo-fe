@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function normalizeBigNumber(bigNum) {
-  return bigNum.div(BIG_TEN.pow(18)).toNumber();
+  return bigNum ? bigNum.div(BIG_TEN.pow(18)).toNumber(): 0;
 }
 
 function Statistic(props) {
@@ -180,7 +180,7 @@ function Statistic(props) {
           </Typography>
 
           <Typography variant="h4" className={classes.boldText}>
-            $16,293,407.17
+            $0
           </Typography>
 
           <Typography color="textPrimary" className={classes.boldText}>

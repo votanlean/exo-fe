@@ -209,9 +209,9 @@ function PoolItem(poolData: any) {
 
   const poolAllocPointDiv = currentPool ? (
     <div className={styles.poolAllocationPoint}>
-      {/* <p>{currentPool.allocPoint} X</p> */}
+       <p>{currentPool.allocPoint / 100} X</p>
       {/* Temporary */}
-      <p>50 X</p>
+      {/*<p>50 X</p>*/}
     </div>
   ) : null
 

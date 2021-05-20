@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import styles from './pool.module.scss'
 
@@ -47,7 +47,7 @@ function Pool() {
   const [countDownInterval, setCountDownInterval] = useState(null)
   const [canClaimRewardBlockHeight, setCanClaimRewardBlockHeight] = useState(0)
 
-  const tEXOAddress = '0x69E191beB3607072A45ac83eF6B7bc76F2420EF5';
+  const tEXOAddress = process.env.TEXO_ADDRESS;
   const burnAddress = '0x000000000000000000000000000000000000dEaD';
 
   const getCurrentBlockHeight = async () => {
@@ -126,11 +126,11 @@ function Pool() {
           currentTEXOPerBlock={currentTEXOPerBlock}
           burnAmount={burnAmount}
         />
-        <div className={styles.countdownContainer}>
-          <h1 style={{ marginBottom: '10px' }}>Count Down To Claim Rewards</h1>
-          <h2>{countDownString}</h2>
-        </div>
-        <Statistic />
+        {/*<div className={styles.countdownContainer}>*/}
+        {/*  <h1 style={{ marginBottom: '10px' }}>Count Down To Claim Rewards</h1>*/}
+        {/*  <h2>{countDownString}</h2>*/}
+        {/*</div>*/}
+        {/*<Statistic />*/}
 
         <div className="pool-grid">
           {liquidityPool.map(pool => (
