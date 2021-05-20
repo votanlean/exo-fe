@@ -47,7 +47,7 @@ function PoolItem(poolData: any) {
 
   const { active } = useWeb3React()
 
-  const orchestratorAddress = '0xdA181fE906Ee2ee23042B73fb0691086bF64e0f9'
+  const orchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods

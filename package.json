@@ -24,7 +24,8 @@
     "test:unit": "jest --config tests/jest.unit.config.js",
     "test:integration": "jest --config tests/jest.integration.config.js",
     "test:watch": "jest --watch --no-cache",
-    "eslint:fix": "eslint . --fix --ignore-path .gitignore"
+    "eslint:fix": "eslint . --fix --ignore-path .gitignore",
+    "contract:compile": "node ./binance/compile.js"
   },
   "engines": {
     "node": "14.x",
