@@ -102,7 +102,7 @@ export const poolData = [
 
 export const liquidityPool = [
   {
-    id: 0,
+    id: 11,
     icon: '/static/images/Swap_tEXO-BNB.png',
     title: 'tEXO/BNB LP',
     address: process.env.BNBLP_ADDRESS,
@@ -111,7 +111,7 @@ export const liquidityPool = [
       'https://bscscan.com/address/' + process.env.BNBLP_ADDRESS,
   },
   {
-    id: 2,
+    id: 12,
     icon: '/static/images/Swap_tEXO-BUSD.png',
     title: 'tEXO/BUSD LP',
     address: process.env.BUSDLP_ADDRESS,
