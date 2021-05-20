@@ -27,6 +27,8 @@ const compilerInput = {
 // Compile All contracts
 const compiled = JSON.parse(solc.compile(JSON.stringify(compilerInput)));
 
+console.log(compiled);
+
 fs.ensureDirSync(buildPath);
 
 fileNames.map((fileName) => {
