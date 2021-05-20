@@ -10,7 +10,7 @@ import orchestratorInstance from 'binance/orchestrator'
 import Countdown from 'countdown'
 import dayjs from 'dayjs'
 import Statistic from '../../views/components/Statistic'
-import { liquidityPool } from '../../constant/PoolData'
+import { lpPoolToken } from '../../binance/tokenFactoryLP'
 import BigNumber from 'bignumber.js';
 import tEXOInstance from '../../binance/tEXOToken';
 import { fetchPrices } from '~server/shared/prices'
@@ -133,7 +133,7 @@ function Pool() {
         {/*<Statistic />*/}
 
         <div className="pool-grid">
-          {liquidityPool.map(pool => (
+          {lpPoolToken.map(pool => (
             <PoolItem
               selectedAccount={account}
               currentBlockHeight={currentBlockHeight}
@@ -142,7 +142,7 @@ function Pool() {
               tEXOPrice={allTokenPrices[tEXOAddress] || 0}
               data={pool}
               key={pool.id}
-              liquidityPool
+              isLiquidityPool={true}
             />
           ))}
         </div>
@@ -162,6 +162,8 @@ function Pool() {
               selectedAccount={account}
               currentBlockHeight={currentBlockHeight}
               onPoolStateChange={getCurrentBlockHeight}
+              stakingTokenPrice={allTokenPrices[pool.address] || 0}
+              tEXOPrice={allTokenPrices[tEXOAddress] || 0}
               data={pool}
               key={pool.id}
             />

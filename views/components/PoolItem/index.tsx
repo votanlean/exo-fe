@@ -31,7 +31,7 @@ function PoolItem(poolData: any) {
     onPoolStateChange,
     stakingTokenPrice,
     tEXOPrice,
-    liquidityPool,
+    isLiquidityPool,
   } = poolData
   const { id: poolId, icon, title, tokenInstance, symbol, bsScanLink } =
     data || {}
@@ -266,9 +266,9 @@ function PoolItem(poolData: any) {
       <div className={styles.poolItem}>
         <div className={styles.poolItemGrid}>
           <div className={styles.item}>
-            {liquidityPool && <div className={styles.liquidityPoolEffect} />}
+            {isLiquidityPool && <div className={styles.liquidityPoolEffect} />}
             <div className={`${styles.spacing} d-flex items-center column`}>
-              {liquidityPool ? (
+              {isLiquidityPool ? (
                 liquidityPoolDiv()
               ) : (
                 <>
