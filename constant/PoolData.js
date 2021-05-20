@@ -6,7 +6,7 @@ export const poolData = [
     address: process.env.USDT_ADDRESS,
     symbol: 'USDT',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.USDT_ADDRESS,
+      'https://bscscan.com/address/' + process.env.USDT_ADDRESS,
   },
   {
     id: 1,
@@ -15,7 +15,7 @@ export const poolData = [
     address: process.env.WBNB_ADDRESS,
     symbol: 'wBNB',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.WBNB_ADDRESS,
+      'https://bscscan.com/address/' + process.env.WBNB_ADDRESS,
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ export const poolData = [
     address: process.env.BUSD_ADDRESS,
     symbol: 'BUSD',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.BUSD_ADDRESS,
+      'https://bscscan.com/address/' + process.env.BUSD_ADDRESS,
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ export const poolData = [
     address: process.env.CAKE_ADDRESS,
     symbol: 'CAKE',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.CAKE_ADDRESS,
+      'https://bscscan.com/address/' + process.env.CAKE_ADDRESS,
   },
   {
     id: 4,
@@ -42,7 +42,7 @@ export const poolData = [
     address: process.env.BTCB_ADDRESS,
     symbol: 'BTCB',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.BTCB_ADDRESS,
+      'https://bscscan.com/address/' + process.env.BTCB_ADDRESS,
   },
   {
     id: 5,
@@ -51,7 +51,7 @@ export const poolData = [
     address: process.env.ETH_ADDRESS,
     symbol: 'ETH',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.ETH_ADDRESS,
+      'https://bscscan.com/address/' + process.env.ETH_ADDRESS,
   },
   {
     id: 6,
@@ -60,7 +60,7 @@ export const poolData = [
     address: process.env.BUNNY_ADDRESS,
     symbol: 'BUNNY',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.BUNNY_ADDRESS,
+      'https://bscscan.com/address/' + process.env.BUNNY_ADDRESS,
   },
   {
     id: 7,
@@ -69,7 +69,7 @@ export const poolData = [
     address: process.env.XVS_ADDRESS,
     symbol: 'XVS',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.XVS_ADDRESS,
+      'https://bscscan.com/address/' + process.env.XVS_ADDRESS,
   },
   {
     id: 8,
@@ -78,7 +78,7 @@ export const poolData = [
     address: process.env.USDC_ADDRESS,
     symbol: 'USDC',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.USDC_ADDRESS,
+      'https://bscscan.com/address/' + process.env.USDC_ADDRESS,
   },
   {
     id: 9,
@@ -87,7 +87,7 @@ export const poolData = [
     address: process.env.DAI_ADDRESS,
     symbol: 'DAI',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.DAI_ADDRESS,
+      'https://bscscan.com/address/' + process.env.DAI_ADDRESS,
   },
   {
     id: 10,
@@ -96,7 +96,7 @@ export const poolData = [
     address: process.env.DOT_ADDRESS,
     symbol: 'DOT',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.DOT_ADDRESS,
+      'https://bscscan.com/address/' + process.env.DOT_ADDRESS,
   },
 ]
 
@@ -108,7 +108,7 @@ export const liquidityPool = [
     address: process.env.BNBLP_ADDRESS,
     symbol: 'tEXO/BNB',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.BNBLP_ADDRESS,
+      'https://bscscan.com/address/' + process.env.BNBLP_ADDRESS,
   },
   {
     id: 2,
@@ -117,6 +117,6 @@ export const liquidityPool = [
     address: process.env.BUSDLP_ADDRESS,
     symbol: 'tEXO/BUSD',
     bsScanLink:
-      'https://testnet.bscscan.com/address/' + process.env.BUSDLP_ADDRESS,
+      'https://bscscan.com/address/' + process.env.BUSDLP_ADDRESS,
   },
 ]
