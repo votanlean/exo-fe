@@ -10,7 +10,7 @@ import { HttpLink } from 'apollo-link-http'
 const { GRAPHQL_URL } = process.env
 const { NODE_ENV } = process.env
 
-const httpLink = new HttpLink({
+const httpLink = new HttpLink(<any>{
   uri: NODE_ENV !== 'production' ? '/graphql' : GRAPHQL_URL,
   fetch: fetch,
   credentials: 'same-origin',

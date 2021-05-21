@@ -68,8 +68,12 @@ async function executeSetReduceEmissionRateFlag() {
 
 async function runScript() {
   try {
+    const events = await timelockInstance.getPastEvents('ExecuteTransaction', {
+      fromBlock: 'earliest',
+    });
+    console.log(events);
     // await queueSetReduceEmissionRateFlag();
-    await executeSetReduceEmissionRateFlag();
+    // await executeSetReduceEmissionRateFlag();
   } catch (error) {
     console.log(error);
   }

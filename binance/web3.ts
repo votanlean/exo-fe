@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 
 let web3;
+declare var window;
 
 if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
   // We are in the browser and metamask is running.
