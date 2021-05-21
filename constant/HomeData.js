@@ -88,4 +88,4 @@ export const ecosystemData = [
     ),
     color: 'dodger-blue',
   },
-]
+];
