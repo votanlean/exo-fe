@@ -6,7 +6,8 @@ import Timelock from '../build/Timelock.json';
 
 dotenv.config();
 
-const changeOwnershipETA = 1621529883;
+// const changeOwnershipETA = 1621529883;
+const setFlagETA = 1621568782;
 
 const orchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
 
@@ -25,7 +26,7 @@ const timelockInstance = new web3.eth.Contract(
   process.env.TIMELOCK_ADDRESS
 );
 
-async function queueChangeOwnership() {
+async function queueSetReduceEmissionRateFlag() {
   const accounts = await web3.eth.getAccounts();
   const eta = Math.round(new Date().valueOf() / 1000 + 60);
   console.log('eta is:', eta);
@@ -35,8 +36,8 @@ async function queueChangeOwnership() {
     .queueTransaction(
       orchestratorAddress,
       '0',
-      'transferOwnership(address)',
-      encodeParameters(['address'], [accounts[3]]),
+      'setFlagAllowReduceEmissionRate(bool)',
+      encodeParameters(['bool'], [true]),
       eta
     )
     .send({
@@ -47,15 +48,15 @@ async function queueChangeOwnership() {
   console.log(scheduledActions);
 }
 
-async function executeChangeOwnership() {
+async function executeSetReduceEmissionRateFlag() {
   const accounts = await web3.eth.getAccounts();
   const executedTransaction = await timelockInstance.methods
       .executeTransaction(
         orchestratorAddress,
         '0',
-        'transferOwnership(address)',
-        encodeParameters(['address'], [accounts[3]]),
-        changeOwnershipETA
+        'setFlagAllowReduceEmissionRate(bool)',
+        encodeParameters(['bool'], [true]),
+        setFlagETA
       )
       .send({
         from: accounts[3],
@@ -67,13 +68,8 @@ async function executeChangeOwnership() {
 
 async function runScript() {
   try {
-    const accounts = await web3.eth.getAccounts();
-    const owner = await orchestratorInstance.methods.owner().call({
-      from: accounts[0],
-    })
-    console.log(owner);
-    // await queueChangeOwnership();
-    // await executeChangeOwnership();
+    // await queueSetReduceEmissionRateFlag();
+    await executeSetReduceEmissionRateFlag();
   } catch (error) {
     console.log(error);
   }

@@ -2,8 +2,6 @@
  *Submitted for verification at BscScan.com on 2021-05-10
 */
 
-// SPDX-License-Identifier: MIT
-
 pragma solidity 0.6.12;
 
 /**
@@ -994,6 +992,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     // Last reduction period index
     uint256 public lastReductionPeriodIndex = 0;
 
+    bool public isAllowReduceEmissionRate = false;
+
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(
@@ -1028,6 +1028,14 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     // Get number of pools added.
     function poolLength() external view returns (uint256) {
         return poolInfo.length;
+    }
+
+    function setBlockToStartReducingEmissionRate(uint256 _blockCountToStartReducingEmissionRateFromNow) external onlyOwner {
+        blockToStartReducingEmissionRate = block.number + _blockCountToStartReducingEmissionRateFromNow;
+    }
+
+    function setGlobalBlockToUnlockClaimingRewards(uint256 _blockCountToUnlockClaimingRewardsFromNow) external onlyOwner {
+        globalBlockToUnlockClaimingRewards = block.number + _blockCountToUnlockClaimingRewardsFromNow;
     }
 
     function getPoolIdForLpToken(IBEP20 _lpToken) external view returns (uint256) {
@@ -1390,6 +1398,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
 
     // Reduce emission rate by 3% every 14,400 blocks ~ 12hours till the emission rate is 0.05 tEXO. This function can be called publicly.
     function reduceEmissionRateWithDefaultRate() public {
+        require(isAllowReduceEmissionRate, "reduceEmissionRateWithDefaultRate: Permission flag not turned on");
         require(block.number > blockToStartReducingEmissionRate, "reduceEmissionRateWithDefaultRate: Can only be called after specified block starts");
         require(tEXOPerBlock > MINIMUM_EMISSION_RATE, "reduceEmissionRateWithDefaultRate: Emission rate has reached the minimum threshold");
 
@@ -1417,6 +1426,10 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         tEXOPerBlock = newEmissionRate;
 
         emit EmissionRateUpdated(msg.sender, previousEmissionRate, newEmissionRate);
+    }
+
+    function setFlagAllowReduceEmissionRate(bool isAllow) public onlyOwner {
+        isAllowReduceEmissionRate = isAllow;
     }
 
     function setEmissionRate(uint256 newEmissionRate) public onlyOwner {
