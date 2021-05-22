@@ -21,6 +21,8 @@ const useStyles = makeStyles((theme) => {
     },
     dialogTitleText: {
       color: '#fff',
+      fontSize: '18px',
+      fontWeight: 600
     },
     button: {
       width: '100%',

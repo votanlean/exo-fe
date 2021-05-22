@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
-import Router from 'next/router';
 
-import { getErrorMessage } from '../../lib/error';
-import { bsc, metamask } from '../../lib/connector';
-import HeaderPopup from '../HeaderPopup';
+import ConnectPopup from '../ConnectPopup';
+import LogoutPopup from '../LogoutPopup';
 import Nav from '../Nav';
 
 import styles from './header.module.scss';
@@ -13,7 +11,7 @@ import styles from './header.module.scss';
 const Header = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [openLogoutPopup, setOpenLogoutPopup] = useState(false);
-  const { account, active, error, activate, deactivate } = useWeb3React();
+  const { account, active } = useWeb3React();
 
   //Handle Connect
   const handleConnectPopup = () => {
@@ -24,30 +22,6 @@ const Header = () => {
   const handleLogoutPopup = () => {
     setOpenLogoutPopup(!openLogoutPopup);
   };
-
-  const onClickLogout = () => {
-    deactivate();
-    // @ts-ignore
-    Router.reload(window.location.pathname);
-    setOpenLogoutPopup(false);
-  };
-
-  const handleConnectMetamask = async () => {
-    await activate(metamask);
-    handleConnectPopup();
-  };
-
-  const handleConnectBinanceChainWallet = async () => {
-    await activate(bsc);
-    handleConnectPopup();
-  };
-
-  //If have error
-  useEffect(() => {
-    if (error) {
-      alert(getErrorMessage(error));
-    }
-  }, [error]);
 
   return (
     <>
@@ -79,20 +53,15 @@ const Header = () => {
       </header>
 
       {/* Connect Popup */}
-      <HeaderPopup
-        dialogTitle="Connect to wallet"
+      <ConnectPopup
         onOpen={openPopup}
         onCloseDialog={handleConnectPopup}
-        handleConnectMetamask={handleConnectMetamask}
-        handleConnectBinanceChainWallet={handleConnectBinanceChainWallet}
       />
 
       {/* Logout Popup */}
-      <HeaderPopup
-        isLogout
+      <LogoutPopup
         onOpen={openLogoutPopup}
         onCloseDialog={handleLogoutPopup}
-        handleLogout={onClickLogout}
       />
     </>
   );
