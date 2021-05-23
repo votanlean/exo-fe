@@ -34,20 +34,6 @@ const configureWebpack = (config, { dev }) => {
 			}
 		}
 	})
-	
-	config.module.rules.push({
-		test: /\.(graphql|gql)$/,
-		exclude: /node_modules/,
-		loader: 'graphql-tag/loader'
-	})
-
-	if (dev) {
-		config.module.rules.push({
-			test: /\.jsx?$/,
-			exclude: /node_modules/,
-			loader: 'eslint-loader',
-		})
-	}
 
   return config;
 };

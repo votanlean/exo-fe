@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import Head from 'next/head'
-import { makeStyles } from '@material-ui/core/styles'
+import { useState } from 'react';
+import Head from 'next/head';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Card,
   CardContent,
@@ -10,12 +10,13 @@ import {
   CardHeader,
   IconButton,
   Avatar,
-} from '@material-ui/core'
-import { Tune, History, ExpandMore } from '@material-ui/icons'
-import SelectTokenDialog from '../../views/components/Exchange/SelectTokenDialog'
-import HistoryDialog from '../../views/components/Exchange/HistoryDialog'
-import SettingsDialog from '../../views/components/Exchange/SettingsDialog'
-import { poolToken } from '../../binance/tokenFactory'
+} from '@material-ui/core';
+import { Tune, History, ExpandMore } from '@material-ui/icons';
+
+import SelectTokenDialog from '../../components/Exchange/SelectTokenDialog';
+import HistoryDialog from '../../components/Exchange/HistoryDialog';
+import SettingsDialog from '../../components/Exchange/SettingsDialog';
+import { poolToken } from '../../binance/tokenFactory';
 
 const useStyles = makeStyles({
   root: {
@@ -48,43 +49,43 @@ const useStyles = makeStyles({
     height: 24,
     marginRight: 8,
   },
-})
+});
 
 function Pool() {
-  const classes = useStyles()
-  const [isOpenTokenDialog, setOpenTokenDialog] = useState(false)
-  const [isOpenHistoryDialog, setOpenHistoryDialog] = useState(false)
-  const [isOpenSettingsDialog, setOpenSettingsDialog] = useState(false)
-  const [fromValue, setFromValue] = useState(poolToken[0])
-  const [toValue, setToValue] = useState(poolToken[1])
-  const [fromTo, setFromTo] = useState('')
+  const classes = useStyles();
+  const [isOpenTokenDialog, setOpenTokenDialog] = useState(false);
+  const [isOpenHistoryDialog, setOpenHistoryDialog] = useState(false);
+  const [isOpenSettingsDialog, setOpenSettingsDialog] = useState(false);
+  const [fromValue, setFromValue] = useState(poolToken[0]);
+  const [toValue, setToValue] = useState(poolToken[1]);
+  const [fromTo, setFromTo] = useState('');
 
-  const toggleTokenDialog = value => {
-    setOpenTokenDialog(true)
-    setFromTo(value)
-  }
+  const toggleTokenDialog = (value) => {
+    setOpenTokenDialog(true);
+    setFromTo(value);
+  };
 
   const onCloseTokenDialog = () => {
-    setOpenTokenDialog(false)
-  }
+    setOpenTokenDialog(false);
+  };
 
   const toggleHistoryDialog = () => {
-    setOpenHistoryDialog(!isOpenHistoryDialog)
-  }
+    setOpenHistoryDialog(!isOpenHistoryDialog);
+  };
 
-  const handleConfirmTokenModal = value => {
-    fromTo === 'from' ? setFromValue(value) : setToValue(value)
-    onCloseTokenDialog()
-  }
+  const handleConfirmTokenModal = (value) => {
+    fromTo === 'from' ? setFromValue(value) : setToValue(value);
+    onCloseTokenDialog();
+  };
 
   const toggleSettingsDialog = () => {
-    setOpenSettingsDialog(!isOpenSettingsDialog)
-  }
+    setOpenSettingsDialog(!isOpenSettingsDialog);
+  };
 
   const handleSwapToken = () => {
-    setFromValue(toValue)
-    setToValue(fromValue)
-  }
+    setFromValue(toValue);
+    setToValue(fromValue);
+  };
 
   return (
     <>
@@ -192,7 +193,7 @@ function Pool() {
         onClose={toggleSettingsDialog}
       />
     </>
-  )
+  );
 }
 
-export default Pool
+export default Pool;

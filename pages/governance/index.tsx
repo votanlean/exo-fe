@@ -1,6 +1,6 @@
-import Head from 'next/head'
-import ComingSoon from '../../views/components/ComingSoon'
-import React from 'react'
+import Head from 'next/head';
+import ComingSoon from '../../components/ComingSoon';
+import React from 'react';
 
 function Governance() {
   return (
@@ -8,9 +8,9 @@ function Governance() {
       <Head>
         <title>Governance</title>
       </Head>
-      <ComingSoon/>
+      <ComingSoon />
     </>
-  )
+  );
 }
 
-export default Governance
+export default Governance;

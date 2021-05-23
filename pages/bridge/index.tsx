@@ -1,6 +1,6 @@
-import Head from 'next/head'
-import ComingSoon from '../../views/components/ComingSoon'
-import React from 'react'
+import Head from 'next/head';
+import ComingSoon from '../../components/ComingSoon';
+import React from 'react';
 
 function Bridge() {
   return (
@@ -8,9 +8,9 @@ function Bridge() {
       <Head>
         <title>Bridge</title>
       </Head>
-      <ComingSoon/>
+      <ComingSoon />
     </>
-  )
+  );
 }
 
-export default Bridge
+export default Bridge;

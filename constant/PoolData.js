@@ -5,8 +5,7 @@ export const poolData = [
     title: 'USDT Pool',
     address: process.env.USDT_ADDRESS,
     symbol: 'USDT',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.USDT_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.USDT_ADDRESS,
   },
   {
     id: 1,
@@ -14,8 +13,7 @@ export const poolData = [
     title: 'wBNB Pool',
     address: process.env.WBNB_ADDRESS,
     symbol: 'wBNB',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.WBNB_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.WBNB_ADDRESS,
   },
   {
     id: 2,
@@ -23,8 +21,7 @@ export const poolData = [
     title: 'BUSD Pool',
     address: process.env.BUSD_ADDRESS,
     symbol: 'BUSD',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.BUSD_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.BUSD_ADDRESS,
   },
   {
     id: 3,
@@ -32,8 +29,7 @@ export const poolData = [
     title: 'CAKE Pool',
     address: process.env.CAKE_ADDRESS,
     symbol: 'CAKE',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.CAKE_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.CAKE_ADDRESS,
   },
   {
     id: 4,
@@ -41,8 +37,7 @@ export const poolData = [
     title: 'BTCB Pool',
     address: process.env.BTCB_ADDRESS,
     symbol: 'BTCB',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.BTCB_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.BTCB_ADDRESS,
   },
   {
     id: 5,
@@ -50,8 +45,7 @@ export const poolData = [
     title: 'ETH Pool',
     address: process.env.ETH_ADDRESS,
     symbol: 'ETH',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.ETH_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.ETH_ADDRESS,
   },
   {
     id: 6,
@@ -59,8 +53,7 @@ export const poolData = [
     title: 'BUNNY Pool',
     address: process.env.BUNNY_ADDRESS,
     symbol: 'BUNNY',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.BUNNY_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.BUNNY_ADDRESS,
   },
   {
     id: 7,
@@ -68,8 +61,7 @@ export const poolData = [
     title: 'XVS Pool',
     address: process.env.XVS_ADDRESS,
     symbol: 'XVS',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.XVS_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.XVS_ADDRESS,
   },
   {
     id: 8,
@@ -77,8 +69,7 @@ export const poolData = [
     title: 'USDC Pool',
     address: process.env.USDC_ADDRESS,
     symbol: 'USDC',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.USDC_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.USDC_ADDRESS,
   },
   {
     id: 9,
@@ -86,8 +77,7 @@ export const poolData = [
     title: 'DAI Pool',
     address: process.env.DAI_ADDRESS,
     symbol: 'DAI',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.DAI_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.DAI_ADDRESS,
   },
   {
     id: 10,
@@ -95,28 +85,25 @@ export const poolData = [
     title: 'DOT Pool',
     address: process.env.DOT_ADDRESS,
     symbol: 'DOT',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.DOT_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.DOT_ADDRESS,
   },
-]
+];
 
 export const liquidityPool = [
   {
-    id: 11,
+    id: 0,
     icon: '/static/images/Swap_tEXO-BNB.png',
     title: 'tEXO/BNB LP',
     address: process.env.BNBLP_ADDRESS,
     symbol: 'tEXO/BNB',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.BNBLP_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.BNBLP_ADDRESS,
   },
   {
-    id: 12,
+    id: 2,
     icon: '/static/images/Swap_tEXO-BUSD.png',
     title: 'tEXO/BUSD LP',
     address: process.env.BUSDLP_ADDRESS,
     symbol: 'tEXO/BUSD',
-    bsScanLink:
-      'https://bscscan.com/address/' + process.env.BUSDLP_ADDRESS,
+    bsScanLink: 'https://bscscan.com/address/' + process.env.BUSDLP_ADDRESS,
   },
-]
+];

@@ -1,9 +1,9 @@
-import React from 'react'
-import Head from 'next/head'
-import Link from 'next/link'
+import React from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
 
-import LogoTitle from '~views/components/LogoTitle'
-import { ecosystemData } from '../constant/HomeData'
+import LogoTitle from '../components/LogoTitle';
+import { ecosystemData } from '../constant/HomeData';
 
 const Home = () => (
   <div>
@@ -29,7 +29,7 @@ const Home = () => (
             designed to be a unifying exchange of all cryptocurrencies and
             synthetic assets.
           </p>
-          <Link href="tEXO-Whitepaper.pdf">
+          <Link href="/">
             <a className="button btn-cta">READ THE WHITEPAPER</a>
           </Link>
         </div>
@@ -166,6 +166,6 @@ const Home = () => (
       </div>
     </section>
   </div>
-)
+);
 
-export default Home
+export default Home;

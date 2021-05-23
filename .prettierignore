@@ -1,6 +1,2 @@
-.cache
-package.json
-package-lock.json
-public
-styles/base
-styles/vendors
+.next
+node_module

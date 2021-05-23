@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import styles from './pool.module.scss'
+import Countdown from 'countdown'
+import { Typography } from '@material-ui/core';
+import { useWeb3React } from '@web3-react/core'
+import dayjs from 'dayjs'
+import BigNumber from 'bignumber.js';
 
 import web3 from '../../binance/web3'
-import PoolItem from '~views/components/PoolItem'
 import { poolToken } from '../../binance/tokenFactory'
-import { useWeb3React } from '@web3-react/core'
-import orchestratorInstance from 'binance/orchestrator'
-import Countdown from 'countdown'
-import dayjs from 'dayjs'
-import Statistic from '../../views/components/Statistic'
+import orchestratorInstance from '../../binance/orchestrator'
 import { lpPoolToken } from '../../binance/tokenFactoryLP'
-import BigNumber from 'bignumber.js';
 import tEXOInstance from '../../binance/tEXOToken';
-import { fetchPrices } from '~server/shared/prices'
-import { Typography } from '@material-ui/core';
+import PoolItem from '../../components/PoolItem'
+import Statistic from '../../components/Statistic'
+import { fetchPrices } from '../../hookApi/prices'
+
+import styles from './pool.module.scss'
 
 function getClaimRewardsDate(
   currentBlockHeight,
@@ -126,11 +127,6 @@ function Pool() {
           currentTEXOPerBlock={currentTEXOPerBlock}
           burnAmount={burnAmount}
         />
-        {/*<div className={styles.countdownContainer}>*/}
-        {/*  <h1 style={{ marginBottom: '10px' }}>Count Down To Claim Rewards</h1>*/}
-        {/*  <h2>{countDownString}</h2>*/}
-        {/*</div>*/}
-        {/*<Statistic />*/}
 
         <div className="pool-grid">
           {lpPoolToken.map(pool => (
