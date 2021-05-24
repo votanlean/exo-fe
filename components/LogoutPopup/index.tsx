@@ -10,7 +10,7 @@ import {
 import { ExitToApp } from '@material-ui/icons';
 import { useWeb3React } from '@web3-react/core';
 
-import { getErrorMessage } from '../../lib/error';
+import { getErrorMessage } from '../../utils/web3React';
 
 import { useStyles } from './styles';
 
@@ -30,8 +30,6 @@ function LogoutPopup(props: any) {
 
   const onClickLogout = () => {
     deactivate();
-    // @ts-ignore
-    Router.reload(window.location.pathname);
     onCloseDialog();
   };
 

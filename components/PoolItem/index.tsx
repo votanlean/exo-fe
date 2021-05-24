@@ -5,14 +5,16 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import { EventEmitter } from 'events'
 
-import orchestratorInstance from '../../binance/orchestrator'
-import web3 from '../../binance/web3'
+import orchestratorInstance from '../../blockchain/orchestrator'
+import web3 from '../../blockchain/web3'
 import StakeDialog from './StakeDialog'
 import WithdrawDialog from './WithdrawDialog'
 import ROIDialog from './ROIDialog'
 import { getPoolApr } from '../../hookApi/apr';
 
 import styles from './poolItem.module.scss'
+import { BIG_ZERO } from '../../utils/bigNumber'
+import BigNumber from 'bignumber.js'
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -34,8 +36,11 @@ function PoolItem(poolData: any) {
     tEXOPrice,
     isLiquidityPool,
   } = poolData
-  const { id: poolId, icon, title, tokenInstance, symbol, bsScanLink } =
+  const { id: poolId, icon, title, tokenInstance, symbol, bsScanLink, userData } =
     data || {}
+
+  // const { sousId, stakingToken, earningToken, isFinished, userData } = pool
+  const stakingTokenBalance = userData?.stakingTokenBalance ? new BigNumber(userData.stakingTokenBalance) : BIG_ZERO
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false)
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false)
@@ -330,9 +335,9 @@ function PoolItem(poolData: any) {
                   title="Wallet Balance"
                   containerStyle={`${styles.wallet}`}
                 >
-                  <p>
-                    {walletBalance} {symbol}
-                  </p>
+                  {selectedAccount && (<p>
+                    {stakingTokenBalance} {symbol}
+                  </p>)}
                 </RowPoolItem>
               </div>
 

@@ -16,7 +16,7 @@ import { Tune, History, ExpandMore } from '@material-ui/icons';
 import SelectTokenDialog from '../../components/Exchange/SelectTokenDialog';
 import HistoryDialog from '../../components/Exchange/HistoryDialog';
 import SettingsDialog from '../../components/Exchange/SettingsDialog';
-import { poolToken } from '../../binance/tokenFactory';
+import { poolToken } from '../../blockchain/tokenFactory';
 
 const useStyles = makeStyles({
   root: {

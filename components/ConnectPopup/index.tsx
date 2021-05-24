@@ -12,8 +12,8 @@ import {
 import { Close } from '@material-ui/icons';
 import { useWeb3React } from '@web3-react/core';
 
-import { getErrorMessage } from '../../lib/error';
-import { bsc, metamask } from '../../lib/connector';
+import { getErrorMessage } from '../../utils/web3React';
+import { bsc, injected, } from '../../utils/web3React'
 
 import { useStyles } from './styles';
 
@@ -32,7 +32,7 @@ function ConnectPopup(props: any) {
   const { error, activate } = useWeb3React();
 
   const handleConnectMetamask = async () => {
-    await activate(metamask);
+    await activate(injected);
     onCloseDialog();
   };
 
