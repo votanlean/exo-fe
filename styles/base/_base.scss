@@ -30,12 +30,18 @@ body {
 
 // Medium
 @media (min-width: 768px) {
+  .container {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
 }
 // Large
 @media (min-width: 992px) {
   .container {
     margin-left: 5vw;
     margin-right: 5vw;
+    padding-left: 5vw;
+    padding-right: 5vw;
   }
 }
 
