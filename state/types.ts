@@ -30,4 +30,5 @@ export interface BlockState {
 // Global state
 export interface State {
     pools: PoolsState
+    block: BlockState
 }

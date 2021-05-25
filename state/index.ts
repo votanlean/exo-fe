@@ -9,7 +9,7 @@ import counterSlice from './counterSlice';
 import {useDispatch} from "react-redux";
 import poolsReducer from './pools'
 import achievementsReducer from '../../pancake-frontend/src/state/achievements'
-import blockReducer from '../../pancake-frontend/src/state/block'
+import blockReducer from './block'
 import farmsReducer from '../../pancake-frontend/src/state/farms'
 import pricesReducer from '../../pancake-frontend/src/state/prices'
 import predictionsReducer from '../../pancake-frontend/src/state/predictions'
@@ -18,11 +18,11 @@ import teamsReducer from '../../pancake-frontend/src/state/teams'
 import collectiblesReducer from '../../pancake-frontend/src/state/collectibles'
 
 //COMBINING ALL REDUCERS
-const combinedReducer = combineReducers({
-  // OTHER REDUCERS WILL BE ADDED HERE
-  counter: counterSlice,
-  pools: poolsReducer,
-});
+// const combinedReducer = combineReducers({
+//   // OTHER REDUCERS WILL BE ADDED HERE
+//   counter: counterSlice,
+//   pools: poolsReducer,
+// });
 
 // const bindMiddleware = () => {
 //   if (process.env.NODE_ENV !== 'production') {
@@ -45,6 +45,7 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   reducer: {
     pools: poolsReducer,
+    block: blockReducer,
   },
   // middleware: getDefaultMiddleware({
   //   serializableCheck: false,

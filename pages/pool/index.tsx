@@ -19,6 +19,7 @@ import {useWeb3} from "../../hooks/useWeb3";
 import {getOrchestratorContract} from "../../utils/contractHelpers";
 import {useOrchestratorContract} from "../../hooks/useContract";
 import {usePools} from "../../state/hooks";
+import { useBlock } from '../../state/hooks'
 
 function getClaimRewardsDate(
   currentBlockHeight,
@@ -42,7 +43,8 @@ function getClaimRewardsDate(
 
 function Pool() {
   const { account, library } = useWeb3React()
-  const [currentBlockHeight, setCurrentBlockHeight] = useState(0)
+  const { currentBlock: currentBlockHeight } = useBlock()
+  // const [currentBlockHeight, setCurrentBlockHeight] = useState(0)
   const [countDownString, setCountDownString] = useState('')
   const [burnAmount, setBurnAmount] = useState(new BigNumber(0));
   const [allTokenPrices, setAllTokenPrices] = useState({})
@@ -50,19 +52,17 @@ function Pool() {
   const [tEXOTotalSupply, setTEXOTotalSupply] = useState(new BigNumber(0))
   const [countDownInterval, setCountDownInterval] = useState(null)
   const [canClaimRewardBlockHeight, setCanClaimRewardBlockHeight] = useState(0)
-
   const pools = usePools(account)
-  console.log('pools from usePools', pools);
   const web3 = useWeb3();
   const orchestratorContract = useOrchestratorContract();
 
   const tEXOAddress = process.env.TEXO_ADDRESS;
   const burnAddress = '0x000000000000000000000000000000000000dEaD';
 
-  const getCurrentBlockHeight = async () => {
-    const currentBlockHeight = await web3.eth.getBlockNumber()
-    setCurrentBlockHeight(currentBlockHeight)
-  }
+  // const getCurrentBlockHeight = async () => {
+  //   const currentBlockHeight = await web3.eth.getBlockNumber()
+  //   setCurrentBlockHeight(currentBlockHeight)
+  // }
 
   const getGlobalCanClaimRewardsBlockHeight = async () => {
     const globalCanClaimRewardsBlockHeight = await orchestratorContract.methods
@@ -94,10 +94,10 @@ function Pool() {
     // initTokenInfo();
     // const interval = setInterval(getCurrentBlockHeight, 500)
     //
-    // return () => {
-    //   clearInterval(interval)
+    return () => {
+      // clearInterval(interval)
     //   clearInterval(countDownInterval)
-    // }
+    }
   }, [])
 
   useEffect(() => {
@@ -165,7 +165,9 @@ function Pool() {
             <PoolItem
               selectedAccount={account}
               currentBlockHeight={currentBlockHeight}
-              onPoolStateChange={getCurrentBlockHeight}
+
+              //TODO tocheck changed getCurrentBlockHeight to currentBlockHeight
+              onPoolStateChange={currentBlockHeight}
               stakingTokenPrice={allTokenPrices[pool.address] || 0}
               tEXOPrice={allTokenPrices[tEXOAddress] || 0}
               data={pool}

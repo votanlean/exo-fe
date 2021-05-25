@@ -25,13 +25,15 @@ export const transformUserData = (userData: UserData) => {
 
 export const transformPool = (pool: Pool): Pool => {
     const chainId = process.env.CHAIN_ID || 56;
-    console.log('process.env.CHAIN_ID', process.env.CHAIN_ID);
-    const {contractAddress, ...rest } = pool
+    //todo remove & tokenInstance & contractAddress & address
+    const { earningToken, totalStaked, userData, ...rest } = pool
+    const earningTokenAddress = earningToken.address
 
-    const tokenInstance = getContract(TEXOTokenABI, contractAddress[chainId]);
-    console.log('contractAddress[chainId]', contractAddress[chainId]);
+    const tokenInstance = getContract(TEXOTokenABI, earningTokenAddress[chainId]);
     return {
         tokenInstance, //TODO remove
         ...rest,
+        userData: transformUserData(userData),
+        totalStaked: new BigNumber(totalStaked),
     } as Pool
 }

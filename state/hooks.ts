@@ -47,13 +47,19 @@ export const usePools = (account): Pool[] => {
     useEffect(() => {
         if (account) {
             dispatch(fetchPoolsUserDataAsync(account))
-            console.log('dispatch(fetchPoolsUserDataAsync(account)) dispatch', dispatch);
-        } else {
-            console.log('no account? dispatch', dispatch)
         }
     }, [account, dispatch, fastRefresh])
 
     const pools = useSelector((state: State) => state.pools.data)
     return pools
         .map(transformPool)
+}
+
+// Block
+export const useBlock = () => {
+    return useSelector((state: State) => state.block)
+}
+
+export const useInitialBlock = () => {
+    return useSelector((state: State) => state.block.initialBlock)
 }

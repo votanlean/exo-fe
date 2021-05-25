@@ -25,11 +25,12 @@ const pools: PoolConfig[] = [
         title: 'USDT Pool',
         address: process.env.USDT_ADDRESS,
         contractAddress: {
-            97: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
-            56: '0x55d398326f99059ff775485246999027b3197955',
+            97: '0xdA181fE906Ee2ee23042B73fb0691086bF64e0f9',
+            56: '0xCDd465F275501660B469979E2D2c1aB266d1cE9d',
         },
         symbol: 'USDT',
         bsScanLink: 'https://bscscan.com/address/' + process.env.USDT_ADDRESS,
+        //TODO move bsScan to transformer
     },
 ]
 

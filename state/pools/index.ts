@@ -4,15 +4,13 @@ import poolsConfig from 'config/constants/pools'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { PoolsState, Pool} from 'state/types'
 import {
-    fetchPoolsBlockLimits,
-    fetchPoolsStakingLimits,
     fetchPoolsTotalStaking,
 } from './fetchPools'
 import {
     fetchUserBalances,
     fetchPoolsAllowance,
-    fetchUserPendingRewards,
     fetchUserStakeBalances,
+    fetchUserPendingRewards,
 } from './fetchPoolsUser'
 
 const initialState: PoolsState = {
@@ -60,18 +58,16 @@ export const fetchPoolsPublicDataAsync = () => async (dispatch) => {
 
 // Pools
 export const fetchPoolsUserDataAsync = (account) => async (dispatch) => {
-    // const allowances = await fetchPoolsAllowance(account)
-    console.log('start the fetchPoolsUserDataAsync')
+    const allowances = await fetchPoolsAllowance(account)
     const stakingTokenBalances = await fetchUserBalances(account)
-    // const stakedBalances = await fetchUserStakeBalances(account)
-    // const pendingRewards = await fetchUserPendingRewards(account)
-    console.log('stakingTokenBalances', stakingTokenBalances);
+    const stakedBalances = await fetchUserStakeBalances(account)
+    const pendingRewards = await fetchUserPendingRewards(account)
     const userData = poolsConfig.map((pool) => ({
         id: pool.id,
-        // allowance: allowances[pool.id],
+        allowance: allowances[pool.id],
         stakingTokenBalance: stakingTokenBalances[pool.id],
-        // stakedBalance: stakedBalances[pool.id],
-        // pendingReward: pendingRewards[pool.id],
+        stakedBalance: stakedBalances[pool.id],
+        pendingReward: pendingRewards[pool.id],
     }))
     dispatch(setPoolsUserData(userData))
 }
@@ -93,7 +89,6 @@ export const PoolsSlice = createSlice({
                 const userPoolData = userData.find((entry) => entry.id === pool.id)
                 return { ...pool, userData: userPoolData }
             })
-            console.log('userData', userData);
         },
         //TODO where updatePoolsUserData is used
         updatePoolsUserData: (state, action) => {

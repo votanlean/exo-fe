@@ -18,6 +18,8 @@ import BigNumber from 'bignumber.js'
 import { getContract } from '../../utils/contractHelpers'
 import { getAddress, getOrchestratorAddress } from '../../utils/addressHelpers'
 import { useERC20, useTEXOContract } from '../../hooks/useContract'
+import useTokenBalance, { useGetBnbBalance, useTotalSupply } from '../../hooks/useTokenBalance'
+import {BIG_TEN} from "../../config";
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -27,6 +29,14 @@ function formatDepositFee(depositFee, decimals = 4) {
   const actualDepositFee = (depositFee * 100) / Math.pow(10, decimals)
 
   return `${actualDepositFee.toFixed(2)}%`
+}
+
+function normalizeTokenDecimal(tokenInWei, decimals = 18) {
+  if (!tokenInWei) {
+    return 0;
+  }
+
+  return tokenInWei.div(BIG_TEN.pow(18));
 }
 
 function PoolItem(poolData: any) {
@@ -44,30 +54,27 @@ function PoolItem(poolData: any) {
 
   // const { sousId, stakingToken, earningToken, isFinished, userData } = pool
 
+  const {allowance, pendingReward, stakedBalance, stakingTokenBalance} = userData;
   //cannot use
-  console.log('data.address', data.address);
   const tokenInstance = useERC20(data.address)
-  // const tokenInstance = tokenInstance2;
-  // console.log('tokenInstance', tokenInstance);
-  // console.log('tokenInstance2', tokenInstance2);
-  const stakingTokenBalance = userData?.stakingTokenBalance ? new BigNumber(userData.stakingTokenBalance) : BIG_ZERO
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false)
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false)
   const [openRoiDialog, setOpenRoiDialog] = useState(false)
 
   const [currentPool, setCurrentPool] = useState(null)
-  const [totalSupply, setTotalSupply] = useState(0)
   const [apr, setAPR] = useState(0);
-  const [myStake, setMyStake] = useState(0)
   const [isDisplayDetails, setIsDisplayDetails] = useState(false)
   const [canClaimReward, setCanClaimReward] = useState(false)
   const [currentReward, setCurrentReward] = useState(0)
-  const [walletBalance, setWalletBalance] = useState(0)
 
   const { active } = useWeb3React()
 
   const orchestratorAddress = getOrchestratorAddress();
+
+  // const stakingTokenBalance = userData?.stakingTokenBalance ? new BigNumber(userData.stakingTokenBalance) : BIG_ZERO
+  const totalSupply = useTotalSupply();
+  // const walletBalance = balance.toNumber();
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
@@ -133,7 +140,7 @@ function PoolItem(poolData: any) {
   }
 
   const calculateAPR = () => {
-    const apr = getPoolApr(stakingTokenPrice, tEXOPrice, totalSupply, 0.5);
+    const apr = getPoolApr(stakingTokenPrice, tEXOPrice, totalSupply?.toNumber(), 0.5);
     setAPR(apr);
   }
 
@@ -152,32 +159,33 @@ function PoolItem(poolData: any) {
     })
   }
 
-  const getTotalSupply = async () => {
-    if (selectedAccount) {
-      const totalSupply = await tokenInstance.methods
-        .balanceOf(orchestratorAddress)
-        .call()
-      setTotalSupply(totalSupply / Math.pow(10, 18))
-    }
-  }
+  //done
+  // const getTotalSupply = async () => {
+  //   if (selectedAccount) {
+  //     const totalSupply = await tokenInstance.methods
+  //       .balanceOf(orchestratorAddress)
+  //       .call()
+  //     setTotalSupply(totalSupply / Math.pow(10, 18))
+  //   }
+  // }
 
-  const getMyStake = async () => {
-    if (selectedAccount) {
-      const myStake = await orchestratorInstance.methods
-        .userInfo(poolId, selectedAccount)
-        .call()
-      setMyStake(myStake[0] / Math.pow(10, 18))
-    }
-  }
+  // const getMyStake = async () => {
+  //   if (selectedAccount) {
+  //     const myStake = await orchestratorInstance.methods
+  //       .userInfo(poolId, selectedAccount)
+  //       .call()
+  //     setMyStake(myStake[0] / Math.pow(10, 18))
+  //   }
+  // }
 
-  const getWalletBalance = async () => {
-    if (selectedAccount) {
-      const walletBalance = await tokenInstance.methods
-        .balanceOf(selectedAccount)
-        .call()
-      setWalletBalance(web3.utils.fromWei(walletBalance, 'ether'))
-    }
-  }
+  // const getWalletBalance = async () => {
+  //   if (selectedAccount) {
+  //     const walletBalance = await tokenInstance.methods
+  //       .balanceOf(selectedAccount)
+  //       .call()
+  //     setWalletBalance(web3.utils.fromWei(walletBalance, 'ether'))
+  //   }
+  // }
 
   const getCurrentReward = async () => {
     if (selectedAccount) {
@@ -207,9 +215,9 @@ function PoolItem(poolData: any) {
 
   const listenForBlockHeightChange = () => {
     getPoolInfo()
-    getTotalSupply()
-    getMyStake()
-    getWalletBalance()
+    // getTotalSupply() done
+    // getMyStake() done
+    // getWalletBalance() done
     getCurrentReward()
   }
 
@@ -319,7 +327,7 @@ function PoolItem(poolData: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {myStake} {symbol}
+                    {normalizeTokenDecimal(stakedBalance).toNumber()} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -338,7 +346,7 @@ function PoolItem(poolData: any) {
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {totalSupply} {symbol}
+                    {totalSupply?.toNumber()} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -346,7 +354,7 @@ function PoolItem(poolData: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {stakingTokenBalance.toFixed(2)} {symbol}
+                    {normalizeTokenDecimal(stakingTokenBalance).toNumber()} {symbol}
                   </p>
                 </RowPoolItem>
               </div>
@@ -365,7 +373,7 @@ function PoolItem(poolData: any) {
                   >
                     Claim Rewards
                   </button>
-                  {active && myStake > 0 ? (
+                  {active && stakedBalance.toNumber() > 0 ? (
                     <Grid container>
                       <Grid item xs={6}>
                         <button
@@ -430,7 +438,7 @@ function PoolItem(poolData: any) {
         onConfirm={handleConfirmStake}
         unit={symbol}
         depositFee={currentPool && currentPool.depositFeeBP}
-        maxAmount={walletBalance}
+        maxAmount={stakingTokenBalance.toNumber()}
       />
       <WithdrawDialog
         open={openWithdrawDialog}
@@ -438,7 +446,7 @@ function PoolItem(poolData: any) {
         onClose={handleCloseWithdrawDialog}
         onConfirm={handleConfirmWithdraw}
         unit={symbol}
-        maxAmount={myStake}
+        maxAmount={stakedBalance.toNumber()}
       />
       <ROIDialog open={openRoiDialog} onClose={onToggleRoiDialog} />
     </>
