@@ -14,6 +14,7 @@ import {
 // ABI
 import compiledOrchestrator from '../blockchain/build/TEXOOrchestrator.json'
 import compiledTEXO from '../blockchain/build/TEXOToken.json'
+import bep20Abi from 'config/abi/erc20.json'
 
 //TODO remove export, currently export to support contract factory transformer
 export const getContract = (abi: any, address: string, web3?: Web3) => {
@@ -25,6 +26,11 @@ export const getTEXOContract = (web3?: Web3) => {
     // const config = poolsConfig.find((pool) => pool.sousId === id)
     return getContract(compiledTEXO.abi, getTEXOAddress(), web3)
 }
+
 export const getOrchestratorContract = (web3?: Web3) => {
     return getContract(compiledOrchestrator.abi, getOrchestratorAddress(), web3)
+}
+
+export const getBep20Contract = (address: string, web3?: Web3) => {
+    return getContract(bep20Abi, address, web3)
 }

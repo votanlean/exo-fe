@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import {useWeb3} from './useWeb3'
 import {
+    getBep20Contract,
     getOrchestratorContract,
     getTEXOContract,
     // getBunnyFactoryContract,
@@ -37,11 +38,11 @@ export const useTEXOContract = () => {
     const web3 = useWeb3()
     return useMemo(() => getTEXOContract(web3), [web3])
 }
-//
-// export const useERC20 = (address: string) => {
-//     const web3 = useWeb3()
-//     return useMemo(() => getBep20Contract(address, web3), [address, web3])
-// }
+
+export const useERC20 = (address: string) => {
+    const web3 = useWeb3()
+    return useMemo(() => getBep20Contract(address, web3), [address, web3])
+}
 //
 // /**
 //  * @see https://docs.openzeppelin.com/contracts/3.x/api/token/erc721

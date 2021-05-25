@@ -7,6 +7,29 @@ import {fetchPoolsUserDataAsync} from "./pools";
 import useRefresh from "../hooks/useRefresh";
 
 import { useAppDispatch } from 'state'
+import { fetchPoolsPublicDataAsync } from './pools'
+import { getWeb3NoAccount } from '../utils/web3'
+import { setBlock } from './block'
+
+export const useFetchPublicData = () => {
+    const dispatch = useAppDispatch()
+    const { slowRefresh } = useRefresh()
+    useEffect(() => {
+        // dispatch(fetchFarmsPublicDataAsync())
+        dispatch(fetchPoolsPublicDataAsync())
+        // dispatch(fetchPoolsStakingLimitsAsync())
+    }, [dispatch, slowRefresh])
+
+    useEffect(() => {
+        const web3 = getWeb3NoAccount()
+        const interval = setInterval(async () => {
+            const blockNumber = await web3.eth.getBlockNumber()
+            dispatch(setBlock(blockNumber))
+        }, 6000)
+
+        return () => clearInterval(interval)
+    }, [dispatch])
+}
 
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`

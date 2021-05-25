@@ -19,6 +19,13 @@ export interface Pool extends PoolConfig {
     }
 }
 
+// Block
+
+export interface BlockState {
+    currentBlock: number
+    initialBlock: number
+}
+
 
 // Global state
 export interface State {

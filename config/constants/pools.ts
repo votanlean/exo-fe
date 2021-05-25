@@ -2,6 +2,7 @@ import tokens from './tokens'
 import { PoolConfig, PoolCategory } from './types'
 
 const pools: PoolConfig[] = [
+  //TODO move tEXO to tokens 0 (master pool)
     // {
     //     sousId: 0,
     //     stakingToken: tokens.busd,

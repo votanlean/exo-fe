@@ -15,6 +15,9 @@ import { getPoolApr } from '../../hookApi/apr';
 import styles from './poolItem.module.scss'
 import { BIG_ZERO } from '../../utils/bigNumber'
 import BigNumber from 'bignumber.js'
+import { getContract } from '../../utils/contractHelpers'
+import { getAddress, getOrchestratorAddress } from '../../utils/addressHelpers'
+import { useERC20, useTEXOContract } from '../../hooks/useContract'
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -36,10 +39,17 @@ function PoolItem(poolData: any) {
     tEXOPrice,
     isLiquidityPool,
   } = poolData
-  const { id: poolId, icon, title, tokenInstance, symbol, bsScanLink, userData } =
+  const { id: poolId, icon, title, symbol, bsScanLink, userData} =
     data || {}
 
   // const { sousId, stakingToken, earningToken, isFinished, userData } = pool
+
+  //cannot use
+  console.log('data.address', data.address);
+  const tokenInstance = useERC20(data.address)
+  // const tokenInstance = tokenInstance2;
+  // console.log('tokenInstance', tokenInstance);
+  // console.log('tokenInstance2', tokenInstance2);
   const stakingTokenBalance = userData?.stakingTokenBalance ? new BigNumber(userData.stakingTokenBalance) : BIG_ZERO
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false)
@@ -57,7 +67,7 @@ function PoolItem(poolData: any) {
 
   const { active } = useWeb3React()
 
-  const orchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
+  const orchestratorAddress = getOrchestratorAddress();
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
@@ -335,9 +345,9 @@ function PoolItem(poolData: any) {
                   title="Wallet Balance"
                   containerStyle={`${styles.wallet}`}
                 >
-                  {selectedAccount && (<p>
-                    {stakingTokenBalance} {symbol}
-                  </p>)}
+                  <p>
+                    {stakingTokenBalance.toFixed(2)} {symbol}
+                  </p>
                 </RowPoolItem>
               </div>
 
