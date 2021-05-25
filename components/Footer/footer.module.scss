@@ -3,6 +3,7 @@
   padding: 70px 0;
   font-family: 'Roboto', sans-serif;
   .info {
+    width: 140px;
     p {
       font-weight: 300;
       margin: 25px 0;
@@ -11,6 +12,7 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      margin-top: 25px;
       img {
         width: 24px;
       }
@@ -40,6 +42,22 @@
       border-radius: 4px;
       min-width: 168px;
       font-weight: 700;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .footer {
+    padding: 40px 10px;
+    font-family: 'Roboto', sans-serif;
+    .info {
+      ul {
+        margin-top: 18px;
+        justify-content: space-between;
+        img {
+          width: 24px;
+        }
+      }
     }
   }
 }
