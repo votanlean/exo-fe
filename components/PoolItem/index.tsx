@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid } from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { EventEmitter } from 'events';
@@ -47,6 +47,7 @@ function PoolItem(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     canClaimReward,
+    countDownString,
   } = props;
   const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {}, pid: farmId, lpTotalSupply = 0, lpTotalInQuoteToken = 0 } = poolData;
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
@@ -284,8 +285,14 @@ function PoolItem(props: any) {
                     {normalizeTokenDecimal(stakingTokenBalance).toNumber().toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
+                <Typography
+                    align="center"
+                    variant="h6"
+                    className={styles.countDown}
+                >
+                  {countDownString}
+                </Typography>
               </div>
-
               <div
                 className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
               >
