@@ -1,7 +1,7 @@
 export default {
     orchestrator: {
         97: '0xdA181fE906Ee2ee23042B73fb0691086bF64e0f9',
-        56: '0xCDd465F275501660B469979E2D2c1aB266d1cE9d',
+        56: '0x8D2710A8EB5996001171a9f006d14E7269f60E47',
     },
     timeLock: {
         97: '0x99c2EcD51d52c036B00130d882Bc65f20Fdecf9f',
