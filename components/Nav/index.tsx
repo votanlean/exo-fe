@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useRouter } from 'next/router';
 import ActiveLink from '../ActiveLink';
 
@@ -13,12 +13,29 @@ const data = [
   { title: 'Governance', path: '/governance' },
 ];
 
-const Nav = () => {
+const Nav = (props) => {
   const { asPath } = useRouter();
+  const [isExpandedMenu, setIsExpandedMenu] = useState(false);
 
+  const handleOpenBurger = () => {
+    setIsExpandedMenu(true);
+  };
+
+  const handleCloseBurger = () => {
+    setIsExpandedMenu(false);
+  };
   return (
     <nav>
-      <ul className={styles.menu}>
+      <i
+          className={styles.faBars}
+          onClick={!isExpandedMenu ? handleOpenBurger : handleCloseBurger}
+      >
+        <div className={styles.hamburger}></div>
+        <div className={styles.hamburger}></div>
+        <div className={styles.hamburger}></div>
+      </i>
+
+      <ul className={`${styles.menu} ${isExpandedMenu ? styles.active : ''}`}>
         {data.map((menu, index) =>
           menu.title === 'Bridge' ? (
             <li key={index}>
@@ -26,6 +43,7 @@ const Nav = () => {
                 href="https://www.binance.org/en/bridge"
                 target="_blank"
                 className={`${styles.menuLink} menu-link`}
+                onClick={handleCloseBurger}
               >
                 Bridge
               </a>
@@ -33,7 +51,12 @@ const Nav = () => {
           ) : (
             <li key={index}>
               <ActiveLink href={menu.path}>
-                <a className={`${styles.menuLink} menu-link`}>{menu.title}</a>
+                <a
+                    className={`${styles.menuLink} menu-link `}
+                    onClick={handleCloseBurger}
+                >
+                  {menu.title}
+                </a>
               </ActiveLink>
             </li>
           ),
@@ -43,6 +66,7 @@ const Nav = () => {
             href="https://texo.gitbook.io/exoniumdex"
             target="_blank"
             className={`${styles.menuLink} menu-link`}
+            onClick={handleCloseBurger}
           >
             Docs
           </a>
