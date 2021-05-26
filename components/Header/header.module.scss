@@ -12,6 +12,18 @@
   }
   div {
     height: 100%;
+    .item1{
+      display: flex;
+      align-items: center;
+    }
+    .item2{
+      display: flex;
+      align-items: center;
+    }
+    .item3{
+      display: flex;
+      align-items: center;
+    }
   }
 }
 
@@ -87,6 +99,27 @@
     }
     .logoutButton {
       justify-content: center;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .header {
+    div {
+      .item1 {
+        order: 2
+      }
+      .item2 {
+        order: 1
+      }
+      .item3 {
+        order: 3
+      }
+    }
+  }
+  .logo {
+    img {
+      width: 120px;
     }
   }
 }
