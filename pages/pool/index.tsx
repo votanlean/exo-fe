@@ -58,7 +58,7 @@ function Pool() {
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
   const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
 
-  const loadAppGlobalData = () => {
+  const refreshAppGlobalData = () => {
     dispatch(fetchFarmsPublicDataAsync());
     dispatch(fetchTexoTokenDataThunk);
     dispatch(fetchOrchestratorDataThunk);
@@ -72,9 +72,26 @@ function Pool() {
     }
   }
 
-  useEffect(loadAppGlobalData, [account, dispatch]);
+  useEffect(refreshAppGlobalData, [account, dispatch]);
 
   const countDownInterval = useRef(null);
+
+  useEffect(() => {
+    const updateAppDataInterval = setInterval(() => {
+      dispatch(fetchFarmsPublicDataAsync());
+      dispatch(fetchTexoTokenDataThunk);
+      dispatch(fetchPoolsPublicDataAsync);
+  
+      if (account) {
+        dispatch(fetchFarmUserDataAsync(account));
+        dispatch(fetchPoolsUserDataAsync(account));
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(updateAppDataInterval);
+    };
+  }, []);
 
   useEffect(() => {
     if (!canClaimRewardsBlock || !currentBlock || countDownInterval.current) { return; }
@@ -132,7 +149,7 @@ function Pool() {
 
             return <FarmItem
               selectedAccount={account}
-              onPoolStateChange={loadAppGlobalData}
+              onPoolStateChange={refreshAppGlobalData}
               canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
@@ -163,7 +180,7 @@ function Pool() {
 
             return <PoolItem
               selectedAccount={account}
-              onPoolStateChange={loadAppGlobalData}
+              onPoolStateChange={refreshAppGlobalData}
               canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
