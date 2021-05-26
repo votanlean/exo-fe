@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme) => {
 			background: "#0F0F0F",
 			color: 'white'
 		},
+		maxBtn: {
+			alignSelf: 'flex-end',
+			color: augmentBlue.main,
+		},
 		footer: {
 			padding: "12px 24px"
 		},
@@ -104,11 +108,19 @@ const WithdrawDialog = ({
 		setDisbaleButton(false);
 	}
 
+	const handleClickMax = () => {
+		setAmount(maxAmount)
+	};
+
 	return(
 		<Dialog onClose={onCloseDialog} open={open} classes={{ paper: classes.paper }}>
 			<DialogTitle className={classes.title}>{title}</DialogTitle>
 			<DialogContent>
-				<Box my={2}>
+				<Box my={2} display="flex" flexDirection="column">
+					<Button className={classes.maxBtn} onClick={handleClickMax}>
+						MAX
+					</Button>
+
 					<TextField
 						label={title}
 						value={amount}
