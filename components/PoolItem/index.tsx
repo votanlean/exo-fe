@@ -76,8 +76,8 @@ function PoolItem(props: any) {
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
-      .approve(orchestratorAddress, web3.utils.toWei('8', 'ether'))
-      .send({ from: selectedAccount, gas: '3000000' });
+      .approve(orchestratorAddress, web3.utils.toWei('1', 'ether'))
+      .send({ from: selectedAccount });
 
     approvalEventEmitter.on('receipt', data => {
       onPoolStateChange()
@@ -103,7 +103,7 @@ function PoolItem(props: any) {
   const handleConfirmStake = async amount => {
     const stakeEventEmitter: EventEmitter = orchestratorInstance.methods
       .deposit(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount, gas: 3000000 });
+      .send({ from: selectedAccount });
 
     stakeEventEmitter.on('receipt', data => {
       onPoolStateChange()
@@ -127,7 +127,7 @@ function PoolItem(props: any) {
   const handleConfirmWithdraw = async amount => {
     const withdrawEventEmitter = orchestratorInstance.methods
       .withdraw(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount, gas: 3000000 })
+      .send({ from: selectedAccount })
     withdrawEventEmitter.on('receipt', data => {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
@@ -142,7 +142,7 @@ function PoolItem(props: any) {
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
       .deposit(poolId, 0)
-      .send({ from: selectedAccount, gas: 3000000 })
+      .send({ from: selectedAccount })
     claimRewardsEventEmitter.on('receipt', data => {
       onPoolStateChange()
       claimRewardsEventEmitter.removeAllListeners()
