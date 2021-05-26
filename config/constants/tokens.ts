@@ -15,7 +15,7 @@ const tokens = {
     texo: {
         symbol: 'TEXO',
         address: {
-            56: '0x298A15cBfb1A331814E18EAB36891Dde49d3f58E',
+            56: '0x08065c1e0fe5b6D82B778760571cE29392e24A46',
             97: '0x69E191beB3607072A45ac83eF6B7bc76F2420EF5',
         },
         decimals: 18,
