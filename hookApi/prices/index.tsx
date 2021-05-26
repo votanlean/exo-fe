@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { useMemo } from 'react';
+import { useAppPrices } from 'state/prices/selectors';
 
 export const BIG_TEN = new BigNumber(10);
 
-const fetchPrices = async () => {
+export const fetchPrices = async () => {
   const response = await fetch('https://api.pancakeswap.info/api/v2/tokens');
   const data = (await response.json()) as any;
 
@@ -19,6 +19,9 @@ const fetchPrices = async () => {
   }
 }
 
-export const usePrices = () => {
-  return useMemo(() => fetchPrices(), []);
+export const useTokenPrice = (tokenAddress) => {
+  const allTokenPrices = useAppPrices();
+  const tokenPrice = allTokenPrices[tokenAddress];
+
+  return tokenPrice || 0;
 }

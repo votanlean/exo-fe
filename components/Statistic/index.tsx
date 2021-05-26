@@ -13,10 +13,10 @@ function calculateMarketCap(tEXOPrice, totalSupply: string) {
     return 0;
   }
 
-  const bigNumberTotalSupply = new BigNumber(totalSupply);
+  const bigNumberTotalSupply = new BigNumber(totalSupply).div(BIG_TEN.pow(18));
   const bigNumberTEXOPRice = new BigNumber(tEXOPrice);
 
-  return bigNumberTotalSupply.times(bigNumberTEXOPRice).toString();
+  return bigNumberTotalSupply.times(bigNumberTEXOPRice).toFixed(2);
 }
 
 function normalizeBigNumber(data: string) {
@@ -26,7 +26,7 @@ function normalizeBigNumber(data: string) {
 }
 
 function Statistic(props) {
-  const { totalSupply, tEXOPrice, currentTEXOPerBlock, burnAmount } = props;
+  const { totalSupply, tEXOPrice, currentTEXOPerBlock, burnAmount, tvl } = props;
   const normalizedTotalSupply = normalizeBigNumber(totalSupply);
   const normalizedEmissionRate = normalizeBigNumber(currentTEXOPerBlock);
   const normalizedBurnAmount = normalizeBigNumber(burnAmount);
@@ -102,6 +102,13 @@ function Statistic(props) {
           </Box>
 
           <Box display="flex" justifyContent="space-between">
+            <Typography className={'font-bold'}>tEXO Price</Typography>
+            <Typography className={'font-bold'}>
+              ${Number(tEXOPrice).toFixed(2)}
+            </Typography>
+          </Box>
+
+          <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Market Cap</Typography>
             <Typography className={'font-bold'}>
               ${calculateMarketCap(tEXOPrice, totalSupply)}
@@ -118,7 +125,7 @@ function Statistic(props) {
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>New tEXO/block</Typography>
             <Typography className={'font-bold'}>
-              {normalizedEmissionRate} / block
+              {normalizedEmissionRate} tEXO / block
             </Typography>
           </Box>
         </Box>
@@ -136,7 +143,7 @@ function Statistic(props) {
           </Typography>
 
           <Typography variant="h4" className={'font-bold'}>
-            $0
+            ${tvl.toFixed(4)}
           </Typography>
 
           <Typography color="textPrimary" className={'font-bold'}>

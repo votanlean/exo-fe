@@ -4,13 +4,12 @@ import orchestratorABI from 'blockchain/build/TEXOOrchestrator.json';
 import multicall from 'utils/multicall';
 import { BIG_TEN } from 'utils/bigNumber';
 import { getAddress } from 'utils/addressHelpers';
-import { FarmConfig } from 'config/constants/types';
 import contracts from 'config/constants/contracts';
 
-const fetchFarms = async (farmsToFetch: FarmConfig[]) => {
+const fetchFarms = async (farmsToFetch: any[]) => {
   const data = await Promise.all(
     farmsToFetch.map(async (farmConfig) => {
-      const lpAddress = getAddress(farmConfig.lpAddresses)
+      const lpAddress = farmConfig.address;
       const calls = [
         // Balance of token in the LP contract
         {

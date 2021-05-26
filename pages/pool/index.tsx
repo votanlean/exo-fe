@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import seedingPools from 'config/constants/seedingPools';
+import farms from 'config/constants/farms';
 import Countdown from 'countdown';
 import { useWeb3React } from '@web3-react/core';
 import dayjs from 'dayjs';
@@ -8,7 +9,6 @@ import { Typography } from '@material-ui/core';
 
 import PoolItem from '../../components/PoolItem';
 import Statistic from '../../components/Statistic';
-import { usePrices } from '../../hookApi/prices';
 
 import styles from './pool.module.scss';
 import { useBlockData } from 'state/block/selectors';
@@ -22,12 +22,11 @@ import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { fetchBlockDataThunk } from 'state/block/reducer';
 import { usePools } from 'state/pools/selectors';
 import { fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync } from 'state/pools/reducer';
+import { fetchAppPrices } from 'state/prices/reducer';
+import { useAppPrices } from 'state/prices/selectors';
+import { useFarms, useTotalValue } from 'state/farms/selectors';
 
-function getClaimRewardsDate(
-  currentBlock,
-  canClaimRewardsBlock,
-  startDate,
-) {
+function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
   if (!currentBlock || !canClaimRewardsBlock) {
     return dayjs()
   }
@@ -48,21 +47,23 @@ function Pool() {
   const { account } = useWeb3React();
   const [countDownString, setCountDownString] = useState('');
 
-  const allTokenPrices = usePrices();
-  console.log('allTokenPrices', allTokenPrices);
+  const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
   const poolsData = usePools();
+  const farmsData = useFarms();
+  const tvl = useTotalValue();
 
   const { currentBlock } = useBlockData();
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
   const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
 
   useEffect(() => {
-    dispatch(fetchFarmsPublicDataAsync);
+    dispatch(fetchFarmsPublicDataAsync());
     dispatch(fetchTexoTokenDataThunk);
     dispatch(fetchOrchestratorDataThunk);
     dispatch(fetchBlockDataThunk);
     dispatch(fetchPoolsPublicDataAsync);
+    dispatch(fetchAppPrices);
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account));
@@ -112,25 +113,31 @@ function Pool() {
       <div className="container pool-container">
         <Statistic
           tEXOPrice={tEXOPrice}
+          tvl={tvl}
           totalSupply={tEXOTotalSupply}
           currentTEXOPerBlock={tEXOPerBlock}
           burnAmount={burnAmount}
         />
 
-         {/* <div className="pool-grid">
-          {lpPoolToken.map(pool => (
-            <PoolItem
+         <div className="pool-grid">
+          {farms.map((farm, index) => {
+            let stakingTokenPrice = 0;
+
+            if (allTokenPrices.data) {
+              stakingTokenPrice = allTokenPrices.data[getAddress(farm.quoteToken.address)];
+            }
+
+            return <PoolItem
               selectedAccount={account}
-              currentBlock={currentBlock}
-              onPoolStateChange={getCurrentBlockHeight}
-              stakingTokenPrice={allTokenPrices[pool.address] || 0}
-              tEXOPrice={allTokenPrices[tEXOAddress] || 0}
-              data={pool}
-              key={pool.id}
+              canClaimReward={currentBlock && currentBlock <= canClaimRewardsBlock}
+              stakingTokenPrice={stakingTokenPrice}
+              tEXOPrice={tEXOPrice}
+              poolData={farmsData[index]}
+              key={farm.id}
               isLiquidityPool={true}
-            />
-          ))}
-        </div> */}
+            />;
+          })}
+        </div>
 
         <div className={styles.countdownContainer}>
          <Typography variant="h4" style={{ marginBottom: '10px' }}>
@@ -142,17 +149,22 @@ function Pool() {
         </div>
 
         <div className="pool-grid">
-          {seedingPools.map((pool, index) => (
-            <PoolItem
+          {seedingPools.map((pool, index) => {
+            let stakingTokenPrice = 0;
+
+            if (allTokenPrices.data) {
+              stakingTokenPrice = allTokenPrices.data[getAddress(pool.stakingToken.address)];
+            }
+
+            return <PoolItem
               selectedAccount={account}
               canClaimReward={currentBlock && currentBlock <= canClaimRewardsBlock}
-              currentBlockHeight={currentBlock}
-              stakingTokenPrice={allTokenPrices[getAddress(pool.stakingToken.address)]}
+              stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
               poolData={poolsData[index]}
               key={pool.id}
             />
-          ))}
+          })}
         </div>
       </div>
     </>

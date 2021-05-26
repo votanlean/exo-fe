@@ -19,9 +19,6 @@ export const getPoolApr = (
   const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked);
   const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100);
 
-  // console.log(totalRewardPricePerYear);
-  // console.log(totalStakingTokenInPool);
-
   return apr.isNaN() || !apr.isFinite() ? null : apr.toNumber();
 }
 

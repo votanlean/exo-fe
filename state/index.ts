@@ -6,6 +6,7 @@ import poolsReducer from './pools';
 import blockReducer from './block';
 import texoReducer from './texo';
 import orchestratorReducer from './orchestrator';
+import appPricesReducer from './prices';
 
 export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
@@ -15,6 +16,7 @@ export const store = configureStore({
     block: blockReducer,
     texoToken: texoReducer,
     orchestrator: orchestratorReducer,
+    appPrices: appPricesReducer,
   },
 });
 

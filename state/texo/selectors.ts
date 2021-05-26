@@ -8,14 +8,18 @@ export const useTexoTokenData = () => {
 }
 
 export const useTexoTokenPrice = () => {
-  const texoBusdPool = useFarmFromPid(FARM_ID.TEXO_BUSD);
-  if (!texoBusdPool || !texoBusdPool.tokenPriceVsQuote) {
+  return useFarmQuoteTokenPrice(FARM_ID.TEXO_BUSD);
+}
+
+export const useFarmQuoteTokenPrice = (farmId) => {
+  const farm = useFarmFromPid(farmId);
+  if (!farm || !farm.tokenPriceVsQuote) {
     return new BigNumber(0);
   }
 
-  const { tokenPriceVsQuote } = texoBusdPool;
+  const { tokenPriceVsQuote } = farm;
 
-  return tokenPriceVsQuote.toNumber();
+  return tokenPriceVsQuote;
 }
 
 export const usePoolFromPid = (pid): any => {

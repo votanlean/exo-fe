@@ -15,7 +15,6 @@ import { getPoolApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { getAddress, getOrchestratorAddress } from '../../utils/addressHelpers';
 import { useERC20 } from '../../hooks/useContract';
-import { useTotalSupply } from '../../hooks/useTokenBalance';
 import {BIG_TEN} from "../../config";
 import { usePoolFromPid } from 'state/texo/selectors';
 
@@ -43,7 +42,6 @@ function PoolItem(props: any) {
   const {
     poolData = {},
     selectedAccount,
-    currentBlockHeight,
     onPoolStateChange,
     stakingTokenPrice,
     tEXOPrice,
@@ -53,13 +51,12 @@ function PoolItem(props: any) {
   const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {} } = poolData;
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
 
-  // console.log('stakingTokenPrice', stakingTokenPrice);
   const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const tokenInstance = useERC20(getAddress(poolData.address));
 
   const currentPool = usePoolFromPid(poolId);
-  const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
+  const { tEXOPerBlock } = useOrchestratorData();
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
@@ -68,7 +65,6 @@ function PoolItem(props: any) {
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
 
   const orchestratorAddress = getOrchestratorAddress();
-  const totalSupply = useTotalSupply();
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
@@ -134,8 +130,12 @@ function PoolItem(props: any) {
   }
 
   const calculateAPR = () => {
-    const apr = getPoolApr(stakingTokenPrice, tEXOPrice, new BigNumber(totalStaked).toNumber(), new BigNumber(tEXOPerBlock).toNumber());
-    // console.log(apr);
+    const apr = getPoolApr(
+      stakingTokenPrice,
+      tEXOPrice,
+      normalizeTokenDecimal(totalStaked).toNumber(),
+      normalizeTokenDecimal(tEXOPerBlock).toNumber(),
+    );
     setAPR(apr);
   }
 
@@ -383,7 +383,11 @@ function PoolItem(props: any) {
         unit={symbol}
         maxAmount={stakedBalance}
       />
-      <ROIDialog open={openRoiDialog} onClose={onToggleRoiDialog} />
+      <ROIDialog
+        open={openRoiDialog}
+        onClose={onToggleRoiDialog}
+        poolData={{ apr, tokenPrice: stakingTokenPrice }}
+      />
     </>
   )
 }
