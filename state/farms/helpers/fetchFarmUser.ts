@@ -55,19 +55,21 @@ export const fetchFarmUserStakedBalances = async (account: string, farmsToFetch:
 }
 
 export const fetchFarmUserEarnings = async (account: string, farmsToFetch: any[]) => {
-  const masterChefAddress = getAddress(contracts.orchestrator);
-
   const calls = farmsToFetch.map((farm) => {
     return {
-      address: masterChefAddress,
+      address: getAddress(contracts.orchestrator),
       name: 'pendingTEXO',
       params: [farm.pid, account],
     }
   })
 
-  const rawEarnings = await multicall(orchestratorABI.abi, calls)
+  const rawEarnings = await multicall(orchestratorABI.abi, calls);
+
   const parsedEarnings = rawEarnings.map((earnings) => {
     return new BigNumber(earnings).toJSON()
-  })
-  return parsedEarnings
+  });
+
+  console.log('parsedEarnings', parsedEarnings);
+
+  return parsedEarnings;
 }

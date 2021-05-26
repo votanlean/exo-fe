@@ -53,7 +53,7 @@ function PoolItem(props: any) {
     canClaimReward,
     isLiquidityPool,
   } = props;
-  const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {}, pid: farmId } = poolData;
+  const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {}, pid: farmId, lpTotalSupply, lpTotalInQuoteToken } = poolData;
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
 
   const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
@@ -72,18 +72,9 @@ function PoolItem(props: any) {
   const apr = getPoolApr(
     stakingTokenPrice,
     tEXOPrice,
-    normalizeTokenDecimal(totalStaked).toNumber(),
+    normalizeTokenDecimal(totalStaked || lpTotalSupply).toNumber(),
     normalizeTokenDecimal(tEXOPerBlock).toNumber(),
   );
-
-  if (isLiquidityPool) {
-    console.log('isLiquidityPool', isLiquidityPool);
-    console.log('currentPool', currentPool);
-    console.log('poolId', farmId);
-    console.log('-------------------------------');
-  }
-
-  // const liquidity = tEXOPrice * stakingTokenPrice * 
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
@@ -191,7 +182,7 @@ function PoolItem(props: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>0$</h3>
+        <h3>${Number(normalizeTokenDecimal(totalStaked) * stakingTokenPrice || lpTotalInQuoteToken).toFixed(2)}</h3>
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
@@ -295,7 +286,7 @@ function PoolItem(props: any) {
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked).toNumber().toFixed(4)} {symbol}
+                    {normalizeTokenDecimal(totalStaked || lpTotalSupply).toNumber().toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
