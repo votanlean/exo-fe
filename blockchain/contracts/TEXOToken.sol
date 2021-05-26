@@ -1193,7 +1193,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         return pool.blockToReceiveReward <= block.number;
     }
 
-    function canGenerateTexoReward(uint256 _pid) public returns (bool) {
+    function canGenerateTexoReward(uint256 _pid) public view returns (bool) {
         PoolInfo storage pool = poolInfo[_pid];
 
         return !(canWithdrawReward(_pid) && pool.allocPoint == 0);
