@@ -119,7 +119,7 @@ function Pool() {
           burnAmount={burnAmount}
         />
 
-         <div className="pool-grid">
+         <div className={styles.lpPoolGrid}>
           {farms.map((farm, index) => {
             let stakingTokenPrice = 0;
 
