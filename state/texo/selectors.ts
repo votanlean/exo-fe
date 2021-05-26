@@ -23,7 +23,7 @@ export const useFarmQuoteTokenPrice = (farmId) => {
 }
 
 export const usePoolFromPid = (pid): any => {
-  const pool = useSelector((state: any) => state.pools.data.find((f) => f.pid === pid));
+  const pool = useSelector((state: any) => state.pools.data.find((f) => f.id === pid));
 
   return pool;
 }

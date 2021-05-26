@@ -6,6 +6,8 @@ const seedingPools = [
     icon: '/static/images/pool/USDT.png',
     title: 'USDT Pool',
     stakingToken: tokens.usdt,
+    allocPoint: 400,
+    depositFeeBP: 400,
     address: {
       56: process.env.USDT_ADDRESS,
       97: '',
@@ -18,6 +20,8 @@ const seedingPools = [
     icon: '/static/images/pool/wBNB.png',
     title: 'wBNB Pool',
     stakingToken: tokens.wbnb,
+    allocPoint: 300,
+    depositFeeBP: 400,
     address: {
       56: process.env.WBNB_ADDRESS,
       97: '',
@@ -30,6 +34,8 @@ const seedingPools = [
     icon: '/static/images/pool/BUSD.png',
     title: 'BUSD Pool',
     stakingToken: tokens.busd,
+    allocPoint: 400,
+    depositFeeBP: 400,
     address: {
       56: process.env.BUSD_ADDRESS,
       97: '',
@@ -42,6 +48,8 @@ const seedingPools = [
     icon: '/static/images/pool/CAKE.jpeg',
     title: 'CAKE Pool',
     stakingToken: tokens.cake,
+    allocPoint: 200,
+    depositFeeBP: 400,
     address: {
       56: process.env.CAKE_ADDRESS,
       97: '',
@@ -54,6 +62,8 @@ const seedingPools = [
     icon: '/static/images/pool/BTCB.jpeg',
     title: 'BTCB Pool',
     stakingToken: tokens.btcb,
+    allocPoint: 200,
+    depositFeeBP: 400,
     address: {
       56: process.env.BTCB_ADDRESS,
       97: '',
@@ -66,6 +76,8 @@ const seedingPools = [
     icon: '/static/images/pool/ETH.png',
     title: 'ETH Pool',
     stakingToken: tokens.eth,
+    allocPoint: 200,
+    depositFeeBP: 400,
     address: {
       56: process.env.ETH_ADDRESS,
       97: '',
@@ -78,6 +90,8 @@ const seedingPools = [
     icon: '/static/images/pool/BUNNY.png',
     title: 'BUNNY Pool',
     stakingToken: tokens.bunny,
+    allocPoint: 200,
+    depositFeeBP: 400,
     address: {
       56: process.env.BUNNY_ADDRESS,
       97: '',
@@ -90,6 +104,8 @@ const seedingPools = [
     icon: '/static/images/pool/XVS.jpeg',
     title: 'XVS Pool',
     stakingToken: tokens.xvs,
+    allocPoint: 200,
+    depositFeeBP: 400,
     address: {
       56: process.env.XVS_ADDRESS,
       97: '',
@@ -102,6 +118,8 @@ const seedingPools = [
     icon: '/static/images/pool/USDC.png',
     title: 'USDC Pool',
     stakingToken: tokens.usdc,
+    allocPoint: 400,
+    depositFeeBP: 400,
     address: {
       56: process.env.USDC_ADDRESS,
       97: '',
@@ -114,6 +132,8 @@ const seedingPools = [
     icon: '/static/images/pool/DAI.png',
     title: 'DAI Pool',
     stakingToken: tokens.dai,
+    allocPoint: 400,
+    depositFeeBP: 400,
     address: {
       56: process.env.DAI_ADDRESS,
       97: '',
@@ -126,6 +146,8 @@ const seedingPools = [
     icon: '/static/images/pool/DOT.png',
     title: 'DOT Pool',
     stakingToken: tokens.dot,
+    allocPoint: 200,
+    depositFeeBP: 400,
     address: {
       56: process.env.DOT_ADDRESS,
       97: '',

@@ -17,6 +17,7 @@ import { getAddress, getOrchestratorAddress } from '../../utils/addressHelpers';
 import { useERC20 } from '../../hooks/useContract';
 import {BIG_TEN} from "../../config";
 import { usePoolFromPid } from 'state/texo/selectors';
+import { useFarmFromPid } from 'state/farms/selectors';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -38,6 +39,10 @@ function normalizeTokenDecimal(tokenInWei, decimals = 18) {
   return bigNumber.div(BIG_TEN.pow(decimals));
 }
 
+function normalizeFarmData(farm) {
+
+}
+
 function PoolItem(props: any) {
   const {
     poolData = {},
@@ -48,23 +53,37 @@ function PoolItem(props: any) {
     canClaimReward,
     isLiquidityPool,
   } = props;
-  const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {} } = poolData;
+  const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {}, pid: farmId } = poolData;
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
 
   const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const tokenInstance = useERC20(getAddress(poolData.address));
 
-  const currentPool = usePoolFromPid(poolId);
+  const currentPool = isLiquidityPool ? useFarmFromPid(farmId) : usePoolFromPid(poolId);
   const { tEXOPerBlock } = useOrchestratorData();
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
   const [openRoiDialog, setOpenRoiDialog] = useState(false);
-  const [apr, setAPR] = useState(0);
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
 
   const orchestratorAddress = getOrchestratorAddress();
+  const apr = getPoolApr(
+    stakingTokenPrice,
+    tEXOPrice,
+    normalizeTokenDecimal(totalStaked).toNumber(),
+    normalizeTokenDecimal(tEXOPerBlock).toNumber(),
+  );
+
+  if (isLiquidityPool) {
+    console.log('isLiquidityPool', isLiquidityPool);
+    console.log('currentPool', currentPool);
+    console.log('poolId', farmId);
+    console.log('-------------------------------');
+  }
+
+  // const liquidity = tEXOPrice * stakingTokenPrice * 
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
@@ -129,16 +148,6 @@ function PoolItem(props: any) {
     })
   }
 
-  const calculateAPR = () => {
-    const apr = getPoolApr(
-      stakingTokenPrice,
-      tEXOPrice,
-      normalizeTokenDecimal(totalStaked).toNumber(),
-      normalizeTokenDecimal(tEXOPerBlock).toNumber(),
-    );
-    setAPR(apr);
-  }
-
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
       .deposit(poolId, 0)
@@ -162,10 +171,6 @@ function PoolItem(props: any) {
     setOpenRoiDialog(!openRoiDialog)
   }
 
-  useEffect(() => {
-    calculateAPR();
-  }, [tEXOPrice, stakingTokenPrice]);
-
   const poolAllocPointDiv = currentPool ? (
     <div className={styles.poolAllocationPoint}>
        <p>{currentPool.allocPoint / 100} X</p>
@@ -186,7 +191,7 @@ function PoolItem(props: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>1,482,192$</h3>
+        <h3>0$</h3>
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
@@ -205,15 +210,19 @@ function PoolItem(props: any) {
       </div>
       <div>
         <p className={`${styles.title} text-right mb-1`}>{title}</p>
-        {currentPool && currentPool.depositFeeBP > 0 ? (
-          <div className={`d-flex items-center justify-end`}>
-            <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
-              <img src="/static/images/verified.svg" />
-              <p>No Fees</p>
-            </div>
-            {poolAllocPointDiv}
+        <div className={`d-flex items-center justify-end`}>
+          {
+           currentPool && currentPool.depositFeeBP <= 0
+            ? <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
+                <img src="/static/images/verified.svg" />
+                <p>No Fees</p>
+              </div>
+            : null
+          }
+          <div className={`${styles.poolAllocationPoint}`}>
+            <p>{currentPool.allocPoint / 100} X</p>
           </div>
-        ) : null}
+        </div>
       </div>
     </div>
   )
@@ -224,21 +233,26 @@ function PoolItem(props: any) {
         <div className={styles.poolItemGrid}>
           <div className={styles.item}>
             {isLiquidityPool && <div className={styles.liquidityPoolEffect} />}
-            <div className={`${styles.spacing} d-flex items-center column`}>
-              {isLiquidityPool ? (
-                liquidityPoolDiv()
-              ) : (
-                <>
-                  {poolAllocPointDiv}
-                  <div className={styles.poolItemGrid}>
-                    <img src={icon} alt={title} className={styles.icon} />
-                  </div>
 
-                  <div className={styles.poolItemGrid}>
-                    <p className={styles.title}>{title}</p>
-                  </div>
-                </>
-              )}
+            <div className={`${styles.spacing} d-flex items-center column`}>
+              {
+                isLiquidityPool
+                  ? (
+                      liquidityPoolDiv()
+                    )
+                  : (
+                      <>
+                        {poolAllocPointDiv}
+                        <div className={styles.poolItemGrid}>
+                          <img src={icon} alt={title} className={styles.icon} />
+                        </div>
+
+                        <div className={styles.poolItemGrid}>
+                          <p className={styles.title}>{title}</p>
+                        </div>
+                      </>
+                    )
+              }
 
               <div className={`${styles.poolItemGrid} w-full`}>
                 <RowPoolItem

@@ -21,7 +21,6 @@ export const useTotalValue = (): BigNumber => {
   const bnbPerTexoPrice = new BigNumber(useFarmQuoteTokenPrice(FARM_ID.TEXO_BNB));
   const bnbPrice = bnbPerTexoPrice.times(texoPrice);
   const farms = useFarms();
-  console.log(farms);
   let value = new BigNumber(0);
 
   for (let i = 0; i < farms.length; i++) {
