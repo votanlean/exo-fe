@@ -30,18 +30,21 @@ import {
  */
 
 export const useOrchestratorContract = () => {
-    const web3 = useWeb3()
-    return useMemo(() => getOrchestratorContract(web3), [web3])
+    const web3 = useWeb3();
+
+    return useMemo(() => getOrchestratorContract(web3), [web3]);
 }
 
 export const useTEXOContract = () => {
-    const web3 = useWeb3()
-    return useMemo(() => getTEXOContract(web3), [web3])
+    const web3 = useWeb3();
+
+    return useMemo(() => getTEXOContract(web3), [web3]);
 }
 
 export const useERC20 = (address: string) => {
-    const web3 = useWeb3()
-    return useMemo(() => getBep20Contract(address, web3), [address, web3])
+    const web3 = useWeb3();
+
+    return useMemo(() => getBep20Contract(address, web3), [address, web3]);
 }
 //
 // /**

@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
 
 export const BIG_TEN = new BigNumber(10);
 
-export const fetchPrices = async () => {
+const fetchPrices = async () => {
   const response = await fetch('https://api.pancakeswap.info/api/v2/tokens');
   const data = (await response.json()) as any;
 
@@ -16,4 +17,8 @@ export const fetchPrices = async () => {
       }
     }, {}),
   }
+}
+
+export const usePrices = () => {
+  return useMemo(() => fetchPrices(), []);
 }

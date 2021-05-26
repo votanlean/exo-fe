@@ -8,12 +8,8 @@ import Nav from '../Nav';
 
 import styles from './header.module.scss';
 import {useEagerConnect, useInactiveListener} from "../../hooks/useConnect";
-import { useFetchPublicData } from '../../state/hooks'
 
 const Header = () => {
-    //init public pool states
-    useFetchPublicData()
-
     const [openPopup, setOpenPopup] = useState(false);
     const [openLogoutPopup, setOpenLogoutPopup] = useState(false);
     const {account, active, connector} = useWeb3React();

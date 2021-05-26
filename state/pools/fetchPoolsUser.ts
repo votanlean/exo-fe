@@ -1,107 +1,85 @@
-import { AbiItem } from 'web3-utils'
-import poolsConfig from 'config/constants/pools'
-import orchestratorABI from '../../config/abi/TEXOOrchestrator.json'
-import tEXOABI from '../../blockchain/build/TEXOToken.json'
-import erc20ABI from 'config/abi/erc20.json'
-import multicall from 'utils/multicall'
-import { getAddress, getOrchestratorAddress } from 'utils/addressHelpers'
-import { getWeb3NoAccount } from 'utils/web3'
-import BigNumber from 'bignumber.js'
-import { getContract } from '../../utils/contractHelpers'
+import seedingPools from 'config/constants/seedingPools';
+import orchestratorABI from '../../config/abi/TEXOOrchestrator.json';
+import erc20ABI from 'config/abi/erc20.json';
+import multicall from 'utils/multicall';
+import { getAddress } from 'utils/addressHelpers';
+import BigNumber from 'bignumber.js';
+import contracts from 'config/constants/contracts';
 
-// Pool 0, Cake / Cake is a different kind of contract (master chef)
-// BNB pools use the native BNB token (wrapping ? unwrapping is done at the contract level)
-const nonBnbPools = poolsConfig.filter((p) => p.stakingToken.symbol !== 'BNB')
-// const bnbPools = poolsConfig.filter((p) => p.stakingToken.symbol === 'BNB')
-
-//TODO handle pool 0, should it be tEXO?
-
-// const nonMasterPools = poolsConfig.filter((p) => p.id !== 0)
-const web3 = getWeb3NoAccount()
-
-export const fetchPoolsAllowance = async (account) => {
-  const calls = nonBnbPools.map((p) => ({
+export const fetchPoolsAllowance = async (userAddress) => {
+  const calls = seedingPools.map((p) => ({
     address: getAddress(p.stakingToken.address),
     name: 'allowance',
-    params: [account, getAddress(p.contractAddress)],
-  }))
+    params: [userAddress, getAddress(contracts.orchestrator)],
+  }));
 
-  const allowances = await multicall(erc20ABI, calls)
-  return nonBnbPools.reduce(
-    (acc, pool, index) => ({ ...acc, [pool.id]: new BigNumber(allowances[index]).toJSON() }),
+  const allowances = await multicall(erc20ABI, calls);
+
+  return seedingPools.reduce(
+    (acc, pool, index) => ({
+      ...acc,
+      [pool.id]: new BigNumber(allowances[index]).toJSON(),
+    }),
     {},
   )
 }
 
-export const fetchUserBalances = async (account) => {
-  // Non BNB pools
-  const calls = nonBnbPools.map((p) => ({
+export const fetchUserBalances = async (userAddress) => {
+  const calls = seedingPools.map((p) => ({
     address: getAddress(p.stakingToken.address),
     name: 'balanceOf',
-    params: [account],
-  }))
-  const tokenBalancesRaw = await multicall(erc20ABI, calls)
-  const tokenBalances = nonBnbPools.reduce(
-    (acc, pool, index) => ({ ...acc, [pool.id]: new BigNumber(tokenBalancesRaw[index]).toJSON() }),
+    params: [userAddress],
+  }));
+
+  const tokenBalancesRaw = await multicall(erc20ABI, calls);
+
+  const tokenBalances = seedingPools.reduce(
+    (acc, pool, index) => ({
+      ...acc,
+      [pool.id]: new BigNumber(tokenBalancesRaw[index]).toJSON(),
+    }),
     {},
-  )
+  );
 
-  // BNB pools
-  // const bnbBalance = await web3.eth.getBalance(account)
-  // const bnbBalances = bnbPools.reduce(
-  //   (acc, pool) => ({ ...acc, [pool.id]: new BigNumber(bnbBalance).toJSON() }),
-  //   {},
-  // )
-
-  return { ...tokenBalances,
-    // ...bnbBalances
-  }
+  return tokenBalances;
 }
 
-export const fetchUserStakeBalances = async (account) => {
-  const calls = nonBnbPools.map((p) => ({
-    address: getAddress(p.contractAddress),
+export const fetchUserStakeBalances = async (userAddress) => {
+  const calls = seedingPools.map((p) => ({
+    address: getAddress(contracts.orchestrator),
     name: 'userInfo',
-    params: [p.id, account],
-  }))
+    params: [p.id, userAddress],
+  }));
+
   const userInfo = await multicall(orchestratorABI, calls)
-  const stakedBalances = nonBnbPools.reduce(
+
+  const stakedBalances = seedingPools.reduce(
     (acc, pool, index) => ({
       ...acc,
       [pool.id]: new BigNumber(userInfo[index].amount._hex).toJSON(),
     }),
     {},
-  )
+  );
 
-  // tEXO / tEXO pool
-  // const { amount: masterPoolAmount } = await masterChefContract.methods.userInfo('0', account).call()
-  return { ...stakedBalances
-    // , 0: new BigNumber(masterPoolAmount).toJSON()
-  }
+  return stakedBalances;
 }
 
-
-//TODO: check if pending reward valid usecase
-
-export const fetchUserPendingRewards = async (account) => {
-  const calls = nonBnbPools.map((p) => ({
-    address: getAddress(p.contractAddress),
+export const fetchUserPendingRewards = async (userAddress) => {
+  const calls = seedingPools.map((p) => ({
+    address: getAddress(contracts.orchestrator),
     name: 'pendingTEXO',
-    params: [p.id, account],
-  }))
-  const res = await multicall(orchestratorABI, calls)
-  const pendingRewards = nonBnbPools.reduce(
+    params: [p.id, userAddress],
+  }));
+
+  const res = await multicall(orchestratorABI, calls);
+
+  const pendingRewards = seedingPools.reduce(
     (acc, pool, index) => ({
       ...acc,
       [pool.id]: new BigNumber(res[index]).toJSON(),
     }),
     {},
-  )
+  );
 
-  // tEXO / tEXO pool
-  // const pendingReward = await orchestratorContract.methods.pendingTEXO('0', account).call()
-
-  return { ...pendingRewards,
-    // 0: new BigNumber(pendingReward).toJSON()
-  }
+  return pendingRewards;
 }

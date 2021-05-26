@@ -15,10 +15,14 @@ export const getPoolApr = (
   totalStaked: number,
   tokenPerBlock: number,
 ): number => {
-  const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock).times(BLOCKS_PER_YEAR)
-  const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked)
-  const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
-  return apr.isNaN() || !apr.isFinite() ? null : apr.toNumber()
+  const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock).times(BLOCKS_PER_YEAR);
+  const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked);
+  const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100);
+
+  // console.log(totalRewardPricePerYear);
+  // console.log(totalStakingTokenInPool);
+
+  return apr.isNaN() || !apr.isFinite() ? null : apr.toNumber();
 }
 
 /**

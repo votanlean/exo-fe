@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 export interface Address {
     97?: string
     56: string
@@ -62,6 +64,23 @@ export interface FarmConfig {
     }
 }
 
+export interface Farm extends FarmConfig {
+    tokenAmountMc?: BigNumber
+    quoteTokenAmountMc?: BigNumber
+    tokenAmountTotal?: BigNumber
+    quoteTokenAmountTotal?: BigNumber
+    lpTotalInQuoteToken?: BigNumber
+    lpTotalSupply?: BigNumber
+    tokenPriceVsQuote?: BigNumber
+    poolWeight?: BigNumber
+    userData?: {
+      allowance: string
+      tokenBalance: string
+      stakedBalance: string
+      earnings: string
+    }
+  }
+
 export interface PoolConfig {
     id: number
     stakingToken: Token
@@ -72,7 +91,7 @@ export interface PoolConfig {
     address: string //TODO remove
     symbol: string
     // poolCategory: PoolCategory
-    // tokenPerBlock: string
+    tokenPerBlock: string
     // sortOrder?: number
     // harvest?: boolean
     // isFinished?: boolean
