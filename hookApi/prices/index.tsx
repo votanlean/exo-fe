@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { useAppPrices } from 'state/prices/selectors';
 
 export const BIG_TEN = new BigNumber(10);
 
@@ -16,4 +17,11 @@ export const fetchPrices = async () => {
       }
     }, {}),
   }
+}
+
+export const useTokenPrice = (tokenAddress) => {
+  const allTokenPrices = useAppPrices();
+  const tokenPrice = allTokenPrices[tokenAddress];
+
+  return tokenPrice || 0;
 }

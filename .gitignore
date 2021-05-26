@@ -14,7 +14,7 @@
 
 # production
 /build
-!binance/build
+!blockchain/build
 
 # misc
 .DS_Store

@@ -6,27 +6,30 @@ import { BIG_TEN } from '../../config';
 import ConnectPopup from '../ConnectPopup';
 
 import { useStyles } from './styles';
+import BigNumber from 'bignumber.js';
 
-function calculateMarketCap(tEXOPrice, totalSupply) {
+function calculateMarketCap(tEXOPrice, totalSupply: string) {
   if (!tEXOPrice || !totalSupply) {
     return 0;
   }
 
-  return totalSupply.times(tEXOPrice);
+  const bigNumberTotalSupply = new BigNumber(totalSupply).div(BIG_TEN.pow(18));
+  const bigNumberTEXOPRice = new BigNumber(tEXOPrice);
+
+  return bigNumberTotalSupply.times(bigNumberTEXOPRice).toFixed(2);
 }
 
-function normalizeBigNumber(bigNum) {
-  return bigNum ? bigNum.div(BIG_TEN.pow(18)).toNumber() : 0;
+function normalizeBigNumber(data: string) {
+  const bigNumber = new BigNumber(data);
+
+  return bigNumber.div(BIG_TEN.pow(18)).toNumber();
 }
 
 function Statistic(props) {
-  const { totalSupply, tEXOPrice, currentTEXOPerBlock, burnAmount } = props;
-
+  const { totalSupply, tEXOPrice, currentTEXOPerBlock, burnAmount, tvl } = props;
   const normalizedTotalSupply = normalizeBigNumber(totalSupply);
   const normalizedEmissionRate = normalizeBigNumber(currentTEXOPerBlock);
   const normalizedBurnAmount = normalizeBigNumber(burnAmount);
-
-  // console.log(totalSupply.div(BIG_TEN.pow(18)));
 
   const classes = useStyles();
   const { active } = useWeb3React();
@@ -94,28 +97,35 @@ function Statistic(props) {
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Total tEXO Supply</Typography>
             <Typography className={'font-bold'}>
-              {Math.round(normalizedTotalSupply)}
+              {Math.round(normalizedTotalSupply)} tEXO
+            </Typography>
+          </Box>
+
+          <Box display="flex" justifyContent="space-between">
+            <Typography className={'font-bold'}>tEXO Price</Typography>
+            <Typography className={'font-bold'}>
+              ${Number(tEXOPrice).toFixed(2)}
             </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Market Cap</Typography>
             <Typography className={'font-bold'}>
-              ${calculateMarketCap(tEXOPrice, normalizedTotalSupply)}
+              ${calculateMarketCap(tEXOPrice, totalSupply)}
             </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Total tEXO Burned</Typography>
             <Typography className={'font-bold'}>
-              {normalizedBurnAmount}
+              {normalizedBurnAmount} tEXO
             </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>New tEXO/block</Typography>
             <Typography className={'font-bold'}>
-              {normalizedEmissionRate}
+              {normalizedEmissionRate} tEXO / block
             </Typography>
           </Box>
         </Box>
@@ -133,7 +143,7 @@ function Statistic(props) {
           </Typography>
 
           <Typography variant="h4" className={'font-bold'}>
-            $0
+            ${tvl.toFixed(4)}
           </Typography>
 
           <Typography color="textPrimary" className={'font-bold'}>

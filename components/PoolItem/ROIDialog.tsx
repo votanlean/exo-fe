@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import Link from 'next/link'
 import {
   Dialog,
   DialogTitle,
@@ -11,6 +9,7 @@ import {
   IconButton,
 } from '@material-ui/core'
 import { Close, Launch } from '@material-ui/icons'
+import { getRoi, tokenEarnedPerThousandDollarsCompounding } from 'utils/compoundApyHelpers'
 
 const useStyles = makeStyles(theme => {
   return {
@@ -64,8 +63,38 @@ const useStyles = makeStyles(theme => {
 })
 
 const ROIDialog = (props: any) => {
-  const { open, onClose } = props || {}
-  const classes: any = useStyles()
+  const {
+    open,
+    onClose,
+    poolData = {},
+  } = props || {};
+  const classes: any = useStyles();
+  const { apr, tokenPrice } = poolData;
+  const oneThousandDollarsWorthOfToken = 1000 / tokenPrice;
+
+  const tokenEarnedPerThousand1D = tokenEarnedPerThousandDollarsCompounding({
+    numberOfDays: 1,
+    farmApr: apr,
+    tokenPrice,
+  });
+
+  const tokenEarnedPerThousand7D = tokenEarnedPerThousandDollarsCompounding({
+    numberOfDays: 7,
+    farmApr: apr,
+    tokenPrice,
+  });
+
+  const tokenEarnedPerThousand30D = tokenEarnedPerThousandDollarsCompounding({
+    numberOfDays: 30,
+    farmApr: apr,
+    tokenPrice,
+  });
+  
+  const tokenEarnedPerThousand365D = tokenEarnedPerThousandDollarsCompounding({
+    numberOfDays: 365,
+    farmApr: apr,
+    tokenPrice,
+  })
 
   const onCloseDialog = () => {
     onClose()
@@ -118,12 +147,12 @@ const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              0.10%
+              {getRoi({ amountEarned: tokenEarnedPerThousand1D, amountInvested: oneThousandDollarsWorthOfToken }).toFixed(2)}%
             </Typography>
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              14.06
+              {tokenEarnedPerThousand1D}
             </Typography>
           </div>
           <div>
@@ -133,12 +162,12 @@ const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              0.68%
+            {getRoi({ amountEarned: tokenEarnedPerThousand7D, amountInvested: oneThousandDollarsWorthOfToken }).toFixed(2)}%
             </Typography>
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              98.68
+              {tokenEarnedPerThousand7D}
             </Typography>
           </div>
           <div>
@@ -148,12 +177,12 @@ const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              2.96%
+            {getRoi({ amountEarned: tokenEarnedPerThousand30D, amountInvested: oneThousandDollarsWorthOfToken }).toFixed(2)}%
             </Typography>
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              427.7
+              {tokenEarnedPerThousand30D}
             </Typography>
           </div>
           <div>
@@ -163,12 +192,12 @@ const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              42.63%
+            {getRoi({ amountEarned: tokenEarnedPerThousand365D, amountInvested: oneThousandDollarsWorthOfToken }).toFixed(2)}%
             </Typography>
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              6156.6
+              {tokenEarnedPerThousand365D}
             </Typography>
           </div>
         </Box>

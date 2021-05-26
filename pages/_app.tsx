@@ -2,12 +2,10 @@ import { useEffect } from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { persistStore } from 'redux-persist';
 
-import { store } from '../store';
-import { getLibrary } from '../lib/web3';
-import theme from '../lib/theme/theme';
+import { store } from '../state';
+import { getLibrary } from '../utils/web3React';
+import theme from '../components/theme/theme';
 import MainLayout from '../components/Layout';
 import '../styles/main.scss';
 
@@ -19,17 +17,13 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  let persistor = persistStore(store);
-
   return (
     <ThemeProvider theme={theme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
             <MainLayout>
               <Component {...pageProps} />
             </MainLayout>
-          </PersistGate>
         </Provider>
       </Web3ReactProvider>
     </ThemeProvider>

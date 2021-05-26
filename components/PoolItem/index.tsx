@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import { useWeb3React } from '@web3-react/core'
-import { Grid } from '@material-ui/core'
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
-import { EventEmitter } from 'events'
+import React, { useEffect, useState } from 'react';
+import { Grid } from '@material-ui/core';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { EventEmitter } from 'events';
+import BigNumber from 'bignumber.js';
 
-import orchestratorInstance from '../../binance/orchestrator'
-import web3 from '../../binance/web3'
-import StakeDialog from './StakeDialog'
-import WithdrawDialog from './WithdrawDialog'
-import ROIDialog from './ROIDialog'
+import styles from './poolItem.module.scss';
+import orchestratorInstance from '../../blockchain/orchestrator';
+import web3 from '../../blockchain/web3';
+import StakeDialog from './StakeDialog';
+import WithdrawDialog from './WithdrawDialog';
+import ROIDialog from './ROIDialog';
 import { getPoolApr } from '../../hookApi/apr';
-
-import styles from './poolItem.module.scss'
+import { useOrchestratorData } from 'state/orchestrator/selectors';
+import { getAddress, getOrchestratorAddress } from '../../utils/addressHelpers';
+import { useERC20 } from '../../hooks/useContract';
+import {BIG_TEN} from "../../config";
+import { usePoolFromPid } from 'state/texo/selectors';
+import { useFarmFromPid } from 'state/farms/selectors';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -24,35 +29,52 @@ function formatDepositFee(depositFee, decimals = 4) {
   return `${actualDepositFee.toFixed(2)}%`
 }
 
-function PoolItem(poolData: any) {
+function normalizeTokenDecimal(tokenInWei, decimals = 18) {
+  if (!tokenInWei) {
+    return new BigNumber(0);
+  }
+
+  const bigNumber = ['string', 'number'].includes(typeof tokenInWei) ? new BigNumber(tokenInWei) : tokenInWei;
+
+  return bigNumber.div(BIG_TEN.pow(decimals));
+}
+
+function normalizeFarmData(farm) {
+
+}
+
+function PoolItem(props: any) {
   const {
-    data,
+    poolData = {},
     selectedAccount,
-    currentBlockHeight,
     onPoolStateChange,
     stakingTokenPrice,
     tEXOPrice,
+    canClaimReward,
     isLiquidityPool,
-  } = poolData
-  const { id: poolId, icon, title, tokenInstance, symbol, bsScanLink } =
-    data || {}
+  } = props;
+  const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {}, pid: farmId, lpTotalSupply, lpTotalInQuoteToken } = poolData;
+  const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
 
-  const [openStakeDialog, setOpenStakeDialog] = useState(false)
-  const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false)
-  const [openRoiDialog, setOpenRoiDialog] = useState(false)
+  const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
+  const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
+  const tokenInstance = useERC20(getAddress(poolData.address));
 
-  const [currentPool, setCurrentPool] = useState(null)
-  const [totalSupply, setTotalSupply] = useState(0)
-  const [apr, setAPR] = useState(0);
-  const [myStake, setMyStake] = useState(0)
-  const [isDisplayDetails, setIsDisplayDetails] = useState(false)
-  const [canClaimReward, setCanClaimReward] = useState(false)
-  const [currentReward, setCurrentReward] = useState(0)
-  const [walletBalance, setWalletBalance] = useState(0)
+  const currentPool = isLiquidityPool ? useFarmFromPid(farmId) : usePoolFromPid(poolId);
+  const { tEXOPerBlock } = useOrchestratorData();
 
-  const { active } = useWeb3React()
+  const [openStakeDialog, setOpenStakeDialog] = useState(false);
+  const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
+  const [openRoiDialog, setOpenRoiDialog] = useState(false);
+  const [isDisplayDetails, setIsDisplayDetails] = useState(false);
 
-  const orchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
+  const orchestratorAddress = getOrchestratorAddress();
+  const apr = getPoolApr(
+    stakingTokenPrice,
+    tEXOPrice,
+    normalizeTokenDecimal(totalStaked || lpTotalSupply).toNumber(),
+    normalizeTokenDecimal(tEXOPerBlock).toNumber(),
+  );
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
@@ -117,11 +139,6 @@ function PoolItem(poolData: any) {
     })
   }
 
-  const calculateAPR = () => {
-    const apr = getPoolApr(stakingTokenPrice, tEXOPrice, totalSupply, 0.5);
-    setAPR(apr);
-  }
-
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
       .deposit(poolId, 0)
@@ -137,84 +154,19 @@ function PoolItem(poolData: any) {
     })
   }
 
-  const getTotalSupply = async () => {
-    if (selectedAccount) {
-      const totalSupply = await tokenInstance.methods
-        .balanceOf(orchestratorAddress)
-        .call()
-      setTotalSupply(totalSupply / Math.pow(10, 18))
-    }
-  }
-
-  const getMyStake = async () => {
-    if (selectedAccount) {
-      const myStake = await orchestratorInstance.methods
-        .userInfo(poolId, selectedAccount)
-        .call()
-      setMyStake(myStake[0] / Math.pow(10, 18))
-    }
-  }
-
-  const getWalletBalance = async () => {
-    if (selectedAccount) {
-      const walletBalance = await tokenInstance.methods
-        .balanceOf(selectedAccount)
-        .call()
-      setWalletBalance(web3.utils.fromWei(walletBalance, 'ether'))
-    }
-  }
-
-  const getCurrentReward = async () => {
-    if (selectedAccount) {
-      const currentReward = await orchestratorInstance.methods
-        .pendingTEXO(poolId, selectedAccount)
-        .call()
-      const rewardInWei = Number(web3.utils.fromWei(currentReward, 'ether'))
-      setCurrentReward(Number(rewardInWei.toFixed(5)))
-    }
-  }
-
-  const getPoolInfo = async () => {
-    const currentPool = await orchestratorInstance.methods
-      .poolInfo(poolId)
-      .call()
-    const blockToReceiveReward = currentPool.blockToReceiveReward
-    setCurrentPool(currentPool)
-
-    if (selectedAccount) {
-      setCanClaimReward(currentBlockHeight >= blockToReceiveReward)
-    }
-  }
-
   const toggleDisplayDetails = () => {
     setIsDisplayDetails(!isDisplayDetails)
-  }
-
-  const listenForBlockHeightChange = () => {
-    getPoolInfo()
-    getTotalSupply()
-    getMyStake()
-    getWalletBalance()
-    getCurrentReward()
   }
 
   const onToggleRoiDialog = () => {
     setOpenRoiDialog(!openRoiDialog)
   }
 
-  useEffect(() => {
-    calculateAPR();
-  }, [tEXOPrice, stakingTokenPrice]);
-
-  useEffect(listenForBlockHeightChange, [currentBlockHeight])
-
   const poolAllocPointDiv = currentPool ? (
     <div className={styles.poolAllocationPoint}>
        <p>{currentPool.allocPoint / 100} X</p>
-      {/* Temporary */}
-      {/*<p>50 X</p>*/}
     </div>
-  ) : null
+  ) : null;
 
   const poolDetailsDiv = isDisplayDetails ? (
     <div className={styles.detailsContainer}>
@@ -230,7 +182,7 @@ function PoolItem(poolData: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>1,482,192$</h3>
+        <h3>${Number(normalizeTokenDecimal(totalStaked) * stakingTokenPrice || lpTotalInQuoteToken).toFixed(2)}</h3>
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
@@ -249,15 +201,19 @@ function PoolItem(poolData: any) {
       </div>
       <div>
         <p className={`${styles.title} text-right mb-1`}>{title}</p>
-        {currentPool && currentPool.depositFeeBP > 0 ? (
-          <div className={`d-flex items-center justify-end`}>
-            <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
-              <img src="/static/images/verified.svg" />
-              <p>No Fees</p>
-            </div>
-            {poolAllocPointDiv}
+        <div className={`d-flex items-center justify-end`}>
+          {
+           currentPool && currentPool.depositFeeBP <= 0
+            ? <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
+                <img src="/static/images/verified.svg" />
+                <p>No Fees</p>
+              </div>
+            : null
+          }
+          <div className={`${styles.poolAllocationPoint}`}>
+            <p>{currentPool.allocPoint / 100} X</p>
           </div>
-        ) : null}
+        </div>
       </div>
     </div>
   )
@@ -268,21 +224,26 @@ function PoolItem(poolData: any) {
         <div className={styles.poolItemGrid}>
           <div className={styles.item}>
             {isLiquidityPool && <div className={styles.liquidityPoolEffect} />}
-            <div className={`${styles.spacing} d-flex items-center column`}>
-              {isLiquidityPool ? (
-                liquidityPoolDiv()
-              ) : (
-                <>
-                  {poolAllocPointDiv}
-                  <div className={styles.poolItemGrid}>
-                    <img src={icon} alt={title} className={styles.icon} />
-                  </div>
 
-                  <div className={styles.poolItemGrid}>
-                    <p className={styles.title}>{title}</p>
-                  </div>
-                </>
-              )}
+            <div className={`${styles.spacing} d-flex items-center column`}>
+              {
+                isLiquidityPool
+                  ? (
+                      liquidityPoolDiv()
+                    )
+                  : (
+                      <>
+                        {poolAllocPointDiv}
+                        <div className={styles.poolItemGrid}>
+                          <img src={icon} alt={title} className={styles.icon} />
+                        </div>
+
+                        <div className={styles.poolItemGrid}>
+                          <p className={styles.title}>{title}</p>
+                        </div>
+                      </>
+                    )
+              }
 
               <div className={`${styles.poolItemGrid} w-full`}>
                 <RowPoolItem
@@ -304,7 +265,7 @@ function PoolItem(poolData: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {myStake} {symbol}
+                    {normalizeTokenDecimal(stakedBalance).toNumber().toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -319,11 +280,13 @@ function PoolItem(poolData: any) {
                   title="My Rewards"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>{currentReward} tEXO</p>
+                  <p>
+                    {normalizeTokenDecimal(pendingReward).toNumber().toFixed(4)} tEXO
+                  </p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {totalSupply} {symbol}
+                    {normalizeTokenDecimal(totalStaked || lpTotalSupply).toNumber().toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -331,7 +294,7 @@ function PoolItem(poolData: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {walletBalance} {symbol}
+                    {normalizeTokenDecimal(stakingTokenBalance).toNumber().toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
               </div>
@@ -350,45 +313,45 @@ function PoolItem(poolData: any) {
                   >
                     Claim Rewards
                   </button>
-                  {active && myStake > 0 ? (
-                    <Grid container>
-                      <Grid item xs={6}>
-                        <button
-                          type="button"
-                          className={`${styles.button} ${styles.withdrawButton}`}
-                          onClick={handleClickWithdraw}
-                        >
-                          Withdraw
-                        </button>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <button
-                          type="button"
-                          className={`${styles.button} ${styles.stakeButton}`}
-                          onClick={handleClickStake}
-                        >
-                          Stake
-                        </button>
-                      </Grid>
-                    </Grid>
-                  ) : (
-                    <button
-                      type="button"
-                      className={`${styles.button} ${
-                        active ? '' : styles.disabled
-                      }`}
-                      disabled={!active}
-                      onClick={handleClickStake}
-                    >
-                      Stake
-                    </button>
-                  )}
+                  {
+                    canWithdraw
+                      ? (
+                          <Grid container>
+                            <Grid item xs={6}>
+                              <button
+                                type="button"
+                                className={`${styles.button} ${styles.withdrawButton}`}
+                                onClick={handleClickWithdraw}
+                              >
+                                Withdraw
+                              </button>
+                            </Grid>
+                            <Grid item xs={6}>
+                              <button
+                                type="button"
+                                className={`${styles.button} ${styles.stakeButton}`}
+                                onClick={handleClickStake}
+                              >
+                                Stake
+                              </button>
+                            </Grid>
+                          </Grid>
+                        )
+                      : (
+                          <button
+                            type="button"
+                            className={`${styles.button} ${isAlreadyApproved ? '' : styles.disabled}`}
+                            disabled={!isAlreadyApproved}
+                            onClick={handleClickStake}
+                          >
+                            Stake
+                          </button>
+                        )
+                    }
                   <button
                     type="button"
-                    className={`${styles.button} ${
-                      active ? '' : styles.disabled
-                    }`}
-                    disabled={!active}
+                    className={`${styles.button} ${!isAlreadyApproved ? '' : styles.disabled}`}
+                    disabled={isAlreadyApproved}
                     onClick={handleClickApprove}
                   >
                     Approve
@@ -415,7 +378,7 @@ function PoolItem(poolData: any) {
         onConfirm={handleConfirmStake}
         unit={symbol}
         depositFee={currentPool && currentPool.depositFeeBP}
-        maxAmount={walletBalance}
+        maxAmount={stakingTokenBalance}
       />
       <WithdrawDialog
         open={openWithdrawDialog}
@@ -423,9 +386,13 @@ function PoolItem(poolData: any) {
         onClose={handleCloseWithdrawDialog}
         onConfirm={handleConfirmWithdraw}
         unit={symbol}
-        maxAmount={myStake}
+        maxAmount={stakedBalance}
       />
-      <ROIDialog open={openRoiDialog} onClose={onToggleRoiDialog} />
+      <ROIDialog
+        open={openRoiDialog}
+        onClose={onToggleRoiDialog}
+        poolData={{ apr, tokenPrice: stakingTokenPrice }}
+      />
     </>
   )
 }

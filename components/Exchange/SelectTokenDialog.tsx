@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 
-import { poolToken } from '../../binance/tokenFactory';
+import { poolToken } from '../../blockchain/tokenFactory';
 import { HelpOutline } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => {
