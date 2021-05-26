@@ -136,7 +136,7 @@ function Pool() {
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
               poolData={farmsData[index]}
-              key={farm.id}
+              key={farm.pid}
               isLiquidityPool={true}
             />;
           })}
