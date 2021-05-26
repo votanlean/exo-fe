@@ -1055,7 +1055,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         IBEP20 _lpToken,
         uint16 _depositFeeBP,
         bool _withUpdate,
-        uint256 _blockToReceiveReward
+        uint256 _blockToReceiveReward,
+        uint256 _startGenerateRewardBlock
     ) public onlyOwner nonDuplicated(_lpToken) {
         require(_depositFeeBP <= MAXIMUM_DEPOSIT_FEE_BP, "add: invalid deposit fee basis points");
 
@@ -1072,7 +1073,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
             PoolInfo({
                 lpToken: _lpToken,
                 allocPoint: _allocPoint,
-                lastRewardBlock: block.number > startBlock ? block.number : startBlock,
+                lastRewardBlock: _startGenerateRewardBlock > 0 ? _startGenerateRewardBlock : (block.number > startBlock ? block.number : startBlock),
                 accTEXOPerShare: 0,
                 depositFeeBP: _depositFeeBP,
                 blockToReceiveReward: blockToReceiveReward
