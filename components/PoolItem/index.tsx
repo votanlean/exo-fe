@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Grid } from '@material-ui/core';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
@@ -7,17 +7,17 @@ import BigNumber from 'bignumber.js';
 
 import styles from './poolItem.module.scss';
 import orchestratorInstance from '../../blockchain/orchestrator';
-import web3 from '../../blockchain/web3';
 import StakeDialog from './StakeDialog';
 import WithdrawDialog from './WithdrawDialog';
 import ROIDialog from './ROIDialog';
 import { getPoolApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { getAddress, getOrchestratorAddress } from '../../utils/addressHelpers';
-import { useERC20 } from '../../hooks/useContract';
 import {BIG_TEN} from "../../config";
-import { usePoolFromPid } from 'state/texo/selectors';
 import { useFarmFromPid } from 'state/farms/selectors';
+import { usePoolFromPid } from 'state/texo/selectors';
+import erc20abi from 'config/abi/erc20.json';
+import web3 from 'blockchain/web3';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -39,10 +39,6 @@ function normalizeTokenDecimal(tokenInWei, decimals = 18) {
   return bigNumber.div(BIG_TEN.pow(decimals));
 }
 
-function normalizeFarmData(farm) {
-
-}
-
 function PoolItem(props: any) {
   const {
     poolData = {},
@@ -58,7 +54,9 @@ function PoolItem(props: any) {
 
   const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
-  const tokenInstance = useERC20(getAddress(poolData.address));
+
+  const tokenAddress = isLiquidityPool ? poolData.address : getAddress(poolData.address);
+  const tokenInstance = new web3.eth.Contract(erc20abi as any, tokenAddress);
 
   const currentPool = isLiquidityPool ? useFarmFromPid(farmId) : usePoolFromPid(poolId);
   const { tEXOPerBlock } = useOrchestratorData();
@@ -79,7 +77,8 @@ function PoolItem(props: any) {
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
       .approve(orchestratorAddress, web3.utils.toWei('8', 'ether'))
-      .send({ from: selectedAccount })
+      .send({ from: selectedAccount, gas: '3000000' });
+
     approvalEventEmitter.on('receipt', data => {
       onPoolStateChange()
       approvalEventEmitter.removeAllListeners()
@@ -104,11 +103,12 @@ function PoolItem(props: any) {
   const handleConfirmStake = async amount => {
     const stakeEventEmitter: EventEmitter = orchestratorInstance.methods
       .deposit(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount })
+      .send({ from: selectedAccount, gas: 3000000 });
+
     stakeEventEmitter.on('receipt', data => {
       onPoolStateChange()
       stakeEventEmitter.removeAllListeners()
-    })
+    });
 
     stakeEventEmitter.on('error', data => {
       onPoolStateChange()
@@ -127,7 +127,7 @@ function PoolItem(props: any) {
   const handleConfirmWithdraw = async amount => {
     const withdrawEventEmitter = orchestratorInstance.methods
       .withdraw(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount })
+      .send({ from: selectedAccount, gas: 3000000 })
     withdrawEventEmitter.on('receipt', data => {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
@@ -142,7 +142,7 @@ function PoolItem(props: any) {
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
       .deposit(poolId, 0)
-      .send({ from: selectedAccount })
+      .send({ from: selectedAccount, gas: 3000000 })
     claimRewardsEventEmitter.on('receipt', data => {
       onPoolStateChange()
       claimRewardsEventEmitter.removeAllListeners()

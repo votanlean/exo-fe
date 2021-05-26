@@ -69,7 +69,5 @@ export const fetchFarmUserEarnings = async (account: string, farmsToFetch: any[]
     return new BigNumber(earnings).toJSON()
   });
 
-  console.log('parsedEarnings', parsedEarnings);
-
   return parsedEarnings;
 }

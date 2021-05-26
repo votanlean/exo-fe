@@ -6,9 +6,9 @@ import web3NoAccount from 'utils/web3'
 import { getTEXOAddress, getOrchestratorAddress } from 'utils/addressHelpers'
 
 // ABI
-import compiledOrchestrator from '../blockchain/build/TEXOOrchestrator.json'
-import compiledTEXO from '../blockchain/build/TEXOToken.json'
-import bep20Abi from 'config/abi/erc20.json'
+import compiledOrchestrator from '../blockchain/build/TEXOOrchestrator.json';
+import compiledTEXO from '../blockchain/build/TEXOToken.json';
+import bep20Abi from '../blockchain/build/IBEP20.json';
 
 //TODO remove export, currently export to support contract factory transformer
 export const getContract = (abi: any, address: string, web3?: Web3) => {
@@ -27,5 +27,5 @@ export const getOrchestratorContract = (web3?: Web3) => {
 }
 
 export const getBep20Contract = (address: string, web3?: Web3) => {
-    return getContract(bep20Abi, address, web3)
+    return getContract(bep20Abi.abi, address, web3)
 }

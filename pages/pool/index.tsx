@@ -57,7 +57,7 @@ function Pool() {
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
   const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
 
-  useEffect(() => {
+  const loadAppGlobalData = () => {
     dispatch(fetchFarmsPublicDataAsync());
     dispatch(fetchTexoTokenDataThunk);
     dispatch(fetchOrchestratorDataThunk);
@@ -69,7 +69,9 @@ function Pool() {
       dispatch(fetchFarmUserDataAsync(account));
       dispatch(fetchPoolsUserDataAsync(account));
     }
-  }, [account, dispatch]);
+  }
+
+  useEffect(loadAppGlobalData, [account, dispatch]);
 
   const countDownInterval = useRef(null);
 
@@ -129,6 +131,7 @@ function Pool() {
 
             return <PoolItem
               selectedAccount={account}
+              onPoolStateChange={loadAppGlobalData}
               canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
@@ -158,6 +161,7 @@ function Pool() {
 
             return <PoolItem
               selectedAccount={account}
+              onPoolStateChange={loadAppGlobalData}
               canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
