@@ -179,3 +179,18 @@
   }
 }
 
+@media (max-width: 992px) {
+  .poolItem {
+    flex-grow: 0;
+    max-width: 50%;
+    flex-basis: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .poolItem {
+    flex-grow: 0;
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+}

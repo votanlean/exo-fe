@@ -28,6 +28,13 @@ body {
 //    MEDIA QUERIES
 // =====================================================
 
+@media (min-width: 360px) {
+  .container {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+}
+
 // Medium
 @media (min-width: 768px) {
   .container {
@@ -40,15 +47,13 @@ body {
   .container {
     margin-left: 5vw;
     margin-right: 5vw;
-    padding-left: 5vw;
-    padding-right: 5vw;
   }
 }
 
 @media (min-width: 1200px) {
   .container {
     margin-left: 10vw;
-    margin-right: 10vw;	
+    margin-right: 10vw;
   }
 }
 
