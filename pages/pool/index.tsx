@@ -138,6 +138,7 @@ function Pool() {
               poolData={farmsData[index]}
               key={farm.pid}
               isLiquidityPool={true}
+              countDownString={countDownString}
             />;
           })}
         </div>
@@ -167,6 +168,7 @@ function Pool() {
               tEXOPrice={tEXOPrice}
               poolData={poolsData[index]}
               key={pool.id}
+              countDownString={countDownString}
             />
           })}
         </div>
