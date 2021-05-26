@@ -53,7 +53,7 @@ function PoolItem(props: any) {
     canClaimReward,
     isLiquidityPool,
   } = props;
-  const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {}, pid: farmId, lpTotalSupply, lpTotalInQuoteToken } = poolData;
+  const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {}, pid: farmId, lpTotalSupply = 0, lpTotalInQuoteToken = 0 } = poolData;
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
 
   const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;

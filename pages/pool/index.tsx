@@ -75,9 +75,9 @@ function Pool() {
 
   useEffect(() => {
     if (!canClaimRewardsBlock || !currentBlock || countDownInterval.current) { return; }
-    
+
     const claimRewardDate = getClaimRewardsDate(currentBlock, canClaimRewardsBlock, dayjs()).toDate();
-    
+
     const interval = setInterval(() => {
       const hasPassedRewardLockDate = dayjs().isAfter(dayjs(claimRewardDate));
 
@@ -129,7 +129,7 @@ function Pool() {
 
             return <PoolItem
               selectedAccount={account}
-              canClaimReward={currentBlock && currentBlock <= canClaimRewardsBlock}
+              canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
               poolData={farmsData[index]}
@@ -158,7 +158,7 @@ function Pool() {
 
             return <PoolItem
               selectedAccount={account}
-              canClaimReward={currentBlock && currentBlock <= canClaimRewardsBlock}
+              canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
               poolData={poolsData[index]}
