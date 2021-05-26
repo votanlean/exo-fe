@@ -25,6 +25,7 @@ import { fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync } from 'state/pools/
 import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
 import { useFarms, useTotalValue } from 'state/farms/selectors';
+import FarmItem from 'components/FarmItem';
 
 function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
   if (!currentBlock || !canClaimRewardsBlock) {
@@ -129,13 +130,13 @@ function Pool() {
               stakingTokenPrice = allTokenPrices.data[getAddress(farm.quoteToken.address)];
             }
 
-            return <PoolItem
+            return <FarmItem
               selectedAccount={account}
               onPoolStateChange={loadAppGlobalData}
               canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
-              poolData={farmsData[index]}
+              farmData={farmsData[index]}
               key={farm.id}
               isLiquidityPool={true}
             />;

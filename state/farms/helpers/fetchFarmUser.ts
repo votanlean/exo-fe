@@ -32,7 +32,8 @@ export const fetchFarmUserTokenBalances = async (account: string, farmsToFetch: 
   const rawTokenBalances = await multicall(erc20ABI, calls)
   const parsedTokenBalances = rawTokenBalances.map((tokenBalance) => {
     return new BigNumber(tokenBalance).toJSON()
-  })
+  });
+
   return parsedTokenBalances
 }
 

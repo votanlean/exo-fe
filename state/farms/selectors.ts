@@ -1,11 +1,10 @@
 import BigNumber from "bignumber.js";
-import { Farm } from "config/constants/types";
 import { FARM_ID } from "constant/farms";
 import { useSelector } from "react-redux";
 import { useFarmQuoteTokenPrice, useTexoTokenPrice } from "state/texo/selectors";
 import tokens from "config/constants/tokens";
 
-export const useFarmFromPid = (pid): Farm => {
+export const useFarmFromPid = (pid): any => {
   const farm = useSelector((state: any) => state.farms.data.find((f) => f.pid === pid));
 
   return farm;
