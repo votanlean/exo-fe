@@ -86,7 +86,7 @@ function Pool() {
         dispatch(fetchFarmUserDataAsync(account));
         dispatch(fetchPoolsUserDataAsync(account));
       }
-    }, 1000);
+    }, 30000);
 
     return () => {
       clearInterval(updateAppDataInterval);

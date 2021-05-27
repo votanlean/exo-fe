@@ -94,7 +94,7 @@ const fetchFarms = async (farmsToFetch: any[]) => {
         lpTotalInQuoteToken: lpTotalInQuoteToken.toJSON(),
         tokenPriceVsQuote: quoteTokenAmountTotal.div(tokenAmountTotal).toJSON(),
         poolWeight: poolWeight.toJSON(),
-        multiplier: `${allocPoint.div(100).toString()}X`,
+        allocPoint: new BigNumber(info.allocPoint._hex).toNumber(),
         totalStaked: new BigNumber(lpTokenBalanceMC).toJSON(),
       }
     }),

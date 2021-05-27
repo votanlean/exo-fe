@@ -14,7 +14,6 @@ import { getPoolApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { getAddress, getOrchestratorAddress } from '../../utils/addressHelpers';
 import {BIG_TEN} from "../../config";
-import { useFarmFromPid } from 'state/farms/selectors';
 import { usePoolFromPid } from 'state/texo/selectors';
 import erc20abi from 'config/abi/erc20.json';
 import web3 from 'blockchain/web3';
@@ -49,7 +48,19 @@ function PoolItem(props: any) {
     canClaimReward,
     countDownString,
   } = props;
-  const { id: poolId, icon, title, symbol, bsScanLink, totalStaked, userData = {}, pid: farmId, lpTotalSupply = 0, lpTotalInQuoteToken = 0 } = poolData;
+  const {
+    id: poolId,
+    icon,
+    title,
+    symbol,
+    bsScanLink,
+    totalStaked,
+    allocPoint,
+    displayAllocPoint,
+    userData = {},
+    depositFeeBP,
+  } = poolData;
+
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
 
   const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
@@ -58,8 +69,8 @@ function PoolItem(props: any) {
   const tokenAddress = getAddress(poolData.address);
   const tokenInstance = new web3.eth.Contract(erc20abi as any, tokenAddress);
 
-  const currentPool = usePoolFromPid(poolId);
-  const { tEXOPerBlock } = useOrchestratorData();
+  const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
+  const poolTexoPerBlock = new BigNumber(tEXOPerBlock).times(new BigNumber(allocPoint)).div(new BigNumber(totalAllocPoint))
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
@@ -67,11 +78,12 @@ function PoolItem(props: any) {
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
 
   const orchestratorAddress = getOrchestratorAddress();
+
   const apr = getPoolApr(
     stakingTokenPrice,
     tEXOPrice,
-    normalizeTokenDecimal(totalStaked || lpTotalSupply).toNumber(),
-    normalizeTokenDecimal(tEXOPerBlock).toNumber(),
+    normalizeTokenDecimal(totalStaked).toNumber(),
+    normalizeTokenDecimal(poolTexoPerBlock).toNumber(),
   );
 
   const handleClickApprove = async () => {
@@ -162,12 +174,6 @@ function PoolItem(props: any) {
     setOpenRoiDialog(!openRoiDialog)
   }
 
-  const poolAllocPointDiv = currentPool ? (
-    <div className={styles.poolAllocationPoint}>
-       <p>{currentPool.allocPoint / 100} X</p>
-    </div>
-  ) : null;
-
   const poolDetailsDiv = isDisplayDetails ? (
     <div className={styles.detailsContainer}>
       <div
@@ -182,7 +188,7 @@ function PoolItem(props: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>${Number(normalizeTokenDecimal(totalStaked) * stakingTokenPrice || lpTotalInQuoteToken).toFixed(2)}</h3>
+        <h3>${Number(normalizeTokenDecimal(totalStaked).toNumber() * stakingTokenPrice).toFixed(2)}</h3>
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
@@ -194,30 +200,6 @@ function PoolItem(props: any) {
     </div>
   ) : null
 
-  const liquidityPoolDiv = () => (
-    <div className={`d-flex justify-between w-full items-center`}>
-      <div>
-        <img src={icon} alt={title} className={styles.icon} />
-      </div>
-      <div>
-        <p className={`${styles.title} text-right mb-1`}>{title}</p>
-        <div className={`d-flex items-center justify-end`}>
-          {
-           currentPool && currentPool.depositFeeBP <= 0
-            ? <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
-                <img src="/static/images/verified.svg" />
-                <p>No Fees</p>
-              </div>
-            : null
-          }
-          <div className={`${styles.poolAllocationPoint}`}>
-            <p>{currentPool.allocPoint / 100} X</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-
   return (
     <>
       <div className={styles.poolItem}>
@@ -225,7 +207,9 @@ function PoolItem(props: any) {
           <div className={styles.item}>
 
             <div className={`${styles.spacing} d-flex items-center column`}>
-              {poolAllocPointDiv}
+            <div className={styles.poolAllocationPoint}>
+              <p>{displayAllocPoint / 100} X</p>
+            </div>
               <div className={styles.poolItemGrid}>
                 <img src={icon} alt={title} className={styles.icon} />
               </div>
@@ -261,7 +245,7 @@ function PoolItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {formatDepositFee(currentPool && currentPool.depositFeeBP)}
+                    {formatDepositFee(depositFeeBP)}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -274,7 +258,7 @@ function PoolItem(props: any) {
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked || lpTotalSupply).toNumber().toFixed(4)} {symbol}
+                    {normalizeTokenDecimal(totalStaked).toNumber().toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -323,8 +307,9 @@ function PoolItem(props: any) {
                             <Grid item xs={6}>
                               <button
                                 type="button"
-                                className={`${styles.button} ${styles.stakeButton}`}
+                                className={`${styles.button} ${styles.stakeButton} ${canClaimReward ? styles.disabled : ''}`}
                                 onClick={handleClickStake}
+                                disabled={canClaimReward}
                               >
                                 Stake
                               </button>
@@ -371,7 +356,7 @@ function PoolItem(props: any) {
         onClose={handleCloseStakeDialog}
         onConfirm={handleConfirmStake}
         unit={symbol}
-        depositFee={currentPool && currentPool.depositFeeBP}
+        depositFee={depositFeeBP}
         maxAmount={stakingTokenBalance}
       />
       <WithdrawDialog
