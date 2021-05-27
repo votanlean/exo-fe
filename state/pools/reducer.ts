@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit'
 import seedingPools from 'config/constants/seedingPools'
-import { fetchPoolsTotalStaking } from './fetchPools'
+import { fetchPoolsTotalStaking, fetchPoolsVolatileInfo } from './fetchPools'
 import {
     fetchUserBalances,
     fetchPoolsAllowance,
@@ -20,8 +20,18 @@ type Pool = any;
 // Thunks
 export const fetchPoolsPublicDataAsync = async (dispatch) => {
     const poolWithTotalStakedData = await fetchPoolsTotalStaking();
+    const poolWithVolatileInfo = await fetchPoolsVolatileInfo();
 
-    dispatch(setPoolsPublicData(poolWithTotalStakedData));
+    const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
+        const poolVolatileInfo = poolWithVolatileInfo[index];
+
+        return {
+            ...poolWithTotalStaked,
+            ...poolVolatileInfo,
+        };
+    });
+
+    dispatch(setPoolsPublicData(merged));
 }
 
 // Pools

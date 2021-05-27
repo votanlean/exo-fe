@@ -10,11 +10,10 @@ import orchestratorInstance from '../../blockchain/orchestrator';
 import StakeDialog from './StakeDialog';
 import WithdrawDialog from './WithdrawDialog';
 import ROIDialog from './ROIDialog';
-import { getPoolApr } from '../../hookApi/apr';
+import { getFarmApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { getOrchestratorAddress } from '../../utils/addressHelpers';
 import {BIG_TEN} from "../../config";
-import { useFarmFromPid } from 'state/farms/selectors';
 import erc20abi from 'config/abi/erc20.json';
 import web3 from 'blockchain/web3';
 import { BIG_ZERO } from 'utils/bigNumber';
@@ -48,7 +47,21 @@ function FarmItem(props: any) {
     tEXOPrice,
     canClaimReward,
   } = props;
-  const { icon, title, symbol, bsScanLink, userData = {}, pid: farmId, totalStaked = BIG_ZERO, lpTotalInQuoteToken = BIG_ZERO, address: lpTokenAddress } = farmData;
+  const {
+    icon,
+    title,
+    symbol,
+    bsScanLink,
+    pid: farmId,
+    address: lpTokenAddress,
+    depositFeeBP,
+    allocPoint,
+    totalStaked,
+    displayAllocPoint,
+    userData = {},
+    lpTotalInQuoteToken = BIG_ZERO,
+  } = farmData;
+
   const { allowance, earnings: pendingReward, stakedBalance, tokenBalance } = userData;
 
   const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
@@ -56,8 +69,8 @@ function FarmItem(props: any) {
 
   const lpTokenInstance = new web3.eth.Contract(erc20abi as any, lpTokenAddress);
 
-  const currentFarm = useFarmFromPid(farmId);
-  const { tEXOPerBlock } = useOrchestratorData();
+  const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
+  const farmWeight = new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
@@ -65,11 +78,11 @@ function FarmItem(props: any) {
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
 
   const orchestratorAddress = getOrchestratorAddress();
-  const apr = getPoolApr(
-    stakingTokenPrice,
+  const apr = getFarmApr(
+    farmWeight,
     tEXOPrice,
-    normalizeTokenDecimal(totalStaked).toNumber(),
-    normalizeTokenDecimal(tEXOPerBlock).toNumber(),
+    lpTotalInQuoteToken,
+    normalizeTokenDecimal(tEXOPerBlock),
   );
 
   const handleClickApprove = async () => {
@@ -176,7 +189,7 @@ function FarmItem(props: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>${Number(normalizeTokenDecimal(totalStaked) * stakingTokenPrice || lpTotalInQuoteToken).toFixed(2)}</h3>
+        <h3>${Number(lpTotalInQuoteToken).toFixed(2)}</h3>
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
@@ -204,15 +217,15 @@ function FarmItem(props: any) {
               <p className={`${styles.title} text-right mb-1`}>{title}</p>
               <div className={`d-flex items-center justify-end`}>
                 {
-                currentFarm && currentFarm.depositFeeBP <= 0
-                  ? <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
-                      <img src="/static/images/verified.svg" />
-                      <p>No Fees</p>
-                    </div>
-                  : null
+                  depositFeeBP <= 0
+                    ? <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
+                        <img src="/static/images/verified.svg" />
+                        <p>No Fees</p>
+                      </div>
+                    : null
                 }
                 <div className={`${styles.poolAllocationPoint}`}>
-                  <p>{currentFarm.allocPoint / 100} X</p>
+                  <p>{displayAllocPoint / 100} X</p>
                 </div>
               </div>
             </div>
@@ -246,7 +259,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {formatDepositFee(currentFarm && currentFarm.depositFeeBP)}
+                    {formatDepositFee(depositFeeBP)}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -350,7 +363,7 @@ function FarmItem(props: any) {
         onClose={handleCloseStakeDialog}
         onConfirm={handleConfirmStake}
         unit={symbol}
-        depositFee={currentFarm && currentFarm.depositFeeBP}
+        depositFee={depositFeeBP}
         maxAmount={tokenBalance}
       />
       <WithdrawDialog

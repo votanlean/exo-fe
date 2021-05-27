@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import BigNumber from "bignumber.js";
 import { BIG_ZERO } from "config";
 import contracts from "config/constants/contracts";
 import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
@@ -11,6 +10,7 @@ export const orchestratorSlice = createSlice({
   initialState: {
     data: {
       tEXOPerBlock: BIG_ZERO.toString(),
+      totalAllocationPoint: BIG_ZERO.toString(),
       canClaimRewardsBlock: BIG_ZERO.toString(),
     },
   },
@@ -29,15 +29,20 @@ export const fetchOrchestratorDataThunk = async (dispatch) => {
     },
     {
       address: getAddress(contracts.orchestrator),
+      name: 'totalAllocPoint',
+    },
+    {
+      address: getAddress(contracts.orchestrator),
       name: 'globalBlockToUnlockClaimingRewards',
     },
   ];
 
   const orchestratorMultiData = await multicall(orchestratorABI, calls);
-  const [ tEXOPerBlock, canClaimRewardsBlock ] = orchestratorMultiData;
+  const [ tEXOPerBlock, totalAllocPoint, canClaimRewardsBlock ] = orchestratorMultiData;
 
   dispatch(setOrchestratorData({
     tEXOPerBlock: tEXOPerBlock[0].toString(),
+    totalAllocPoint: totalAllocPoint[0].toString(),
     canClaimRewardsBlock: canClaimRewardsBlock[0].toString(),
   }));
 }
