@@ -49,7 +49,7 @@ function FarmItem(props: any) {
     canClaimReward,
   } = props;
   const { icon, title, symbol, bsScanLink, userData = {}, pid: farmId, totalStaked = BIG_ZERO, lpTotalInQuoteToken = BIG_ZERO, address: lpTokenAddress } = farmData;
-  const { allowance, pendingReward, stakedBalance, tokenBalance } = userData;
+  const { allowance, earnings: pendingReward, stakedBalance, tokenBalance } = userData;
 
   const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
