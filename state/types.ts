@@ -26,9 +26,14 @@ export interface BlockState {
     initialBlock: number
 }
 
+export interface UserInfoState {
+    tEXOReward: number
+    tEXOBalance: number
+}
 
 // Global state
 export interface State {
     pools: PoolsState
     block: BlockState
+    userInfo: UserInfoState
 }

@@ -6,11 +6,11 @@ import { BIG_ZERO } from 'utils/bigNumber'
 import { useWeb3 } from './useWeb3'
 import useRefresh from './useRefresh'
 import useLastUpdated from './useLastUpdated'
+import web3 from '../blockchain/web3'
 
 const useTokenBalance = (tokenAddress: string) => {
   const [balance, setBalance] = useState(BIG_ZERO)
   const { account } = useWeb3React()
-  const web3 = useWeb3()
   const { fastRefresh } = useRefresh()
 
   useEffect(() => {
@@ -24,7 +24,6 @@ const useTokenBalance = (tokenAddress: string) => {
       fetchBalance()
     }
   }, [account, tokenAddress, web3, fastRefresh])
-
   return balance
 }
 
