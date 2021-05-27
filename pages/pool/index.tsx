@@ -15,7 +15,7 @@ import { useBlockData } from 'state/block/selectors';
 import { useTexoTokenData, useTexoTokenPrice } from 'state/texo/selectors';
 import { useAppDispatch } from 'state';
 import { fetchFarmsPublicDataAsync, fetchFarmUserDataAsync } from 'state/farms/reducer';
-import { getAddress } from 'utils/addressHelpers';
+import {getAddress, getTEXOAddress} from 'utils/addressHelpers';
 import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
 import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
@@ -26,6 +26,9 @@ import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
 import { useFarms, useTotalValue } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
+import {fetchUserInfoDataThunk} from "state/userInfo/reducer";
+import {useUserInfoData} from "../../state/userInfo/selectors";
+import BigNumber from "bignumber.js";
 
 function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
   if (!currentBlock || !canClaimRewardsBlock) {
@@ -57,6 +60,7 @@ function Pool() {
   const { currentBlock } = useBlockData();
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
   const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
+  const {tEXOReward} = useUserInfoData();
 
   const refreshAppGlobalData = () => {
     dispatch(fetchFarmsPublicDataAsync());
@@ -69,6 +73,7 @@ function Pool() {
     if (account) {
       dispatch(fetchFarmUserDataAsync(account));
       dispatch(fetchPoolsUserDataAsync(account));
+      dispatch(fetchUserInfoDataThunk(account));
     }
   }
 
@@ -81,7 +86,7 @@ function Pool() {
       dispatch(fetchFarmsPublicDataAsync());
       dispatch(fetchTexoTokenDataThunk);
       dispatch(fetchPoolsPublicDataAsync);
-  
+
       if (account) {
         dispatch(fetchFarmUserDataAsync(account));
         dispatch(fetchPoolsUserDataAsync(account));
@@ -137,6 +142,7 @@ function Pool() {
           totalSupply={tEXOTotalSupply}
           currentTEXOPerBlock={tEXOPerBlock}
           burnAmount={burnAmount}
+          tEXOReward={new BigNumber(tEXOReward)}
         />
 
          <div className={styles.lpPoolGrid}>
@@ -154,7 +160,7 @@ function Pool() {
               stakingTokenPrice={stakingTokenPrice}
               tEXOPrice={tEXOPrice}
               farmData={farmsData[index]}
-              key={farm.id}
+              key={farm.pid}
               isLiquidityPool={true}
               countDownString={countDownString}
             />;

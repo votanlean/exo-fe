@@ -7,6 +7,9 @@ import ConnectPopup from '../ConnectPopup';
 
 import { useStyles } from './styles';
 import BigNumber from 'bignumber.js';
+import useTokenBalance from "../../hooks/useTokenBalance";
+import {getTEXOAddress} from "../../utils/addressHelpers";
+import {getBalanceNumber, getFullDisplayBalance} from "../../utils/formatBalance";
 
 function calculateMarketCap(tEXOPrice, totalSupply: string) {
   if (!tEXOPrice || !totalSupply) {
@@ -26,10 +29,11 @@ function normalizeBigNumber(data: string) {
 }
 
 function Statistic(props) {
-  const { totalSupply, tEXOPrice, currentTEXOPerBlock, burnAmount, tvl } = props;
+  const { totalSupply, tEXOPrice, currentTEXOPerBlock, burnAmount, tvl, tEXOReward } = props;
   const normalizedTotalSupply = normalizeBigNumber(totalSupply);
   const normalizedEmissionRate = normalizeBigNumber(currentTEXOPerBlock);
   const normalizedBurnAmount = normalizeBigNumber(burnAmount);
+  const tEXOBalance = getBalanceNumber(useTokenBalance(getTEXOAddress()));
 
   const classes = useStyles();
   const { active } = useWeb3React();
@@ -60,15 +64,15 @@ function Statistic(props) {
 
           <Typography>tEXO to Harvest</Typography>
           <Typography className={classes.fadeText}>
-            {active ? 0.0 : 'LOCKED'}
+            {active ? tEXOReward.toFixed(2) : 'LOCKED'}
           </Typography>
-          <Typography gutterBottom>~$0.00</Typography>
+          <Typography gutterBottom>~${(tEXOPrice * tEXOReward).toFixed(2)}</Typography>
 
           <Typography>tEXO to Wallet</Typography>
           <Typography className={classes.fadeText}>
-            {active ? 0.0 : 'LOCKED'}
+            {active ? tEXOBalance.toFixed(2): 'LOCKED'}
           </Typography>
-          <Typography gutterBottom>~$0.00</Typography>
+          <Typography gutterBottom>~${(tEXOPrice * tEXOBalance).toFixed(2)}</Typography>
           {!active && (
             <Button
               className={classes.btn}
