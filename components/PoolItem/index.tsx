@@ -307,8 +307,9 @@ function PoolItem(props: any) {
                             <Grid item xs={6}>
                               <button
                                 type="button"
-                                className={`${styles.button} ${styles.stakeButton}`}
+                                className={`${styles.button} ${styles.stakeButton} ${canClaimReward ? styles.disabled : ''}`}
                                 onClick={handleClickStake}
+                                disabled={canClaimReward}
                               >
                                 Stake
                               </button>
