@@ -17,6 +17,7 @@ import {BIG_TEN} from "../../config";
 import erc20abi from 'config/abi/erc20.json';
 import web3 from 'blockchain/web3';
 import { BIG_ZERO } from 'utils/bigNumber';
+import { ethers } from 'ethers'
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -87,7 +88,7 @@ function FarmItem(props: any) {
 
   const handleClickApprove = async () => {
     const approvalEventEmitter = lpTokenInstance.methods
-      .approve(orchestratorAddress, web3.utils.toWei('1', 'ether'))
+      .approve(orchestratorAddress, ethers.constants.MaxUint256)
       .send({ from: selectedAccount });
 
     approvalEventEmitter.on('receipt', data => {
