@@ -17,6 +17,7 @@ import SelectTokenDialog from '../../components/Exchange/SelectTokenDialog';
 import HistoryDialog from '../../components/Exchange/HistoryDialog';
 import SettingsDialog from '../../components/Exchange/SettingsDialog';
 import { poolToken } from '../../blockchain/tokenFactory';
+import theme from 'components/theme/theme';
 
 const useStyles = makeStyles({
   root: {
@@ -94,6 +95,21 @@ function Pool() {
       </Head>
 
       <div className="container pool-container">
+        <Box
+          display="flex"
+          alignItems="center"
+          flexDirection="row"
+          justifyContent="center"
+          textAlign="center"
+          marginBottom={theme.spacing(1)}
+        >
+          <img src="/static/images/icon-white.svg" alt="logo title" />
+          <Box>
+            <Typography variant="h1">Coming Soon</Typography>
+            <Typography variant="h2">Are you ready?</Typography>
+          </Box>
+        </Box>
+
         <div className="exchange-grid">
           <Card className={classes.root}>
             <CardHeader

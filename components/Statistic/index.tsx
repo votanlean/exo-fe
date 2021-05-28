@@ -73,7 +73,6 @@ function Statistic(props) {
             <Button
               className={classes.btn}
               variant="contained"
-              // color="rgb(255, 255, 255)"
               fullWidth
               onClick={handleConnectPopup}
             >
