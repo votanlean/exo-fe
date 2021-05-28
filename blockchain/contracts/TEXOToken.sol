@@ -1329,16 +1329,16 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         if (canWithdrawTEXO && pending > 0) {
             safeTEXOTransfer(msg.sender, pending);
             payReferralCommission(msg.sender, pending);
-
-            user.rewardDebt = user.amount
-                .mul(pool.accTEXOPerShare)
-                .div(1e12);
         }
 
         if (_amount > 0) {
             user.amount = user.amount.sub(_amount);
             pool.lpToken.safeTransfer(address(msg.sender), _amount);
         }
+
+        user.rewardDebt = user.amount
+            .mul(pool.accTEXOPerShare)
+            .div(1e12);
 
         emit Withdraw(msg.sender, _pid, _amount);
     }

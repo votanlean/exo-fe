@@ -10,6 +10,7 @@ import {
 	Box
 } from '@material-ui/core'
 import NumberFormat from 'react-number-format';
+import { normalizeTokenDecimal } from 'utils/bigNumber';
 
 function calculateDepositFee(amount, depositFeeBP, decimals = 4) {
 	return amount * depositFeeBP / Math.pow(10, decimals);
@@ -27,12 +28,23 @@ const useStyles = makeStyles((theme) => {
 			background: "#0F0F0F",
 			color: 'white'
 		},
-		maxBtn: {
-			alignSelf: 'flex-end',
-			color: augmentBlue.main,
-		},
 		footer: {
 			padding: "12px 24px"
+		},
+		titleContainer: {
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			width: '100%',
+		},
+		maxButton: {
+			display: 'flex',
+			border: '1px solid white',
+			flexDirection: 'row',
+			justifyContent: 'center',
+			alignItems: 'center',
+			width: '60px',
+			cursor: 'pointer',
 		},
 		helperText: {
 			textAlign: 'right'
@@ -76,7 +88,7 @@ function NumberFormatCustom(props) {
   );
 }
 
-const StakeDialog = ({
+export const StakeDialog = ({
 	title,
 	open,
 	maxAmount = 10,
@@ -105,6 +117,10 @@ const StakeDialog = ({
 		onClose();
 	}
 
+	const onClickMax = () => {
+		setAmount(normalizeTokenDecimal(maxAmount).toNumber());
+	}
+
 	const onClickConfirm = async () => {
 		setDisbaleButton(true);
 		await onConfirm(amount.toString())
@@ -113,23 +129,26 @@ const StakeDialog = ({
 		setDisbaleButton(false);
 	}
 
-	const handleClickMax = () => {
-		setAmount(maxAmount)
-	};
-
 	return(
 		<Dialog onClose={onCloseDialog} open={open} classes={{ paper: classes.paper }}>
-			<DialogTitle className={classes.title}>{title}</DialogTitle>
+			<DialogTitle className={classes.title}>
+				<div className={classes.titleContainer}>
+					<p>{title}</p>
+					<div
+						className={classes.maxButton}
+						onClick={onClickMax}
+					>
+						<p>MAX</p>
+					</div>
+				</div>
+			</DialogTitle>
 			<DialogContent>
-				<Box my={2} display="flex" flexDirection="column">
-					<Button className={classes.maxBtn} onClick={handleClickMax}>
-						MAX
-					</Button>
+				<Box my={2}>
 					<TextField
 						label={title}
 						value={amount}
 						onChange={onChangeAmount}
-						helperText={`Balance: ${unit} ${maxAmount}. \n Deposit fee: ${calculateDepositFee(amount, depositFee)} ${unit}`}
+						helperText={`Balance: ${unit} ${normalizeTokenDecimal(maxAmount)}. \n Deposit fee: ${calculateDepositFee(amount, depositFee)} ${unit}`}
 						fullWidth
 						placeholder={unit}
 						FormHelperTextProps={{
@@ -157,5 +176,3 @@ const StakeDialog = ({
 		</Dialog>
 	)
 }
-
-export default StakeDialog;

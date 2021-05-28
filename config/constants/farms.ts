@@ -4,6 +4,7 @@ const farms: any[] = [
   {
     pid: 11,
     icon: '/static/images/Swap_tEXO-BNB.png',
+    symbol: 'CAKE-LP',
     title: 'tEXO/BNB LP',
     address: process.env.BNBLP_ADDRESS,
     token: tokens.texo,
@@ -15,6 +16,7 @@ const farms: any[] = [
   {
     pid: 12,
     icon: '/static/images/Swap_tEXO-BUSD.png',
+    symbol: 'CAKE-LP',
     title: 'tEXO/BUSD LP',
     lpSymbol: 'tEXO-BUSD LP',
     address: process.env.BUSDLP_ADDRESS,
