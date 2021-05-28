@@ -52,7 +52,7 @@ function PoolItem(props: any) {
 
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
 
-  const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
+  const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
 
   const tokenAddress = getAddress(poolData.address);
@@ -271,7 +271,7 @@ function PoolItem(props: any) {
               >
                 {
                   shouldComponentDisplay(
-                    canClaimReward && Number(stakedBalance) > 0,
+                    canClaimReward && Number(stakedBalance) > 0 && Number(pendingReward) > 0,
                     <button
                       type="button"
                       className={`${styles.button}`}

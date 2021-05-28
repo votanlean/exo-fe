@@ -15,7 +15,7 @@ import { useBlockData } from 'state/block/selectors';
 import { useTexoTokenData, useTexoTokenPrice } from 'state/texo/selectors';
 import { useAppDispatch } from 'state';
 import { fetchFarmsPublicDataAsync, fetchFarmUserDataAsync } from 'state/farms/reducer';
-import {getAddress, getTEXOAddress} from 'utils/addressHelpers';
+import { getAddress } from 'utils/addressHelpers';
 import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
 import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
 import { useOrchestratorData } from 'state/orchestrator/selectors';

@@ -53,7 +53,7 @@ function FarmItem(props: any) {
 
   const { allowance, earnings: pendingReward, stakedBalance, tokenBalance } = userData;
 
-  const canWithdraw = new BigNumber(pendingReward).toNumber() > 0;
+  const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
 
   const lpTokenInstance = new web3.eth.Contract(erc20abi as any, lpTokenAddress);
