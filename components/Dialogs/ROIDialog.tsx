@@ -50,7 +50,6 @@ const useStyles = makeStyles(theme => {
       fontSize: 12,
       fontWeight: 400,
       lineHeight: 1.5,
-      maxWidth: 320,
       marginBottom: 28,
       display: 'block',
     },
@@ -62,7 +61,7 @@ const useStyles = makeStyles(theme => {
   }
 })
 
-const ROIDialog = (props: any) => {
+export const ROIDialog = (props: any) => {
   const {
     open,
     onClose,
@@ -218,5 +217,3 @@ const ROIDialog = (props: any) => {
     </Dialog>
   )
 }
-
-export default ROIDialog
