@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme) => {
       padding: '10px',
       fontSize: '20px',
       fontWeight: 700,
+      color: 'rgb(255, 255, 255)',
+      background: '#007EF3',
+      '&:hover': {
+        background: 'rgb(0, 88, 170)',
+      },
     },
   };
 });

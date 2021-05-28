@@ -14,36 +14,42 @@ import styles from './pool.module.scss';
 import { useBlockData } from 'state/block/selectors';
 import { useTexoTokenData, useTexoTokenPrice } from 'state/texo/selectors';
 import { useAppDispatch } from 'state';
-import { fetchFarmsPublicDataAsync, fetchFarmUserDataAsync } from 'state/farms/reducer';
-import {getAddress, getTEXOAddress} from 'utils/addressHelpers';
+import {
+  fetchFarmsPublicDataAsync,
+  fetchFarmUserDataAsync,
+} from 'state/farms/reducer';
+import { getAddress, getTEXOAddress } from 'utils/addressHelpers';
 import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
 import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { fetchBlockDataThunk } from 'state/block/reducer';
 import { usePools } from 'state/pools/selectors';
-import { fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync } from 'state/pools/reducer';
+import {
+  fetchPoolsPublicDataAsync,
+  fetchPoolsUserDataAsync,
+} from 'state/pools/reducer';
 import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
 import { useFarms, useTotalValue } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
-import {fetchUserInfoDataThunk} from "state/userInfo/reducer";
-import {useUserInfoData} from "../../state/userInfo/selectors";
-import BigNumber from "bignumber.js";
+import { fetchUserInfoDataThunk } from 'state/userInfo/reducer';
+import { useUserInfoData } from '../../state/userInfo/selectors';
+import BigNumber from 'bignumber.js';
 
 function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
   if (!currentBlock || !canClaimRewardsBlock) {
-    return dayjs()
+    return dayjs();
   }
 
-  const blockDiff = canClaimRewardsBlock - currentBlock
+  const blockDiff = canClaimRewardsBlock - currentBlock;
   if (blockDiff <= 0) {
-    return dayjs()
+    return dayjs();
   }
 
-  const secondsDiff = Math.ceil(blockDiff * 3)
-  const claimRewardDate = startDate.add(secondsDiff, 'seconds')
+  const secondsDiff = Math.ceil(blockDiff * 3);
+  const claimRewardDate = startDate.add(secondsDiff, 'seconds');
 
-  return claimRewardDate
+  return claimRewardDate;
 }
 
 function Pool() {
@@ -58,9 +64,10 @@ function Pool() {
   const tvl = useTotalValue();
 
   const { currentBlock } = useBlockData();
-  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
+  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
+    useTexoTokenData();
   const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
-  const {tEXOReward} = useUserInfoData();
+  const { tEXOReward } = useUserInfoData();
 
   const refreshAppGlobalData = () => {
     dispatch(fetchFarmsPublicDataAsync());
@@ -75,7 +82,7 @@ function Pool() {
       dispatch(fetchPoolsUserDataAsync(account));
       dispatch(fetchUserInfoDataThunk(account));
     }
-  }
+  };
 
   useEffect(refreshAppGlobalData, [account, dispatch]);
 
@@ -99,9 +106,15 @@ function Pool() {
   }, []);
 
   useEffect(() => {
-    if (!canClaimRewardsBlock || !currentBlock || countDownInterval.current) { return; }
+    if (!canClaimRewardsBlock || !currentBlock || countDownInterval.current) {
+      return;
+    }
 
-    const claimRewardDate = getClaimRewardsDate(currentBlock, canClaimRewardsBlock, dayjs()).toDate();
+    const claimRewardDate = getClaimRewardsDate(
+      currentBlock,
+      canClaimRewardsBlock,
+      dayjs(),
+    ).toDate();
 
     const interval = setInterval(() => {
       const hasPassedRewardLockDate = dayjs().isAfter(dayjs(claimRewardDate));
@@ -117,7 +130,7 @@ function Pool() {
       const countDownString = Countdown(new Date(), claimRewardDate).toString();
 
       setCountDownString(countDownString);
-    }, 1000)
+    }, 1000);
 
     countDownInterval.current = interval;
 
@@ -125,9 +138,9 @@ function Pool() {
       if (countDownInterval.current) {
         clearInterval(countDownInterval.current);
         countDownInterval.current = null;
-      };
+      }
     };
-  }, [currentBlock, canClaimRewardsBlock])
+  }, [currentBlock, canClaimRewardsBlock]);
 
   return (
     <>
@@ -145,35 +158,65 @@ function Pool() {
           tEXOReward={new BigNumber(tEXOReward)}
         />
 
-         <div className={styles.lpPoolGrid}>
+        <Typography
+          variant="h5"
+          align="center"
+          style={{ marginBottom: '30px', lineHeight: '40px' }}
+        >
+          Stake tEXO LPs (PCS V2) for tEXO reward.
+          <br />
+          Farming reward will be generated in
+          <Typography variant="h3" color="primary">
+            {countDownString}
+          </Typography>
+        </Typography>
+
+        <div className={styles.lpPoolGrid}>
           {farms.map((farm, index) => {
             let stakingTokenPrice = 0;
 
             if (allTokenPrices.data) {
-              stakingTokenPrice = allTokenPrices.data[getAddress(farm.quoteToken.address)];
+              stakingTokenPrice =
+                allTokenPrices.data[getAddress(farm.quoteToken.address)];
             }
 
-            return <FarmItem
-              selectedAccount={account}
-              onPoolStateChange={refreshAppGlobalData}
-              canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
-              stakingTokenPrice={stakingTokenPrice}
-              tEXOPrice={tEXOPrice}
-              farmData={farmsData[index]}
-              key={farm.pid}
-              isLiquidityPool={true}
-              countDownString={countDownString}
-            />;
+            return (
+              <FarmItem
+                selectedAccount={account}
+                onPoolStateChange={refreshAppGlobalData}
+                canClaimReward={
+                  currentBlock && currentBlock >= canClaimRewardsBlock
+                }
+                stakingTokenPrice={stakingTokenPrice}
+                tEXOPrice={tEXOPrice}
+                farmData={farmsData[index]}
+                key={farm.pid}
+                isLiquidityPool={true}
+                countDownString={countDownString}
+              />
+            );
           })}
         </div>
 
         <div className={styles.countdownContainer}>
-         <Typography variant="h4" style={{ marginBottom: '10px' }}>
-           Count Down To Claim Rewards and Farming
-         </Typography>
-         <Typography variant="h3" color="primary">
-           {countDownString}
-         </Typography>
+          <Typography
+            variant="h5"
+            align="center"
+            paragraph
+            style={{ marginBottom: '10px', lineHeight: '40px' }}
+          >
+            Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens
+            for tEXO.
+            <br />
+            (4% Deposit Fee applies for tEXO liquidity)
+            <br />
+            Seed Pools reward startblock at (to be added in later)
+            <br />
+            Users can harvest tEXO in
+          </Typography>
+          <Typography variant="h3" color="primary">
+            {countDownString}
+          </Typography>
         </div>
 
         <div className="pool-grid">
@@ -181,24 +224,30 @@ function Pool() {
             let stakingTokenPrice = 0;
 
             if (allTokenPrices.data) {
-              stakingTokenPrice = allTokenPrices.data[getAddress(pool.stakingToken.address)];
+              stakingTokenPrice =
+                allTokenPrices.data[getAddress(pool.stakingToken.address)];
             }
 
-            return <PoolItem
-              selectedAccount={account}
-              onPoolStateChange={refreshAppGlobalData}
-              canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
-              stakingTokenPrice={stakingTokenPrice}
-              tEXOPrice={tEXOPrice}
-              poolData={poolsData[index]}
-              key={pool.id}
-              countDownString={countDownString}
-            />
+            return (
+              <PoolItem
+                selectedAccount={account}
+                onPoolStateChange={refreshAppGlobalData}
+                canClaimReward={
+                  currentBlock && currentBlock >= canClaimRewardsBlock
+                }
+                stakingTokenPrice={stakingTokenPrice}
+                tEXOPrice={tEXOPrice}
+                poolData={poolsData[index]}
+                key={pool.id}
+                countDownString={countDownString}
+              />
+            );
           })}
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default Pool
+export default Pool;
+
