@@ -12,13 +12,11 @@ import {
   Avatar,
 } from '@material-ui/core';
 import { Tune, History, ExpandMore } from '@material-ui/icons';
-import LogoTitle from 'components/LogoTitle';
 
 import SelectTokenDialog from '../../components/Exchange/SelectTokenDialog';
 import HistoryDialog from '../../components/Exchange/HistoryDialog';
 import SettingsDialog from '../../components/Exchange/SettingsDialog';
 import { poolToken } from '../../blockchain/tokenFactory';
-import ComingSoon from 'components/ComingSoon';
 import theme from 'components/theme/theme';
 
 const useStyles = makeStyles({
@@ -105,9 +103,7 @@ function Pool() {
           textAlign="center"
           marginBottom={theme.spacing(1)}
         >
-          <Box marginRight="70px">
-            <LogoTitle />
-          </Box>
+          <img src="/static/images/icon-white.svg" alt="logo title" />
           <Box>
             <Typography variant="h1">Coming Soon</Typography>
             <Typography variant="h2">Are you ready?</Typography>
