@@ -8,8 +8,9 @@ import ConnectPopup from '../ConnectPopup';
 import { useStyles } from './styles';
 import BigNumber from 'bignumber.js';
 import useTokenBalance from "../../hooks/useTokenBalance";
-import {getTEXOAddress} from "../../utils/addressHelpers";
-import {getBalanceNumber, getFullDisplayBalance} from "../../utils/formatBalance";
+import { getTEXOAddress } from "../../utils/addressHelpers";
+import { getBalanceNumber } from "../../utils/formatBalance";
+import { normalizeTokenDecimal } from 'utils/bigNumber';
 
 function calculateMarketCap(tEXOPrice, totalSupply: string) {
   if (!tEXOPrice || !totalSupply) {
@@ -22,17 +23,12 @@ function calculateMarketCap(tEXOPrice, totalSupply: string) {
   return bigNumberTotalSupply.times(bigNumberTEXOPRice).toFixed(2);
 }
 
-function normalizeBigNumber(data: string) {
-  const bigNumber = new BigNumber(data);
-
-  return bigNumber.div(BIG_TEN.pow(18)).toNumber();
-}
 
 function Statistic(props) {
   const { totalSupply, tEXOPrice, currentTEXOPerBlock, burnAmount, tvl, tEXOReward } = props;
-  const normalizedTotalSupply = normalizeBigNumber(totalSupply);
-  const normalizedEmissionRate = normalizeBigNumber(currentTEXOPerBlock);
-  const normalizedBurnAmount = normalizeBigNumber(burnAmount);
+  const normalizedTotalSupply = normalizeTokenDecimal(totalSupply).toNumber();
+  const normalizedEmissionRate = normalizeTokenDecimal(currentTEXOPerBlock).toNumber();
+  const normalizedBurnAmount = normalizeTokenDecimal(burnAmount).toNumber();
   const tEXOBalance = getBalanceNumber(useTokenBalance(getTEXOAddress()));
 
   const classes = useStyles();

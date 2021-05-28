@@ -7,17 +7,15 @@ import BigNumber from 'bignumber.js';
 
 import styles from './farmItem.module.scss';
 import orchestratorInstance from '../../blockchain/orchestrator';
-import StakeDialog from './StakeDialog';
-import WithdrawDialog from './WithdrawDialog';
-import ROIDialog from './ROIDialog';
 import { getFarmApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { getOrchestratorAddress } from '../../utils/addressHelpers';
-import {BIG_TEN} from "../../config";
 import erc20abi from 'config/abi/erc20.json';
 import web3 from 'blockchain/web3';
-import { BIG_ZERO } from 'utils/bigNumber';
-import { ethers } from 'ethers'
+import { ethers } from 'ethers';
+import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
+import { ROIDialog, StakeDialog, WithdrawDialog } from 'components/Dialogs';
+import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -27,16 +25,6 @@ function formatDepositFee(depositFee, decimals = 4) {
   const actualDepositFee = (depositFee * 100) / Math.pow(10, decimals)
 
   return `${actualDepositFee.toFixed(2)}%`
-}
-
-function normalizeTokenDecimal(tokenInWei, decimals = 18) {
-  if (!tokenInWei) {
-    return new BigNumber(0);
-  }
-
-  const bigNumber = ['string', 'number'].includes(typeof tokenInWei) ? new BigNumber(tokenInWei) : tokenInWei;
-
-  return bigNumber.div(BIG_TEN.pow(decimals));
 }
 
 function FarmItem(props: any) {
@@ -218,12 +206,13 @@ function FarmItem(props: any) {
               <p className={`${styles.title} text-right mb-1`}>{title}</p>
               <div className={`d-flex items-center justify-end`}>
                 {
-                  depositFeeBP <= 0
-                    ? <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
-                        <img src="/static/images/verified.svg" />
-                        <p>No Fees</p>
-                      </div>
-                    : null
+                  shouldComponentDisplay(
+                    depositFeeBP <= 0,
+                    <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
+                      <img src="/static/images/verified.svg" />
+                      <p>No Fees</p>
+                    </div>
+                  )
                 }
                 <div className={`${styles.poolAllocationPoint}`}>
                   <p>{displayAllocPoint / 100} X</p>
@@ -289,61 +278,59 @@ function FarmItem(props: any) {
               <div
                 className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
               >
-                <>
-                  <button
-                    type="button"
-                    className={`${styles.button} ${
-                      canClaimReward ? '' : styles.disabled
-                    }`}
-                    disabled={!canClaimReward}
-                    onClick={handleClickClaimRewards}
-                  >
-                    Claim Rewards
-                  </button>
-                  {
-                    canWithdraw
-                      ? (
-                          <Grid container>
-                            <Grid item xs={6}>
-                              <button
-                                type="button"
-                                className={`${styles.button} ${styles.withdrawButton}`}
-                                onClick={handleClickWithdraw}
-                              >
-                                Withdraw
-                              </button>
-                            </Grid>
-                            <Grid item xs={6}>
-                              <button
-                                type="button"
-                                className={`${styles.button} ${styles.stakeButton}`}
-                                onClick={handleClickStake}
-                              >
-                                Stake
-                              </button>
-                            </Grid>
-                          </Grid>
-                        )
-                      : (
-                          <button
-                            type="button"
-                            className={`${styles.button} ${isAlreadyApproved ? '' : styles.disabled}`}
-                            disabled={!isAlreadyApproved}
-                            onClick={handleClickStake}
-                          >
-                            Stake
-                          </button>
-                        )
-                    }
-                  <button
-                    type="button"
-                    className={`${styles.button} ${!isAlreadyApproved ? '' : styles.disabled}`}
-                    disabled={isAlreadyApproved}
-                    onClick={handleClickApprove}
-                  >
-                    Approve
-                  </button>
-                </>
+                {
+                  shouldComponentDisplay(
+                    canClaimReward && Number(stakedBalance) > 0,
+                    <button
+                      type="button"
+                      className={`${styles.button}`}
+                      disabled={!canClaimReward}
+                      onClick={handleClickClaimRewards}
+                    >
+                      Claim Rewards
+                    </button>
+                  )
+                }
+                {
+                  shouldComponentDisplay(
+                    canWithdraw,
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <button
+                          type="button"
+                          className={`${styles.button}`}
+                          onClick={handleClickWithdraw}
+                        >
+                          Withdraw
+                        </button>
+                      </Grid>
+                    </Grid>
+                  )
+                }
+                {
+                  shouldComponentDisplay(
+                    isAlreadyApproved,
+                    <button
+                      type="button"
+                      className={`${styles.button}`}
+                      onClick={handleClickStake}
+                    >
+                      Stake
+                    </button>,
+                  )
+                }
+                {
+                  shouldComponentDisplay(
+                    !isAlreadyApproved,
+                    <button
+                      type="button"
+                      className={`${styles.button}`}
+                      onClick={handleClickApprove}
+                    >
+                      Approve
+                    </button>
+                  )
+                }
               </div>
 
               <div
