@@ -143,7 +143,7 @@ function Statistic(props) {
           </Typography>
 
           <Typography variant="h4" className={'font-bold'}>
-            ${tvl.toFixed(4)}
+            ${tvl.toFixed(2)}
           </Typography>
 
           <Typography color="textPrimary" className={'font-bold'}>
