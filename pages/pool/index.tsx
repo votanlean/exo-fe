@@ -6,6 +6,7 @@ import Countdown from 'countdown';
 import { useWeb3React } from '@web3-react/core';
 import dayjs from 'dayjs';
 import {
+  makeStyles,
   Table,
   TableBody,
   TableContainer,
@@ -13,7 +14,6 @@ import {
 } from '@material-ui/core';
 import BigNumber from 'bignumber.js';
 
-import PoolItem from '../../components/PoolItem';
 import Statistic from '../../components/Statistic';
 import PoolRow from '../../components/PoolRow';
 
@@ -42,7 +42,18 @@ import { useFarms, useTotalValue } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
 import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
-import { useStyles } from './styles';
+
+const useStyles = makeStyles((theme) => {
+  return {
+    tableContainer: {
+      filter: 'drop-shadow(rgba(25, 19, 38, 0.15) 0px 1px 4px)',
+      width: '100%',
+      background: 'rgb(255, 255, 255)',
+      borderRadius: '16px',
+      margin: '16px 0px',
+    },
+  };
+});
 
 function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
   if (!currentBlock || !canClaimRewardsBlock) {
