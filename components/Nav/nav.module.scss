@@ -67,6 +67,7 @@
     transition: 0.3s;
     box-shadow:
             0 10px 27px rgba(0, 0, 0, 0.05);
+    visibility: hidden;
     li{
       margin: 12px 0;
     }
@@ -76,6 +77,7 @@
     }
     &.active {
       opacity: 1;
+      visibility: visible;
     }
   }
 }

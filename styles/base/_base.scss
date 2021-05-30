@@ -30,6 +30,7 @@ body {
 
 @media (min-width: 360px) {
   .container {
+    max-width: 1200px;
     padding-left: 5vw;
     padding-right: 5vw;
   }
@@ -37,10 +38,7 @@ body {
 
 // Medium
 @media (min-width: 768px) {
-  .container {
-    padding-left: 5vw;
-    padding-right: 5vw;
-  }
+  .container {}
 }
 // Large
 @media (min-width: 992px) {

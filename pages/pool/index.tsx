@@ -5,10 +5,17 @@ import farms from 'config/constants/farms';
 import Countdown from 'countdown';
 import { useWeb3React } from '@web3-react/core';
 import dayjs from 'dayjs';
-import { Typography } from '@material-ui/core';
+import {
+  Table,
+  TableBody,
+  TableContainer,
+  Typography,
+} from '@material-ui/core';
+import BigNumber from 'bignumber.js';
 
 import PoolItem from '../../components/PoolItem';
 import Statistic from '../../components/Statistic';
+import PoolRow from '../../components/PoolRow';
 
 import styles from './pool.module.scss';
 import { useBlockData } from 'state/block/selectors';
@@ -33,9 +40,9 @@ import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
 import { useFarms, useTotalValue } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
-import {fetchUserInfoDataThunk} from "../../state/userInfo/reducer";
-import {useUserInfoData} from "../../state/userInfo/selectors";
-import BigNumber from "bignumber.js";
+import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
+import { useUserInfoData } from '../../state/userInfo/selectors';
+import { useStyles } from './styles';
 
 function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
   if (!currentBlock || !canClaimRewardsBlock) {
@@ -54,6 +61,7 @@ function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
 }
 
 function Pool() {
+  const classes: any = useStyles();
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [countDownString, setCountDownString] = useState('');
@@ -220,35 +228,38 @@ function Pool() {
           </Typography>
         </div>
 
-        <div className="pool-grid">
-          {seedingPools.map((pool, index) => {
-            let stakingTokenPrice = 0;
+        <TableContainer className={classes.tableContainer}>
+          <Table aria-label="collapsible table">
+            <TableBody>
+              {seedingPools.map((pool, index) => {
+                let stakingTokenPrice = 0;
 
-            if (allTokenPrices.data) {
-              stakingTokenPrice =
-                allTokenPrices.data[getAddress(pool.stakingToken.address)];
-            }
-
-            return (
-              <PoolItem
-                selectedAccount={account}
-                onPoolStateChange={refreshAppGlobalData}
-                canClaimReward={
-                  currentBlock && currentBlock >= canClaimRewardsBlock
+                if (allTokenPrices.data) {
+                  stakingTokenPrice =
+                    allTokenPrices.data[getAddress(pool.stakingToken.address)];
                 }
-                stakingTokenPrice={stakingTokenPrice}
-                tEXOPrice={tEXOPrice}
-                poolData={poolsData[index]}
-                key={pool.id}
-                countDownString={countDownString}
-              />
-            );
-          })}
-        </div>
+
+                return (
+                  <PoolRow
+                    key={pool.id}
+                    data={poolsData[index]}
+                    selectedAccount={account}
+                    onPoolStateChange={refreshAppGlobalData}
+                    canClaimReward={
+                      currentBlock && currentBlock >= canClaimRewardsBlock
+                    }
+                    stakingTokenPrice={stakingTokenPrice}
+                    tEXOPrice={tEXOPrice}
+                    countDownString={countDownString}
+                  />
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </>
   );
 }
 
 export default Pool;
-
