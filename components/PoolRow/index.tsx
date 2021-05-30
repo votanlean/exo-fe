@@ -173,13 +173,13 @@ function PoolRow(props: any) {
   return (
     <Fragment>
       <TableRow className={classes.root} onClick={() => setOpen(!open)}>
-        <TableCell component="th" scope="row">
+        <TableCell style={{padding: "24px 16px"}} component="th" scope="row">
           <Box display="flex" alignItems="center">
             <img src={icon} alt={title} className={classes.poolImg} />
             <Typography className={classes.poolTitle}>{title}</Typography>
           </Box>
         </TableCell>
-        <TableCell style={isTablet ? { paddingLeft: 0 } : null}>
+        <TableCell style={{padding: "24px 16px", paddingLeft: isTablet ? '0' : "16px"}}>
           <Typography variant="caption">
             {!isTablet ? 'My Rewards' : 'Rewards'}
           </Typography>
@@ -187,7 +187,7 @@ function PoolRow(props: any) {
             {normalizeTokenDecimal(pendingReward).toNumber().toFixed(4)} tEXO
           </Typography>
         </TableCell>
-        <TableCell style={isTablet ? { paddingLeft: 0 } : null}>
+        <TableCell style={{padding: "24px 16px", paddingLeft: isTablet ? '0' : "16px"}}>
           <Typography variant="caption">APR</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
@@ -211,19 +211,19 @@ function PoolRow(props: any) {
         </TableCell>
         {!isTablet && (
           <>
-            <TableCell>
+            <TableCell style={{padding: "24px 16px"}}>
               <Typography variant="caption">My Stake</Typography>
               <Typography variant="h6" className={classes.label}>
                 {normalizeTokenDecimal(stakedBalance).toNumber().toFixed(4)} {symbol}
               </Typography>
             </TableCell>
-            <TableCell>
+            <TableCell style={{padding: "24px 16px"}}>
               <Typography variant="caption">Deposit Fee</Typography>
               <Typography variant="h6" className={classes.label}>
                 {formatDepositFee(depositFeeBP)}
               </Typography>
             </TableCell>
-            <TableCell>
+            <TableCell style={{padding: "24px 16px"}}>
               <Typography variant="caption">Multiplier</Typography>
               <Typography variant="h6" className={classes.label}>
               {displayAllocPoint / 100}x
@@ -231,7 +231,7 @@ function PoolRow(props: any) {
             </TableCell>
           </>
         )}
-        <TableCell>
+        <TableCell style={{padding: "24px 16px"}}>
           <Box display="flex" alignItems="center">
             {!isTablet ? (
               <Typography variant="caption">Details</Typography>
