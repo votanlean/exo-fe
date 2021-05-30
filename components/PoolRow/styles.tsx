@@ -44,8 +44,8 @@ const useStyles = makeStyles(() => {
       height: 20,
     },
     collapseRow: {
-      paddingBottom: 16,
-      paddingTop: 16,
+      paddingBottom: 0,
+      paddingTop: 0,
       borderBottom: 'unset',
       background: 'rgb(250, 249, 250)',
     },

@@ -251,6 +251,7 @@ function PoolRow(props: any) {
               margin={1}
               display="flex"
               flexDirection={isTablet ? 'column' : 'row'}
+              paddingY="16px"
             >
               <Box order={isTablet ? 3 : 'unset'}>
                 <a
