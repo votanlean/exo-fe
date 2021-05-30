@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => {
+export const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
       filter: 'drop-shadow(rgba(25, 19, 38, 0.15) 0px 1px 4px)',
@@ -11,5 +11,3 @@ const useStyles = makeStyles((theme) => {
     },
   };
 });
-
-export { useStyles };
