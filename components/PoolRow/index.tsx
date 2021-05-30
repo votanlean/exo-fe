@@ -268,6 +268,15 @@ function PoolRow(props: any) {
                 order={isTablet ? 2 : 'unset'}
                 marginBottom={isTablet ? '20px' : '0'}
               >
+                <Box className={classes.rowDetail}>
+                  <Typography>Deposit</Typography>
+                  <Typography
+                    className={'text-right'}
+                    style={{ marginLeft: 10 }}
+                  >
+                    {symbol}
+                  </Typography>
+                </Box>
                 {isTablet ? (
                   <>
                     <Box className={classes.rowDetail}>
@@ -330,15 +339,6 @@ function PoolRow(props: any) {
                     style={{ marginLeft: 10 }}
                   >
                     {normalizeTokenDecimal(stakingTokenBalance).toNumber().toFixed(4)} {symbol}
-                  </Typography>
-                </Box>
-                <Box className={classes.rowDetail}>
-                  <Typography>Deposit</Typography>
-                  <Typography
-                    className={'text-right'}
-                    style={{ marginLeft: 10 }}
-                  >
-                    {symbol}
                   </Typography>
                 </Box>
                 <Box className={classes.rowDetail}>
@@ -405,7 +405,7 @@ function PoolRow(props: any) {
                 {
                   shouldComponentDisplay(
                     !isAlreadyApproved,
-                    <Box className={classes.boxButton} style={{width: !isTablet ? '50%' : '100%'}}>
+                    <Box className={classes.boxButton} style={{width: !isTablet ? '50%' : 'auto'}}>
                       <Typography variant="caption">Approve</Typography>
                       <Button className={classes.button} onClick={handleClickApprove}>Approve</Button>
                     </Box>
