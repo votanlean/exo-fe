@@ -1,9 +1,9 @@
 const path = require('path');
 
-const isProd = process.env.NODE_ENV === 'prod';
+const isProd = process.env.NODE_ENV === 'production';
 
 require('dotenv').config({
-  path: path.resolve(__dirname, '../', isProd ? 'prod.env' : 'dev.env'),
+  path: path.resolve(__dirname, '../', isProd ? '.env.production' : '.env.development'),
 });
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
