@@ -20,6 +20,8 @@ const CustomButton = withStyles((theme: Theme) => ({
     fontWeight: 600,
     height: '48px',
     borderRadius: '16px',
+    paddingLeft: '20px',
+    paddingRight: '20px',
     '&:hover': {
       backgroundColor: '#0058aa',
     },
