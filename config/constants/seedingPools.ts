@@ -10,7 +10,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.USDT_ADDRESS,
-      97: '',
+      97: process.env.USDT_ADDRESS,
     },
     symbol: 'USDT',
     bsScanLink: 'https://bscscan.com/address/' + process.env.USDT_ADDRESS,
@@ -24,7 +24,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.WBNB_ADDRESS,
-      97: '',
+      97: process.env.WBNB_ADDRESS,
     },
     symbol: 'wBNB',
     bsScanLink: 'https://bscscan.com/address/' + process.env.WBNB_ADDRESS,
@@ -38,7 +38,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.BUSD_ADDRESS,
-      97: '',
+      97: process.env.BUSD_ADDRESS,
     },
     symbol: 'BUSD',
     bsScanLink: 'https://bscscan.com/address/' + process.env.BUSD_ADDRESS,
@@ -52,7 +52,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.CAKE_ADDRESS,
-      97: '',
+      97: process.env.CAKE_ADDRESS,
     },
     symbol: 'CAKE',
     bsScanLink: 'https://bscscan.com/address/' + process.env.CAKE_ADDRESS,
@@ -66,7 +66,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.BTCB_ADDRESS,
-      97: '',
+      97: process.env.BTCB_ADDRESS,
     },
     symbol: 'BTCB',
     bsScanLink: 'https://bscscan.com/address/' + process.env.BTCB_ADDRESS,
@@ -80,7 +80,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.ETH_ADDRESS,
-      97: '',
+      97: process.env.ETH_ADDRESS,
     },
     symbol: 'ETH',
     bsScanLink: 'https://bscscan.com/address/' + process.env.ETH_ADDRESS,
@@ -94,7 +94,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.BUNNY_ADDRESS,
-      97: '',
+      97: process.env.BUNNY_ADDRESS,
     },
     symbol: 'BUNNY',
     bsScanLink: 'https://bscscan.com/address/' + process.env.BUNNY_ADDRESS,
@@ -108,7 +108,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.XVS_ADDRESS,
-      97: '',
+      97: process.env.XVS_ADDRESS,
     },
     symbol: 'XVS',
     bsScanLink: 'https://bscscan.com/address/' + process.env.XVS_ADDRESS,
@@ -122,7 +122,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.USDC_ADDRESS,
-      97: '',
+      97: process.env.USDC_ADDRESS,
     },
     symbol: 'USDC',
     bsScanLink: 'https://bscscan.com/address/' + process.env.USDC_ADDRESS,
@@ -136,7 +136,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.DAI_ADDRESS,
-      97: '',
+      97: process.env.DAI_ADDRESS,
     },
     symbol: 'DAI',
     bsScanLink: 'https://bscscan.com/address/' + process.env.DAI_ADDRESS,
@@ -150,7 +150,7 @@ const seedingPools = [
     depositFeeBP: 400,
     address: {
       56: process.env.DOT_ADDRESS,
-      97: '',
+      97: process.env.DOT_ADDRESS,
     },
     symbol: 'DOT',
     bsScanLink: 'https://bscscan.com/address/' + process.env.DOT_ADDRESS,
