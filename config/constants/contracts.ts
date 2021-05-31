@@ -1,7 +1,7 @@
 export default {
     orchestrator: {
-        97: '0xdA181fE906Ee2ee23042B73fb0691086bF64e0f9',
-        56: '0x11eBAFd742e21294149B3c0341be7eE514Dd6198',
+        97: process.env.ORCHESTRATOR_ADDRESS,
+        56: process.env.ORCHESTRATOR_ADDRESS,
     },
     timeLock: {
         97: '0x99c2EcD51d52c036B00130d882Bc65f20Fdecf9f',
