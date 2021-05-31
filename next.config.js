@@ -1,11 +1,5 @@
-const path = require('path');
-
-const isProd = process.env.NODE_ENV === 'prod';
-
-require('dotenv').config({
-  path: path.resolve(__dirname, isProd ? 'prod.env' : 'dev.env'),
-});
-
+require('dotenv').config()
+const path = require('path')
 const Dotenv = require('dotenv-webpack')
 const withImages = require('next-images')
 
@@ -18,7 +12,7 @@ const configureWebpack = (config, { dev }) => {
 	config.plugins.push(
 		// Read the .env file
 		new Dotenv({
-			path: path.resolve(__dirname, isProd ? 'prod.env' : 'dev.env'),
+			path: path.join(__dirname, '.env'),
 			systemvars: true
 		})
   );
