@@ -1,6 +1,6 @@
 import path from 'path';
 
-const isProd = process.env.NODE_ENV === 'prod';
+const isProd = process.env.NODE_ENV as any === 'prod';
 
 require('dotenv').config({
   path: path.resolve(__dirname, '../', isProd ? 'prod.env' : 'dev.env'),
