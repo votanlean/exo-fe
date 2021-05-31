@@ -2,7 +2,7 @@ import Head from 'next/head';
 import ComingSoon from '../../components/ComingSoon';
 import React from 'react';
 
-function Mint() {
+function tASSET() {
   return (
     <>
       <Head>
@@ -13,4 +13,4 @@ function Mint() {
   );
 }
 
-export default Mint;
+export default tASSET;

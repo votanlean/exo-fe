@@ -8,7 +8,7 @@ const data = [
   { title: 'Home', path: '/' },
   { title: 'Pool', path: '/pool' },
   { title: 'Exchange', path: '/exchange' },
-  { title: 'Mint', path: '/mint' },
+  { title: 'tASSET', path: '/tASSET' },
   { title: 'Bridge', path: '/bridge' },
   { title: 'Governance', path: '/governance' },
 ];
