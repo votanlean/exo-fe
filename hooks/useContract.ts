@@ -1,51 +1,51 @@
-import { useMemo } from 'react'
-import {useWeb3} from './useWeb3'
+import { useMemo } from 'react';
+import useWeb3 from './useWeb3';
 import {
-    getBep20Contract,
-    getOrchestratorContract,
-    getTEXOContract,
-    // getBunnyFactoryContract,
-    // getBunnySpecialContract,
-    // getPancakeRabbitContract,
-    // getProfileContract,
-    // getIfoV1Contract,
-    // getIfoV2Contract,
-    // getLotteryContract,
-    // getLotteryTicketContract,
-    // getMasterchefContract,
-    // getPointCenterIfoContract,
-    // getSouschefContract,
-    // getClaimRefundContract,
-    // getTradingCompetitionContract,
-    // getEasterNftContract,
-    // getErc721Contract,
-    // getCakeVaultContract,
-    // getPredictionsContract,
-    // getChainlinkOracleContract,
-    // getSouschefV2Contract,
-} from 'utils/contractHelpers'
+  getBep20Contract,
+  getOrchestratorContract,
+  getTEXOContract,
+  // getBunnyFactoryContract,
+  // getBunnySpecialContract,
+  // getPancakeRabbitContract,
+  // getProfileContract,
+  // getIfoV1Contract,
+  // getIfoV2Contract,
+  // getLotteryContract,
+  // getLotteryTicketContract,
+  // getMasterchefContract,
+  // getPointCenterIfoContract,
+  // getSouschefContract,
+  // getClaimRefundContract,
+  // getTradingCompetitionContract,
+  // getEasterNftContract,
+  // getErc721Contract,
+  // getCakeVaultContract,
+  // getPredictionsContract,
+  // getChainlinkOracleContract,
+  // getSouschefV2Contract,
+} from 'utils/contractHelpers';
 
 /**
  * Helper hooks to get specific contracts (by ABI)
  */
 
 export const useOrchestratorContract = () => {
-    const web3 = useWeb3();
+  const web3 = useWeb3();
 
-    return useMemo(() => getOrchestratorContract(web3), [web3]);
-}
+  return useMemo(() => getOrchestratorContract(web3), [web3]);
+};
 
 export const useTEXOContract = () => {
-    const web3 = useWeb3();
+  const web3 = useWeb3();
 
-    return useMemo(() => getTEXOContract(web3), [web3]);
-}
+  return useMemo(() => getTEXOContract(web3), [web3]);
+};
 
 export const useERC20 = (address: string) => {
-    const web3 = useWeb3();
+  const web3 = useWeb3();
 
-    return useMemo(() => getBep20Contract(address, web3), [address, web3]);
-}
+  return useMemo(() => getBep20Contract(address, web3), [address, web3]);
+};
 //
 // /**
 //  * @see https://docs.openzeppelin.com/contracts/3.x/api/token/erc721

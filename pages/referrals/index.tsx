@@ -1,3 +1,5 @@
+import rot13 from '../../utils/encode';
+
 declare var window;
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -18,6 +20,7 @@ import Button from 'components/Button';
 import ConnectPopup from 'components/ConnectPopup';
 import styles from './referrals.module.scss';
 import { useEagerConnect, useInactiveListener } from 'hooks/useConnect';
+import useReferrals from '../../hooks/useReferral';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -55,19 +58,18 @@ function Referrals() {
   const [openPopup, setOpenPopup] = useState(false);
   const [activatingConnector, setActivatingConnector] = useState(null);
   const [referralLink, setReferralLink] = useState('');
-  const inputRef = useRef(null);
-
+  const [totalReferrals, setTotalReferrals] = useState(0);
+  const { referralsCount } = useReferrals();
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && account) {
       setReferralLink(
         `${window.location.protocol
           .concat('//')
-          .concat(
-            window.location.host,
-          )}?ref=0k34On8831n7711079o1Onp2P4n4R3R7poS9435r4s`,
+          .concat(window.location.host)}?ref=${rot13(account)}`,
       );
     }
-  }, []);
+    setTotalReferrals(referralsCount);
+  }, [account]);
 
   // handle logic to recognize the connector currently being activated
   useEffect(() => {
@@ -109,7 +111,7 @@ function Referrals() {
           <Card className={classes.root}>
             <CardHeader
               classes={{ title: classes.title, root: classes.rootHeader }}
-              title="Share the referral link below to invite your friends and earn 1% of your friends earnings FOREVER!"
+              title="Share the referral link below to invite your friends and earn 2% of your friends earnings FOREVER!"
             />
             <CardContent className={classes.rootContent}>
               {!account ? (
@@ -151,7 +153,7 @@ function Referrals() {
                     className={classes.desc}
                     style={{ marginTop: 0 }}
                   >
-                    0
+                    {totalReferrals}
                   </Typography>
                 </>
               )}

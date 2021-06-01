@@ -9,5 +9,10 @@ const getWeb3NoAccount = () => {
     return web3NoAccount
 }
 
-export { getWeb3NoAccount }
+const isAddress = (address: string) => {
+    return Web3.utils.isAddress(address)
+}
+
+export { getWeb3NoAccount, isAddress }
 export default web3NoAccount
+
