@@ -42,6 +42,7 @@ import { useFarms, useTotalValue } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
 import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
+import ComingSoon from '../../components/ComingSoon';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -72,6 +73,10 @@ function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
 }
 
 function Pool() {
+  if (process.env.POOL_PAGE_READY === 'false') {
+    return <ComingSoon />;
+  }
+
   const classes: any = useStyles();
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
