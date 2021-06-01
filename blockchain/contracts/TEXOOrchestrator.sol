@@ -16,7 +16,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     struct UserInfo {
         uint256 amount; // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
-        bool isAlreadyStaked; // To differentiate between a user who hasn't staked vs a user who withdrew all tokens before.
+        uint256 rewardLockedUp; // Reward locked up regardless of user's current rewardDept
         //
         // We do some fancy math here. Basically, any point in time, the amount of tEXOs
         // entitled to a user but is pending to be distributed is:
@@ -127,14 +127,6 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         return poolInfo.length;
     }
 
-    function setBlockToStartReducingEmissionRate(uint256 _blockToStartReducingEmissionRate) external onlyOwner {
-        blockToStartReducingEmissionRate = _blockToStartReducingEmissionRate;
-    }
-
-    function setGlobalBlockToUnlockClaimingRewards(uint256 _blockToUnlockClaimingRewards) external onlyOwner {
-        globalBlockToUnlockClaimingRewards = _blockToUnlockClaimingRewards;
-    }
-
     function getPoolIdForLpToken(IBEP20 _lpToken) external view returns (uint256) {
         require(poolExistence[_lpToken] != false, "getPoolIdForLpToken: do not exist");
         return poolIdForLpAddress[_lpToken];
@@ -232,10 +224,12 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
                 );
         }
 
-        return user.amount
+        uint256 pending = user.amount
             .mul(accTEXOPerShare)
             .div(1e12)
             .sub(user.rewardDebt);
+
+        return pending.add(user.rewardLockedUp);
     }
 
     // Update reward variables for all pools. Be careful of gas spending!
@@ -285,7 +279,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         pool.lastRewardBlock = block.number;
     }
 
-    function canWithdrawReward(uint256 _pid) public view returns (bool) {
+    function canClaimReward(uint256 _pid) public view returns (bool) {
         PoolInfo storage pool = poolInfo[_pid];
 
         return pool.blockToReceiveReward <= block.number;
@@ -294,7 +288,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     function canGenerateTexoReward(uint256 _pid) public view returns (bool) {
         PoolInfo storage pool = poolInfo[_pid];
 
-        return !(canWithdrawReward(_pid) && pool.allocPoint == 0);
+        return !(canClaimReward(_pid) && pool.allocPoint == 0);
     }
 
     // Deposit LP tokens to MasterChef for tEXO allocation.
@@ -303,6 +297,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         UserInfo storage user = userInfo[_pid][msg.sender];
 
         updatePool(_pid);
+
+        payOrLockupPendingTEXO(_pid);
 
         if (_amount > 0) {
             pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
@@ -322,13 +318,9 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
             }
         }
 
-        if (!user.isAlreadyStaked) {
-            user.rewardDebt = user.amount
-                .mul(pool.accTEXOPerShare)
-                .div(1e12);
-            
-            user.isAlreadyStaked = true;
-        }
+        user.rewardDebt = user.amount
+            .mul(pool.accTEXOPerShare)
+            .div(1e12);
 
         emit Deposit(msg.sender, _pid, _amount);
     }
@@ -341,6 +333,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         UserInfo storage user = userInfo[_pid][msg.sender];
 
         updatePool(_pid);
+
+        payOrLockupPendingTEXO(_pid);
 
         if (_amount > 0) {
             setReferral(msg.sender, _referrer);
@@ -361,13 +355,9 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
             }
         }
 
-        if (!user.isAlreadyStaked) {
-            user.rewardDebt = user.amount
-                .mul(pool.accTEXOPerShare)
-                .div(1e12);
-            
-            user.isAlreadyStaked = true;
-        }
+        user.rewardDebt = user.amount
+            .mul(pool.accTEXOPerShare)
+            .div(1e12);
 
         emit Deposit(msg.sender, _pid, _amount);
     }
@@ -382,6 +372,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
 
         updatePool(_pid);
 
+        payOrLockupPendingTEXO(_pid);
+
         user.amount = user.amount.sub(_amount);
         pool.lpToken.safeTransfer(address(msg.sender), _amount);
 
@@ -389,38 +381,32 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
             .mul(pool.accTEXOPerShare)
             .div(1e12);
 
-        if (user.amount == 0) {
-            user.isAlreadyStaked = false;
-        }
-
         emit Withdraw(msg.sender, _pid, _amount);
     }
 
-    function claimReward(uint256 _pid) public nonReentrant {
+    // Pay or lockup pending tEXO.
+    function payOrLockupPendingTEXO(uint256 _pid) internal {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
-
-        updatePool(_pid);
-
-        bool canWithdrawTEXO = canWithdrawReward(_pid);
 
         uint256 pending = user.amount
             .mul(pool.accTEXOPerShare)
             .div(1e12)
             .sub(user.rewardDebt);
 
-        if (pending <= 0 || !canWithdrawTEXO) {
-            return;
+        if (canClaimReward(_pid)) {
+            if (pending > 0 || user.rewardLockedUp > 0) {
+                uint256 totalRewards = pending.add(user.rewardLockedUp);
+
+                user.rewardLockedUp = 0;
+
+                // send rewards
+                safeTEXOTransfer(msg.sender, totalRewards);
+                payReferralCommission(msg.sender, totalRewards);
+            }
+        } else if (pending > 0) {
+            user.rewardLockedUp = user.rewardLockedUp.add(pending);
         }
-
-        safeTEXOTransfer(msg.sender, pending);
-        payReferralCommission(msg.sender, pending);
-
-        user.rewardDebt = user.amount
-            .mul(pool.accTEXOPerShare)
-            .div(1e12);
-
-        emit ClaimReward(msg.sender, _pid, pending);
     }
 
     // Withdraw without caring about rewards. EMERGENCY ONLY.
@@ -433,7 +419,6 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
 
         user.amount = 0;
         user.rewardDebt = 0;
-        user.isAlreadyStaked = false;
     }
 
     // Safe tEXO transfer function, just in case if rounding error causes pool to not have enough tEXOs.
