@@ -64,7 +64,12 @@ const useStyles = makeStyles(() => {
       marginTop: 8,
       width: '100%',
     },
-    boxButton: {
+    disabled: {
+    backgroundColor: 'darkgray !important',
+    cursor: 'auto !important',
+    },
+
+  boxButton: {
       borderRadius: '16px',
       padding: '8px',
       border: '2px solid rgb(238, 234, 244)',

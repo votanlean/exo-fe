@@ -407,7 +407,7 @@ function PoolRow(props: any) {
                     !isAlreadyApproved,
                     <Box className={classes.boxButton} style={{width: !isTablet ? '50%' : 'auto'}}>
                       <Typography variant="caption">Approve</Typography>
-                      <Button className={classes.button} onClick={handleClickApprove}>Approve</Button>
+                      <Button className={`${classes.button} ${canClaimReward ? classes.disabled : ''}`} onClick={handleClickApprove} disabled={canClaimReward}>Approve</Button>
                     </Box>
                   )
                 }
