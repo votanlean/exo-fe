@@ -367,15 +367,16 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
 
-        require(_amount > 0, "withdraw: amount is zero");
         require(user.amount >= _amount, "withdraw: not good");
 
         updatePool(_pid);
 
         payOrLockupPendingTEXO(_pid);
 
-        user.amount = user.amount.sub(_amount);
-        pool.lpToken.safeTransfer(address(msg.sender), _amount);
+        if (_amount > 0) {
+            user.amount = user.amount.sub(_amount);
+            pool.lpToken.safeTransfer(address(msg.sender), _amount);
+        }
 
         user.rewardDebt = user.amount
             .mul(pool.accTEXOPerShare)

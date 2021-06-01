@@ -162,7 +162,7 @@ function PoolRow(props: any) {
 
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
-      .claimReward(poolId)
+      .withdraw(poolId, '0')
       .send({ from: selectedAccount });
 
     claimRewardsEventEmitter.on('receipt', data => {

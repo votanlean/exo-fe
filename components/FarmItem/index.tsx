@@ -142,7 +142,7 @@ function FarmItem(props: any) {
 
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
-      .claimReward(farmId)
+      .withdraw(farmId, '0')
       .send({ from: selectedAccount });
 
     claimRewardsEventEmitter.on('receipt', data => {
