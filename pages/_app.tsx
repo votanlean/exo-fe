@@ -21,9 +21,9 @@ function MyApp({ Component, pageProps }) {
     <ThemeProvider theme={theme}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <Provider store={store}>
-            <MainLayout>
-              <Component {...pageProps} />
-            </MainLayout>
+          <MainLayout>
+            <Component {...pageProps} />
+          </MainLayout>
         </Provider>
       </Web3ReactProvider>
     </ThemeProvider>
