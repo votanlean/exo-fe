@@ -274,15 +274,6 @@ function PoolRow(props: any) {
                 order={isTablet ? 2 : 'unset'}
                 marginBottom={isTablet ? '20px' : '0'}
               >
-                <Box className={classes.rowDetail}>
-                  <Typography>Deposit</Typography>
-                  <Typography
-                    className={'text-right'}
-                    style={{ marginLeft: 10 }}
-                  >
-                    {symbol}
-                  </Typography>
-                </Box>
                 {isTablet ? (
                   <>
                     <Box className={classes.rowDetail}>
