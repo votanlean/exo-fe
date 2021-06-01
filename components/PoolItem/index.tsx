@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { EventEmitter } from 'events';
 import BigNumber from 'bignumber.js';
 
-import styles from './farmItem.module.scss';
+import styles from './poolItem.module.scss';
 import orchestratorInstance from '../../blockchain/orchestrator';
-import { getFarmApr } from '../../hookApi/apr';
+import { ROIDialog, StakeDialog, WithdrawDialog } from 'components/Dialogs';
+import { getPoolApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
-import { getOrchestratorAddress } from '../../utils/addressHelpers';
+import { getAddress, getOrchestratorAddress } from '../../utils/addressHelpers';
 import erc20abi from 'config/abi/erc20.json';
 import web3 from 'blockchain/web3';
-import { ethers } from 'ethers';
-import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
-import { ROIDialog, StakeDialog, WithdrawDialog } from 'components/Dialogs';
+import { ethers } from "ethers";
+import { normalizeTokenDecimal } from 'utils/bigNumber';
 import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
 
 function formatDepositFee(depositFee, decimals = 4) {
@@ -27,39 +27,39 @@ function formatDepositFee(depositFee, decimals = 4) {
   return `${actualDepositFee.toFixed(2)}%`
 }
 
-function FarmItem(props: any) {
+function PoolItem(props: any) {
   const {
-    farmData = {},
+    poolData = {},
     selectedAccount,
     onPoolStateChange,
     stakingTokenPrice,
     tEXOPrice,
     canClaimReward,
+    countDownString,
   } = props;
   const {
+    id: poolId,
     icon,
     title,
     symbol,
     bsScanLink,
-    pid: farmId,
-    address: lpTokenAddress,
-    depositFeeBP,
-    allocPoint,
     totalStaked,
+    allocPoint,
     displayAllocPoint,
     userData = {},
-    lpTotalInQuoteToken = BIG_ZERO,
-  } = farmData;
+    depositFeeBP,
+  } = poolData;
 
-  const { allowance, earnings: pendingReward, stakedBalance, tokenBalance } = userData;
+  const { allowance, pendingReward, stakedBalance, stakingTokenBalance } = userData;
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
 
-  const lpTokenInstance = new web3.eth.Contract(erc20abi as any, lpTokenAddress);
+  const tokenAddress = getAddress(poolData.address);
+  const tokenInstance = new web3.eth.Contract(erc20abi as any, tokenAddress);
 
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
-  const farmWeight = new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
+  const poolTexoPerBlock = new BigNumber(tEXOPerBlock).times(new BigNumber(allocPoint)).div(new BigNumber(totalAllocPoint))
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
@@ -67,15 +67,16 @@ function FarmItem(props: any) {
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
 
   const orchestratorAddress = getOrchestratorAddress();
-  const apr = getFarmApr(
-    farmWeight,
+
+  const apr = getPoolApr(
+    stakingTokenPrice,
     tEXOPrice,
-    lpTotalInQuoteToken,
-    normalizeTokenDecimal(tEXOPerBlock),
+    normalizeTokenDecimal(totalStaked).toNumber(),
+    normalizeTokenDecimal(poolTexoPerBlock).toNumber(),
   );
 
   const handleClickApprove = async () => {
-    const approvalEventEmitter = lpTokenInstance.methods
+    const approvalEventEmitter = tokenInstance.methods
       .approve(orchestratorAddress, ethers.constants.MaxUint256)
       .send({ from: selectedAccount });
 
@@ -102,7 +103,7 @@ function FarmItem(props: any) {
 
   const handleConfirmStake = async amount => {
     const stakeEventEmitter: EventEmitter = orchestratorInstance.methods
-      .deposit(farmId, web3.utils.toWei(amount, 'ether'))
+      .deposit(poolId, web3.utils.toWei(amount, 'ether'))
       .send({ from: selectedAccount });
 
     stakeEventEmitter.on('receipt', data => {
@@ -126,7 +127,7 @@ function FarmItem(props: any) {
 
   const handleConfirmWithdraw = async amount => {
     const withdrawEventEmitter = orchestratorInstance.methods
-      .withdraw(farmId, web3.utils.toWei(amount, 'ether'))
+      .withdraw(poolId, web3.utils.toWei(amount, 'ether'))
       .send({ from: selectedAccount });
 
     withdrawEventEmitter.on('receipt', data => {
@@ -142,7 +143,7 @@ function FarmItem(props: any) {
 
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
-      .claimReward(farmId)
+      .claimReward(poolId)
       .send({ from: selectedAccount });
 
     claimRewardsEventEmitter.on('receipt', data => {
@@ -178,7 +179,7 @@ function FarmItem(props: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>${Number(lpTotalInQuoteToken).toFixed(2)}</h3>
+        <h3>${Number(normalizeTokenDecimal(totalStaked).toNumber() * stakingTokenPrice).toFixed(2)}</h3>
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
@@ -195,32 +196,18 @@ function FarmItem(props: any) {
       <div className={styles.poolItem}>
         <div className={styles.poolItemGrid}>
           <div className={styles.item}>
-            <div className={styles.liquidityPoolEffect} />
 
             <div className={`${styles.spacing} d-flex items-center column`}>
-            <div className={`d-flex justify-between w-full items-center`}>
-            <div>
-              <img src={icon} alt={title} className={styles.icon} />
+            <div className={styles.poolAllocationPoint}>
+              <p>{displayAllocPoint / 100} X</p>
             </div>
-            <div>
-              <p className={`${styles.title} text-right mb-1`}>{title}</p>
-              <div className={`d-flex items-center justify-end`}>
-                {
-                  shouldComponentDisplay(
-                    depositFeeBP <= 0,
-                    <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
-                      <img src="/static/images/verified.svg" />
-                      <p>No Fees</p>
-                    </div>
-                  )
-                }
-                <div className={`${styles.poolAllocationPoint}`}>
-                  <p>{displayAllocPoint / 100} X</p>
-                </div>
+              <div className={styles.poolItemGrid}>
+                <img src={icon} alt={title} className={styles.icon} />
               </div>
-            </div>
-          </div>
 
+              <div className={styles.poolItemGrid}>
+                <p className={styles.title}>{title}</p>
+              </div>
               <div className={`${styles.poolItemGrid} w-full`}>
                 <RowPoolItem
                   title="APR"
@@ -270,17 +257,23 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(tokenBalance).toNumber().toFixed(4)} {symbol}
+                    {normalizeTokenDecimal(stakingTokenBalance).toNumber().toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
+                <Typography
+                    align="center"
+                    variant="h6"
+                    className={styles.countDown}
+                >
+                  {countDownString}
+                </Typography>
               </div>
-
               <div
                 className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
               >
                 {
                   shouldComponentDisplay(
-                    canClaimReward && Number(stakedBalance) > 0,
+                    canClaimReward && Number(stakedBalance) > 0 && Number(pendingReward) > 0,
                     <button
                       type="button"
                       className={`${styles.button}`}
@@ -304,19 +297,31 @@ function FarmItem(props: any) {
                           Withdraw
                         </button>
                       </Grid>
-                    </Grid>
-                  )
-                }
-                {
-                  shouldComponentDisplay(
-                    isAlreadyApproved,
-                    <button
-                      type="button"
-                      className={`${styles.button}`}
-                      onClick={handleClickStake}
-                    >
-                      Stake
-                    </button>,
+                      <Grid item xs={12}>
+                        {
+                          shouldComponentDisplay(
+                            !canClaimReward,
+                            <button
+                              type="button"
+                              className={`${styles.button}`}
+                              onClick={handleClickStake}
+                            >
+                              Stake
+                            </button>
+                          )
+                        }
+                      </Grid>
+                    </Grid>,
+                    shouldComponentDisplay(
+                      isAlreadyApproved && !canClaimReward,
+                      <button
+                        type="button"
+                        className={`${styles.button}`}
+                        onClick={handleClickStake}
+                      >
+                        Stake
+                      </button>,
+                    )
                   )
                 }
                 {
@@ -352,7 +357,7 @@ function FarmItem(props: any) {
         onConfirm={handleConfirmStake}
         unit={symbol}
         depositFee={depositFeeBP}
-        maxAmount={tokenBalance}
+        maxAmount={stakingTokenBalance}
       />
       <WithdrawDialog
         open={openWithdrawDialog}
@@ -383,4 +388,4 @@ const RowPoolItem = React.memo(function RowPoolItem(props: any) {
   )
 })
 
-export default FarmItem;
+export default PoolItem

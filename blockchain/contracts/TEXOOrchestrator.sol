@@ -389,6 +389,10 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
             .mul(pool.accTEXOPerShare)
             .div(1e12);
 
+        if (user.amount == 0) {
+            user.isAlreadyStaked = false;
+        }
+
         emit Withdraw(msg.sender, _pid, _amount);
     }
 

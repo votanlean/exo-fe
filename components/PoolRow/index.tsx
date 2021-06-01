@@ -38,12 +38,15 @@ function formatDepositFee(depositFee, decimals = 4) {
 }
 
 function PoolRow(props: any) {
-  const {data = {}, selectedAccount,
-  onPoolStateChange,
-  stakingTokenPrice,
-  tEXOPrice,
-  canClaimReward,
-  countDownString,} = props || {};
+  const {
+    data = {},
+    selectedAccount,
+    onPoolStateChange,
+    stakingTokenPrice,
+    tEXOPrice,
+    canClaimReward,
+  } = props || {};
+
   const {
     id: poolId,
     icon,
@@ -57,6 +60,7 @@ function PoolRow(props: any) {
     depositFeeBP,
     address
   } = data;
+
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
@@ -143,31 +147,33 @@ function PoolRow(props: any) {
   const handleConfirmWithdraw = async amount => {
     const withdrawEventEmitter = orchestratorInstance.methods
       .withdraw(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount })
+      .send({ from: selectedAccount });
+
     withdrawEventEmitter.on('receipt', data => {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
-    })
+    });
 
     withdrawEventEmitter.on('error', data => {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
-    })
+    });
   }
 
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
-      .deposit(poolId, 0)
-      .send({ from: selectedAccount })
+      .claimReward(poolId)
+      .send({ from: selectedAccount });
+
     claimRewardsEventEmitter.on('receipt', data => {
       onPoolStateChange()
       claimRewardsEventEmitter.removeAllListeners()
-    })
+    });
 
     claimRewardsEventEmitter.on('error', data => {
       onPoolStateChange()
       claimRewardsEventEmitter.removeAllListeners()
-    })
+    });
   }
 
   return (
@@ -309,7 +315,7 @@ function PoolRow(props: any) {
                         className={'text-right'}
                         style={{ marginLeft: 10 }}
                       >
-                        {normalizeTokenDecimal(stakedBalance).toNumber().toFixed(4)} {symbol}
+                        {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
                       </Typography>
                     </Box>
                     <Box className={classes.rowDetail}>
@@ -347,7 +353,7 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    0.0000 {symbol}
+                    {normalizeTokenDecimal(totalStaked).toFixed(4)} {symbol}
                   </Typography>
                 </Box>
                 <Box className={classes.rowDetail}>
@@ -356,7 +362,7 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    $0.00
+                    ${Number(normalizeTokenDecimal(totalStaked).toNumber() * stakingTokenPrice).toFixed(2)}
                   </Typography>
                 </Box>
               </Box>

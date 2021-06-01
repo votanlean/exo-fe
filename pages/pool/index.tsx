@@ -89,8 +89,7 @@ function Pool() {
   const tvl = useTotalValue();
 
   const { currentBlock } = useBlockData();
-  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
-    useTexoTokenData();
+  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
   const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
   const { tEXOReward } = useUserInfoData();
 
