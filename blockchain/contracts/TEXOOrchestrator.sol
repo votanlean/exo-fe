@@ -63,8 +63,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     mapping(uint256 => mapping(address => UserInfo)) public userInfo;
     // Total allocation points. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
-    // Referral Bonus in basis points. Initially set to 1%
-    uint256 public refBonusBP = 100;
+    // Referral Bonus in basis points. Initially set to 2%
+    uint256 public refBonusBP = 200;
     // Max deposit fee: 10%.
     uint16 public constant MAXIMUM_DEPOSIT_FEE_BP = 1000;
     // Max referral commission rate: 20%.
