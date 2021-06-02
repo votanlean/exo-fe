@@ -22,9 +22,12 @@ import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { getAddress, getOrchestratorAddress } from 'utils/addressHelpers';
 import { normalizeTokenDecimal } from 'utils/bigNumber';
 import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
+import Cookies from 'universal-cookie';
 import Button from '../Button';
 
 import { useStyles } from './styles';
+import {isAddress} from "../../utils/web3";
+import rot13 from "../../utils/encode";
 
 
 function formatDepositFee(depositFee, decimals = 4) {
@@ -38,6 +41,7 @@ function formatDepositFee(depositFee, decimals = 4) {
 }
 
 function PoolRow(props: any) {
+  const cookies = new Cookies();
   const {
     data = {},
     selectedAccount,
@@ -46,7 +50,6 @@ function PoolRow(props: any) {
     tEXOPrice,
     canClaimReward,
   } = props || {};
-
   const {
     id: poolId,
     icon,
@@ -129,8 +132,17 @@ function PoolRow(props: any) {
   }
 
   const handleConfirmStake = async amount => {
+    let ref;
+    if (cookies.get('ref')) {
+      if (isAddress(rot13(cookies.get('ref')))) {
+        ref = rot13(cookies.get('ref'));
+      }
+    } else {
+      ref = '0x0000000000000000000000000000000000000000';
+    }
+
     const stakeEventEmitter: EventEmitter = orchestratorInstance.methods
-      .deposit(poolId, web3.utils.toWei(amount, 'ether'))
+      .deposit(poolId, web3.utils.toWei(amount, 'ether'), ref)
       .send({ from: selectedAccount });
 
     stakeEventEmitter.on('receipt', data => {
