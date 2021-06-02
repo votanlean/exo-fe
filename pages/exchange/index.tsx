@@ -50,6 +50,16 @@ const useStyles = makeStyles({
     height: 24,
     marginRight: 8,
   },
+  comingSoonLogo: {
+    [theme.breakpoints.down('sm')]: {
+      width: '80px',
+    },
+  },
+  comingSoonText: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2.5rem',
+    },
+  },
 });
 
 function Pool() {
@@ -103,10 +113,18 @@ function Pool() {
           textAlign="center"
           marginBottom={theme.spacing(1)}
         >
-          <img src="/static/images/icon-white.svg" alt="logo title" />
+          <img
+            className={classes.comingSoonLogo}
+            src="/static/images/icon-white.svg"
+            alt="logo title"
+          />
           <Box>
-            <Typography variant="h1">Coming Soon</Typography>
-            <Typography variant="h2">Are you ready?</Typography>
+            <Typography className={classes.comingSoonText} variant="h1">
+              Coming Soon
+            </Typography>
+            <Typography className={classes.comingSoonText} variant="h2">
+              Are you ready?
+            </Typography>
           </Box>
         </Box>
 
