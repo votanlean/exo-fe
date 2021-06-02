@@ -71,6 +71,16 @@ const Nav = (props) => {
             Docs
           </a>
         </li>
+        <li>
+          <a
+            href="https://medium.com/exonium-exchange"
+            target="_blank"
+            className={`${styles.menuLink} menu-link`}
+            onClick={handleCloseBurger}
+          >
+            Blog
+          </a>
+        </li>
       </ul>
     </nav>
   );
