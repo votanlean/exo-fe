@@ -50,7 +50,7 @@ function Statistic(props) {
           p={2}
         >
           <Typography variant="h4" className={'font-bold'}>
-            Farms & Staking
+          tEXO Balance
           </Typography>
           <Avatar
             alt="tEXO"
@@ -64,7 +64,7 @@ function Statistic(props) {
           </Typography>
           <Typography gutterBottom>~${(tEXOPrice * tEXOReward).toFixed(2)}</Typography>
 
-          <Typography>tEXO to Wallet</Typography>
+          <Typography>tEXO in Wallet</Typography>
           <Typography className={classes.fadeText}>
             {active ? tEXOBalance.toFixed(2): 'LOCKED'}
           </Typography>
