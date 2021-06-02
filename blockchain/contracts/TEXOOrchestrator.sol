@@ -291,40 +291,6 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         return !(canClaimReward(_pid) && pool.allocPoint == 0);
     }
 
-    // Deposit LP tokens to MasterChef for tEXO allocation.
-    function deposit(uint256 _pid, uint256 _amount) public nonReentrant {
-        PoolInfo storage pool = poolInfo[_pid];
-        UserInfo storage user = userInfo[_pid][msg.sender];
-
-        updatePool(_pid);
-
-        payOrLockupPendingTEXO(_pid);
-
-        if (_amount > 0) {
-            pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
-
-            if (pool.depositFeeBP > 0) {
-                uint256 depositFee = _amount
-                    .mul(pool.depositFeeBP)
-                    .div(10000);
-
-                user.amount = user.amount
-                    .add(_amount)
-                    .sub(depositFee);
-
-                pool.lpToken.safeTransfer(feeAddress, depositFee);
-            } else {
-                user.amount = user.amount.add(_amount);
-            }
-        }
-
-        user.rewardDebt = user.amount
-            .mul(pool.accTEXOPerShare)
-            .div(1e12);
-
-        emit Deposit(msg.sender, _pid, _amount);
-    }
-
     // Deposit LP tokens to MasterChef for tEXO allocation with referral.
     function deposit(uint256 _pid, uint256 _amount, address _referrer) public nonReentrant {
         require(_referrer == address(_referrer),"deposit: Invalid referrer address");
@@ -336,8 +302,11 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
 
         payOrLockupPendingTEXO(_pid);
 
-        if (_amount > 0) {
+        if (_amount > 0 && _referrer != address(0) && _referrer != msg.sender) {
             setReferral(msg.sender, _referrer);
+        }
+
+        if (_amount > 0) {
             pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
 
             if (pool.depositFeeBP > 0) {
