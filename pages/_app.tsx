@@ -56,7 +56,6 @@ function MyApp({ Component, pageProps }) {
           </Provider>
         </Web3ReactProvider>
       </bsc.UseWalletProvider>
-
     </ThemeProvider>
   );
 }

@@ -42,6 +42,7 @@ import { useFarms, useTotalValue } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
 import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
+import ComingSoon from '../../components/ComingSoon';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -72,6 +73,10 @@ function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
 }
 
 function Pool() {
+  if (process.env.POOL_PAGE_READY === 'false') {
+    return <ComingSoon />;
+  }
+
   const classes: any = useStyles();
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
@@ -84,8 +89,7 @@ function Pool() {
   const tvl = useTotalValue();
 
   const { currentBlock } = useBlockData();
-  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
-    useTexoTokenData();
+  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
   const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
   const { tEXOReward } = useUserInfoData();
 
@@ -178,18 +182,20 @@ function Pool() {
           tEXOReward={new BigNumber(tEXOReward)}
         />
 
-        <Typography
-          variant="h5"
-          align="center"
-          style={{ marginBottom: '30px', lineHeight: '40px' }}
-        >
-          Stake tEXO LPs (PCS V2) for tEXO reward.
-          <br />
-          Farming reward will be generated in
+        <div className={styles.countdownContainer}>
+          <Typography
+            variant="h5"
+            align="center"
+            style={{ marginBottom: '30px', lineHeight: '40px' }}
+          >
+            Stake tEXO LPs (PCS V2) for tEXO reward.
+            <br />
+            Farming reward will be generated in
+          </Typography>
           <Typography variant="h3" color="primary">
             {countDownString}
           </Typography>
-        </Typography>
+        </div>
 
         <div className={styles.lpPoolGrid}>
           {farms.map((farm, index) => {
@@ -217,27 +223,34 @@ function Pool() {
             );
           })}
         </div>
-
-        <div className={styles.countdownContainer}>
-          <Typography
-            variant="h5"
-            align="center"
-            paragraph
-            style={{ marginBottom: '10px', lineHeight: '40px' }}
-          >
-            Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens
-            for tEXO.
-            <br />
-            (4% Deposit Fee applies for tEXO liquidity)
-            <br />
-            Seed Pools reward startblock at (to be added in later)
-            <br />
-            Users can harvest tEXO in
-          </Typography>
-          <Typography variant="h3" color="primary">
-            {countDownString}
-          </Typography>
-        </div>
+        {currentBlock && currentBlock >= canClaimRewardsBlock ? (
+          <div className={styles.countdownContainer}>
+            <Typography variant="h3" color="primary">
+              Seed phase already completed
+            </Typography>
+          </div>
+        ) : (
+          <div className={styles.countdownContainer}>
+            <Typography
+              variant="h5"
+              align="center"
+              paragraph
+              style={{ marginBottom: '10px', lineHeight: '40px' }}
+            >
+              Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens
+              for tEXO.
+              <br />
+              (4% Deposit Fee applies for tEXO liquidity)
+              <br />
+              Seed Pools reward startblock at (to be added in later)
+              <br />
+              Users can harvest tEXO in
+            </Typography>
+            <Typography variant="h3" color="primary">
+              {countDownString}
+            </Typography>
+          </div>
+        )}
 
         <TableContainer className={classes.tableContainer}>
           <Table aria-label="collapsible table">

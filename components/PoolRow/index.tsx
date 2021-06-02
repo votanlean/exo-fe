@@ -42,12 +42,14 @@ function formatDepositFee(depositFee, decimals = 4) {
 
 function PoolRow(props: any) {
   const cookies = new Cookies();
-  const {data = {}, selectedAccount,
-  onPoolStateChange,
-  stakingTokenPrice,
-  tEXOPrice,
-  canClaimReward,
-  countDownString,} = props || {};
+  const {
+    data = {},
+    selectedAccount,
+    onPoolStateChange,
+    stakingTokenPrice,
+    tEXOPrice,
+    canClaimReward,
+  } = props || {};
   const {
     id: poolId,
     icon,
@@ -61,6 +63,7 @@ function PoolRow(props: any) {
     depositFeeBP,
     address
   } = data;
+
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
@@ -156,31 +159,33 @@ function PoolRow(props: any) {
   const handleConfirmWithdraw = async amount => {
     const withdrawEventEmitter = orchestratorInstance.methods
       .withdraw(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount })
+      .send({ from: selectedAccount });
+
     withdrawEventEmitter.on('receipt', data => {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
-    })
+    });
 
     withdrawEventEmitter.on('error', data => {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
-    })
+    });
   }
 
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
-      .deposit(poolId, 0)
-      .send({ from: selectedAccount })
+      .withdraw(poolId, '0')
+      .send({ from: selectedAccount });
+
     claimRewardsEventEmitter.on('receipt', data => {
       onPoolStateChange()
       claimRewardsEventEmitter.removeAllListeners()
-    })
+    });
 
     claimRewardsEventEmitter.on('error', data => {
       onPoolStateChange()
       claimRewardsEventEmitter.removeAllListeners()
-    })
+    });
   }
 
   return (
@@ -281,15 +286,6 @@ function PoolRow(props: any) {
                 order={isTablet ? 2 : 'unset'}
                 marginBottom={isTablet ? '20px' : '0'}
               >
-                <Box className={classes.rowDetail}>
-                  <Typography>Deposit</Typography>
-                  <Typography
-                    className={'text-right'}
-                    style={{ marginLeft: 10 }}
-                  >
-                    {symbol}
-                  </Typography>
-                </Box>
                 {isTablet ? (
                   <>
                     <Box className={classes.rowDetail}>
@@ -322,7 +318,7 @@ function PoolRow(props: any) {
                         className={'text-right'}
                         style={{ marginLeft: 10 }}
                       >
-                        {normalizeTokenDecimal(stakedBalance).toNumber().toFixed(4)} {symbol}
+                        {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
                       </Typography>
                     </Box>
                     <Box className={classes.rowDetail}>
@@ -360,7 +356,7 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    0.0000 {symbol}
+                    {normalizeTokenDecimal(totalStaked).toFixed(4)} {symbol}
                   </Typography>
                 </Box>
                 <Box className={classes.rowDetail}>
@@ -369,7 +365,7 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    $0.00
+                    ${Number(normalizeTokenDecimal(totalStaked).toNumber() * stakingTokenPrice).toFixed(2)}
                   </Typography>
                 </Box>
               </Box>
@@ -420,7 +416,7 @@ function PoolRow(props: any) {
                     !isAlreadyApproved,
                     <Box className={classes.boxButton} style={{width: !isTablet ? '50%' : 'auto'}}>
                       <Typography variant="caption">Approve</Typography>
-                      <Button className={classes.button} onClick={handleClickApprove}>Approve</Button>
+                      <Button className={`${classes.button} ${canClaimReward ? classes.disabled : ''}`} onClick={handleClickApprove} disabled={canClaimReward}>Approve</Button>
                     </Box>
                   )
                 }

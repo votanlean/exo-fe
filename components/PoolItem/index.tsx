@@ -128,31 +128,33 @@ function PoolItem(props: any) {
   const handleConfirmWithdraw = async amount => {
     const withdrawEventEmitter = orchestratorInstance.methods
       .withdraw(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount })
+      .send({ from: selectedAccount });
+
     withdrawEventEmitter.on('receipt', data => {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
-    })
+    });
 
     withdrawEventEmitter.on('error', data => {
       onPoolStateChange()
       withdrawEventEmitter.removeAllListeners()
-    })
+    });
   }
 
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
-      .deposit(poolId, 0)
-      .send({ from: selectedAccount })
+      .claimReward(poolId)
+      .send({ from: selectedAccount });
+
     claimRewardsEventEmitter.on('receipt', data => {
       onPoolStateChange()
       claimRewardsEventEmitter.removeAllListeners()
-    })
+    });
 
     claimRewardsEventEmitter.on('error', data => {
       onPoolStateChange()
       claimRewardsEventEmitter.removeAllListeners()
-    })
+    });
   }
 
   const toggleDisplayDetails = () => {
