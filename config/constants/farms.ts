@@ -10,7 +10,12 @@ const farms: any[] = [
     token: tokens.texo,
     displayAllocPoint: 5000,
     depositFeeBP: 0,
-    quoteToken: tokens.wbnb,
+    quoteToken: {
+      address: {
+        56: process.env.WBNB_ADDRESS,
+        97: process.env.WBNB_ADDRESS,
+      }
+    },
     bsScanLink: 'https://bscscan.com/address/' + process.env.BNBLP_ADDRESS,
   },
   {
@@ -23,7 +28,12 @@ const farms: any[] = [
     token: tokens.texo,
     displayAllocPoint: 5000,
     depositFeeBP: 0,
-    quoteToken: tokens.busd,
+    quoteToken: {
+      address: {
+        56: process.env.BUSD_ADDRESS,
+        97: process.env.BUSD_ADDRESS,
+      }
+    },
     bsScanLink: 'https://bscscan.com/address/' + process.env.BUSDLP_ADDRESS,
   },
 ]
