@@ -102,6 +102,9 @@ export const WithdrawDialog = ({
 		const value = e.target.value;
 		if (value >= 0) {
 			setAmount(e.target.value);
+			if(e.target.value >= maxAmount){
+				setAmount(maxAmount);
+			}
 		} else {
 			setAmount(0);
 		}
