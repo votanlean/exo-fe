@@ -378,7 +378,7 @@ function PoolRow(props: any) {
                 {
                   shouldComponentDisplay(
                     canClaimReward && Number(stakedBalance) > 0 && Number(pendingReward) > 0,
-                    <Box className={classes.boxButton}>
+                    <Box className={classes.boxButton} style={{width: !isTablet ? '50%' : 'auto'}}>
                       <Typography variant="caption">Claim Rewards</Typography>
                       <Button className={classes.button} onClick={handleClickClaimRewards} disabled={!canClaimReward}>Claim Rewards</Button>
                     </Box>
@@ -388,14 +388,14 @@ function PoolRow(props: any) {
                   shouldComponentDisplay(
                     canWithdraw,
                     <>
-                      <Box className={classes.boxButton}>
+                      <Box className={classes.boxButton} style={{width: !isTablet ? '50%' : 'auto'}}>
                         <Typography variant="caption">Withdraw</Typography>
                         <Button className={classes.button} onClick={handleClickWithdraw}>Withdraw</Button>
                       </Box>
                       {
                         shouldComponentDisplay(
                           !canClaimReward,
-                          <Box className={classes.boxButton}>
+                          <Box className={classes.boxButton} style={{width: !isTablet ? '50%' : 'auto'}}>
                             <Typography variant="caption">Stake</Typography>
                             <Button className={classes.button} onClick={handleClickStake}>Stake</Button>
                           </Box>
@@ -404,7 +404,7 @@ function PoolRow(props: any) {
                     </>,
                     shouldComponentDisplay(
                       isAlreadyApproved && !canClaimReward,
-                      <Box className={classes.boxButton}>
+                      <Box className={classes.boxButton} style={{width: !isTablet ? '50%' : 'auto'}}>
                         <Typography variant="caption">Stake</Typography>
                         <Button className={classes.button} onClick={handleClickStake}>Stake</Button>
                       </Box>
