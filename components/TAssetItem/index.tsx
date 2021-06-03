@@ -21,7 +21,8 @@ function TAssetItem(props: any) {
 
   return (
     <Link
-      href={link}
+      href="#"
+      onClick={(e) => e.preventDefault()}
       target="_blank"
       rel="noopener"
       underline="none"
