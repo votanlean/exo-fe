@@ -434,13 +434,15 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
       );
       this.offsetBlock++;
 
-      await time.advanceBlockTo(currentBlock.toNumber() - this.offsetBlock + 24 * 5 - 1);
+      await time.advanceBlockTo(currentBlock.toNumber() - this.offsetBlock + 24 * 5);
 
       await this.tEXOOrchestrator.withdraw('0', `${400 * 0.96}`, { from: staker1 });
 
       const staker1Balance = await this.tEXOInstance.balanceOf(staker1);
       const referrerBalance = await this.tEXOInstance.balanceOf(referrer);
-      
+
+      expect(staker1Balance.gt(new BN(0))).to.be.equal(true, "Staker1 should have received tEXO rewards");
+      expect(referrerBalance.gt(new BN(0))).to.be.equal(true, "Referrer should have received tEXO rewards");
       expect(referrerBalance.eq(staker1Balance.div(new BN(10)))).to.be.equal(true, "Referrer should own 2% of what staker receives");
     });
   });
