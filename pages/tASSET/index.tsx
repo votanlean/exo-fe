@@ -6,6 +6,7 @@ import { tAssetData } from 'constant/tASSETData';
 import TAssetItem from 'components/TAssetItem';
 
 import { useStyles } from 'styles/pages/tAsset/styles';
+import ComingSoon from 'components/ComingSoon';
 
 const buttonData = [
   {
@@ -31,6 +32,10 @@ const buttonData = [
 ];
 
 function tASSET() {
+  if (process.env.TASSET_PAGE_READY === 'false') {
+    return <ComingSoon />;
+  }
+
   const classes = useStyles();
   const [activeBtnId, setActiveBtnId] = useState(0);
   const [tAsset, setTAsset] = useState(tAssetData);
