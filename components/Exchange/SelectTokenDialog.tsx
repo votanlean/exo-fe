@@ -11,8 +11,8 @@ import {
   Tooltip,
 } from '@material-ui/core';
 
-import { poolToken } from '../../blockchain/tokenFactory';
 import { HelpOutline } from '@material-ui/icons';
+import { usePools } from '../../state/pools/selectors';
 
 const useStyles = makeStyles((theme) => {
   const augmentBlue = theme.palette.augmentColor({ main: '#007EF3' });
@@ -46,6 +46,8 @@ const useStyles = makeStyles((theme) => {
 
 const SelectTokenDialog = ({ title, open, onClose, onConfirm, fromTo }) => {
   const classes: any = useStyles();
+  const pools = usePools();
+  let poolToken = [...pools]; //mutable
   const [poolTokenData, setPoolTokenData] = useState(
     poolToken.sort((a, b) =>
       a.symbol > b.symbol ? 1 : b.symbol > a.symbol ? -1 : 0,

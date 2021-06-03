@@ -41,10 +41,9 @@ function formatDepositFee(depositFee, decimals = 4) {
 }
 
 function PoolRow(props: any) {
-  const cookies = new Cookies();
   const {
-    data = {},
-    selectedAccount,
+    pool = {},
+    account,
     onPoolStateChange,
     stakingTokenPrice,
     tEXOPrice,
@@ -55,14 +54,13 @@ function PoolRow(props: any) {
     icon,
     title,
     symbol,
-    bsScanLink,
     totalStaked,
     allocPoint,
     displayAllocPoint,
     userData = {},
     depositFeeBP,
-    address
-  } = data;
+    stakingToken
+  } = pool;
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -77,8 +75,7 @@ function PoolRow(props: any) {
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
-
-  const tokenAddress = getAddress(address);
+  const tokenAddress = getAddress(stakingToken.address);
   const tokenInstance = new web3.eth.Contract(erc20abi as any, tokenAddress);
 
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
@@ -98,7 +95,7 @@ function PoolRow(props: any) {
   }
 
   const handleCloseStakeDialog = async () => {
-    if (selectedAccount) {
+    if (account) {
       setOpenStakeDialog(false)
     }
   }
@@ -118,7 +115,7 @@ function PoolRow(props: any) {
   const handleClickApprove = async () => {
     const approvalEventEmitter = tokenInstance.methods
       .approve(orchestratorAddress, ethers.constants.MaxUint256)
-      .send({ from: selectedAccount });
+      .send({ from: account });
 
     approvalEventEmitter.on('receipt', data => {
       onPoolStateChange()
@@ -132,6 +129,7 @@ function PoolRow(props: any) {
   }
 
   const handleConfirmStake = async amount => {
+    const cookies = new Cookies();
     let ref;
     if (cookies.get('ref')) {
       if (isAddress(rot13(cookies.get('ref')))) {
@@ -143,7 +141,7 @@ function PoolRow(props: any) {
 
     const stakeEventEmitter: EventEmitter = orchestratorInstance.methods
       .deposit(poolId, web3.utils.toWei(amount, 'ether'), ref)
-      .send({ from: selectedAccount });
+      .send({ from: account });
 
     stakeEventEmitter.on('receipt', data => {
       onPoolStateChange()
@@ -159,7 +157,7 @@ function PoolRow(props: any) {
   const handleConfirmWithdraw = async amount => {
     const withdrawEventEmitter = orchestratorInstance.methods
       .withdraw(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount });
+      .send({ from: account });
 
     withdrawEventEmitter.on('receipt', data => {
       onPoolStateChange()
@@ -175,7 +173,7 @@ function PoolRow(props: any) {
   const handleClickClaimRewards = async () => {
     const claimRewardsEventEmitter = orchestratorInstance.methods
       .withdraw(poolId, '0')
-      .send({ from: selectedAccount });
+      .send({ from: account });
 
     claimRewardsEventEmitter.on('receipt', data => {
       onPoolStateChange()
@@ -274,7 +272,7 @@ function PoolRow(props: any) {
               <Box order={isTablet ? 3 : 'unset'}>
                 <a
                   className={classes.linkDetail}
-                  href={bsScanLink}
+                  href={`https://bscscan.com/address/${tokenAddress}`}
                   target="_blank"
                 >
                   View on Bscan <Launch fontSize="small" />

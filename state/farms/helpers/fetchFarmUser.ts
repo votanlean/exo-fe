@@ -1,15 +1,18 @@
-import BigNumber from 'bignumber.js'
-import erc20ABI from 'config/abi/erc20.json'
+import BigNumber from 'bignumber.js';
+import erc20ABI from 'config/abi/erc20.json';
 import orchestratorABI from 'blockchain/build/TEXOOrchestrator.json';
-import multicall from 'utils/multicall'
-import { getAddress } from 'utils/addressHelpers'
+import multicall from 'utils/multicall';
+import { getAddress } from 'utils/addressHelpers';
 import contracts from 'config/constants/contracts';
 
-export const fetchFarmUserAllowances = async (account: string, farmsToFetch: any[]) => {
+export const fetchFarmUserAllowances = async (
+  account: string,
+  farmsToFetch: any[],
+) => {
   const masterChefAddress = getAddress(contracts.orchestrator);
 
   const calls = farmsToFetch.map((farm) => ({
-    address: farm.address,
+    address: getAddress(farm.address),
     name: 'allowance',
     params: [account, masterChefAddress],
   }));
@@ -20,24 +23,30 @@ export const fetchFarmUserAllowances = async (account: string, farmsToFetch: any
   });
 
   return parsedLpAllowances;
-}
+};
 
-export const fetchFarmUserTokenBalances = async (account: string, farmsToFetch: any[]) => {
+export const fetchFarmUserTokenBalances = async (
+  account: string,
+  farmsToFetch: any[],
+) => {
   const calls = farmsToFetch.map((farm) => ({
-    address: farm.address,
+    address: getAddress(farm.address),
     name: 'balanceOf',
     params: [account],
   }));
 
-  const rawTokenBalances = await multicall(erc20ABI, calls)
+  const rawTokenBalances = await multicall(erc20ABI, calls);
   const parsedTokenBalances = rawTokenBalances.map((tokenBalance) => {
-    return new BigNumber(tokenBalance).toJSON()
+    return new BigNumber(tokenBalance).toJSON();
   });
 
-  return parsedTokenBalances
-}
+  return parsedTokenBalances;
+};
 
-export const fetchFarmUserStakedBalances = async (account: string, farmsToFetch: any[]) => {
+export const fetchFarmUserStakedBalances = async (
+  account: string,
+  farmsToFetch: any[],
+) => {
   const masterChefAddress = getAddress(contracts.orchestrator);
 
   const calls = farmsToFetch.map((farm) => {
@@ -45,30 +54,33 @@ export const fetchFarmUserStakedBalances = async (account: string, farmsToFetch:
       address: masterChefAddress,
       name: 'userInfo',
       params: [farm.pid, account],
-    }
-  })
+    };
+  });
 
-  const rawStakedBalances = await multicall(orchestratorABI.abi, calls)
+  const rawStakedBalances = await multicall(orchestratorABI.abi, calls);
   const parsedStakedBalances = rawStakedBalances.map((stakedBalance) => {
-    return new BigNumber(stakedBalance[0]._hex).toJSON()
-  })
-  return parsedStakedBalances
-}
+    return new BigNumber(stakedBalance[0]._hex).toJSON();
+  });
+  return parsedStakedBalances;
+};
 
-export const fetchFarmUserEarnings = async (account: string, farmsToFetch: any[]) => {
+export const fetchFarmUserEarnings = async (
+  account: string,
+  farmsToFetch: any[],
+) => {
   const calls = farmsToFetch.map((farm) => {
     return {
       address: getAddress(contracts.orchestrator),
       name: 'pendingTEXO',
       params: [farm.pid, account],
-    }
-  })
+    };
+  });
 
   const rawEarnings = await multicall(orchestratorABI.abi, calls);
 
   const parsedEarnings = rawEarnings.map((earnings) => {
-    return new BigNumber(earnings).toJSON()
+    return new BigNumber(earnings).toJSON();
   });
 
   return parsedEarnings;
-}
+};

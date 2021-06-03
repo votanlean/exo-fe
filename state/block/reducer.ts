@@ -5,8 +5,8 @@ import { getWeb3NoAccount } from 'utils/web3';
 const initialState = {
   data: {
     currentBlock: 0,
-  }
-}
+  },
+};
 
 export const blockSlice = createSlice({
   name: 'Block',
@@ -22,9 +22,9 @@ export const fetchBlockDataThunk = async (dispatch) => {
   const web3 = getWeb3NoAccount();
 
   const currentBlock = await web3.eth.getBlockNumber();
-
+  console.log('currentBlock web3', currentBlock);
   dispatch(setBlockData({ currentBlock }));
 };
 
 // Actions
-export const { setBlockData } = blockSlice.actions
+export const { setBlockData } = blockSlice.actions;

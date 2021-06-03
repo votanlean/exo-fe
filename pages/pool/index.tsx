@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import seedingPools from 'config/constants/seedingPools';
 import farms from 'config/constants/farms';
 import Countdown from 'countdown';
 import { useWeb3React } from '@web3-react/core';
@@ -89,7 +88,8 @@ function Pool() {
   const tvl = useTotalValue();
 
   const { currentBlock } = useBlockData();
-  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
+  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
+    useTexoTokenData();
   const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
   const { tEXOReward } = useUserInfoData();
 
@@ -217,7 +217,6 @@ function Pool() {
                 tEXOPrice={tEXOPrice}
                 farmData={farmsData[index]}
                 key={farm.pid}
-                isLiquidityPool={true}
                 countDownString={countDownString}
               />
             );
@@ -255,19 +254,18 @@ function Pool() {
         <TableContainer className={classes.tableContainer}>
           <Table aria-label="collapsible table">
             <TableBody>
-              {seedingPools.map((pool, index) => {
+              {poolsData.map((pool) => {
                 let stakingTokenPrice = 0;
 
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[getAddress(pool.stakingToken.address)];
                 }
-
                 return (
                   <PoolRow
                     key={pool.id}
-                    data={poolsData[index]}
-                    selectedAccount={account}
+                    pool={pool}
+                    account={account}
                     onPoolStateChange={refreshAppGlobalData}
                     canClaimReward={
                       currentBlock && currentBlock >= canClaimRewardsBlock

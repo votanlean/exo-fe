@@ -2,9 +2,6 @@ import BigNumber from 'bignumber.js'
 import { Pool } from 'state/types'
 import { BIG_ZERO } from 'utils/bigNumber'
 
-import TEXOTokenABI from 'config/abi/TEXOToken.json'
-import {getContract} from "../../utils/contractHelpers";
-
 type UserData =
     | Pool['userData']
     | {
@@ -24,14 +21,9 @@ export const transformUserData = (userData: UserData) => {
 }
 
 export const transformPool = (pool: Pool): Pool => {
-    const chainId = process.env.CHAIN_ID || 56;
-    //todo remove & tokenInstance & contractAddress & address
-    const { earningToken, totalStaked, userData, ...rest } = pool
-    const earningTokenAddress = earningToken.address
+    const { totalStaked, userData, ...rest } = pool
 
-    const tokenInstance = getContract(TEXOTokenABI, earningTokenAddress[chainId]);
     return {
-        tokenInstance, //TODO remove
         ...rest,
         userData: transformUserData(userData),
         totalStaked: new BigNumber(totalStaked),
