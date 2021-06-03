@@ -1,10 +1,5 @@
-import path from 'path';
-
-const isProd = process.env.NODE_ENV as any === 'production';
-
-require('dotenv').config({
-  path: path.resolve(__dirname, '../', isProd ? '.env.production' : '.env.development'),
-});
+require('dotenv').config();
+console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
 import HDWalletProvider from 'truffle-hdwallet-provider';
 import Web3 from 'web3';
@@ -31,7 +26,7 @@ const deploy = async () => {
     for (let i = 0; i < lpPools.length; i++) {
       const lpPool = lpPools[i];
       console.log('Begin deploy LP pool:', lpPool.symbol);
-  
+
       const txHash = await orchestratorContract.methods
         .add(
           '0',
@@ -45,7 +40,7 @@ const deploy = async () => {
           from: accounts[0],
           gas: '3000000',
         });
-  
+
       console.log('Successfully added LP pool:', txHash);
       console.log('========================================');
     }

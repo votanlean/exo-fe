@@ -1,10 +1,5 @@
-const path = require('path');
-
-const isProd = process.env.NODE_ENV === 'production';
-
-require('dotenv').config({
-  path: path.resolve(__dirname, '../', isProd ? '.env.production' : '.env.development'),
-});
+require('dotenv').config();
+console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
@@ -12,7 +7,7 @@ const compiledTEXOToken = require('./build/TEXOToken.json');
 
 const provider = new HDWalletProvider(
   process.env.MNEMONIC,
-  process.env.BLOCKCHAIN_HOST
+  process.env.BLOCKCHAIN_HOST,
 );
 
 const web3 = new Web3(provider);
@@ -29,8 +24,8 @@ const deploy = async () => {
 
     const result = await new web3.eth.Contract(abi)
       .deploy({
-          data: bytecode
-        })
+        data: bytecode,
+      })
       .send({ gas: '3000000', from: accounts[0] });
 
     const address = result.options.address;

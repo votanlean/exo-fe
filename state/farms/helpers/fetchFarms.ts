@@ -9,7 +9,7 @@ import contracts from 'config/constants/contracts';
 const fetchFarms = async (farmsToFetch: any[]) => {
   const data = await Promise.all(
     farmsToFetch.map(async (farmConfig) => {
-      const lpAddress = farmConfig.address;
+      const lpAddress = getAddress(farmConfig.address);
       const calls = [
         // Balance of token in the LP contract
         {
@@ -56,11 +56,17 @@ const fetchFarms = async (farmsToFetch: any[]) => {
       ] = await multicall(erc20, calls);
 
       // Ratio in % of LP tokens that are staked in the MC, vs the total number in circulation
-      const lpTokenRatio = new BigNumber(lpTokenBalanceMC).div(new BigNumber(lpTotalSupply));
+      const lpTokenRatio = new BigNumber(lpTokenBalanceMC).div(
+        new BigNumber(lpTotalSupply),
+      );
 
       // Raw amount of token in the LP, including those not staked
-      const tokenAmountTotal = new BigNumber(tokenBalanceLP).div(BIG_TEN.pow(tokenDecimals));
-      const quoteTokenAmountTotal = new BigNumber(quoteTokenBalanceLP).div(BIG_TEN.pow(quoteTokenDecimals));
+      const tokenAmountTotal = new BigNumber(tokenBalanceLP).div(
+        BIG_TEN.pow(tokenDecimals),
+      );
+      const quoteTokenAmountTotal = new BigNumber(quoteTokenBalanceLP).div(
+        BIG_TEN.pow(quoteTokenDecimals),
+      );
 
       // Amount of token in the LP that are staked in the MC (i.e amount of token * lp ratio)
       const tokenAmountMc = tokenAmountTotal.times(lpTokenRatio);
@@ -79,7 +85,7 @@ const fetchFarms = async (farmsToFetch: any[]) => {
           address: getAddress(contracts.orchestrator),
           name: 'totalAllocPoint',
         },
-      ])
+      ]);
 
       const allocPoint = new BigNumber(info.allocPoint._hex);
       const poolWeight = allocPoint.div(new BigNumber(totalAllocPoint));
@@ -96,10 +102,10 @@ const fetchFarms = async (farmsToFetch: any[]) => {
         poolWeight: poolWeight.toJSON(),
         allocPoint: new BigNumber(info.allocPoint._hex).toNumber(),
         totalStaked: new BigNumber(lpTokenBalanceMC).toJSON(),
-      }
+      };
     }),
-  )
-  return data
-}
+  );
+  return data;
+};
 
-export default fetchFarms
+export default fetchFarms;

@@ -9,13 +9,16 @@ import styles from './farmItem.module.scss';
 import orchestratorInstance from '../../blockchain/orchestrator';
 import { getFarmApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
-import { getOrchestratorAddress } from '../../utils/addressHelpers';
+import {getAddress, getOrchestratorAddress} from '../../utils/addressHelpers';
 import erc20abi from 'config/abi/erc20.json';
 import web3 from 'blockchain/web3';
 import { ethers } from 'ethers';
 import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
 import { ROIDialog, StakeDialog, WithdrawDialog } from 'components/Dialogs';
 import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
+import {isAddress} from "../../utils/web3";
+import rot13 from "../../utils/encode";
+import Cookies from "universal-cookie";
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -40,9 +43,8 @@ function FarmItem(props: any) {
     icon,
     title,
     symbol,
-    bsScanLink,
     pid: farmId,
-    address: lpTokenAddress,
+    address,
     depositFeeBP,
     allocPoint,
     totalStaked,
@@ -56,6 +58,7 @@ function FarmItem(props: any) {
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
 
+  const lpTokenAddress = getAddress(address);
   const lpTokenInstance = new web3.eth.Contract(erc20abi as any, lpTokenAddress);
 
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
@@ -101,8 +104,18 @@ function FarmItem(props: any) {
   }
 
   const handleConfirmStake = async amount => {
+    const cookies = new Cookies();
+    let ref;
+    if (cookies.get('ref')) {
+      if (isAddress(rot13(cookies.get('ref')))) {
+        ref = rot13(cookies.get('ref'));
+      }
+    } else {
+      ref = '0x0000000000000000000000000000000000000000';
+    }
+
     const stakeEventEmitter: EventEmitter = orchestratorInstance.methods
-      .deposit(farmId, web3.utils.toWei(amount, 'ether'))
+      .deposit(farmId, web3.utils.toWei(amount, 'ether'), ref)
       .send({ from: selectedAccount });
 
     stakeEventEmitter.on('receipt', data => {
@@ -182,7 +195,7 @@ function FarmItem(props: any) {
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
-        href={bsScanLink}
+        href={`https://bscscan.com/address/${lpTokenAddress}`}
         target="_blank"
       >
         View on Bscan

@@ -1,10 +1,7 @@
-import path from 'path';
+import {config} from "dotenv";
 
-const isProd = process.env.NODE_ENV as any === 'production';
-
-require('dotenv').config({
-  path: path.resolve(__dirname, '../../', isProd ? '.env.production' : '.env.development'),
-});
+config();
+console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
 import HDWalletProvider from 'truffle-hdwallet-provider';
 import Web3 from 'web3';
@@ -31,7 +28,7 @@ const deploy = async () => {
     for (let i = 0; i < seedingPools.length; i++) {
       const seedingPool = seedingPools[i];
       console.log('Begin deploy seeding pool:', seedingPool.symbol);
-  
+
       const txHash = await orchestratorContract.methods
         .set(
           seedingPool.id,
@@ -44,7 +41,7 @@ const deploy = async () => {
           from: accounts[0],
           gas: '3000000',
         });
-  
+
       console.log('Successfully set seeding pool:', txHash);
       console.log('========================================');
     }

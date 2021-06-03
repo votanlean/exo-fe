@@ -16,8 +16,8 @@ import { Tune, History, ExpandMore } from '@material-ui/icons';
 import SelectTokenDialog from '../../components/Exchange/SelectTokenDialog';
 import HistoryDialog from '../../components/Exchange/HistoryDialog';
 import SettingsDialog from '../../components/Exchange/SettingsDialog';
-import { poolToken } from '../../blockchain/tokenFactory';
 import theme from 'components/theme/theme';
+import { usePools } from '../../state/pools/selectors';
 
 const useStyles = makeStyles({
   root: {
@@ -57,6 +57,7 @@ function Pool() {
   const [isOpenTokenDialog, setOpenTokenDialog] = useState(false);
   const [isOpenHistoryDialog, setOpenHistoryDialog] = useState(false);
   const [isOpenSettingsDialog, setOpenSettingsDialog] = useState(false);
+  const poolToken = usePools();
   const [fromValue, setFromValue] = useState(poolToken[0]);
   const [toValue, setToValue] = useState(poolToken[1]);
   const [fromTo, setFromTo] = useState('');
