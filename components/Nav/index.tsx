@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import ActiveLink from '../ActiveLink';
 
@@ -10,7 +10,7 @@ const data = [
   { title: 'Exchange', path: '/exchange' },
   { title: 'tASSET', path: '/tASSET' },
   { title: 'Bridge', path: '/bridge' },
-  { title: 'Governance', path: '/governance' },
+  { title: 'GOV', path: '/governance' },
 ];
 
 const Nav = (props) => {
@@ -27,8 +27,8 @@ const Nav = (props) => {
   return (
     <nav>
       <i
-          className={styles.faBars}
-          onClick={!isExpandedMenu ? handleOpenBurger : handleCloseBurger}
+        className={styles.faBars}
+        onClick={!isExpandedMenu ? handleOpenBurger : handleCloseBurger}
       >
         <div className={styles.hamburger}></div>
         <div className={styles.hamburger}></div>
@@ -52,8 +52,8 @@ const Nav = (props) => {
             <li key={index}>
               <ActiveLink href={menu.path}>
                 <a
-                    className={`${styles.menuLink} menu-link `}
-                    onClick={handleCloseBurger}
+                  className={`${styles.menuLink} menu-link `}
+                  onClick={handleCloseBurger}
                 >
                   {menu.title}
                 </a>
@@ -80,6 +80,16 @@ const Nav = (props) => {
           >
             Blog
           </a>
+        </li>
+        <li>
+          <ActiveLink href="/referrals">
+            <a
+              className={`${styles.menuLink} menu-link `}
+              onClick={handleCloseBurger}
+            >
+              Referrals
+            </a>
+          </ActiveLink>
         </li>
       </ul>
     </nav>
