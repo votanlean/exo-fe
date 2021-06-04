@@ -42,7 +42,7 @@ function MyApp({ Component, pageProps }) {
       <bsc.UseWalletProvider
           chainId={chainId}
           connectors={{
-            // walletconnect: { rpcUrl },
+            walletconnect: { rpcUrl },
             bsc,
           }}
       >

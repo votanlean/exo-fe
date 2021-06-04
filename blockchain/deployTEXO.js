@@ -15,18 +15,19 @@ const web3 = new Web3(provider);
 // Initialization
 const bytecode = compiledTEXOToken.evm.bytecode.object;
 const abi = compiledTEXOToken.abi;
+const ownerAddress = process.env.OWNER_ADDRESS;
 
 const deploy = async () => {
   try {
     const accounts = await web3.eth.getAccounts();
 
-    console.log('Attempting to deploy from account', accounts[0]);
+    console.log('Attempting to deploy from account', ownerAddress);
 
     const result = await new web3.eth.Contract(abi)
       .deploy({
         data: bytecode,
       })
-      .send({ gas: '3000000', from: accounts[0] });
+      .send({ gas: '3000000', from: ownerAddress });
 
     const address = result.options.address;
     console.log('Contract deployed to', address);

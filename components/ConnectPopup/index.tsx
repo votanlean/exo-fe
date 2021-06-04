@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Dialog,
@@ -10,12 +10,14 @@ import {
   Avatar,
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import { useWeb3React } from '@web3-react/core';
 
-import { getErrorMessage } from '../../utils/web3React';
-import { bsc, injected, } from '../../utils/web3React'
+import {
+  connectorLocalStorageKey,
+  ConnectorNames,
+} from '../../utils/web3React';
 
 import { useStyles } from './styles';
+import useAuth from '../../hooks/useAuth';
 
 ConnectPopup.propTypes = {
   onOpen: PropTypes.bool,
@@ -23,30 +25,34 @@ ConnectPopup.propTypes = {
 };
 
 function ConnectPopup(props: any) {
-  const classes: any = useStyles();
-  const {
-    onOpen,
-    onCloseDialog,
-  } = props;
+  const { login, logout } = useAuth();
 
-  const { error, activate } = useWeb3React();
+  const classes: any = useStyles();
+  const { onOpen, onCloseDialog } = props;
 
   const handleConnectMetamask = async () => {
-    await activate(injected);
+    await login(ConnectorNames.Injected);
+    window.localStorage.setItem(
+      connectorLocalStorageKey,
+      ConnectorNames.Injected,
+    );
+    onCloseDialog();
+  };
+
+  const handleConnectWalletConnect = async () => {
+    await login(ConnectorNames.WalletConnect);
+    window.localStorage.setItem(
+      connectorLocalStorageKey,
+      ConnectorNames.WalletConnect,
+    );
     onCloseDialog();
   };
 
   const handleConnectBinanceChainWallet = async () => {
-    await activate(bsc);
+    await login(ConnectorNames.BSC);
+    window.localStorage.setItem(connectorLocalStorageKey, ConnectorNames.BSC);
     onCloseDialog();
   };
-
-  //If have error
-  useEffect(() => {
-    if (error) {
-      alert(getErrorMessage(error));
-    }
-  }, [error]);
 
   return (
     <Dialog
@@ -54,19 +60,29 @@ function ConnectPopup(props: any) {
       open={onOpen}
       classes={{ paper: classes.paper }}
     >
-        <DialogTitle className={classes.title}>
-          <Typography variant="caption" className={classes.dialogTitleText}>
-            Connect to wallet
-          </Typography>
-          <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={onCloseDialog}
-          >
-            <Close />
-          </IconButton>
-        </DialogTitle>
+      <DialogTitle className={classes.title}>
+        <Typography variant="caption" className={classes.dialogTitleText}>
+          Connect to wallet
+        </Typography>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onCloseDialog}
+        >
+          <Close />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
+        <Button className={classes.button} onClick={handleConnectWalletConnect}>
+          <Typography variant="caption" className={classes.titleButton}>
+            Wallet Connect
+          </Typography>
+          <Avatar
+            className={classes.img}
+            src="/static/images/walletconnect-logo.png"
+            alt="walletconnect-logo"
+          />
+        </Button>
         <Button className={classes.button} onClick={handleConnectMetamask}>
           <Typography variant="caption" className={classes.titleButton}>
             Metamask

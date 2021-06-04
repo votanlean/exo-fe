@@ -22,7 +22,6 @@ export const fetchBlockDataThunk = async (dispatch) => {
   const web3 = getWeb3NoAccount();
 
   const currentBlock = await web3.eth.getBlockNumber();
-  console.log('currentBlock web3', currentBlock);
   dispatch(setBlockData({ currentBlock }));
 };
 

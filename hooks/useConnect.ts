@@ -1,22 +1,59 @@
 import { useState, useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import {injected, bsc} from "../utils/web3React";
+import {injected, bscConnector, connectorLocalStorageKey, connectorsByName, ConnectorNames} from "../utils/web3React";
+import useAuth from "./useAuth";
+
+const _binanceChainListener = async () =>
+    new Promise<void>((resolve) =>
+        Object.defineProperty(window, 'BinanceChain', {
+            get() {
+                return this.bsc
+            },
+            set(bsc) {
+                this.bsc = bsc
+
+                resolve()
+            },
+        }),
+    )
 
 export function useEagerConnect() {
     const { activate, active } = useWeb3React()
-
     const [tried, setTried] = useState(false)
-
+    const {login} = useAuth();
+//TODO move activate to login
     useEffect(() => {
-        injected.isAuthorized().then((isAuthorized: boolean) => {
-            if (isAuthorized) {
-                activate(injected, undefined, true).catch(() => {
-                    setTried(true)
-                })
-            } else {
-                setTried(true)
+        const connectorId = window.localStorage.getItem(connectorLocalStorageKey) as ConnectorNames
+        console.log('connectorId', connectorId);
+        if (connectorId) {
+            const isConnectorBinanceChain = connectorId === ConnectorNames.BSC
+            const isBinanceChainDefined = Reflect.has(window, 'BinanceChain')
+
+            // Currently BSC extension doesn't always inject in time.
+            // We must check to see if it exists, and if not, wait for it before proceeding.
+            if (isConnectorBinanceChain && !isBinanceChainDefined) {
+                _binanceChainListener().then(() => login(connectorId))
+
+                return
             }
-        })
+
+            const isConnectorWalletConnect = connectorId === ConnectorNames.WalletConnect
+            if (isConnectorWalletConnect) {
+                login(connectorId);
+                return;
+            }
+
+            injected.isAuthorized().then((isAuthorized: boolean) => {
+                if (isAuthorized) {
+                    activate(injected, undefined, true).catch(() => {
+                        setTried(true)
+                    })
+                } else {
+                    setTried(true)
+                }
+            })
+        }
+
     }, []) // intentionally only running on mount (make sure it's only mounted once :))
 
     // if the connection worked, wait until we get confirmation of that to flip the flag
