@@ -16,12 +16,12 @@ const web3 = new Web3(provider);
 const abi = compiledOrchestrator.abi;
 const orchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
 const chainId = process.env.CHAIN_ID;
+const ownerAddress = process.env.OWNER_ADDRESS;
 
 const deploy = async () => {
   try {
-    const accounts = await web3.eth.getAccounts();
     const orchestratorContract = new web3.eth.Contract(abi as any, orchestratorAddress);
-    console.log('Attempting to deploy seeding pools from account', accounts[0]);
+    console.log('Attempting to deploy seeding pools from account', ownerAddress);
 
     for (let i = 0; i < seedingPools.length; i++) {
       const seedingPool = seedingPools[i];
@@ -37,7 +37,7 @@ const deploy = async () => {
           '0',
         )
         .send({
-          from: accounts[0],
+          from: ownerAddress,
           gas: '3000000',
         });
 

@@ -16,12 +16,13 @@ const web3 = new Web3(provider);
 const abi = compiledOrchestrator.abi;
 const orchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
 const blockToUnlockClaimingRewards = process.env.BLOCK_TO_UNLOCK_CLAIMING_REWARDS;
+const ownerAddress = process.env.OWNER_ADDRESS;
+const chainId = process.env.CHAIN_ID;
 
 const deploy = async () => {
   try {
-    const accounts = await web3.eth.getAccounts();
     const orchestratorContract = new web3.eth.Contract(abi as any, orchestratorAddress);
-    console.log('Attempting to deploy seeding pools from account', accounts[0]);
+    console.log('Attempting to deploy seeding pools from account', ownerAddress);
 
     for (let i = 0; i < lpPools.length; i++) {
       const lpPool = lpPools[i];
@@ -30,14 +31,14 @@ const deploy = async () => {
       const txHash = await orchestratorContract.methods
         .add(
           '0',
-          lpPool.address,
+          lpPool.address[chainId],
           lpPool.depositFeeBP,
           false,
           blockToUnlockClaimingRewards,
           blockToUnlockClaimingRewards,
         )
         .send({
-          from: accounts[0],
+          from: ownerAddress,
           gas: '3000000',
         });
 

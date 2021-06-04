@@ -17,7 +17,6 @@ const web3 = new Web3(provider);
 // Initialization
 const abi = compiledOrchestrator.abi;
 const orchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
-const chainId = process.env.CHAIN_ID;
 
 const deploy = async () => {
   try {

@@ -1,18 +1,14 @@
 import React, { useEffect } from 'react';
 import Router from 'next/router';
 import PropTypes from 'prop-types';
-import {
-  Dialog,
-  DialogContent,
-  Button,
-  Typography,
-} from '@material-ui/core';
+import { Dialog, DialogContent, Button, Typography } from '@material-ui/core';
 import { ExitToApp } from '@material-ui/icons';
 import { useWeb3React } from '@web3-react/core';
 
 import { getErrorMessage } from '../../utils/web3React';
 
 import { useStyles } from './styles';
+import useAuth from '../../hooks/useAuth';
 
 LogoutPopup.propTypes = {
   onOpen: PropTypes.bool,
@@ -21,15 +17,13 @@ LogoutPopup.propTypes = {
 
 function LogoutPopup(props: any) {
   const classes: any = useStyles();
-  const {
-    onOpen,
-    onCloseDialog,
-  } = props;
+  const { onOpen, onCloseDialog } = props;
+  const { logout } = useAuth();
 
   const { error, deactivate } = useWeb3React();
 
   const onClickLogout = () => {
-    deactivate();
+    logout();
     onCloseDialog();
   };
 

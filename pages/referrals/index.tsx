@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Input,
   makeStyles,
   TextField,
   Typography,
@@ -19,7 +18,6 @@ import { useWeb3React } from '@web3-react/core';
 import Button from 'components/Button';
 import ConnectPopup from 'components/ConnectPopup';
 import styles from './referrals.module.scss';
-import { useEagerConnect, useInactiveListener } from 'hooks/useConnect';
 import useReferrals from '../../hooks/useReferral';
 
 const useStyles = makeStyles((theme) => {
@@ -70,19 +68,6 @@ function Referrals() {
     }
     setTotalReferrals(referralsCount);
   }, [account]);
-
-  // handle logic to recognize the connector currently being activated
-  useEffect(() => {
-    if (activatingConnector && activatingConnector === connector) {
-      setActivatingConnector(undefined);
-    }
-  }, [activatingConnector, connector]);
-
-  // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
-  const triedEager = useEagerConnect();
-
-  // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
-  useInactiveListener(!triedEager || !!activatingConnector);
 
   const onCopyReferralLink = async (e) => {
     try {

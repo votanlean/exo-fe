@@ -19,10 +19,9 @@ const bytecode = compiledOrchestrator.evm.bytecode.object;
 
 const deploy = async () => {
   try {
-    const owner = process.env.OWNER_ADDRESS;
-    console.log('Attempting to deploy from account', owner);
+    const ownerAddress = process.env.OWNER_ADDRESS;
+    console.log('Attempting to deploy from account', ownerAddress);
 
-    //TODO handle addresses wisely
     const devAddress = process.env.DEV_ADDRESS; //accounts[1]
     const feeAddress = process.env.FEE_ADDRESS; //accounts[2]
     const tEXOAddress = process.env.TEXO_ADDRESS;
@@ -45,7 +44,7 @@ const deploy = async () => {
           blockToUnlockClaimingRewards,
         ],
       })
-      .send({ gas: '9000000', from: owner });
+      .send({ gas: '9000000', from: ownerAddress });
 
     console.log('Orchestrator contract deployed to', result.options.address);
     process.exit(0);
