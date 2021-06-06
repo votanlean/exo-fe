@@ -7,8 +7,14 @@
   justify-content: center;
   padding: 4rem 0 3rem;
 }
+.titleSection {
+  text-align: center;
+  padding: 4rem 0 1rem;
+}
 .lpPoolGrid {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid rgb(161, 169, 214);
 }
