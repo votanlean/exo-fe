@@ -9,7 +9,6 @@ import theme from '../components/theme/theme';
 import MainLayout from '../components/Layout';
 import '../styles/main.scss';
 import { useRouter } from 'next/router';
-import * as bsc from '@binance-chain/bsc-use-wallet'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
@@ -35,17 +34,8 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  const chainId = parseInt(process.env.CHAIN_ID);
-  const rpcUrl = process.env.BLOCKCHAIN_HOST;
   return (
     <ThemeProvider theme={theme}>
-      <bsc.UseWalletProvider
-          chainId={chainId}
-          connectors={{
-            walletconnect: { rpcUrl },
-            bsc,
-          }}
-      >
         <Web3ReactProvider getLibrary={getLibrary}>
           <Provider store={store}>
             <QueryParamProvider history={history} location={location}>
@@ -55,7 +45,6 @@ function MyApp({ Component, pageProps }) {
             </QueryParamProvider>
           </Provider>
         </Web3ReactProvider>
-      </bsc.UseWalletProvider>
     </ThemeProvider>
   );
 }

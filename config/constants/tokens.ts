@@ -7,7 +7,7 @@ const tokens = {
     symbol: 'TEXO',
     address: {
       56: '0x08065c1e0fe5b6D82B778760571cE29392e24A46',
-      97: '0x4caa0d2C51f98ed0c9BFA11470F501FB21C79026',
+      97: '0xABe104d0a197867E5fDB77632Ad22FA2338f86f7',
     },
     decimals: 18,
     projectLink: 'https://exonium.one/',

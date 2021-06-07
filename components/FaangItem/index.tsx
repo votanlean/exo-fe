@@ -59,30 +59,6 @@ function FaangItem({ pool, account }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              APR
-            </Typography>
-            <Box display="flex" alignItems="center">
-              <IconButton
-                className={classes.iconButton}
-                onClick={onToggleRoiDialog}
-              >
-                <img src="/static/images/calculate.svg" />
-              </IconButton>
-              <Typography
-                component="p"
-                className={classes.pTitle}
-                style={{ color: '#6A98C9' }}
-              >
-                N/A
-              </Typography>
-            </Box>
-          </Box>
-          <Box className={classes.flexRow}>
-            <Typography
-              component="p"
-              className={classes.pTitle}
-              style={{ color: '#6A98C9' }}
-            >
               My Stake
             </Typography>
             <Typography

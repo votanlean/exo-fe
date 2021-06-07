@@ -7,6 +7,7 @@ import {
     UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from '@web3-react/injected-connector';
 import {WalletConnectConnector} from "@web3-react/walletconnect-connector";
+import Web3 from "web3";
 
 export function getErrorMessage(error) {
     if (error instanceof NoEthereumProviderError) {
@@ -25,11 +26,16 @@ const chainId = process.env.CHAIN_ID;
 const rpcUrl = process.env.BLOCKCHAIN_HOST;
 const POLLING_INTERVAL = 12000
 
-export function getLibrary(provider: any) {
-    const library = new Web3Provider(provider);
-    library.pollingInterval = POLLING_INTERVAL;
-    return library;
+// export function getLibrary(provider: any) {
+//     const library = new Web3Provider(provider);
+//     library.pollingInterval = POLLING_INTERVAL;
+//     return library;
+// }
+
+export const getLibrary = (provider): Web3 => {
+    return provider
 }
+
 
 export const injected = new InjectedConnector({
     supportedChainIds: [1, 3, 4, 5, 42, 56, 97],
