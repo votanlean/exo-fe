@@ -34,7 +34,23 @@ function FaangItem({ pool, account }) {
     <>
       <Box className={classes.root}>
         <Box className={classes.header}>
-          <img src={icon} className={classes.img} />
+          <img src="/static/images/equities/tFB.png" className={classes.img} />
+          <img
+            src="/static/images/equities/tAAPL.svg"
+            className={classes.img}
+          />
+          <img
+            src="/static/images/equities/tAMZN.png"
+            className={classes.img}
+          />
+          <img
+            src="/static/images/equities/tNFLX.png"
+            className={classes.img}
+          />
+          <img
+            src="/static/images/equities/tGOOGL.png"
+            className={classes.img}
+          />
         </Box>
         <Box className={classes.rowItem}>
           <Box className={classes.flexRow}>
