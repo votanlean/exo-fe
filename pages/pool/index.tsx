@@ -42,6 +42,7 @@ import FarmItem from 'components/FarmItem';
 import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
 import ComingSoon from '../../components/ComingSoon';
+import FaangItem from 'components/FaangItem';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -222,6 +223,21 @@ function Pool() {
             );
           })}
         </div>
+
+        <div className={styles.titleSection}>
+          <Typography
+            variant="h5"
+            align="center"
+            style={{ lineHeight: '40px' }}
+          >
+            Stake tEXO for tFAANG
+          </Typography>
+        </div>
+
+        <div className={styles.lpPoolGrid}>
+          <FaangItem />
+        </div>
+
         {currentBlock && currentBlock >= canClaimRewardsBlock ? (
           <div className={styles.countdownContainer}>
             <Typography variant="h3" color="primary">
