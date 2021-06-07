@@ -9,7 +9,6 @@ import { normalizeTokenDecimal } from '../../utils/bigNumber';
 import { getAddress } from '../../utils/addressHelpers';
 
 function FaangItem({ pool, account }) {
-  console.log('pool', pool);
   const {
     id: poolId,
     icon,

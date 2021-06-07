@@ -4,7 +4,6 @@ import { transformFAANGPool } from './helpers';
 
 export const useFAANGPools = (): FAANGPool[] => {
   const fAANGPools = useSelector((state: State) => {
-    console.log('state.fAANGpools', state.fAANGpools);
     return state.fAANGpools.data;
   });
   return fAANGPools.map(transformFAANGPool);
