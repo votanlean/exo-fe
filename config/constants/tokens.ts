@@ -12,6 +12,15 @@ const tokens = {
     decimals: 18,
     projectLink: 'https://exonium.one/',
   },
+  faang: {
+    symbol: 'FAANG',
+    address: {
+      56: '',
+      97: '0xE6fBf3c5317859466A50311D477FDDa603efe0fc',
+    },
+    decimals: 18,
+    projectLink: 'https://exonium.one/',
+  },
   usdt: {
     symbol: 'USDT',
     address: {

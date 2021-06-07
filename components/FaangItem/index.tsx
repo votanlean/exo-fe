@@ -6,7 +6,8 @@ import Button from '../Button';
 import { useStyles } from './styles';
 import { ROIDialog } from 'components/Dialogs';
 
-function FaangItem(props: any) {
+function FaangItem({ pool }) {
+  const { icon } = pool;
   const classes = useStyles();
   const [openRoiDialog, setOpenRoiDialog] = useState(false);
 
@@ -18,7 +19,7 @@ function FaangItem(props: any) {
     <>
       <Box className={classes.root}>
         <Box className={classes.header}>
-          <img src="/static/images/faang-logo.png" className={classes.img} />
+          <img src={icon} className={classes.img} />
         </Box>
         <Box className={classes.rowItem}>
           <Box className={classes.flexRow}>
@@ -83,14 +84,14 @@ function FaangItem(props: any) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              My FAANG
+              My Rewards
             </Typography>
             <Typography
               component="p"
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              0.0000 tEXO
+              0.0000 FAANG
             </Typography>
           </Box>
           <Box className={classes.flexRow}>

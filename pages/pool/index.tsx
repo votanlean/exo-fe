@@ -43,6 +43,7 @@ import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
 import ComingSoon from '../../components/ComingSoon';
 import FaangItem from 'components/FaangItem';
+import fAANGPools from '../../config/constants/FAANGPools';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -85,6 +86,7 @@ function Pool() {
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
   const poolsData = usePools();
+  const fAANGData = fAANGPools;
   const farmsData = useFarms();
   const tvl = useTotalValue();
 
@@ -230,12 +232,14 @@ function Pool() {
             align="center"
             style={{ lineHeight: '40px' }}
           >
-            Stake tEXO for tFAANG
+            Stake tEXO for FAANG
           </Typography>
         </div>
 
         <div className={styles.lpPoolGrid}>
-          <FaangItem />
+          {fAANGData.map((item) => (
+            <FaangItem pool={item} />
+          ))}
         </div>
 
         {currentBlock && currentBlock >= canClaimRewardsBlock ? (

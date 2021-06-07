@@ -3,7 +3,7 @@ console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
-const compiledTEXOToken = require('./build/TEXOToken.json');
+const compiledFAANGToken = require('./build/FAANGToken.json');
 
 const provider = new HDWalletProvider(
   process.env.MNEMONIC,
@@ -13,8 +13,8 @@ const provider = new HDWalletProvider(
 const web3 = new Web3(provider);
 
 // Initialization
-const bytecode = compiledTEXOToken.evm.bytecode.object;
-const abi = compiledTEXOToken.abi;
+const bytecode = compiledFAANGToken.evm.bytecode.object;
+const abi = compiledFAANGToken.abi;
 const ownerAddress = process.env.OWNER_ADDRESS;
 
 const deploy = async () => {
