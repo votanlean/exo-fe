@@ -43,7 +43,11 @@ import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
 import ComingSoon from '../../components/ComingSoon';
 import FaangItem from 'components/FaangItem';
-
+import { useFAANGPools } from '../../state/fAANGpools/selectors';
+import {
+  fetchFAANGPoolsPublicDataAsync,
+  fetchFAANGPoolsUserDataAsync,
+} from '../../state/fAANGpools/reducer';
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
@@ -85,6 +89,7 @@ function Pool() {
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
   const poolsData = usePools();
+  const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
 
@@ -101,10 +106,12 @@ function Pool() {
     dispatch(fetchBlockDataThunk);
     dispatch(fetchPoolsPublicDataAsync);
     dispatch(fetchAppPrices);
+    dispatch(fetchFAANGPoolsPublicDataAsync);
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account));
       dispatch(fetchPoolsUserDataAsync(account));
+      dispatch(fetchFAANGPoolsUserDataAsync(account));
       dispatch(fetchUserInfoDataThunk(account));
     }
   };
@@ -118,10 +125,12 @@ function Pool() {
       dispatch(fetchFarmsPublicDataAsync());
       dispatch(fetchTexoTokenDataThunk);
       dispatch(fetchPoolsPublicDataAsync);
+      dispatch(fetchFAANGPoolsPublicDataAsync);
 
       if (account) {
         dispatch(fetchFarmUserDataAsync(account));
         dispatch(fetchPoolsUserDataAsync(account));
+        dispatch(fetchFAANGPoolsUserDataAsync(account));
       }
     }, 30000);
 
@@ -230,12 +239,14 @@ function Pool() {
             align="center"
             style={{ lineHeight: '40px' }}
           >
-            Stake tEXO for tFAANG
+            Stake tEXO for FAANG
           </Typography>
         </div>
 
         <div className={styles.lpPoolGrid}>
-          <FaangItem />
+          {fAANGData.map((pool) => (
+            <FaangItem key={pool.id} pool={pool} account={account} />
+          ))}
         </div>
 
         {currentBlock && currentBlock >= canClaimRewardsBlock ? (

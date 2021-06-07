@@ -5,11 +5,28 @@ import Button from '../Button';
 
 import { useStyles } from './styles';
 import { ROIDialog } from 'components/Dialogs';
+import { normalizeTokenDecimal } from '../../utils/bigNumber';
+import { getAddress } from '../../utils/addressHelpers';
 
-function FaangItem(props: any) {
+function FaangItem({ pool, account }) {
+  console.log('pool', pool);
+  const {
+    id: poolId,
+    icon,
+    title,
+    symbol,
+    totalStaked,
+    allocPoint,
+    displayAllocPoint,
+    userData = {},
+    depositFeeBP,
+    stakingToken,
+  } = pool;
   const classes = useStyles();
+  const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
+    userData;
   const [openRoiDialog, setOpenRoiDialog] = useState(false);
-
+  const tokenAddress = getAddress(stakingToken.address);
   const onToggleRoiDialog = () => {
     setOpenRoiDialog(!openRoiDialog);
   };
@@ -18,7 +35,7 @@ function FaangItem(props: any) {
     <>
       <Box className={classes.root}>
         <Box className={classes.header}>
-          <img src="/static/images/faang-logo.png" className={classes.img} />
+          <img src={icon} className={classes.img} />
         </Box>
         <Box className={classes.rowItem}>
           <Box className={classes.flexRow}>
@@ -58,7 +75,8 @@ function FaangItem(props: any) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              0.0000 tEXO
+              {normalizeTokenDecimal(stakedBalance).toNumber().toFixed(4)}{' '}
+              {symbol}
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -83,14 +101,14 @@ function FaangItem(props: any) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              My FAANG
+              My Rewards
             </Typography>
             <Typography
               component="p"
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              0.0000 tEXO
+              {normalizeTokenDecimal(pendingReward).toNumber().toFixed(4)} FAANG
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -98,7 +116,7 @@ function FaangItem(props: any) {
               Total Staked
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              0.0000 tEXO
+              {normalizeTokenDecimal(totalStaked).toFixed(4)} {symbol}
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -106,7 +124,8 @@ function FaangItem(props: any) {
               Wallet Balance
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              0.0000 tEXO
+              {normalizeTokenDecimal(stakingTokenBalance).toNumber().toFixed(4)}{' '}
+              {symbol}
             </Typography>
           </Box>
         </Box>
@@ -150,7 +169,7 @@ function FaangItem(props: any) {
               </Typography>
             </Box>
             <Link
-              href="https://bscscan.com/address/0x52261b4262087500b0c5e4604b030a917303b346"
+              href={`https://bscscan.com/address/${tokenAddress}`}
               target="_blank"
             >
               <Typography

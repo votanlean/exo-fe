@@ -5,7 +5,25 @@ export interface PoolsState {
     data: Pool[]
 }
 
+export interface FAANGpoolsState {
+    data: FAANGPool[]
+}
+
 export interface Pool extends PoolConfig {
+    tokenInstance? //TODO remove
+    totalStaked?: BigNumber
+    stakingLimit?: BigNumber
+    startBlock?: number
+    endBlock?: number
+    userData?: {
+        allowance: BigNumber
+        stakingTokenBalance: BigNumber
+        stakedBalance: BigNumber
+        pendingReward: BigNumber
+    }
+}
+
+export interface FAANGPool extends PoolConfig {
     tokenInstance? //TODO remove
     totalStaked?: BigNumber
     stakingLimit?: BigNumber
@@ -36,4 +54,5 @@ export interface State {
     pools: PoolsState
     block: BlockState
     userInfo: UserInfoState
+    fAANGpools: FAANGpoolsState
 }

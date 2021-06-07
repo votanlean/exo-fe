@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from "react-redux";
 
 import farmsReducer from './farms';
+import fAANGpoolsReducer from './fAANGpools';
 import poolsReducer from './pools';
 import blockReducer from './block';
 import texoReducer from './texo';
@@ -13,6 +14,7 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   reducer: {
     pools: poolsReducer,
+    fAANGpools: fAANGpoolsReducer,
     farms: farmsReducer,
     block: blockReducer,
     texoToken: texoReducer,
