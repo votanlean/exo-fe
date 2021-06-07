@@ -443,7 +443,7 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
 
       expect(staker1Balance.gt(new BN(0))).to.be.equal(true, "Staker1 should have received tEXO rewards");
       expect(referrerBalance.gt(new BN(0))).to.be.equal(true, "Referrer should have received tEXO rewards");
-      expect(referrerBalance.eq(staker1Balance.div(new BN(10)))).to.be.equal(true, "Referrer should own 2% of what staker receives");
+      expect(referrerBalance.eq(staker1Balance.div(new BN(50)))).to.be.equal(true, "Referrer should own 2% of what staker receives");
     });
   });
 });
