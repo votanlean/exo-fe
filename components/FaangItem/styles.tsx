@@ -37,6 +37,9 @@ const useStyles = makeStyles(() => {
     },
     img: {
       height: '40px',
+      marginRight: '10px',
+      border: '1px solid rgb(161, 169, 214)',
+      borderRadius: '24px',
     },
     title: {
       fontWeight: 700,
