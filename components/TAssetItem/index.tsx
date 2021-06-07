@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Avatar, Box, Link, Typography } from '@material-ui/core';
 
 import { useStyles } from './styles';
@@ -6,12 +6,12 @@ import { useStyles } from './styles';
 function TAssetItem(props: any) {
   const classes = useStyles();
   const { data } = props || {};
-  const { icon, symbol, price, desc, fee, status, link } = data || {};
+  const { icon, symbol, desc, fee, status, price, link } = data || {};
 
   const statusColor = useMemo(() => {
     switch (status) {
-      case 'live':
-        return 'rgb(49, 216, 164)';
+      case 'onboarding':
+        return 'rgb(255,215,0)';
       case 'pause':
         return 'rgb(252, 135, 56)';
       default:
@@ -37,7 +37,7 @@ function TAssetItem(props: any) {
               {symbol}
             </Typography>
             <Typography variant="caption" className={classes.priceLabel}>
-              USD PRICE
+              USD PRICE:
             </Typography>
             <Typography variant="body1" component="p" className={classes.price}>
               {price}
