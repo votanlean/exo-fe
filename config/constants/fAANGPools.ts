@@ -1,6 +1,6 @@
 import tokens from './tokens';
 
-const fAANGPools = [
+const FAANGPools = [
   {
     id: 0,
     icon: '/static/images/faang-logo.png',
@@ -8,8 +8,8 @@ const fAANGPools = [
     stakingToken: tokens.faang,
     displayAllocPoint: 10000,
     depositFeeBP: 0,
-    symbol: 'FAANG',
+    symbol: 'tEXO',
   },
 ];
 
-export default fAANGPools;
+export default FAANGPools;

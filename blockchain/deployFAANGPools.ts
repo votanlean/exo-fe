@@ -4,7 +4,7 @@ console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 import HDWalletProvider from 'truffle-hdwallet-provider';
 import Web3 from 'web3';
 import compiledOrchestrator from './build/FAANGOrchestrator.json';
-import fAANGPools from '../config/constants/FAANGPools';
+import FAANGPools from '../config/constants/fAANGPools';
 
 const provider = new HDWalletProvider(
   process.env.MNEMONIC,
@@ -23,8 +23,8 @@ const deploy = async () => {
     const fAANGOrchestratorContract = new web3.eth.Contract(abi as any, fAANGOrchestratorAddress);
     console.log('Attempting to deploy FAANG pools from account', ownerAddress);
 
-    for (let i = 0; i < fAANGPools.length; i++) {
-      const fAANGPool = fAANGPools[i];
+    for (let i = 0; i < FAANGPools.length; i++) {
+      const fAANGPool = FAANGPools[i];
       console.log('Begin deploy FAANG pool:', fAANGPool.symbol);
 
       const txHash = await fAANGOrchestratorContract.methods
