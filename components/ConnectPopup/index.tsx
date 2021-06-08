@@ -25,7 +25,7 @@ ConnectPopup.propTypes = {
 };
 
 function ConnectPopup(props: any) {
-  const { login, logout } = useAuth();
+  const { login } = useAuth();
 
   const classes: any = useStyles();
   const { onOpen, onCloseDialog } = props;

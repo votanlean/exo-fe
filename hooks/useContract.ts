@@ -2,27 +2,9 @@ import { useMemo } from 'react';
 import useWeb3 from './useWeb3';
 import {
   getBep20Contract,
+  getFAANGOrchestratorContract,
   getOrchestratorContract,
   getTEXOContract,
-  // getBunnyFactoryContract,
-  // getBunnySpecialContract,
-  // getPancakeRabbitContract,
-  // getProfileContract,
-  // getIfoV1Contract,
-  // getIfoV2Contract,
-  // getLotteryContract,
-  // getLotteryTicketContract,
-  // getMasterchefContract,
-  // getPointCenterIfoContract,
-  // getSouschefContract,
-  // getClaimRefundContract,
-  // getTradingCompetitionContract,
-  // getEasterNftContract,
-  // getErc721Contract,
-  // getCakeVaultContract,
-  // getPredictionsContract,
-  // getChainlinkOracleContract,
-  // getSouschefV2Contract,
 } from 'utils/contractHelpers';
 
 /**
@@ -33,6 +15,12 @@ export const useOrchestratorContract = () => {
   const web3 = useWeb3();
 
   return useMemo(() => getOrchestratorContract(web3), [web3]);
+};
+
+export const useFAANGOrchestratorContract = () => {
+  const web3 = useWeb3();
+
+  return useMemo(() => getFAANGOrchestratorContract(web3), [web3]);
 };
 
 export const useTEXOContract = () => {

@@ -31,10 +31,6 @@ import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { fetchBlockDataThunk } from 'state/block/reducer';
 import { usePools } from 'state/pools/selectors';
-import {
-  fetchPoolsPublicDataAsync,
-  fetchPoolsUserDataAsync,
-} from 'state/pools/reducer';
 import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
 import { useFarms, useTotalValue } from 'state/farms/selectors';
@@ -48,6 +44,10 @@ import {
   fetchFAANGPoolsPublicDataAsync,
   fetchFAANGPoolsUserDataAsync,
 } from '../../state/fAANGpools/reducer';
+import {
+  fetchPoolsPublicDataAsync,
+  fetchPoolsUserDataAsync,
+} from '../../state/pools/reducer';
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {

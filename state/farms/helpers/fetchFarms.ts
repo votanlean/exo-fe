@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import erc20 from 'config/abi/erc20.json';
-import orchestratorABI from 'blockchain/build/TEXOOrchestrator.json';
+import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 import multicall from 'utils/multicall';
 import { BIG_TEN } from 'utils/bigNumber';
 import { getAddress } from 'utils/addressHelpers';
@@ -75,7 +75,7 @@ const fetchFarms = async (farmsToFetch: any[]) => {
       // Total staked in LP, in quote token value
       const lpTotalInQuoteToken = quoteTokenAmountMc.times(new BigNumber(2));
 
-      const [info, totalAllocPoint] = await multicall(orchestratorABI.abi, [
+      const [info, totalAllocPoint] = await multicall(orchestratorABI, [
         {
           address: getAddress(contracts.orchestrator),
           name: 'poolInfo',

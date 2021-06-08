@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { EventEmitter } from 'events';
 import BigNumber from 'bignumber.js';
 
 import styles from './farmItem.module.scss';
-import orchestratorInstance from '../../blockchain/orchestrator';
 import { getFarmApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
-import {getAddress, getOrchestratorAddress} from '../../utils/addressHelpers';
-import erc20abi from 'config/abi/erc20.json';
-import web3 from 'blockchain/web3';
-import { ethers } from 'ethers';
+import { getAddress } from '../../utils/addressHelpers';
 import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
 import { ROIDialog, StakeDialog, WithdrawDialog } from 'components/Dialogs';
 import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
-import {isAddress} from "../../utils/web3";
-import rot13 from "../../utils/encode";
-import Cookies from "universal-cookie";
+import { isAddress } from '../../utils/web3';
+import rot13 from '../../utils/encode';
+import Cookies from 'universal-cookie';
+import { useApprove } from '../../hooks/useApprove';
+import { useStake } from '../../hooks/useStake';
+import { useUnstake } from '../../hooks/useUnstake';
+import { useHarvest } from '../../hooks/useHarvest';
+import { useERC20, useOrchestratorContract } from '../../hooks/useContract';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
-    return '0%'
+    return '0%';
   }
 
-  const actualDepositFee = (depositFee * 100) / Math.pow(10, decimals)
+  const actualDepositFee = (depositFee * 100) / Math.pow(10, decimals);
 
-  return `${actualDepositFee.toFixed(2)}%`
+  return `${actualDepositFee.toFixed(2)}%`;
 }
 
 function FarmItem(props: any) {
@@ -53,23 +53,38 @@ function FarmItem(props: any) {
     lpTotalInQuoteToken = BIG_ZERO,
   } = farmData;
 
-  const { allowance, earnings: pendingReward, stakedBalance, tokenBalance } = userData;
+  const {
+    allowance,
+    earnings: pendingReward,
+    stakedBalance,
+    tokenBalance,
+  } = userData;
+
+  const tokenAddress = getAddress(address);
+  const tokenContract = useERC20(tokenAddress);
+  const tEXOOrchestratorContract = useOrchestratorContract();
+  const { onApprove } = useApprove(
+    tokenContract,
+    tEXOOrchestratorContract,
+    farmId,
+  );
+  const { onStake } = useStake(tEXOOrchestratorContract, farmId);
+  const { onUnstake } = useUnstake(tEXOOrchestratorContract, farmId);
+  const { onReward } = useHarvest(tEXOOrchestratorContract, farmId);
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
 
-  const lpTokenAddress = getAddress(address);
-  const lpTokenInstance = new web3.eth.Contract(erc20abi as any, lpTokenAddress);
-
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
-  const farmWeight = new BigNumber(allocPoint).div(new BigNumber(totalAllocPoint))
+  const farmWeight = new BigNumber(allocPoint).div(
+    new BigNumber(totalAllocPoint),
+  );
 
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
   const [openRoiDialog, setOpenRoiDialog] = useState(false);
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
 
-  const orchestratorAddress = getOrchestratorAddress();
   const apr = getFarmApr(
     farmWeight,
     tEXOPrice,
@@ -78,32 +93,20 @@ function FarmItem(props: any) {
   );
 
   const handleClickApprove = async () => {
-    const approvalEventEmitter = lpTokenInstance.methods
-      .approve(orchestratorAddress, ethers.constants.MaxUint256)
-      .send({ from: selectedAccount });
-
-    approvalEventEmitter.on('receipt', data => {
-      onPoolStateChange()
-      approvalEventEmitter.removeAllListeners()
-    })
-
-    approvalEventEmitter.on('error', data => {
-      onPoolStateChange()
-      approvalEventEmitter.removeAllListeners()
-    })
-  }
+    await onApprove();
+  };
 
   const handleClickStake = async () => {
-    setOpenStakeDialog(true)
-  }
+    setOpenStakeDialog(true);
+  };
 
   const handleCloseStakeDialog = async () => {
     if (selectedAccount) {
-      setOpenStakeDialog(false)
+      setOpenStakeDialog(false);
     }
-  }
+  };
 
-  const handleConfirmStake = async amount => {
+  const handleConfirmStake = async (amount) => {
     const cookies = new Cookies();
     let ref;
     if (cookies.get('ref')) {
@@ -113,69 +116,35 @@ function FarmItem(props: any) {
     } else {
       ref = '0x0000000000000000000000000000000000000000';
     }
-
-    const stakeEventEmitter: EventEmitter = orchestratorInstance.methods
-      .deposit(farmId, web3.utils.toWei(amount, 'ether'), ref)
-      .send({ from: selectedAccount });
-
-    stakeEventEmitter.on('receipt', data => {
-      onPoolStateChange()
-      stakeEventEmitter.removeAllListeners()
-    });
-
-    stakeEventEmitter.on('error', data => {
-      onPoolStateChange()
-      stakeEventEmitter.removeAllListeners()
-    })
-  }
+    await onStake(amount, ref);
+    // onPoolStateChange();
+  };
 
   const handleClickWithdraw = () => {
-    setOpenWithdrawDialog(true)
-  }
+    setOpenWithdrawDialog(true);
+  };
 
   const handleCloseWithdrawDialog = async () => {
-    setOpenWithdrawDialog(false)
-  }
+    setOpenWithdrawDialog(false);
+  };
 
-  const handleConfirmWithdraw = async amount => {
-    const withdrawEventEmitter = orchestratorInstance.methods
-      .withdraw(farmId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: selectedAccount });
-
-    withdrawEventEmitter.on('receipt', data => {
-      onPoolStateChange()
-      withdrawEventEmitter.removeAllListeners()
-    });
-
-    withdrawEventEmitter.on('error', data => {
-      onPoolStateChange()
-      withdrawEventEmitter.removeAllListeners()
-    });
-  }
+  const handleConfirmWithdraw = async (amount) => {
+    await onUnstake(amount);
+    onPoolStateChange();
+  };
 
   const handleClickClaimRewards = async () => {
-    const claimRewardsEventEmitter = orchestratorInstance.methods
-      .withdraw(farmId, '0')
-      .send({ from: selectedAccount });
-
-    claimRewardsEventEmitter.on('receipt', data => {
-      onPoolStateChange()
-      claimRewardsEventEmitter.removeAllListeners()
-    });
-
-    claimRewardsEventEmitter.on('error', data => {
-      onPoolStateChange()
-      claimRewardsEventEmitter.removeAllListeners()
-    });
-  }
+    await onReward();
+    // onPoolStateChange();
+  };
 
   const toggleDisplayDetails = () => {
-    setIsDisplayDetails(!isDisplayDetails)
-  }
+    setIsDisplayDetails(!isDisplayDetails);
+  };
 
   const onToggleRoiDialog = () => {
-    setOpenRoiDialog(!openRoiDialog)
-  }
+    setOpenRoiDialog(!openRoiDialog);
+  };
 
   const poolDetailsDiv = isDisplayDetails ? (
     <div className={styles.detailsContainer}>
@@ -195,13 +164,13 @@ function FarmItem(props: any) {
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
-        href={`https://bscscan.com/address/${lpTokenAddress}`}
+        href={`https://bscscan.com/address/${tokenAddress}`}
         target="_blank"
       >
         View on Bscan
       </a>
     </div>
-  ) : null
+  ) : null;
 
   return (
     <>
@@ -211,28 +180,28 @@ function FarmItem(props: any) {
             <div className={styles.liquidityPoolEffect} />
 
             <div className={`${styles.spacing} d-flex items-center column`}>
-            <div className={`d-flex justify-between w-full items-center`}>
-            <div>
-              <img src={icon} alt={title} className={styles.icon} />
-            </div>
-            <div>
-              <p className={`${styles.title} text-right mb-1`}>{title}</p>
-              <div className={`d-flex items-center justify-end`}>
-                {
-                  shouldComponentDisplay(
-                    depositFeeBP <= 0,
-                    <div className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}>
-                      <img src="/static/images/verified.svg" />
-                      <p>No Fees</p>
+              <div className={`d-flex justify-between w-full items-center`}>
+                <div>
+                  <img src={icon} alt={title} className={styles.icon} />
+                </div>
+                <div>
+                  <p className={`${styles.title} text-right mb-1`}>{title}</p>
+                  <div className={`d-flex items-center justify-end`}>
+                    {shouldComponentDisplay(
+                      depositFeeBP <= 0,
+                      <div
+                        className={`${styles.poolAllocationPoint} ${styles.noFeeBag}`}
+                      >
+                        <img src="/static/images/verified.svg" />
+                        <p>No Fees</p>
+                      </div>,
+                    )}
+                    <div className={`${styles.poolAllocationPoint}`}>
+                      <p>{displayAllocPoint / 100} X</p>
                     </div>
-                  )
-                }
-                <div className={`${styles.poolAllocationPoint}`}>
-                  <p>{displayAllocPoint / 100} X</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
               <div className={`${styles.poolItemGrid} w-full`}>
                 <RowPoolItem
@@ -254,28 +223,29 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(stakedBalance).toNumber().toFixed(4)} {symbol}
+                    {normalizeTokenDecimal(stakedBalance).toNumber().toFixed(4)}{' '}
+                    {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
                   title="Deposit Fee"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>
-                    {formatDepositFee(depositFeeBP)}
-                  </p>
+                  <p>{formatDepositFee(depositFeeBP)}</p>
                 </RowPoolItem>
                 <RowPoolItem
                   title="My Rewards"
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(pendingReward).toNumber().toFixed(4)} tEXO
+                    {normalizeTokenDecimal(pendingReward).toNumber().toFixed(4)}{' '}
+                    tEXO
                   </p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked).toNumber().toFixed(4)} {symbol}
+                    {normalizeTokenDecimal(totalStaked).toNumber().toFixed(4)}{' '}
+                    {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -283,7 +253,8 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(tokenBalance).toNumber().toFixed(4)} {symbol}
+                    {normalizeTokenDecimal(tokenBalance).toNumber().toFixed(4)}{' '}
+                    {symbol}
                   </p>
                 </RowPoolItem>
               </div>
@@ -291,59 +262,51 @@ function FarmItem(props: any) {
               <div
                 className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
               >
-                {
-                  shouldComponentDisplay(
-                    canClaimReward && Number(stakedBalance) > 0,
-                    <button
-                      type="button"
-                      className={`${styles.button}`}
-                      disabled={!canClaimReward}
-                      onClick={handleClickClaimRewards}
-                    >
-                      Claim Rewards
-                    </button>
-                  )
-                }
-                {
-                  shouldComponentDisplay(
-                    canWithdraw,
-                    <Grid container>
-                      <Grid item xs={12}>
-                        <button
-                          type="button"
-                          className={`${styles.button}`}
-                          onClick={handleClickWithdraw}
-                        >
-                          Withdraw
-                        </button>
-                      </Grid>
+                {shouldComponentDisplay(
+                  canClaimReward && Number(stakedBalance) > 0,
+                  <button
+                    type="button"
+                    className={`${styles.button}`}
+                    disabled={!canClaimReward}
+                    onClick={handleClickClaimRewards}
+                  >
+                    Claim Rewards
+                  </button>,
+                )}
+                {shouldComponentDisplay(
+                  canWithdraw,
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <button
+                        type="button"
+                        className={`${styles.button}`}
+                        onClick={handleClickWithdraw}
+                      >
+                        Withdraw
+                      </button>
                     </Grid>
-                  )
-                }
-                {
-                  shouldComponentDisplay(
-                    isAlreadyApproved,
-                    <button
-                      type="button"
-                      className={`${styles.button}`}
-                      onClick={handleClickStake}
-                    >
-                      Stake
-                    </button>,
-                  )
-                }
-                {
-                  shouldComponentDisplay(
-                    !isAlreadyApproved,
-                    <button
-                      type="button"
-                      className={`${styles.button}`}
-                      onClick={handleClickApprove}
-                    >
-                      Approve
-                    </button>
-                  )
-                }
+                  </Grid>,
+                )}
+                {shouldComponentDisplay(
+                  isAlreadyApproved,
+                  <button
+                    type="button"
+                    className={`${styles.button}`}
+                    onClick={handleClickStake}
+                  >
+                    Stake
+                  </button>,
+                )}
+                {shouldComponentDisplay(
+                  !isAlreadyApproved,
+                  <button
+                    type="button"
+                    className={`${styles.button}`}
+                    onClick={handleClickApprove}
+                  >
+                    Approve
+                  </button>,
+                )}
               </div>
 
               <div
@@ -381,11 +344,11 @@ function FarmItem(props: any) {
         poolData={{ apr, tokenPrice: stakingTokenPrice }}
       />
     </>
-  )
+  );
 }
 
 const RowPoolItem = React.memo(function RowPoolItem(props: any) {
-  const { containerStyle, title, children } = props || {}
+  const { containerStyle, title, children } = props || {};
   return (
     <div
       className={`d-flex items-center justify-between font-bold ${containerStyle}`}
@@ -393,7 +356,7 @@ const RowPoolItem = React.memo(function RowPoolItem(props: any) {
       <p className={styles.pTitle}>{title}</p>
       {children}
     </div>
-  )
-})
+  );
+});
 
 export default FarmItem;

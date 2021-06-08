@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import {
   Box,
   Collapse,
@@ -9,7 +9,6 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp, Launch } from '@material-ui/icons';
-import web3 from 'blockchain/web3';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import { EventEmitter } from 'events';
@@ -27,6 +26,10 @@ import { useStyles } from './styles';
 import { isAddress } from '../../utils/web3';
 import rot13 from '../../utils/encode';
 import { useERC20, useOrchestratorContract } from '../../hooks/useContract';
+import { useApprove } from '../../hooks/useApprove';
+import { useStake } from '../../hooks/useStake';
+import { useUnstake } from '../../hooks/useUnstake';
+import { useHarvest } from '../../hooks/useHarvest';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -60,8 +63,6 @@ function PoolRow(props: any) {
     stakingToken,
   } = pool;
 
-  const orchestratorInstance = useOrchestratorContract();
-  // const orchestratorInstance = orchestratorInstance2;
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
@@ -73,18 +74,24 @@ function PoolRow(props: any) {
 
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
     userData;
-
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const tokenAddress = getAddress(stakingToken.address);
-  const tokenInstance = useERC20(getAddress(stakingToken.address));
+  const tokenContract = useERC20(tokenAddress);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   const poolTexoPerBlock = new BigNumber(tEXOPerBlock)
     .times(new BigNumber(allocPoint))
     .div(new BigNumber(totalAllocPoint));
 
-  const orchestratorAddress = getOrchestratorAddress();
-
+  const tEXOOrchestratorContract = useOrchestratorContract();
+  const { onApprove } = useApprove(
+    tokenContract,
+    tEXOOrchestratorContract,
+    poolId,
+  );
+  const { onStake } = useStake(tEXOOrchestratorContract, poolId);
+  const { onUnstake } = useUnstake(tEXOOrchestratorContract, poolId);
+  const { onReward } = useHarvest(tEXOOrchestratorContract, poolId);
   const apr = getPoolApr(
     stakingTokenPrice,
     tEXOPrice,
@@ -115,19 +122,7 @@ function PoolRow(props: any) {
   };
 
   const handleClickApprove = async () => {
-    const approvalEventEmitter = tokenInstance.methods
-      .approve(orchestratorAddress, ethers.constants.MaxUint256)
-      .send({ from: account });
-
-    approvalEventEmitter.on('receipt', (data) => {
-      onPoolStateChange();
-      approvalEventEmitter.removeAllListeners();
-    });
-
-    approvalEventEmitter.on('error', (data) => {
-      onPoolStateChange();
-      approvalEventEmitter.removeAllListeners();
-    });
+    await onApprove();
   };
 
   const handleConfirmStake = async (amount) => {
@@ -140,55 +135,15 @@ function PoolRow(props: any) {
     } else {
       ref = '0x0000000000000000000000000000000000000000';
     }
-
-    const stakeEventEmitter: EventEmitter = orchestratorInstance.methods
-      .deposit(poolId, web3.utils.toWei(amount, 'ether'), ref)
-      .send({ from: account });
-
-    stakeEventEmitter.on('receipt', (data) => {
-      console.log('receipt', data);
-      onPoolStateChange();
-      stakeEventEmitter.removeAllListeners();
-    });
-
-    stakeEventEmitter.on('error', (data) => {
-      console.log('error', data);
-      console.log('account', account);
-      onPoolStateChange();
-      stakeEventEmitter.removeAllListeners();
-    });
+    await onStake(amount, ref);
   };
 
   const handleConfirmWithdraw = async (amount) => {
-    const withdrawEventEmitter = orchestratorInstance.methods
-      .withdraw(poolId, web3.utils.toWei(amount, 'ether'))
-      .send({ from: account });
-
-    withdrawEventEmitter.on('receipt', (data) => {
-      onPoolStateChange();
-      withdrawEventEmitter.removeAllListeners();
-    });
-
-    withdrawEventEmitter.on('error', (data) => {
-      onPoolStateChange();
-      withdrawEventEmitter.removeAllListeners();
-    });
+    await onUnstake(amount);
   };
 
   const handleClickClaimRewards = async () => {
-    const claimRewardsEventEmitter = orchestratorInstance.methods
-      .withdraw(poolId, '0')
-      .send({ from: account });
-
-    claimRewardsEventEmitter.on('receipt', (data) => {
-      onPoolStateChange();
-      claimRewardsEventEmitter.removeAllListeners();
-    });
-
-    claimRewardsEventEmitter.on('error', (data) => {
-      onPoolStateChange();
-      claimRewardsEventEmitter.removeAllListeners();
-    });
+    await onReward();
   };
 
   return (
@@ -464,6 +419,7 @@ function PoolRow(props: any) {
                   >
                     <Typography variant="caption">Approve</Typography>
                     <Button
+                      // isLoading={requestedApproval} //TODO support loading
                       className={`${classes.button} ${
                         canClaimReward ? classes.disabled : ''
                       }`}

@@ -17,6 +17,6 @@ export default {
   },
   fAANGOrchestrator: {
     56: '',
-    97: '0x5514dAF001A7ad08b712CE2DE88BDe66151eC71A',
+    97: '0xFCC4f2b59a8e76f86e4F9fDaee8D3EAF8998edBd',
   },
 };

@@ -1,7 +1,6 @@
 const tokens = {
   bnb: {
     symbol: 'BNB',
-    projectLink: 'https://www.binance.com/',
   },
   texo: {
     symbol: 'TEXO',
@@ -10,16 +9,14 @@ const tokens = {
       97: '0xABe104d0a197867E5fDB77632Ad22FA2338f86f7',
     },
     decimals: 18,
-    projectLink: 'https://exonium.one/',
   },
   faang: {
     symbol: 'FAANG',
     address: {
       56: '',
-      97: '0xE6fBf3c5317859466A50311D477FDDa603efe0fc',
+      97: '0x0FB847858Eb07b48D0768BFe7ef121BEe6338B37',
     },
     decimals: 18,
-    projectLink: 'https://exonium.one/',
   },
   usdt: {
     symbol: 'USDT',
@@ -28,7 +25,6 @@ const tokens = {
       97: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
     },
     decimals: 18,
-    projectLink: 'https://tether.to/',
   },
   wbnb: {
     symbol: 'wBNB',
@@ -37,7 +33,6 @@ const tokens = {
       97: '0xae13d989dac2f0debff460ac112a837c89baa7cd',
     },
     decimals: 18,
-    projectLink: 'https://pancakeswap.finance/',
   },
   busd: {
     symbol: 'BUSD',
@@ -46,7 +41,6 @@ const tokens = {
       97: '0xfF9F29E2dd5f3c76ec0C3214e5bb758E7F67F462', //custom
     },
     decimals: 18,
-    projectLink: 'https://www.paxos.com/busd/',
   },
   cake: {
     symbol: 'CAKE',
@@ -55,7 +49,6 @@ const tokens = {
       97: '0xa35062141Fa33BCA92Ce69FeD37D0E8908868AAe',
     },
     decimals: 18,
-    projectLink: 'https://pancakeswap.finance/',
   },
   btcb: {
     symbol: 'BTCB',
@@ -64,7 +57,6 @@ const tokens = {
       97: '0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5',
     },
     decimals: 18,
-    projectLink: 'https://bitcoin.org/',
   },
   eth: {
     symbol: 'ETH',
@@ -73,7 +65,6 @@ const tokens = {
       97: '0x838961136197260c11b5f5Fb39f10eef9d588630', //custom
     },
     decimals: 18,
-    projectLink: 'https://ethereum.org/en/',
   },
   bunny: {
     symbol: 'BUNNY',
@@ -82,7 +73,6 @@ const tokens = {
       97: '0x4B915Ec8D58B62edC98E556B0f37E0520D257aD2', //custom
     },
     decimals: 18,
-    projectLink: 'https://pancakebunny.finance/',
   },
   xvs: {
     symbol: 'XVS',
@@ -91,7 +81,6 @@ const tokens = {
       97: '0x71336AAeD37b25dEFA5b48a1280CD9ED4b45080a', //custom
     },
     decimals: 18,
-    projectLink: 'https://venus.io/',
   },
   usdc: {
     symbol: 'USDC',
@@ -100,7 +89,6 @@ const tokens = {
       97: '0xa5c92c6B4da1e42BCED5683AF284f8B9B828B9F0', //custom
     },
     decimals: 18,
-    projectLink: 'https://www.centre.io/usdc',
   },
   dai: {
     symbol: 'DAI',
@@ -109,7 +97,6 @@ const tokens = {
       97: '0x2DB37EDd9F20298De90Cc9F1029734F07c2cD529', //custom
     },
     decimals: 18,
-    projectLink: 'http://www.makerdao.com/',
   },
   dot: {
     symbol: 'DOT',
@@ -118,7 +105,6 @@ const tokens = {
       97: '0xce8085f0191d28C85EEEe1E61Ec9D466E2959A59',
     },
     decimals: 18,
-    projectLink: 'https://polkadot.network/',
   },
 };
 

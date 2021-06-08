@@ -10,7 +10,6 @@ export interface FAANGpoolsState {
 }
 
 export interface Pool extends PoolConfig {
-    tokenInstance? //TODO remove
     totalStaked?: BigNumber
     stakingLimit?: BigNumber
     startBlock?: number
@@ -24,7 +23,6 @@ export interface Pool extends PoolConfig {
 }
 
 export interface FAANGPool extends PoolConfig {
-    tokenInstance? //TODO remove
     totalStaked?: BigNumber
     stakingLimit?: BigNumber
     startBlock?: number

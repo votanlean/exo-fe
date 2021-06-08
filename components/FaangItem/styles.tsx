@@ -63,6 +63,10 @@ const useStyles = makeStyles(() => {
     iconButton: {
       padding: '9px',
     },
+    disabled: {
+      backgroundColor: 'darkgray !important',
+      cursor: 'auto !important',
+    },
   };
 });
 

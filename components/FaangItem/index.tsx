@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Box, IconButton, Link, Typography } from '@material-ui/core';
 
 import Button from '../Button';
 
 import { useStyles } from './styles';
-import { ROIDialog } from 'components/Dialogs';
+import { StakeDialog, WithdrawDialog } from 'components/Dialogs';
 import { normalizeTokenDecimal } from '../../utils/bigNumber';
 import { getAddress } from '../../utils/addressHelpers';
+import { useApprove } from '../../hooks/useApprove';
+import { useStake } from '../../hooks/useStake';
+import { useUnstake } from '../../hooks/useUnstake';
+import { useHarvest } from '../../hooks/useHarvest';
+import {
+  useERC20,
+  useFAANGOrchestratorContract,
+} from '../../hooks/useContract';
+import { shouldComponentDisplay } from '../../utils/componentDisplayHelper';
+import BigNumber from 'bignumber.js';
 
 function FaangItem({ pool, account }) {
   const {
@@ -20,14 +30,48 @@ function FaangItem({ pool, account }) {
     userData = {},
     depositFeeBP,
     stakingToken,
+    canClaimReward,
   } = pool;
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
     userData;
-  const [openRoiDialog, setOpenRoiDialog] = useState(false);
+  const [openStakeDialog, setOpenStakeDialog] = useState(false);
+  const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
   const tokenAddress = getAddress(stakingToken.address);
-  const onToggleRoiDialog = () => {
-    setOpenRoiDialog(!openRoiDialog);
+  const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
+  const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
+
+  const tokenContract = useERC20(getAddress(stakingToken.address));
+  const orchestratorContract = useFAANGOrchestratorContract();
+  const { onApprove } = useApprove(tokenContract, orchestratorContract, 0);
+  const { onStake } = useStake(orchestratorContract, 0);
+  const { onUnstake } = useUnstake(orchestratorContract, 0);
+  const { onReward } = useHarvest(orchestratorContract, 0);
+
+  const handleClickStake = async () => {
+    setOpenStakeDialog(true);
+  };
+
+  const handleCloseStakeDialog = async () => {
+    if (account) {
+      setOpenStakeDialog(false);
+    }
+  };
+
+  const handleClickWithdraw = () => {
+    setOpenWithdrawDialog(true);
+  };
+
+  const handleCloseWithdrawDialog = async () => {
+    setOpenWithdrawDialog(false);
+  };
+
+  const handleConfirmStake = async (amount) => {
+    await onStake(amount);
+  };
+
+  const handleConfirmWithdraw = async (amount) => {
+    await onUnstake(amount);
   };
 
   return (
@@ -171,10 +215,88 @@ function FaangItem({ pool, account }) {
               </Typography>
             </Link>
           </Box>
-          <Button className={classes.button}>Approve</Button>
+
+          {shouldComponentDisplay(
+            !isAlreadyApproved,
+            <Box>
+              <Button
+                // isLoading={requestedApproval} //TODO support loading
+                className={`${classes.button} ${
+                  canClaimReward ? classes.disabled : ''
+                }`}
+                onClick={onApprove}
+                disabled={canClaimReward}
+              >
+                Approve
+              </Button>
+            </Box>,
+          )}
+
+          {shouldComponentDisplay(
+            !canClaimReward,
+            <Box>
+              <Button
+                // isLoading={requestedApproval} //TODO support loading
+                className={`${classes.button} ${
+                  canClaimReward ? classes.disabled : ''
+                }`}
+                onClick={handleClickStake}
+                disabled={canClaimReward}
+              >
+                Stake
+              </Button>
+            </Box>,
+          )}
+
+          {shouldComponentDisplay(
+            canWithdraw,
+            <Box>
+              <Button
+                // isLoading={requestedApproval} //TODO support loading
+                className={`${classes.button} ${
+                  canClaimReward ? classes.disabled : ''
+                }`}
+                onClick={handleClickWithdraw}
+              >
+                Withdraw
+              </Button>
+            </Box>,
+          )}
+          {shouldComponentDisplay(
+            canClaimReward &&
+              Number(stakedBalance) > 0 &&
+              Number(pendingReward) > 0,
+            <Box>
+              <Button
+                // isLoading={requestedApproval} //TODO support loading
+                className={`${classes.button} ${
+                  canClaimReward ? classes.disabled : ''
+                }`}
+                onClick={onReward}
+              >
+                Claim Rewards
+              </Button>
+            </Box>,
+          )}
         </Box>
       </Box>
-      <ROIDialog open={openRoiDialog} onClose={onToggleRoiDialog} />
+      <StakeDialog
+        open={openStakeDialog}
+        title="Stake"
+        onClose={handleCloseStakeDialog}
+        onConfirm={handleConfirmStake}
+        unit={symbol}
+        depositFee={depositFeeBP}
+        maxAmount={stakingTokenBalance}
+      />
+      <WithdrawDialog
+        open={openWithdrawDialog}
+        title="Withdraw"
+        onClose={handleCloseWithdrawDialog}
+        onConfirm={handleConfirmWithdraw}
+        unit={symbol}
+        maxAmount={stakedBalance}
+      />
     </>
   );
 }
