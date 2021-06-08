@@ -16,6 +16,7 @@ const web3 = new Web3(provider);
 const abi = compiledOrchestrator.abi;
 const orchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
 const chainId = process.env.CHAIN_ID;
+const blockToUnlockClaimingRewards = process.env.BLOCK_TO_UNLOCK_CLAIMING_REWARDS;
 const ownerAddress = process.env.OWNER_ADDRESS;
 
 const deploy = async () => {
@@ -35,6 +36,7 @@ const deploy = async () => {
           false,
           '0',
           '0',
+          blockToUnlockClaimingRewards,
         )
         .send({
           from: ownerAddress,

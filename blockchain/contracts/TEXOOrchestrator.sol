@@ -35,6 +35,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         IBEP20 lpToken; // Address of LP token contract.
         uint256 allocPoint; // How many allocation points assigned to this pool. tEXOs to distribute per block.
         uint256 blockToReceiveReward; // Block number at which to allow receiving reward
+        uint256 inActiveBlock; // Block at which to stop staking and generating rewards
         uint256 lastRewardBlock; // Last block number that PLUMs distribution occurs.
         uint256 accTEXOPerShare; // Accumulated tEXOs per share, times 1e12. See below.
         uint16 depositFeeBP; // Deposit fee in basis points
@@ -65,8 +66,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     uint256 public totalAllocPoint = 0;
     // Referral Bonus in basis points. Initially set to 2%
     uint256 public refBonusBP = 200;
-    // Max deposit fee: 10%.
-    uint16 public constant MAXIMUM_DEPOSIT_FEE_BP = 1000;
+    // Max deposit fee: 4%.
+    uint16 public constant MAXIMUM_DEPOSIT_FEE_BP = 400;
     // Max referral commission rate: 20%.
     uint16 public constant MAXIMUM_REFERRAL_BP = 2000;
     // Referral Mapping
@@ -145,7 +146,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         uint16 _depositFeeBP,
         bool _withUpdate,
         uint256 _blockToReceiveReward,
-        uint256 _startGenerateRewardBlock
+        uint256 _startGenerateRewardBlock,
+        uint256 _inActiveBlock
     ) public onlyOwner nonDuplicated(_lpToken) {
         require(_depositFeeBP <= MAXIMUM_DEPOSIT_FEE_BP, "add: invalid deposit fee basis points");
 
@@ -165,7 +167,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
                 lastRewardBlock: _startGenerateRewardBlock > 0 ? _startGenerateRewardBlock : (block.number > startBlock ? block.number : startBlock),
                 accTEXOPerShare: 0,
                 depositFeeBP: _depositFeeBP,
-                blockToReceiveReward: blockToReceiveReward
+                blockToReceiveReward: blockToReceiveReward,
+                inActiveBlock: _inActiveBlock > 0 ? _inActiveBlock : 0
             })
         );
 
@@ -178,7 +181,8 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         uint256 _allocPoint,
         uint16 _depositFeeBP,
         bool _withUpdate,
-        uint256 _blockToReceiveReward
+        uint256 _blockToReceiveReward,
+        uint256 _inActiveBlock
     ) public onlyOwner {
         require(_depositFeeBP <= MAXIMUM_DEPOSIT_FEE_BP, "set: invalid deposit fee basis points");
         if (_withUpdate) {
@@ -194,6 +198,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         poolInfo[_pid].allocPoint = _allocPoint;
         poolInfo[_pid].depositFeeBP = _depositFeeBP;
         poolInfo[_pid].blockToReceiveReward = blockToReceiveReward;
+        poolInfo[_pid].inActiveBlock = _inActiveBlock > 0 ? _inActiveBlock : 0;
     }
 
     // Return reward multiplier over the given _from to _to block.
@@ -209,8 +214,10 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         uint256 accTEXOPerShare = pool.accTEXOPerShare;
         uint256 lpSupply = pool.lpToken.balanceOf(address(this));
 
-        if (canGenerateTexoReward(_pid) && block.number > pool.lastRewardBlock && lpSupply != 0) {
-            uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
+        uint256 blockToCalculateMultiplier = minCurrentBlockAndInactiveBlockIfExist(_pid);
+
+        if (blockToCalculateMultiplier > pool.lastRewardBlock && lpSupply != 0) {
+            uint256 multiplier = getMultiplier(pool.lastRewardBlock, blockToCalculateMultiplier);
             uint256 tEXOReward = multiplier
                 .mul(tEXOPerBlock)
                 .mul(pool.allocPoint)
@@ -232,6 +239,15 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         return pending.add(user.rewardLockedUp);
     }
 
+    function minCurrentBlockAndInactiveBlockIfExist(uint256 _pid) internal view returns (uint256) {
+        PoolInfo storage pool = poolInfo[_pid];
+        if (pool.inActiveBlock == 0) {
+            return block.number;
+        }
+
+        return block.number > pool.inActiveBlock ? pool.inActiveBlock : block.number;
+    }
+
     // Update reward variables for all pools. Be careful of gas spending!
     function massUpdatePools() public {
         uint256 length = poolInfo.length;
@@ -244,23 +260,21 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     function updatePool(uint256 _pid) public {
         PoolInfo storage pool = poolInfo[_pid];
 
-        if (block.number <= pool.lastRewardBlock) {
-            return;
-        }
+        uint256 blockToCalculateMultiplier = minCurrentBlockAndInactiveBlockIfExist(_pid);
 
-        if (!canGenerateTexoReward(_pid)) {
+        if (blockToCalculateMultiplier <= pool.lastRewardBlock) {
             return;
         }
 
         uint256 lpSupply = pool.lpToken.balanceOf(address(this)); // Get number of lp token this pool has. Example: total WETH this pool has accumulated.
 
         if (lpSupply == 0 || pool.allocPoint == 0) { // If pool initially has no staked WETH token, or pool has no allocation points.
-            pool.lastRewardBlock = block.number;
+            pool.lastRewardBlock = blockToCalculateMultiplier;
 
             return;
         }
 
-        uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number); // For each block has passed, the reward will be multiplied.
+        uint256 multiplier = getMultiplier(pool.lastRewardBlock, blockToCalculateMultiplier); // For each block has passed, the reward will be multiplied.
         uint256 tEXOReward = multiplier
             .mul(tEXOPerBlock)
             .mul(pool.allocPoint)
@@ -276,7 +290,7 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
                 .div(lpSupply)
             );
 
-        pool.lastRewardBlock = block.number;
+        pool.lastRewardBlock = blockToCalculateMultiplier;
     }
 
     function canClaimReward(uint256 _pid) public view returns (bool) {
@@ -285,17 +299,15 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         return pool.blockToReceiveReward <= block.number;
     }
 
-    function canGenerateTexoReward(uint256 _pid) public view returns (bool) {
-        PoolInfo storage pool = poolInfo[_pid];
-
-        return !(canClaimReward(_pid) && pool.allocPoint == 0);
-    }
-
     // Deposit LP tokens to MasterChef for tEXO allocation with referral.
     function deposit(uint256 _pid, uint256 _amount, address _referrer) public nonReentrant {
         require(_referrer == address(_referrer),"deposit: Invalid referrer address");
 
         PoolInfo storage pool = poolInfo[_pid];
+        if (pool.inActiveBlock > 0) {
+            require(block.number <= pool.inActiveBlock, "deposit: staking period has ended");
+        }
+
         UserInfo storage user = userInfo[_pid][msg.sender];
 
         updatePool(_pid);
