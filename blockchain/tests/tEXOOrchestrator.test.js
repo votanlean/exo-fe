@@ -44,6 +44,7 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
       false, // With update
       '0', // Block to receive rewards: Same as global (5 days)
       '0', // Start generate rewards block. Same as global (after 8 hours);
+      latestBlock.toNumber() + 24 * 5, // Inactive block
       {
         from: owner,
       },
@@ -56,8 +57,9 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
       this.tEXOBNBFarmInstance.address,
       '0', // Deposit fee
       false, // With update
-      '0',
+      '0', // Can receive rewards immediately
       latestBlock.toNumber() + 24 * 5, // Start generating rewards after 5 days
+      '0',
       {
         from: owner,
       },
@@ -88,6 +90,49 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
       const tEXOOwner = await this.tEXOInstance.owner();
 
       expect(tEXOOwner).to.equal(this.tEXOOrchestrator.address);
+    });
+
+    it('Pool can not exceed 4% deposit fee', async () => {
+      let hasError = false;
+
+      try {
+        await this.tEXOOrchestrator.add(
+          '0', // Allocation point,
+          '0x37A452D99eAD1E5b7f131d5c18f50fab868aFcB2',
+          '500', // Deposit fee
+          false, // With update
+          '0',
+          latestBlock.toNumber() + 24 * 5, // Start generating rewards after 5 days
+          {
+            from: owner,
+          },
+        )
+      } catch(error) {
+        hasError = true;
+      }
+
+      expect(hasError).to.be.equal(true, "Deposit fee must not exceed 4%");
+    });
+
+    it('New pool deposit fee can not exceed 4%', async () => {
+      let hasError = false;
+
+      try {
+        await this.tEXOOrchestrator.set(
+          '0', // Pool index
+          '300', // Allocation point
+          '500', // Deposit fee
+          false, // With update
+          '0',
+          {
+            from: owner,
+          },
+        )
+      } catch(error) {
+        hasError = true;
+      }
+
+      expect(hasError).to.be.equal(true, "New Deposit fee must not exceed 4%");
     });
   });
 
@@ -241,6 +286,34 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
   
         expect(userTEXORewards.gt(new BN(0))).to.be.equal(true, "User should have tEXO rewards after claim rewards time");
       });
+
+      it('Cannot stake after staking phase', async () => {
+        const latestBlock = await time.latestBlock();
+        await time.advanceBlockTo(latestBlock.toNumber() - this.offsetBlock + 24 * 5);
+
+        await expectRevert(this.tEXOOrchestrator.deposit('0', '0', constants.ZERO_ADDRESS, { from: staker1 }), "deposit: staking period has ended");
+      });
+
+      it('Should preserve user\'s reward after staking phase', async () => {
+        const latestBlock = await time.latestBlock();
+        await time.advanceBlockTo(latestBlock.toNumber() - this.offsetBlock + 24 * 5);
+  
+        const userPendingRewardLastDay = await this.tEXOOrchestrator.pendingTEXO('0', staker1);
+  
+        expect(userPendingRewardLastDay.gt(new BN(0)), "User should have pending reward");
+  
+        await time.advanceBlock();
+  
+        const userPendingRewardExceed1Day = await this.tEXOOrchestrator.pendingTEXO('0', staker1);
+  
+        expect(userPendingRewardLastDay.eq(userPendingRewardExceed1Day)).to.be.equal(true, "Should not increase reward after 30 days");
+  
+        await this.tEXOOrchestrator.withdraw('0', '600', { from: staker1 });
+  
+        const userRewardBalance = await this.tEXOInstance.balanceOf(staker1);
+  
+        expect(userRewardBalance.eq(userPendingRewardLastDay)).to.be.equal(true, "User should have FAANG balance equal to pending reward");
+      });
     });
 
     describe('LP farm tests', () => {
@@ -261,6 +334,7 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
           '400',
           false,
           '0',
+          '0',
         );
         this.offsetBlock++;
 
@@ -270,6 +344,7 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
           '5000',
           '0',
           false,
+          '0',
           '0',
         );
         this.offsetBlock++;
@@ -286,6 +361,7 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
       });
   
       it('Can\'t yield tEXO before ending staking phase', async () => {
+        await time.advanceBlock();
         const staker1PendingTEXO = await this.tEXOOrchestrator.pendingTEXO('1', staker1);
     
         expect(staker1PendingTEXO.eq(new BN(0))).to.be.equal(true, "Should not yield tEXO before ending staking phase");

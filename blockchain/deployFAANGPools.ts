@@ -29,9 +29,7 @@ const deploy = async () => {
 
       const txHash = await fAANGOrchestratorContract.methods
         .add(
-          fAANGPool.displayAllocPoint,
           fAANGPool.stakingToken.address[chainId],
-          fAANGPool.depositFeeBP,
           false
         )
         .send({

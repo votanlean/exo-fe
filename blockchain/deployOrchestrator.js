@@ -27,10 +27,8 @@ const deploy = async () => {
     const tEXOAddress = process.env.TEXO_ADDRESS;
 
     const startBlock = process.env.START_BLOCK;
-    const blockToStartReducingEmissionRate =
-      process.env.BLOCK_TO_START_REDUCING_EMISSION_RATE;
-    const blockToUnlockClaimingRewards =
-      process.env.BLOCK_TO_UNLOCK_CLAIMING_REWARDS;
+    const blockToStartReducingEmissionRate = process.env.BLOCK_TO_START_REDUCING_EMISSION_RATE;
+    const blockToUnlockClaimingRewards = process.env.BLOCK_TO_UNLOCK_CLAIMING_REWARDS;
 
     const result = await new web3.eth.Contract(abi)
       .deploy({

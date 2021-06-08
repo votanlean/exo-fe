@@ -36,6 +36,7 @@ const deploy = async () => {
           false,
           blockToUnlockClaimingRewards,
           blockToUnlockClaimingRewards,
+          '0'
         )
         .send({
           from: ownerAddress,

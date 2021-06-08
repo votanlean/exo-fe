@@ -22,8 +22,6 @@ const deploy = async () => {
     const ownerAddress = process.env.OWNER_ADDRESS;
     console.log('Attempting to deploy from account', ownerAddress);
 
-    const devAddress = process.env.DEV_ADDRESS; //accounts[1]
-    const feeAddress = process.env.FEE_ADDRESS; //accounts[2]
     const fAANGAddress = process.env.FAANG_ADDRESS;
 
     const startBlock = process.env.START_BLOCK;
@@ -31,7 +29,7 @@ const deploy = async () => {
     const result = await new web3.eth.Contract(abi)
       .deploy({
         data: bytecode,
-        arguments: [fAANGAddress, devAddress, feeAddress, startBlock],
+        arguments: [fAANGAddress, startBlock],
       })
       .send({ gas: '9000000', from: ownerAddress });
 
