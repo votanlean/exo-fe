@@ -1,3 +1,5 @@
+import FaangLogo from 'components/FaangLogo';
+
 export const ecosystemData = [
   {
     title: 'tEXO',
@@ -46,6 +48,7 @@ export const ecosystemData = [
   },
   {
     title: 'tASSET - Synthetics',
+    logo: <FaangLogo />,
     desc: () => (
       <>
         <p>

@@ -85,6 +85,7 @@ const Home = () => {
                 <div className="title">
                   <p>{index + 1}.</p>
                   <h2>{item.title}</h2>
+                  {item.logo ? item.logo : ''}
                 </div>
                 <div className="content">{item.desc()}</div>
               </div>
