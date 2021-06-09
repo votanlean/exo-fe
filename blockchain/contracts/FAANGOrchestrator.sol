@@ -6,11 +6,13 @@ import './Ownable.sol';
 import './ReentrancyGuard.sol';
 import './SafeMath.sol';
 import './SafeBEP20.sol';
+import './Address.sol';
 import './FAANGToken.sol';
 
 contract FAANGOrchestrator is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
+    using Address for address;
 
     // Info of each user.
     struct UserInfo {
@@ -74,7 +76,7 @@ contract FAANGOrchestrator is Ownable, ReentrancyGuard {
     ) public {
         FAANG = _FAANG;
         startBlock = _startBlock;
-        inActiveBlock = _startBlock.add(720); // 30 days after startblock
+        inActiveBlock = _startBlock.add(864000); // 30 days after startblock
         // 864000
     }
 

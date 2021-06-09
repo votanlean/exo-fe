@@ -6,10 +6,13 @@ import './Ownable.sol';
 import './ReentrancyGuard.sol';
 import './SafeMath.sol';
 import './SafeBEP20.sol';
+import './IBEP20.sol';
+import './Address.sol';
 import './TEXOToken.sol';
 
 contract TEXOOrchestrator is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
+    using Address for address;
     using SafeBEP20 for IBEP20;
 
     // Info of each user.
