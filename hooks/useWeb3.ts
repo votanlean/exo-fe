@@ -1,30 +1,28 @@
+import { useEffect, useState, useRef } from 'react';
 import Web3 from 'web3';
-import { useEffect, useRef, useState } from 'react';
-import { getWeb3NoAccount } from '../utils/web3';
-import { HttpProviderOptions } from 'web3-core-helpers'
-import { useWallet } from '@binance-chain/bsc-use-wallet';
-import { provider as ProviderType } from 'web3-core'
+import { useWeb3React } from '@web3-react/core';
+import { getWeb3NoAccount } from 'utils/web3';
+
 /**
  * Provides a web3 instance using the provider provided by useWallet
  * with a fallback of an httpProver
- * Recreate web3 instance only if the ethereum provider change
+ * Recreate web3 instance only if the provider change
  */
 const useWeb3 = () => {
-  const RPC_URL = process.env.BLOCKCHAIN_HOST;
-  const httpProvider = new Web3.providers.HttpProvider(RPC_URL, { timeout: 10000 } as HttpProviderOptions)
-
-  const { ethereum }: { ethereum: ProviderType } = useWallet();
-  const refEth = useRef(ethereum);
-  const [web3, setWeb3] = useState(new Web3(ethereum || httpProvider))
+  const { library } = useWeb3React();
+  const refEth = useRef(library);
+  const [web3, setweb3] = useState(
+    library ? new Web3(library) : getWeb3NoAccount(),
+  );
 
   useEffect(() => {
-    if (ethereum !== refEth.current) {
-      setWeb3(ethereum ? new Web3(ethereum) : getWeb3NoAccount());
-      refEth.current = ethereum;
+    if (library !== refEth.current) {
+      setweb3(library ? new Web3(library) : getWeb3NoAccount());
+      refEth.current = library;
     }
-  }, [ethereum]);
+  }, [library]);
 
   return web3;
-}
+};
 
 export default useWeb3;

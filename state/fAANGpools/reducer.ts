@@ -11,12 +11,11 @@ import {
   fetchFAANGUserStakeBalances,
   fetchFAANGUserPendingRewards,
 } from './fetchFAANGPoolsUser';
+import { FAANGPool } from '../types';
 
 const initialState = {
   data: [...fAANGPools],
 };
-
-type FAANGPool = any; //TODO move to state type
 
 // Thunks
 export const fetchFAANGPoolsPublicDataAsync = async (dispatch) => {

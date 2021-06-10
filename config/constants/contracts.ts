@@ -1,7 +1,7 @@
 export default {
   orchestrator: {
     56: '0x11eBAFd742e21294149B3c0341be7eE514Dd6198',
-    97: '0x079DF78a3E038f9AEbd3A61B0C7BE15704353631',
+    97: '0x966E350513603017f7291EF6cc506b6EfA4BEcCa',
   },
   timeLock: {
     56: '0x69E191beB3607072A45ac83eF6B7bc76F2420EF5',
@@ -17,6 +17,6 @@ export default {
   },
   fAANGOrchestrator: {
     56: '',
-    97: '0x5514dAF001A7ad08b712CE2DE88BDe66151eC71A',
+    97: '0xFCC4f2b59a8e76f86e4F9fDaee8D3EAF8998edBd',
   },
 };

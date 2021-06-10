@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Router from 'next/router';
 import PropTypes from 'prop-types';
 import { Dialog, DialogContent, Button, Typography } from '@material-ui/core';
 import { ExitToApp } from '@material-ui/icons';

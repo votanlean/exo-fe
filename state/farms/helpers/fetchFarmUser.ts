@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import erc20ABI from 'config/abi/erc20.json';
-import orchestratorABI from 'blockchain/build/TEXOOrchestrator.json';
+import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 import multicall from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import contracts from 'config/constants/contracts';
@@ -57,7 +57,7 @@ export const fetchFarmUserStakedBalances = async (
     };
   });
 
-  const rawStakedBalances = await multicall(orchestratorABI.abi, calls);
+  const rawStakedBalances = await multicall(orchestratorABI, calls);
   const parsedStakedBalances = rawStakedBalances.map((stakedBalance) => {
     return new BigNumber(stakedBalance[0]._hex).toJSON();
   });
@@ -76,7 +76,7 @@ export const fetchFarmUserEarnings = async (
     };
   });
 
-  const rawEarnings = await multicall(orchestratorABI.abi, calls);
+  const rawEarnings = await multicall(orchestratorABI, calls);
 
   const parsedEarnings = rawEarnings.map((earnings) => {
     return new BigNumber(earnings).toJSON();

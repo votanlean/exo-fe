@@ -1,15 +1,14 @@
 import BigNumber from "bignumber.js";
 
 export interface Address {
-    97?: string
+    97: string
     56: string
 }
 
 export interface Token {
     symbol: string
-    address?: Address
-    decimals?: number
-    projectLink?: string
+    address: Address
+    decimals: number
 }
 
 export enum PoolIds {
@@ -88,13 +87,12 @@ export interface PoolConfig {
     icon: string
     title: string
     contractAddress: Address
-    address: string //TODO remove
     symbol: string
     // poolCategory: PoolCategory
-    tokenPerBlock: string
+    // tokenPerBlock: string
     // sortOrder?: number
     // harvest?: boolean
     // isFinished?: boolean
     // enableEmergencyWithdraw?: boolean
-    bsScanLink: string //TODO remove
+    // bsScanLink: string //TODO remove
 }
