@@ -522,4 +522,60 @@ contract('TEXOOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
       expect(referrerBalance.eq(staker1Balance.div(new BN(50)))).to.be.equal(true, "Referrer should own 2% of what staker receives");
     });
   });
+
+  describe('Re-configure start block feature', () => {
+    it('Should throw if new start block is behind', async () => {
+      await expectRevert(this.tEXOOrchestrator.updateSeedPoolsStartBlock(0, 0, { from: owner }), "update startblock: new start block must be after previous start block");
+    });
+
+    it('Reconfigure seeding pool start block correctly', async () => {
+      const currentLpFarm = await this.tEXOOrchestrator.poolInfo(1);
+      const oldFarmLastRewardBlock = currentLpFarm.lastRewardBlock;
+      const oldFarmClaimRewardsBlock = currentLpFarm.blockToReceiveReward;
+      const oldFarmInactiveBlock = currentLpFarm.inActiveBlock;
+
+      const currentBlock = await time.latestBlock();
+      const newStartBlock = currentBlock.toNumber() + 24; // Delay 24 hours;
+      const newInactiveBlock = currentBlock.toNumber() + 24 * 6; // 5 days after new start block
+
+      await this.tEXOOrchestrator.updateSeedPoolsStartBlock(newStartBlock, newInactiveBlock, { from: owner });
+
+      const updatedSeedingPool = await this.tEXOOrchestrator.poolInfo(0);
+      const updatedLastRewardBlock = updatedSeedingPool.lastRewardBlock;
+      const updatedClaimRewardsBlock = updatedSeedingPool.blockToReceiveReward;
+      const updatedInactiveBlock = updatedSeedingPool.inActiveBlock;
+
+      expect(updatedLastRewardBlock.eq(new BN(newStartBlock))).to.be.equal(true, "last reward block should be updated");
+      expect(updatedClaimRewardsBlock.eq(new BN(newStartBlock))).to.be.equal(true, "last reward block should be updated");
+      expect(updatedInactiveBlock.eq(new BN(newInactiveBlock))).to.be.equal(true, "last reward block should be updated");
+
+      const newLpFarm = await this.tEXOOrchestrator.poolInfo(1);
+      const newFarmLastRewardBlock = newLpFarm.lastRewardBlock;
+      const newFarmClaimRewardsBlock = newLpFarm.blockToReceiveReward;
+      const newFarmInactiveBlock = newLpFarm.inActiveBlock;
+
+      expect(newFarmLastRewardBlock.eq(new BN(oldFarmLastRewardBlock))).to.be.equal(true, "last reward block should be updated");
+      expect(newFarmClaimRewardsBlock.eq(new BN(oldFarmClaimRewardsBlock))).to.be.equal(true, "last reward block should be updated");
+      expect(newFarmInactiveBlock.eq(new BN(oldFarmInactiveBlock))).to.be.equal(true, "last reward block should be updated");
+    });
+
+    it('Should update global blocks correctly', async () => {
+      const oldBlockToStartReducingEmissionRate = await this.tEXOOrchestrator.blockToStartReducingEmissionRate();
+      const oldGlobalBlockToUnlockClaimingRewards = await this.tEXOOrchestrator.globalBlockToUnlockClaimingRewards();
+
+      const currentBlock = await time.latestBlock();
+      const newStartBlock = currentBlock.toNumber() + 24; // Delay 24 hours;
+      const newInactiveBlock = currentBlock.toNumber() + 24 * 6; // 5 days after new start block
+
+      await this.tEXOOrchestrator.updateSeedPoolsStartBlock(newStartBlock, newInactiveBlock, { from: owner });
+
+      const newBlockToStartReducingEmissionRate = await this.tEXOOrchestrator.blockToStartReducingEmissionRate();
+      const newGlobalBlockToUnlockClaimingRewards = await this.tEXOOrchestrator.globalBlockToUnlockClaimingRewards();
+
+      expect(newBlockToStartReducingEmissionRate.eq(oldBlockToStartReducingEmissionRate)).to.be.equal(false, "should update block to reduce emission rate");
+      expect(newBlockToStartReducingEmissionRate.eq(new BN(newInactiveBlock))).to.be.equal(true, "new reduce emission rate block should be updated");
+      expect(newGlobalBlockToUnlockClaimingRewards.eq(oldGlobalBlockToUnlockClaimingRewards)).to.be.equal(false, "should update block to claim rewards");
+      expect(newGlobalBlockToUnlockClaimingRewards.eq(new BN(newInactiveBlock))).to.be.equal(true, "new block to receive rewards should be updated");
+    });
+  });
 });
