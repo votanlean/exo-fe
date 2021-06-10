@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
@@ -17,12 +16,10 @@ const web3 = new Web3(provider);
 const abi = compiledFAANGOrchestrator.abi;
 const bytecode = compiledFAANGOrchestrator.evm.bytecode.object;
 
-const deploy = async () => {
+const deploy = async (deployedFAANGAddress = '') => {
   try {
     const ownerAddress = process.env.OWNER_ADDRESS;
-    console.log('Attempting to deploy from account', ownerAddress);
-
-    const fAANGAddress = process.env.FAANG_ADDRESS;
+    const fAANGAddress = deployedFAANGAddress || process.env.FAANG_ADDRESS;
 
     const startBlock = process.env.START_BLOCK;
 
@@ -33,15 +30,11 @@ const deploy = async () => {
       })
       .send({ gas: '9000000', from: ownerAddress });
 
-    console.log(
-      'FAANG Orchestrator contract deployed to',
-      result.options.address,
-    );
-    process.exit(0);
+    return result.options.address;
   } catch (error) {
     console.log(error);
     process.exit(1);
   }
 };
 
-deploy();
+module.exports = deploy;

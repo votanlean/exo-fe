@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
@@ -19,8 +18,6 @@ const ownerAddress = process.env.OWNER_ADDRESS;
 
 const deploy = async () => {
   try {
-    console.log('Attempting to deploy from account', ownerAddress);
-
     const result = await new web3.eth.Contract(abi)
       .deploy({
         data: bytecode,
@@ -28,12 +25,12 @@ const deploy = async () => {
       .send({ gas: '3000000', from: ownerAddress });
 
     const address = result.options.address;
-    console.log('Contract deployed to', address);
-    process.exit(0);
+
+    return address;
   } catch (error) {
     console.log(error);
     process.exit(1);
   }
 };
 
-deploy();
+module.exports = deploy;
