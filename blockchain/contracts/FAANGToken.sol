@@ -6,12 +6,6 @@
 
 pragma solidity 0.6.12;
 
-import './SafeMath.sol';
-import './Context.sol';
-import './IBEP20.sol';
-import './Address.sol';
-import './Ownable.sol';
-import './SafeBEP20.sol';
 import './BEP20.sol';
 
 contract FAANGToken is BEP20('FAANG Token', 'FAANG') {
