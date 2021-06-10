@@ -154,13 +154,13 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
 
             if (isSeedPool(pid)) {
                 pool.lastRewardBlock = _newStartBlock;
-                pool.blockToReceiveReward = _newStartBlock;
+                pool.blockToReceiveReward = _newSeedPoolInactiveBlock;
                 pool.inActiveBlock = _newSeedPoolInactiveBlock;
             }
         }
     }
 
-    function isSeedPool(uint256 pid) private view returns (bool) {
+    function isSeedPool(uint256 pid) internal view returns (bool) {
         PoolInfo storage pool = poolInfo[pid];
 
         return pool.inActiveBlock > 0;
