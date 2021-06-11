@@ -85,6 +85,14 @@ contract FAANGOrchestrator is Ownable, ReentrancyGuard {
         return poolInfo.length;
     }
 
+    function updateStartBlock(uint256 _newStartBlock) public onlyOwner {
+        require(_newStartBlock > startBlock, "update startblock: new start block must be after previous start block");
+
+        PoolInfo storage faangPool = poolInfo[0];
+
+        faangPool.lastRewardBlock = _newStartBlock;
+    }
+
     function getPoolIdForLpToken(IBEP20 _lpToken) external view returns (uint256) {
         require(poolExistence[_lpToken] != false, "getPoolIdForLpToken: do not exist");
         return poolIdForLpAddress[_lpToken];

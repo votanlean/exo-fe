@@ -142,6 +142,30 @@ contract TEXOOrchestrator is Ownable, ReentrancyGuard {
         _;
     }
 
+    function updateSeedPoolsStartBlock(uint256 _newStartBlock, uint256 _newSeedPoolInactiveBlock) public onlyOwner {
+        require(_newStartBlock > startBlock, "update startblock: new start block must be after previous start block");
+
+        blockToStartReducingEmissionRate = _newSeedPoolInactiveBlock;
+        globalBlockToUnlockClaimingRewards = _newSeedPoolInactiveBlock;
+
+        for (uint256 pid = 0; pid < poolInfo.length; pid++) {
+            PoolInfo storage pool = poolInfo[pid];
+            require(_newSeedPoolInactiveBlock > pool.inActiveBlock);
+
+            if (isSeedPool(pid)) {
+                pool.lastRewardBlock = _newStartBlock;
+                pool.blockToReceiveReward = _newSeedPoolInactiveBlock;
+                pool.inActiveBlock = _newSeedPoolInactiveBlock;
+            }
+        }
+    }
+
+    function isSeedPool(uint256 pid) internal view returns (bool) {
+        PoolInfo storage pool = poolInfo[pid];
+
+        return pool.inActiveBlock > 0;
+    }
+
     // Add a new lp to the pool. Can only be called by the owner.
     function add(
         uint256 _allocPoint,

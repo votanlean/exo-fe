@@ -312,4 +312,22 @@ contract('FAANGOrchestrator', ([owner, dev, fee, staker1, referrer]) => {
       expect(userRewardBalance.eq(userPendingRewardLastDay)).to.be.equal(true, "User should have FAANG balance equal to pending reward");
     });
   });
+
+  describe('Re-configure start block feature', () => {
+    it('Should throw if new start block is behind', async () => {
+      await expectRevert(this.FAANGOrchestrator.updateStartBlock(0, { from: owner }), "update startblock: new start block must be after previous start block");
+    });
+
+    it('Reconfigure FAANG start block correctly', async () => {
+      const currentBlock = await time.latestBlock();
+      const newStartBlock = currentBlock.toNumber() + 24 * 6; // Delay 24 hours;
+
+      await this.FAANGOrchestrator.updateStartBlock(newStartBlock, { from: owner });
+
+      const updatedFAANGPool = await this.FAANGOrchestrator.poolInfo(0);
+      const updatedLastRewardBlock = updatedFAANGPool.lastRewardBlock;
+
+      expect(updatedLastRewardBlock.eq(new BN(newStartBlock))).to.be.equal(true, "last reward block should be updated");
+    });
+  });
 });
