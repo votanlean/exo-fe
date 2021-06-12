@@ -1,32 +1,22 @@
-import React, { Fragment, useState } from 'react';
-import { Box, IconButton, Link, Typography } from '@material-ui/core';
-
-import Button from '../Button';
+import React from 'react';
+import { Box, Link, Typography } from '@material-ui/core';
 
 import { useStyles } from './styles';
-import { StakeDialog, WithdrawDialog } from 'components/Dialogs';
 import { normalizeTokenDecimal } from '../../utils/bigNumber';
 import { getAddress } from '../../utils/addressHelpers';
-import { useApprove } from '../../hooks/useApprove';
-import { useStake } from '../../hooks/useStake';
-import { useUnstake } from '../../hooks/useUnstake';
-import { useHarvest } from '../../hooks/useHarvest';
-import {
-  useERC20,
-  useFAANGOrchestratorContract,
-} from '../../hooks/useContract';
-import { shouldComponentDisplay } from '../../utils/componentDisplayHelper';
+import { useFAANGOrchestratorContract } from '../../hooks/useContract';
 import BigNumber from 'bignumber.js';
+import {
+  ApproveAction,
+  StakeAction,
+  WithdrawAction,
+  ClaimRewardsAction,
+} from 'components/PoolActions';
 
-function FaangItem({ pool, account }) {
+function FaangItem({ pool }) {
   const {
-    id: poolId,
-    icon,
-    title,
     symbol,
     totalStaked,
-    allocPoint,
-    displayAllocPoint,
     userData = {},
     depositFeeBP,
     stakingToken,
@@ -35,43 +25,20 @@ function FaangItem({ pool, account }) {
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
     userData;
-  const [openStakeDialog, setOpenStakeDialog] = useState(false);
-  const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
   const tokenAddress = getAddress(stakingToken.address);
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
 
-  const tokenContract = useERC20(getAddress(stakingToken.address));
   const orchestratorContract = useFAANGOrchestratorContract();
-  const { onApprove } = useApprove(tokenContract, orchestratorContract, 0);
-  const { onStake } = useStake(orchestratorContract, 0);
-  const { onUnstake } = useUnstake(orchestratorContract, 0);
-  const { onReward } = useHarvest(orchestratorContract, 0);
 
-  const handleClickStake = async () => {
-    setOpenStakeDialog(true);
-  };
-
-  const handleCloseStakeDialog = async () => {
-    if (account) {
-      setOpenStakeDialog(false);
-    }
-  };
-
-  const handleClickWithdraw = () => {
-    setOpenWithdrawDialog(true);
-  };
-
-  const handleCloseWithdrawDialog = async () => {
-    setOpenWithdrawDialog(false);
-  };
-
-  const handleConfirmStake = async (amount) => {
-    await onStake(amount);
-  };
-
-  const handleConfirmWithdraw = async (amount) => {
-    await onUnstake(amount);
+  const dataButton = {
+    id: 0,
+    stakingToken,
+    orchestratorContract,
+    symbol,
+    depositFee: depositFeeBP,
+    maxAmountStake: stakingTokenBalance,
+    maxAmountWithdraw: stakedBalance,
   };
 
   return (
@@ -215,88 +182,23 @@ function FaangItem({ pool, account }) {
               </Typography>
             </Link>
           </Box>
+          {!isAlreadyApproved ? (
+            <ApproveAction data={dataButton} disabled={canClaimReward} />
+          ) : null}
 
-          {shouldComponentDisplay(
-            !isAlreadyApproved,
-            <Box>
-              <Button
-                // isLoading={requestedApproval} //TODO support loading
-                className={`${classes.button} ${
-                  canClaimReward ? classes.disabled : ''
-                }`}
-                onClick={onApprove}
-                disabled={canClaimReward}
-              >
-                Approve
-              </Button>
-            </Box>,
-          )}
+          {!canClaimReward ? (
+            <StakeAction data={dataButton} disabled={canClaimReward} />
+          ) : null}
 
-          {shouldComponentDisplay(
-            !canClaimReward,
-            <Box>
-              <Button
-                // isLoading={requestedApproval} //TODO support loading
-                className={`${classes.button} ${
-                  canClaimReward ? classes.disabled : ''
-                }`}
-                onClick={handleClickStake}
-                disabled={canClaimReward}
-              >
-                Stake
-              </Button>
-            </Box>,
-          )}
+          {canWithdraw ? <WithdrawAction data={dataButton} /> : null}
 
-          {shouldComponentDisplay(
-            canWithdraw,
-            <Box>
-              <Button
-                // isLoading={requestedApproval} //TODO support loading
-                className={`${classes.button} ${
-                  canClaimReward ? classes.disabled : ''
-                }`}
-                onClick={handleClickWithdraw}
-              >
-                Withdraw
-              </Button>
-            </Box>,
-          )}
-          {shouldComponentDisplay(
-            canClaimReward &&
-              Number(stakedBalance) > 0 &&
-              Number(pendingReward) > 0,
-            <Box>
-              <Button
-                // isLoading={requestedApproval} //TODO support loading
-                className={`${classes.button} ${
-                  canClaimReward ? classes.disabled : ''
-                }`}
-                onClick={onReward}
-              >
-                Claim Rewards
-              </Button>
-            </Box>,
-          )}
+          {canClaimReward &&
+          Number(stakedBalance) > 0 &&
+          Number(pendingReward) > 0 ? (
+            <ClaimRewardsAction data={dataButton} />
+          ) : null}
         </Box>
       </Box>
-      <StakeDialog
-        open={openStakeDialog}
-        title="Stake"
-        onClose={handleCloseStakeDialog}
-        onConfirm={handleConfirmStake}
-        unit={symbol}
-        depositFee={depositFeeBP}
-        maxAmount={stakingTokenBalance}
-      />
-      <WithdrawDialog
-        open={openWithdrawDialog}
-        title="Withdraw"
-        onClose={handleCloseWithdrawDialog}
-        onConfirm={handleConfirmWithdraw}
-        unit={symbol}
-        maxAmount={stakedBalance}
-      />
     </>
   );
 }
