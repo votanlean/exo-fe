@@ -23,9 +23,8 @@ const deploy = async (deployedTEXOAddress = '') => {
     const feeAddress = process.env.FEE_ADDRESS; //accounts[2]
     const tEXOAddress = deployedTEXOAddress || process.env.TEXO_ADDRESS;
 
-    const startBlock = process.env.START_BLOCK;
-    const blockToStartReducingEmissionRate = process.env.BLOCK_TO_START_REDUCING_EMISSION_RATE;
-    const blockToUnlockClaimingRewards = process.env.BLOCK_TO_UNLOCK_CLAIMING_REWARDS;
+    const blockToStartReducingEmissionRate =
+      process.env.BLOCK_TO_START_REDUCING_EMISSION_RATE;
 
     const result = await new web3.eth.Contract(abi)
       .deploy({
@@ -34,14 +33,12 @@ const deploy = async (deployedTEXOAddress = '') => {
           tEXOAddress,
           devAddress,
           feeAddress,
-          startBlock,
           blockToStartReducingEmissionRate,
-          blockToUnlockClaimingRewards,
         ],
       })
       .send({ gas: '9000000', from: ownerAddress });
 
-    const address = result.options.address
+    const address = result.options.address;
 
     return address;
   } catch (error) {
