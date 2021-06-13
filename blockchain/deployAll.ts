@@ -20,8 +20,13 @@ async function deployAll() {
     const faangAddress = await deployFAANG();
     console.log('Contract FAANG deployed to', faangAddress);
 
-    const faangOrchestratorAddress = await deployFAANGOrchestrator(faangAddress);
-    console.log('Contract FAANG Orchestrator deployed to', faangOrchestratorAddress);
+    const faangOrchestratorAddress = await deployFAANGOrchestrator(
+      faangAddress,
+    );
+    console.log(
+      'Contract FAANG Orchestrator deployed to',
+      faangOrchestratorAddress,
+    );
 
     await deployFAANGPools(faangOrchestratorAddress, faangAddress);
     process.exit(0);

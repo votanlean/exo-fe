@@ -17,6 +17,7 @@ const envOrchestratorAddress = process.env.ORCHESTRATOR_ADDRESS;
 const chainId = process.env.CHAIN_ID;
 const blockToUnlockClaimingRewards = process.env.BLOCK_TO_UNLOCK_CLAIMING_REWARDS;
 const ownerAddress = process.env.OWNER_ADDRESS;
+const startBlock = process.env.START_BLOCK;
 
 export default async (deployedOrchestratorAddress = '') => {
   try {
@@ -27,19 +28,19 @@ export default async (deployedOrchestratorAddress = '') => {
       console.log('Begin deploy seeding pool:', seedingPool.symbol);
 
       await orchestratorContract.methods
-        .add(
-          seedingPool.displayAllocPoint,
-          seedingPool.stakingToken.address[chainId],
-          seedingPool.depositFeeBP,
-          false,
-          '0',
-          '0',
-          blockToUnlockClaimingRewards,
-        )
-        .send({
-          from: ownerAddress,
-          gas: '3000000',
-        });
+          .add(
+              seedingPool.displayAllocPoint,
+              seedingPool.stakingToken.address[chainId],
+              seedingPool.depositFeeBP,
+              false,
+              startBlock,
+              blockToUnlockClaimingRewards,
+              startBlock + 5 * 28800, // finish after 5 days
+          )
+          .send({
+            from: ownerAddress,
+            gas: '3000000',
+          });
 
       console.log('Successfully added seeding pool:', seedingPool.symbol);
       console.log('========================================');
