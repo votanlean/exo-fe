@@ -1,14 +1,6 @@
-import React from 'react';
-import {
-  createMuiTheme,
-  createStyles,
-  withStyles,
-  makeStyles,
-  Theme,
-  ThemeProvider,
-} from '@material-ui/core/styles';
+import { withStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { green, purple } from '@material-ui/core/colors';
+import { purple } from '@material-ui/core/colors';
 
 const CustomButton = withStyles((theme: Theme) => ({
   root: {
@@ -25,6 +17,11 @@ const CustomButton = withStyles((theme: Theme) => ({
     '&:hover': {
       backgroundColor: '#0058aa',
     },
+  },
+  disabled: {
+    color: 'white !important',
+    opacity: 0.5,
+    cursor: 'not-allowed !important',
   },
 }))(Button);
 

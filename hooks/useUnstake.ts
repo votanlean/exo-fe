@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useAppDispatch } from 'state';
 import { unstake } from 'utils/callHelpers';
@@ -14,34 +14,52 @@ import { Contract } from 'web3-eth-contract';
 export const useUnstake = (orchestrator: Contract, pid: number) => {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
+  const [isLoading, setLoading] = useState(false);
 
   const handleUnstake = useCallback(
     async (amount: string) => {
-      const txHash = await unstake(orchestrator, pid, amount, account);
-      dispatch(fetchPoolsUserDataAsync(account));
-      dispatch(fetchFarmUserDataAsync(account));
-      dispatch(fetchFAANGPoolsUserDataAsync(account));
-      console.log('txHash useUnstake', txHash);
+      try {
+        setLoading(true);
+        const txHash = await unstake(orchestrator, pid, amount, account);
+        setLoading(false);
+        dispatch(fetchPoolsUserDataAsync(account));
+        dispatch(fetchFarmUserDataAsync(account));
+        dispatch(fetchFAANGPoolsUserDataAsync(account));
+        console.log('txHash useUnstake', txHash);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
     },
+
     [account, dispatch, orchestrator, pid],
   );
 
-  return { onUnstake: handleUnstake };
+  return { onUnstake: handleUnstake, isLoading };
 };
 
 export const useUnstakeFAANG = (pid: number) => {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const fAANGorchestrator = useFAANGOrchestratorContract();
+  const [isLoading, setLoading] = useState(false);
 
   const handleUnstake = useCallback(
     async (amount: string) => {
-      const txHash = await unstake(fAANGorchestrator, pid, amount, account);
-      dispatch(fetchPoolsUserDataAsync(account));
-      console.log('txHash useUnstakeFAANG', txHash);
+      try {
+        setLoading(true);
+        const txHash = await unstake(fAANGorchestrator, pid, amount, account);
+        setLoading(false);
+        dispatch(fetchPoolsUserDataAsync(account));
+        console.log('txHash useUnstakeFAANG', txHash);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
     },
+
     [account, dispatch, fAANGorchestrator, pid],
   );
 
-  return { onUnstake: handleUnstake };
+  return { onUnstake: handleUnstake, isLoading };
 };

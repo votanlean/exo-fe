@@ -1,35 +1,29 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   Box,
   Collapse,
-  IconButton,
   TableCell,
   TableRow,
   Typography,
   useMediaQuery,
 } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp, Launch } from '@material-ui/icons';
-import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
-import { EventEmitter } from 'events';
 
-import { ROIDialog, StakeDialog, WithdrawDialog } from 'components/Dialogs';
 import { getPoolApr } from 'hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
-import { getAddress, getOrchestratorAddress } from 'utils/addressHelpers';
+import { getAddress } from 'utils/addressHelpers';
 import { normalizeTokenDecimal } from 'utils/bigNumber';
-import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
-import Cookies from 'universal-cookie';
-import Button from '../Button';
 
 import { useStyles } from './styles';
-import { isAddress } from '../../utils/web3';
-import rot13 from '../../utils/encode';
-import { useERC20, useOrchestratorContract } from '../../hooks/useContract';
-import { useApprove } from '../../hooks/useApprove';
-import { useStake } from '../../hooks/useStake';
-import { useUnstake } from '../../hooks/useUnstake';
-import { useHarvest } from '../../hooks/useHarvest';
+import { useOrchestratorContract } from '../../hooks/useContract';
+import {
+  ApproveAction,
+  ClaimRewardsAction,
+  RoiAction,
+  StakeAction,
+  WithdrawAction,
+} from 'components/PoolActions';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -44,8 +38,6 @@ function formatDepositFee(depositFee, decimals = 4) {
 function PoolRow(props: any) {
   const {
     pool = {},
-    account,
-    onPoolStateChange,
     stakingTokenPrice,
     tEXOPrice,
     canClaimReward,
@@ -65,9 +57,6 @@ function PoolRow(props: any) {
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [openStakeDialog, setOpenStakeDialog] = useState(false);
-  const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
-  const [openRoiDialog, setOpenRoiDialog] = useState(false);
 
   const isTablet = useMediaQuery('(max-width: 768px)');
   const isMobile = useMediaQuery('(max-width: 600px)');
@@ -77,21 +66,13 @@ function PoolRow(props: any) {
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const tokenAddress = getAddress(stakingToken.address);
-  const tokenContract = useERC20(tokenAddress);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   const poolTexoPerBlock = new BigNumber(tEXOPerBlock)
     .times(new BigNumber(allocPoint))
     .div(new BigNumber(totalAllocPoint));
 
   const tEXOOrchestratorContract = useOrchestratorContract();
-  const { onApprove } = useApprove(
-    tokenContract,
-    tEXOOrchestratorContract,
-    poolId,
-  );
-  const { onStake } = useStake(tEXOOrchestratorContract, poolId);
-  const { onUnstake } = useUnstake(tEXOOrchestratorContract, poolId);
-  const { onReward } = useHarvest(tEXOOrchestratorContract, poolId);
+
   const apr = getPoolApr(
     stakingTokenPrice,
     tEXOPrice,
@@ -99,51 +80,15 @@ function PoolRow(props: any) {
     normalizeTokenDecimal(poolTexoPerBlock).toNumber(),
   );
 
-  const handleClickStake = async () => {
-    setOpenStakeDialog(true);
-  };
-
-  const handleCloseStakeDialog = async () => {
-    if (account) {
-      setOpenStakeDialog(false);
-    }
-  };
-
-  const handleClickWithdraw = () => {
-    setOpenWithdrawDialog(true);
-  };
-
-  const handleCloseWithdrawDialog = async () => {
-    setOpenWithdrawDialog(false);
-  };
-
-  const onToggleRoiDialog = () => {
-    setOpenRoiDialog(!openRoiDialog);
-  };
-
-  const handleClickApprove = async () => {
-    await onApprove();
-  };
-
-  const handleConfirmStake = async (amount) => {
-    const cookies = new Cookies();
-    let ref;
-    if (cookies.get('ref')) {
-      if (isAddress(rot13(cookies.get('ref')))) {
-        ref = rot13(cookies.get('ref'));
-      }
-    } else {
-      ref = '0x0000000000000000000000000000000000000000';
-    }
-    await onStake(amount, ref);
-  };
-
-  const handleConfirmWithdraw = async (amount) => {
-    await onUnstake(amount);
-  };
-
-  const handleClickClaimRewards = async () => {
-    await onReward();
+  const dataButton = {
+    id: poolId,
+    stakingToken,
+    orchestratorContract: tEXOOrchestratorContract,
+    symbol,
+    depositFee: depositFeeBP,
+    maxAmountStake: stakingTokenBalance,
+    maxAmountWithdraw: stakedBalance,
+    refStake: true,
   };
 
   return (
@@ -174,18 +119,7 @@ function PoolRow(props: any) {
               {apr ? `${apr}%` : 'N/A'}
             </Typography>
             {!isTablet ? (
-              <IconButton
-                aria-label="expand row"
-                size="small"
-                onClick={onToggleRoiDialog}
-                className={classes.aprIconButton}
-              >
-                <img
-                  src="/static/images/calculate.svg"
-                  alt={title}
-                  className={classes.aprIcon}
-                />
-              </IconButton>
+              <RoiAction apr={apr} tokenPrice={stakingTokenPrice} />
             ) : null}
           </Box>
         </TableCell>
@@ -254,18 +188,7 @@ function PoolRow(props: any) {
                     <Box className={classes.rowDetail}>
                       <Typography>APR</Typography>
                       <Box display="flex" alignItems="center">
-                        <IconButton
-                          aria-label="expand row"
-                          size="small"
-                          onClick={onToggleRoiDialog}
-                          className={classes.aprIconButton}
-                        >
-                          <img
-                            src="/static/images/calculate.svg"
-                            alt={title}
-                            className={classes.aprIcon}
-                          />
-                        </IconButton>
+                        <RoiAction apr={apr} tokenPrice={stakingTokenPrice} />
 
                         <Typography
                           className={'text-right'}
@@ -346,118 +269,47 @@ function PoolRow(props: any) {
                 justifyContent="flex-end"
                 order={isTablet ? 1 : 'unset'}
               >
-                {shouldComponentDisplay(
-                  canClaimReward &&
-                    Number(stakedBalance) > 0 &&
-                    Number(pendingReward) > 0,
-                  <Box
-                    className={classes.boxButton}
-                    style={{ width: !isTablet ? '50%' : 'auto' }}
-                  >
-                    <Typography variant="caption">Claim Rewards</Typography>
-                    <Button
-                      className={classes.button}
-                      onClick={handleClickClaimRewards}
+                {canClaimReward &&
+                Number(stakedBalance) > 0 &&
+                Number(pendingReward) > 0 ? (
+                  <Box className={classes.buttonBoxItem}>
+                    <ClaimRewardsAction
+                      data={dataButton}
                       disabled={!canClaimReward}
-                    >
-                      Claim Rewards
-                    </Button>
-                  </Box>,
-                )}
-                {shouldComponentDisplay(
-                  canWithdraw,
+                    />
+                  </Box>
+                ) : null}
+
+                {canWithdraw ? (
                   <>
-                    <Box
-                      className={classes.boxButton}
-                      style={{ width: !isTablet ? '50%' : 'auto' }}
-                    >
-                      <Typography variant="caption">Withdraw</Typography>
-                      <Button
-                        className={classes.button}
-                        onClick={handleClickWithdraw}
-                      >
-                        Withdraw
-                      </Button>
+                    <Box className={classes.buttonBoxItem}>
+                      <WithdrawAction data={dataButton} />
                     </Box>
-                    {shouldComponentDisplay(
-                      !canClaimReward,
-                      <Box
-                        className={classes.boxButton}
-                        style={{ width: !isTablet ? '50%' : 'auto' }}
-                      >
-                        <Typography variant="caption">Stake</Typography>
-                        <Button
-                          className={classes.button}
-                          onClick={handleClickStake}
-                        >
-                          Stake
-                        </Button>
-                      </Box>,
-                    )}
-                  </>,
-                  shouldComponentDisplay(
-                    isAlreadyApproved && !canClaimReward,
-                    <Box
-                      className={classes.boxButton}
-                      style={{ width: !isTablet ? '50%' : 'auto' }}
-                    >
-                      <Typography variant="caption">Stake</Typography>
-                      <Button
-                        className={classes.button}
-                        onClick={handleClickStake}
-                      >
-                        Stake
-                      </Button>
-                    </Box>,
-                  ),
-                )}
-                {shouldComponentDisplay(
-                  !isAlreadyApproved,
-                  <Box
-                    className={classes.boxButton}
-                    style={{ width: !isTablet ? '50%' : 'auto' }}
-                  >
-                    <Typography variant="caption">Approve</Typography>
-                    <Button
-                      // isLoading={requestedApproval} //TODO support loading
-                      className={`${classes.button} ${
-                        canClaimReward ? classes.disabled : ''
-                      }`}
-                      onClick={handleClickApprove}
+                    {!canClaimReward ? (
+                      <Box className={classes.buttonBoxItem}>
+                        <StakeAction data={dataButton} />
+                      </Box>
+                    ) : null}
+                  </>
+                ) : isAlreadyApproved && !canClaimReward ? (
+                  <Box className={classes.buttonBoxItem}>
+                    <StakeAction data={dataButton} />
+                  </Box>
+                ) : null}
+
+                {!isAlreadyApproved ? (
+                  <Box className={classes.buttonBoxItem}>
+                    <ApproveAction
+                      data={dataButton}
                       disabled={canClaimReward}
-                    >
-                      Approve
-                    </Button>
-                  </Box>,
-                )}
+                    />
+                  </Box>
+                ) : null}
               </Box>
             </Box>
           </Collapse>
         </TableCell>
       </TableRow>
-
-      <StakeDialog
-        open={openStakeDialog}
-        title="Stake"
-        onClose={handleCloseStakeDialog}
-        onConfirm={handleConfirmStake}
-        unit={symbol}
-        depositFee={depositFeeBP}
-        maxAmount={stakingTokenBalance}
-      />
-      <WithdrawDialog
-        open={openWithdrawDialog}
-        title="Withdraw"
-        onClose={handleCloseWithdrawDialog}
-        onConfirm={handleConfirmWithdraw}
-        unit={symbol}
-        maxAmount={stakedBalance}
-      />
-      <ROIDialog
-        open={openRoiDialog}
-        onClose={onToggleRoiDialog}
-        poolData={{ apr, tokenPrice: stakingTokenPrice }}
-      />
     </Fragment>
   );
 }

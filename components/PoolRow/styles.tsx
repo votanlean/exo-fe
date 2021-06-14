@@ -65,11 +65,11 @@ const useStyles = makeStyles(() => {
       width: '100%',
     },
     disabled: {
-    backgroundColor: 'darkgray !important',
-    cursor: 'auto !important',
+      backgroundColor: 'darkgray !important',
+      cursor: 'auto !important',
     },
 
-  boxButton: {
+    boxButton: {
       borderRadius: '16px',
       padding: '8px',
       border: '2px solid rgb(238, 234, 244)',
@@ -87,6 +87,14 @@ const useStyles = makeStyles(() => {
       justifyContent: 'space-between',
       alignItems: 'center',
       marginY: '4px',
+    },
+    buttonBoxItem: {
+      width: '50%',
+      marginLeft: '20px',
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        marginLeft: '0',
+      },
     },
   };
 });

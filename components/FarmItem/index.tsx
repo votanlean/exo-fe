@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Grid } from '@material-ui/core';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import BigNumber from 'bignumber.js';
@@ -9,16 +8,15 @@ import { getFarmApr } from '../../hookApi/apr';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { getAddress } from '../../utils/addressHelpers';
 import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
-import { ROIDialog, StakeDialog, WithdrawDialog } from 'components/Dialogs';
 import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
-import { isAddress } from '../../utils/web3';
-import rot13 from '../../utils/encode';
-import Cookies from 'universal-cookie';
-import { useApprove } from '../../hooks/useApprove';
-import { useStake } from '../../hooks/useStake';
-import { useUnstake } from '../../hooks/useUnstake';
-import { useHarvest } from '../../hooks/useHarvest';
-import { useERC20, useOrchestratorContract } from '../../hooks/useContract';
+import { useOrchestratorContract } from '../../hooks/useContract';
+import {
+  ApproveAction,
+  ClaimRewardsAction,
+  RoiAction,
+  StakeAction,
+  WithdrawAction,
+} from 'components/PoolActions';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -33,7 +31,6 @@ function formatDepositFee(depositFee, decimals = 4) {
 function FarmItem(props: any) {
   const {
     farmData = {},
-    selectedAccount,
     onPoolStateChange,
     stakingTokenPrice,
     tEXOPrice,
@@ -61,16 +58,21 @@ function FarmItem(props: any) {
   } = userData;
 
   const tokenAddress = getAddress(address);
-  const tokenContract = useERC20(tokenAddress);
   const tEXOOrchestratorContract = useOrchestratorContract();
-  const { onApprove } = useApprove(
-    tokenContract,
-    tEXOOrchestratorContract,
-    farmId,
-  );
-  const { onStake } = useStake(tEXOOrchestratorContract, farmId);
-  const { onUnstake } = useUnstake(tEXOOrchestratorContract, farmId);
-  const { onReward } = useHarvest(tEXOOrchestratorContract, farmId);
+
+  const dataButton = {
+    id: farmId,
+    stakingToken: {
+      address,
+    },
+    orchestratorContract: tEXOOrchestratorContract,
+    symbol,
+    depositFee: depositFeeBP,
+    maxAmountStake: tokenBalance,
+    maxAmountWithdraw: stakedBalance,
+    onPoolStateChange,
+    refStake: true,
+  };
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
@@ -79,10 +81,6 @@ function FarmItem(props: any) {
   const farmWeight = new BigNumber(allocPoint).div(
     new BigNumber(totalAllocPoint),
   );
-
-  const [openStakeDialog, setOpenStakeDialog] = useState(false);
-  const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
-  const [openRoiDialog, setOpenRoiDialog] = useState(false);
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
 
   const apr = getFarmApr(
@@ -92,58 +90,8 @@ function FarmItem(props: any) {
     normalizeTokenDecimal(tEXOPerBlock),
   );
 
-  const handleClickApprove = async () => {
-    await onApprove();
-  };
-
-  const handleClickStake = async () => {
-    setOpenStakeDialog(true);
-  };
-
-  const handleCloseStakeDialog = async () => {
-    if (selectedAccount) {
-      setOpenStakeDialog(false);
-    }
-  };
-
-  const handleConfirmStake = async (amount) => {
-    const cookies = new Cookies();
-    let ref;
-    if (cookies.get('ref')) {
-      if (isAddress(rot13(cookies.get('ref')))) {
-        ref = rot13(cookies.get('ref'));
-      }
-    } else {
-      ref = '0x0000000000000000000000000000000000000000';
-    }
-    await onStake(amount, ref);
-    // onPoolStateChange();
-  };
-
-  const handleClickWithdraw = () => {
-    setOpenWithdrawDialog(true);
-  };
-
-  const handleCloseWithdrawDialog = async () => {
-    setOpenWithdrawDialog(false);
-  };
-
-  const handleConfirmWithdraw = async (amount) => {
-    await onUnstake(amount);
-    onPoolStateChange();
-  };
-
-  const handleClickClaimRewards = async () => {
-    await onReward();
-    // onPoolStateChange();
-  };
-
   const toggleDisplayDetails = () => {
     setIsDisplayDetails(!isDisplayDetails);
-  };
-
-  const onToggleRoiDialog = () => {
-    setOpenRoiDialog(!openRoiDialog);
   };
 
   const poolDetailsDiv = isDisplayDetails ? (
@@ -209,12 +157,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <div className={`d-flex items-center`}>
-                    <div
-                      className={styles.calAPRButton}
-                      onClick={onToggleRoiDialog}
-                    >
-                      <img src="/static/images/calculate.svg" />
-                    </div>
+                    <RoiAction apr={apr} tokenPrice={stakingTokenPrice} />
                     <p>{apr ? `${apr}%` : 'N/A'}</p>
                   </div>
                 </RowPoolItem>
@@ -262,51 +205,20 @@ function FarmItem(props: any) {
               <div
                 className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
               >
-                {shouldComponentDisplay(
-                  canClaimReward && Number(stakedBalance) > 0,
-                  <button
-                    type="button"
-                    className={`${styles.button}`}
+                {canClaimReward && Number(stakedBalance) > 0 ? (
+                  <ClaimRewardsAction
+                    data={dataButton}
                     disabled={!canClaimReward}
-                    onClick={handleClickClaimRewards}
-                  >
-                    Claim Rewards
-                  </button>,
-                )}
-                {shouldComponentDisplay(
-                  canWithdraw,
-                  <Grid container>
-                    <Grid item xs={12}>
-                      <button
-                        type="button"
-                        className={`${styles.button}`}
-                        onClick={handleClickWithdraw}
-                      >
-                        Withdraw
-                      </button>
-                    </Grid>
-                  </Grid>,
-                )}
-                {shouldComponentDisplay(
-                  isAlreadyApproved,
-                  <button
-                    type="button"
-                    className={`${styles.button}`}
-                    onClick={handleClickStake}
-                  >
-                    Stake
-                  </button>,
-                )}
-                {shouldComponentDisplay(
-                  !isAlreadyApproved,
-                  <button
-                    type="button"
-                    className={`${styles.button}`}
-                    onClick={handleClickApprove}
-                  >
-                    Approve
-                  </button>,
-                )}
+                  />
+                ) : null}
+
+                {canWithdraw ? <WithdrawAction data={dataButton} /> : null}
+
+                {isAlreadyApproved ? <StakeAction data={dataButton} /> : null}
+
+                {!isAlreadyApproved ? (
+                  <ApproveAction data={dataButton} />
+                ) : null}
               </div>
 
               <div
@@ -321,28 +233,6 @@ function FarmItem(props: any) {
           </div>
         </div>
       </div>
-      <StakeDialog
-        open={openStakeDialog}
-        title="Stake"
-        onClose={handleCloseStakeDialog}
-        onConfirm={handleConfirmStake}
-        unit={symbol}
-        depositFee={depositFeeBP}
-        maxAmount={tokenBalance}
-      />
-      <WithdrawDialog
-        open={openWithdrawDialog}
-        title="Withdraw"
-        onClose={handleCloseWithdrawDialog}
-        onConfirm={handleConfirmWithdraw}
-        unit={symbol}
-        maxAmount={stakedBalance}
-      />
-      <ROIDialog
-        open={openRoiDialog}
-        onClose={onToggleRoiDialog}
-        poolData={{ apr, tokenPrice: stakingTokenPrice }}
-      />
     </>
   );
 }
