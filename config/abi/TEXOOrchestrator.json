@@ -18,22 +18,62 @@
       },
       {
         "internalType": "uint256",
-        "name": "_startBlockCountFromNow",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_blockCountToStartReducingEmissionRateFromNow",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_blockCountToUnlockClaimingRewardsFromNow",
+        "name": "_blockToStartReducingEmissionRate",
         "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "previousValue",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "BlockToStartEmissionRateUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pid",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClaimReward",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -357,7 +397,17 @@
       },
       {
         "internalType": "uint256",
-        "name": "_blockCountToReceiveRewardFromNow",
+        "name": "_blockToReceiveReward",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_startGenerateRewardBlock",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_inActiveBlock",
         "type": "uint256"
       }
     ],
@@ -387,7 +437,7 @@
         "type": "uint256"
       }
     ],
-    "name": "canWithdrawReward",
+    "name": "canClaimReward",
     "outputs": [
       {
         "internalType": "bool",
@@ -414,24 +464,6 @@
         "internalType": "address",
         "name": "_referrer",
         "type": "address"
-      }
-    ],
-    "name": "deposit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_pid",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
       }
     ],
     "name": "deposit",
@@ -535,32 +567,6 @@
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "globalBlockToUnlockClaimingRewards",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "isAllowReduceEmissionRate",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -688,6 +694,11 @@
       },
       {
         "internalType": "uint256",
+        "name": "inActiveBlock",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "lastRewardBlock",
         "type": "uint256"
       },
@@ -807,7 +818,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "_blockCountToReceiveRewardFromNow",
+        "name": "_blockToReceiveReward",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_inActiveBlock",
         "type": "uint256"
       }
     ],
@@ -820,7 +836,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_blockCountToStartReducingEmissionRateFromNow",
+        "name": "newBlockToStartReducingEmissionRate",
         "type": "uint256"
       }
     ],
@@ -864,32 +880,6 @@
       }
     ],
     "name": "setFeeAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "isAllow",
-        "type": "bool"
-      }
-    ],
-    "name": "setFlagAllowReduceEmissionRate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_blockCountToUnlockClaimingRewardsFromNow",
-        "type": "uint256"
-      }
-    ],
-    "name": "setGlobalBlockToUnlockClaimingRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -998,9 +988,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "bool",
-        "name": "isAlreadyStaked",
-        "type": "bool"
+        "internalType": "uint256",
+        "name": "rewardLockedUp",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

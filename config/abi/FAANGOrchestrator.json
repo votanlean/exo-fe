@@ -426,6 +426,19 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_newStartBlock",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateStartBlock",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "",
         "type": "uint256"
       },
