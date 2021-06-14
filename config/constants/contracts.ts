@@ -1,10 +1,10 @@
 export default {
   orchestrator: {
-    56: '0x11eBAFd742e21294149B3c0341be7eE514Dd6198',
+    56: '0xD8980CCdD4096e60bb3198F91d6f79CeEF29369c',
     97: '0x966E350513603017f7291EF6cc506b6EfA4BEcCa',
   },
   timeLock: {
-    56: '0x69E191beB3607072A45ac83eF6B7bc76F2420EF5',
+    56: '0xC52329f4164E115ca40B3D5Ab8E1FF3F85E9A253',
     97: '0x99c2EcD51d52c036B00130d882Bc65f20Fdecf9f',
   },
   multiCall: {
@@ -16,7 +16,7 @@ export default {
     97: '0x000000000000000000000000000000000000dEaD',
   },
   fAANGOrchestrator: {
-    56: '',
+    56: '0x5bffe113b321bAC15fD023510a5D6B0B8f85F91f',
     97: '0xFCC4f2b59a8e76f86e4F9fDaee8D3EAF8998edBd',
   },
 };

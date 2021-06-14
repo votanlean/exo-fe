@@ -20,9 +20,7 @@ contract('Timelock', ([owner, admin, dev, fee]) => {
       this.tEXOInstance.address,
       dev,
       fee,
-      latestBlock.toNumber() + 8, // Start calculate rewards after 8 hours,
       latestBlock.toNumber() + 24 * 5, // Start reducing emission rate after 5 days,
-      latestBlock.toNumber() + 24 * 5, // Allow claiming rewards after 5 days,
       {
         from: owner,
       },
