@@ -186,11 +186,13 @@ function FaangItem({ pool }) {
             <ApproveAction data={dataButton} disabled={canClaimReward} />
           ) : null}
 
-          {!canClaimReward ? (
+          {!canClaimReward && isAlreadyApproved ? (
             <StakeAction data={dataButton} disabled={canClaimReward} />
           ) : null}
 
-          {canWithdraw ? <WithdrawAction data={dataButton} /> : null}
+          {canWithdraw && isAlreadyApproved ? (
+            <WithdrawAction data={dataButton} />
+          ) : null}
 
           {canClaimReward &&
           Number(stakedBalance) > 0 &&
