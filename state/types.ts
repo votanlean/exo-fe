@@ -1,6 +1,30 @@
 import BigNumber from 'bignumber.js'
 import { PoolConfig } from 'config/constants/types'
 
+export interface TEXOOrchestratorState {
+    data: {
+        tEXOPerBlock,
+        totalAllocPoint,
+        seedingStartBlock,
+        canClaimRewardsBlock,
+        seedingFinishBlock,
+    },
+}
+
+export interface AppPrices {
+    data: {
+        data: [],
+        updatedAt: string
+    },
+}
+
+export interface TexoToken {
+    data: {
+        totalSupply: string,
+        tEXOBurned: string,
+    },
+}
+
 export interface PoolsState {
     data: Pool[]
 }
@@ -49,6 +73,9 @@ export interface UserInfoState {
 
 // Global state
 export interface State {
+    appPrices: AppPrices,
+    texoToken: TexoToken,
+    orchestrator: TEXOOrchestratorState
     pools: PoolsState
     block: BlockState
     userInfo: UserInfoState

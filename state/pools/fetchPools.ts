@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import seedingPools from 'config/constants/seedingPools';
-import tEXOABI from 'blockchain/build/TEXOToken.json';
-import orchestratorABI from 'blockchain/build/TEXOOrchestrator.json';
+import tEXOABI from 'config/abi/TEXOToken.json';
+import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 import multicall from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import contracts from 'config/constants/contracts';
@@ -12,16 +12,16 @@ export const fetchPoolsTotalStaking = async () => {
       address: getAddress(seedingPool.stakingToken.address),
       name: 'balanceOf',
       params: [getAddress(contracts.orchestrator)],
-    }
+    };
   });
 
-  const seedingPoolsTotalStaked = await multicall(tEXOABI.abi, seedingPoolCalls);
+  const seedingPoolsTotalStaked = await multicall(tEXOABI, seedingPoolCalls);
 
   return seedingPools.map((p, index) => ({
     ...p,
     totalStaked: new BigNumber(seedingPoolsTotalStaked[index]).toJSON(),
   }));
-}
+};
 
 export const fetchPoolsVolatileInfo = async () => {
   const seedingPoolCalls = seedingPools.map((seedingPool) => ({
@@ -29,11 +29,13 @@ export const fetchPoolsVolatileInfo = async () => {
     name: 'poolInfo',
     params: [seedingPool.id],
   }));
-
-  const seedingPoolsVolatileInfo = await multicall(orchestratorABI.abi, seedingPoolCalls);
+  const seedingPoolsVolatileInfo = await multicall(
+    orchestratorABI,
+    seedingPoolCalls,
+  );
 
   return seedingPools.map((p, index) => ({
     ...p,
     allocPoint: seedingPoolsVolatileInfo[index].allocPoint.toNumber(),
   }));
-}
+};

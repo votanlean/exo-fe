@@ -14,9 +14,6 @@
 
 # production
 /build
-!blockchain/build
-blockchain/artifacts
-blockchain/cache
 
 # misc
 .DS_Store

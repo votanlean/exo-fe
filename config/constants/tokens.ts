@@ -6,7 +6,7 @@ const tokens = {
     symbol: 'TEXO',
     address: {
       56: '0xF1afb5674Bf946458BD1163163F62dE683B07D65',
-      97: '0xABe104d0a197867E5fDB77632Ad22FA2338f86f7',
+      97: '0xc93BA03A93C61ef22ebbd95Db11BB35F96a0736A',
     },
     decimals: 18,
   },
@@ -14,7 +14,7 @@ const tokens = {
     symbol: 'FAANG',
     address: {
       56: '0x2b0EA770431df39196FF33fB425BE084636d946e',
-      97: '0x0FB847858Eb07b48D0768BFe7ef121BEe6338B37',
+      97: '0x09EB4dDc76497D28f43ED11F26Aef0ff9D9BcCeE',
     },
     decimals: 18,
   },

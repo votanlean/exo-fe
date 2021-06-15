@@ -1,22 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { fetchPrices } from "hookApi/prices";
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchPrices } from 'hookApi/prices';
 
 export const appPricesSlice = createSlice({
-  name: 'texoToken',
+  name: 'appPrices',
   initialState: {
-    data: {},
+    data: [],
+    updatedAt: null,
   },
   reducers: {
     setAppPrices: (state, action) => {
       state.data = action.payload;
     },
-  }
+  },
 });
 
 export const fetchAppPrices = async (dispatch) => {
   const appPrices = await fetchPrices();
 
   dispatch(setAppPrices(appPrices));
-}
+};
 
 export const { setAppPrices } = appPricesSlice.actions;

@@ -1,11 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
-import BigNumber from "bignumber.js";
-import { BIG_ZERO } from "config";
-import contracts from "config/constants/contracts";
-import tokens from "config/constants/tokens";
+import { createSlice } from '@reduxjs/toolkit';
+import { BIG_ZERO } from 'config';
+import contracts from 'config/constants/contracts';
+import tokens from 'config/constants/tokens';
 import erc20ABI from 'config/abi/erc20.json';
 import multicall from 'utils/multicall';
-import { getAddress } from "utils/addressHelpers";
+import { getAddress } from 'utils/addressHelpers';
 
 export const texoTokenSlice = createSlice({
   name: 'texoToken',
@@ -19,7 +18,7 @@ export const texoTokenSlice = createSlice({
     setTexoTokenData: (state, action) => {
       state.data = action.payload;
     },
-  }
+  },
 });
 
 export const fetchTexoTokenDataThunk = async (dispatch) => {
@@ -36,12 +35,14 @@ export const fetchTexoTokenDataThunk = async (dispatch) => {
   ];
 
   const texoTokenMultiData = await multicall(erc20ABI, calls);
-  const [ totalSupply, tEXOBurned ] = texoTokenMultiData;
+  const [totalSupply, tEXOBurned] = texoTokenMultiData;
 
-  dispatch(setTexoTokenData({
-    totalSupply: totalSupply[0].toString(),
-    tEXOBurned: tEXOBurned[0].toString(),
-  }));
-}
+  dispatch(
+    setTexoTokenData({
+      totalSupply: totalSupply[0].toString(),
+      tEXOBurned: tEXOBurned[0].toString(),
+    }),
+  );
+};
 
 export const { setTexoTokenData } = texoTokenSlice.actions;

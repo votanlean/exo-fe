@@ -96,7 +96,12 @@ function Pool() {
   const { currentBlock } = useBlockData();
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
     useTexoTokenData();
-  const { tEXOPerBlock, canClaimRewardsBlock } = useOrchestratorData();
+  const {
+    tEXOPerBlock,
+    canClaimRewardsBlock,
+    seedingStartBlock,
+    seedingFinishBlock,
+  } = useOrchestratorData();
   const { tEXOReward } = useUserInfoData();
 
   const refreshAppGlobalData = () => {
@@ -143,7 +148,6 @@ function Pool() {
     if (!canClaimRewardsBlock || !currentBlock || countDownInterval.current) {
       return;
     }
-
     const claimRewardDate = getClaimRewardsDate(
       currentBlock,
       canClaimRewardsBlock,
@@ -152,7 +156,6 @@ function Pool() {
 
     const interval = setInterval(() => {
       const hasPassedRewardLockDate = dayjs().isAfter(dayjs(claimRewardDate));
-
       if (hasPassedRewardLockDate) {
         countDownInterval.current = null;
         clearInterval(interval);
@@ -249,7 +252,7 @@ function Pool() {
           ))}
         </div>
 
-        {currentBlock && currentBlock >= canClaimRewardsBlock ? (
+        {currentBlock > seedingFinishBlock ? (
           <div className={styles.countdownContainer}>
             <Typography variant="h3" color="primary">
               Seed phase already completed
@@ -268,7 +271,7 @@ function Pool() {
               <br />
               (4% Deposit Fee applies for tEXO liquidity)
               <br />
-              Seed Pools reward startblock at (to be added in later)
+              Seed Pools reward startblock at {seedingStartBlock}
               <br />
               Users can harvest tEXO in
             </Typography>

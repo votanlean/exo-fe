@@ -1,5 +1,6 @@
-import { useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
+import { State } from '../types';
 
 export const useOrchestratorData = () => {
-  return useSelector((state: any) => state.orchestrator.data);
-}
+  return useSelector((state: State) => state.orchestrator.data);
+};
