@@ -77,10 +77,10 @@ function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
 }
 
 function Pool() {
-  if (process.env.POOL_PAGE_READY === 'false') {
-    return <ComingSoon />;
-  }
-
+  // @ts-ignore
+  const poolPageReady =
+    process.env.POOL_PAGE_READY == true ||
+    process.env.POOL_PAGE_READY == 'true';
   const classes: any = useStyles();
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
@@ -206,7 +206,7 @@ function Pool() {
             Farming reward will be generated in
           </Typography>
           <Typography variant="h3" color="primary">
-            {countDownString}
+            {poolPageReady ? countDownString : 'Comming Soon'}
           </Typography>
         </div>
 
@@ -271,12 +271,14 @@ function Pool() {
               <br />
               (4% Deposit Fee applies for tEXO liquidity)
               <br />
-              Seed Pools reward startblock at {seedingStartBlock}
+              {poolPageReady
+                ? `Seed Pools reward startblock at {seedingStartBlock}`
+                : ''}
               <br />
               Users can harvest tEXO in
             </Typography>
             <Typography variant="h3" color="primary">
-              {countDownString}
+              {poolPageReady ? countDownString : 'Comming Soon'}
             </Typography>
           </div>
         )}
