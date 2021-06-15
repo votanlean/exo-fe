@@ -40,7 +40,7 @@ function TAssetItem(props: any) {
               USD PRICE:
             </Typography>
             <Typography variant="body1" component="p" className={classes.price}>
-              ~
+            {symbol === 'tAMC' ? price : '~' }
             </Typography>
           </Box>
         </Box>
