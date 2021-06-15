@@ -5,7 +5,7 @@ const tokens = {
   texo: {
     symbol: 'TEXO',
     address: {
-      56: '0x08065c1e0fe5b6D82B778760571cE29392e24A46',
+      56: '0xF1afb5674Bf946458BD1163163F62dE683B07D65',
       97: '0xc93BA03A93C61ef22ebbd95Db11BB35F96a0736A',
     },
     decimals: 18,
@@ -13,7 +13,7 @@ const tokens = {
   faang: {
     symbol: 'FAANG',
     address: {
-      56: '',
+      56: '0x2b0EA770431df39196FF33fB425BE084636d946e',
       97: '0x09EB4dDc76497D28f43ED11F26Aef0ff9D9BcCeE',
     },
     decimals: 18,
