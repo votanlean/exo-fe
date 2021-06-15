@@ -77,8 +77,8 @@ function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
 }
 
 function Pool() {
-  // @ts-ignore
   const poolPageReady =
+    // @ts-ignore
     process.env.POOL_PAGE_READY == true ||
     process.env.POOL_PAGE_READY == 'true';
   const classes: any = useStyles();
