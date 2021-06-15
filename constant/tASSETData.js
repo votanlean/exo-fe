@@ -157,7 +157,7 @@ export const tAssetData = [
     id: 15,
     icon: '/static/images/equities/tAMC.png',
     symbol: 'tAMC',
-    price: '$0.026',
+    price: '$58.02',
     desc: 'Tracks the price of tAMC Anonymous Coin through price feeds supplied by an oracle.',
     fee: '0.30%',
     status: 'onboarding',
