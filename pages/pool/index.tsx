@@ -206,7 +206,7 @@ function Pool() {
             Farming reward will be generated in
           </Typography>
           <Typography variant="h3" color="primary">
-            {poolPageReady ? countDownString : 'Comming Soon'}
+            {poolPageReady ? countDownString : 'Coming Soon'}
           </Typography>
         </div>
 
@@ -278,7 +278,7 @@ function Pool() {
               Users can harvest tEXO in
             </Typography>
             <Typography variant="h3" color="primary">
-              {poolPageReady ? countDownString : 'Comming Soon'}
+              {poolPageReady ? countDownString : 'Coming Soon'}
             </Typography>
           </div>
         )}
