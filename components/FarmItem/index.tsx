@@ -35,6 +35,7 @@ function FarmItem(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     canClaimReward,
+    selectedAccount,
   } = props;
   const {
     icon,
@@ -72,6 +73,7 @@ function FarmItem(props: any) {
     maxAmountWithdraw: stakedBalance,
     onPoolStateChange,
     refStake: true,
+    account: selectedAccount,
   };
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
