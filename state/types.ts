@@ -1,6 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { PoolConfig } from 'config/constants/types'
 
+export interface Network {
+    id: number,
+    name: string,
+    rpcUrl: string,
+    symbol: string,
+    blockExplorerUrl: string,
+    icon: string,
+    iconDisable: string,
+    type: string,
+}
+
 export interface TEXOOrchestratorState {
     data: {
         tEXOPerBlock,
@@ -73,11 +84,12 @@ export interface UserInfoState {
 
 // Global state
 export interface State {
+    network: Network,
     appPrices: AppPrices,
     texoToken: TexoToken,
     orchestrator: TEXOOrchestratorState
     pools: PoolsState
     block: BlockState
     userInfo: UserInfoState
-    fAANGpools: FAANGpoolsState
+    fAANGpools: FAANGpoolsState,
 }
