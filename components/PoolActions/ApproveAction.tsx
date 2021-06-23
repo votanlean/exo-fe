@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, CircularProgress } from '@material-ui/core';
 
 import Button from 'components/Button';
+import ConnectPopup from 'components/ConnectPopup';
 import { useApprove } from 'hooks/useApprove';
 import { useERC20 } from 'hooks/useContract';
 import { getAddress } from 'utils/addressHelpers';
@@ -10,22 +11,43 @@ import { useStyles } from './styles';
 
 function ApproveAction(props: any) {
   const classes = useStyles();
-  const { disabled, data } = props || {};
-  const { stakingToken, orchestratorContract, id } = data || {};
+  const { disabled, data, buttonClasses } = props || {};
+  const { stakingToken, orchestratorContract, id, account } = data || {};
+  const [openPopup, setOpenPopup] = useState(false);
+
+  const handleConnectPopup = () => {
+    setOpenPopup(!openPopup);
+  };
 
   const tokenContract = useERC20(
     stakingToken.address ? getAddress(stakingToken.address) : '',
   );
+
   const { onApprove, isLoading } = useApprove(
     tokenContract,
     orchestratorContract,
     id,
   );
 
+  if (!account) {
+    return (
+      <Box>
+        <Button
+          className={`${classes.button} ${buttonClasses}`}
+          onClick={handleConnectPopup}
+        >
+          Unlock Wallet
+        </Button>
+
+        <ConnectPopup onOpen={openPopup} onCloseDialog={handleConnectPopup} />
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <Button
-        className={classes.button}
+        className={`${classes.button} ${buttonClasses}`}
         onClick={onApprove}
         disabled={isLoading || disabled}
       >

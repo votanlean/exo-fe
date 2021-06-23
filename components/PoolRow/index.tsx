@@ -41,6 +41,7 @@ function PoolRow(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     canClaimReward,
+    account,
   } = props || {};
   const {
     id: poolId,
@@ -89,6 +90,7 @@ function PoolRow(props: any) {
     maxAmountStake: stakingTokenBalance,
     maxAmountWithdraw: stakedBalance,
     refStake: true,
+    account,
   };
 
   return (

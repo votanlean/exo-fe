@@ -67,6 +67,9 @@ const useStyles = makeStyles(() => {
       backgroundColor: 'darkgray !important',
       cursor: 'auto !important',
     },
+    approveButton: {
+      marginBottom: 0,
+    },
   };
 });
 

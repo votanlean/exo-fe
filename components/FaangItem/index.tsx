@@ -13,7 +13,7 @@ import {
   ClaimRewardsAction,
 } from 'components/PoolActions';
 
-function FaangItem({ pool }) {
+function FaangItem({ pool, account }) {
   const {
     symbol,
     totalStaked,
@@ -39,6 +39,7 @@ function FaangItem({ pool }) {
     depositFee: depositFeeBP,
     maxAmountStake: stakingTokenBalance,
     maxAmountWithdraw: stakedBalance,
+    account,
   };
 
   return (
@@ -183,7 +184,11 @@ function FaangItem({ pool }) {
             </Link>
           </Box>
           {!isAlreadyApproved ? (
-            <ApproveAction data={dataButton} disabled={canClaimReward} />
+            <ApproveAction
+              data={dataButton}
+              disabled={canClaimReward}
+              buttonClasses={classes.approveButton}
+            />
           ) : null}
 
           {!canClaimReward && isAlreadyApproved ? (
