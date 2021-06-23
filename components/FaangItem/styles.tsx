@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => {
       marginBottom: '20px',
     },
     rowItem: {
-      width: '48%',
+      width: '45%',
     },
     img: {
       height: '40px',

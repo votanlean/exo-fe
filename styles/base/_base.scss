@@ -30,7 +30,7 @@ body {
 
 @media (min-width: 360px) {
   .container {
-    max-width: 1200px;
+    max-width: 1400px;
     padding-left: 5vw;
     padding-right: 5vw;
   }
@@ -38,29 +38,16 @@ body {
 
 // Medium
 @media (min-width: 768px) {
-  .container {}
 }
 // Large
 @media (min-width: 992px) {
-  .container {
-    margin-left: 5vw;
-    margin-right: 5vw;
-  }
 }
 
 @media (min-width: 1200px) {
-  .container {
-    margin-left: 10vw;
-    margin-right: 10vw;
-  }
 }
 
 // Extra large
 @media (min-width: 1441px) {
-  .container {
-    margin-left: 20vw;
-    margin-right: 20vw;
-  }
 }
 
 @media (max-width: 544px) {
