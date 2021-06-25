@@ -271,7 +271,7 @@ function Pool() {
               (4% Deposit Fee applies for tEXO liquidity)
               <br />
               {poolPageReady
-                ? `Seed Pools reward startblock at {seedingStartBlock}`
+                ? `Seed Pools reward startblock at ${seedingStartBlock}`
                 : ''}
               <br />
               Users can harvest tEXO in
