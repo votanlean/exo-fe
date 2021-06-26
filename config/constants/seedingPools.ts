@@ -1,10 +1,10 @@
 import tokens from './tokens';
 import contracts from './contracts';
 
-const seedingPools = [
+export const bnbSeedingPools = [
   {
     id: 0,
-    icon: '/static/images/pool/USDT.png',
+    icon: '/static/images/bnb-pool/USDT.png',
     title: 'USDT Pool',
     stakingToken: tokens.usdt,
     earningToken: tokens.texo,
@@ -15,7 +15,7 @@ const seedingPools = [
   },
   {
     id: 1,
-    icon: '/static/images/pool/wBNB.png',
+    icon: '/static/images/bnb-pool/wBNB.png',
     title: 'wBNB Pool',
     stakingToken: tokens.wbnb,
     earningToken: tokens.texo,
@@ -26,7 +26,7 @@ const seedingPools = [
   },
   {
     id: 2,
-    icon: '/static/images/pool/BUSD.png',
+    icon: '/static/images/bnb-pool/BUSD.png',
     title: 'BUSD Pool',
     stakingToken: tokens.busd,
     earningToken: tokens.texo,
@@ -37,7 +37,7 @@ const seedingPools = [
   },
   {
     id: 3,
-    icon: '/static/images/pool/CAKE.jpeg',
+    icon: '/static/images/bnb-pool/CAKE.jpeg',
     title: 'CAKE Pool',
     stakingToken: tokens.cake,
     earningToken: tokens.texo,
@@ -48,7 +48,7 @@ const seedingPools = [
   },
   {
     id: 4,
-    icon: '/static/images/pool/BTCB.jpeg',
+    icon: '/static/images/bnb-pool/BTCB.jpeg',
     title: 'BTCB Pool',
     stakingToken: tokens.btcb,
     earningToken: tokens.texo,
@@ -59,7 +59,7 @@ const seedingPools = [
   },
   {
     id: 5,
-    icon: '/static/images/pool/ETH.png',
+    icon: '/static/images/bnb-pool/ETH.png',
     title: 'ETH Pool',
     stakingToken: tokens.eth,
     earningToken: tokens.texo,
@@ -70,7 +70,7 @@ const seedingPools = [
   },
   {
     id: 6,
-    icon: '/static/images/pool/BUNNY.png',
+    icon: '/static/images/bnb-pool/BUNNY.png',
     title: 'BUNNY Pool',
     stakingToken: tokens.bunny,
     earningToken: tokens.texo,
@@ -81,7 +81,7 @@ const seedingPools = [
   },
   {
     id: 7,
-    icon: '/static/images/pool/XVS.jpeg',
+    icon: '/static/images/bnb-pool/XVS.jpeg',
     title: 'XVS Pool',
     stakingToken: tokens.xvs,
     earningToken: tokens.texo,
@@ -92,7 +92,7 @@ const seedingPools = [
   },
   {
     id: 8,
-    icon: '/static/images/pool/USDC.png',
+    icon: '/static/images/bnb-pool/USDC.png',
     title: 'USDC Pool',
     stakingToken: tokens.usdc,
     earningToken: tokens.texo,
@@ -103,7 +103,7 @@ const seedingPools = [
   },
   {
     id: 9,
-    icon: '/static/images/pool/DAI.png',
+    icon: '/static/images/bnb-pool/DAI.png',
     title: 'DAI Pool',
     stakingToken: tokens.dai,
     earningToken: tokens.texo,
@@ -114,7 +114,7 @@ const seedingPools = [
   },
   {
     id: 10,
-    icon: '/static/images/pool/DOT.png',
+    icon: '/static/images/bnb-pool/DOT.png',
     title: 'DOT Pool',
     stakingToken: tokens.dot,
     earningToken: tokens.texo,
@@ -125,4 +125,115 @@ const seedingPools = [
   },
 ];
 
-export default seedingPools;
+export const polygonSeedingPools = [
+  {
+    id: 0,
+    icon: '/static/images/matic-pool/USDC.png',
+    title: 'USDC Pool',
+    stakingToken: tokens.usdc,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 400,
+    depositFeeBP: 400,
+    symbol: 'USDC',
+  },
+  {
+    id: 1,
+    icon: '/static/images/matic-pool/wETH.png',
+    title: 'wETH Pool',
+    stakingToken: tokens.weth,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 300,
+    depositFeeBP: 400,
+    symbol: 'wETH',
+  },
+  {
+    id: 2,
+    icon: '/static/images/matic-pool/wMATIC.png',
+    title: 'wMATIC Pool',
+    stakingToken: tokens.wmatic,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 400,
+    depositFeeBP: 400,
+    symbol: 'wMATIC',
+  },
+  {
+    id: 3,
+    icon: '/static/images/matic-pool/USDT.jpeg',
+    title: 'USDT Pool',
+    stakingToken: tokens.usdt,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 200,
+    depositFeeBP: 400,
+    symbol: 'USDT',
+  },
+  {
+    id: 4,
+    icon: '/static/images/matic-pool/WBTC.jpeg',
+    title: 'WBTC Pool',
+    stakingToken: tokens.wbtc,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 200,
+    depositFeeBP: 400,
+    symbol: 'WBTC',
+  },
+  {
+    id: 5,
+    icon: '/static/images/matic-pool/DAI.png',
+    title: 'DAI Pool',
+    stakingToken: tokens.dai,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 200,
+    depositFeeBP: 400,
+    symbol: 'DAI',
+  },
+  {
+    id: 6,
+    icon: '/static/images/matic-pool/QUICK.png',
+    title: 'QUICK Pool',
+    stakingToken: tokens.quick,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 200,
+    depositFeeBP: 400,
+    symbol: 'QUICK',
+  },
+  {
+    id: 7,
+    icon: '/static/images/matic-pool/XVS.jpeg',
+    title: 'LINK Pool',
+    stakingToken: tokens.link,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 200,
+    depositFeeBP: 400,
+    symbol: 'LINK',
+  },
+  {
+    id: 8,
+    icon: '/static/images/matic-pool/AAVE.png',
+    title: 'AAVE Pool',
+    stakingToken: tokens.aave,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 400,
+    depositFeeBP: 400,
+    symbol: 'AAVE',
+  },
+  {
+    id: 9,
+    icon: '/static/images/matic-pool/FISH.png',
+    title: 'FISH Pool',
+    stakingToken: tokens.fish,
+    earningToken: tokens.texo,
+    contractAddress: contracts.orchestrator,
+    displayAllocPoint: 400,
+    depositFeeBP: 400,
+    symbol: 'FISH',
+  }
+];

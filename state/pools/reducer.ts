@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import seedingPools from 'config/constants/seedingPools';
+import { getSeedingPools } from 'utils/poolHelpers';
 import { fetchPoolsTotalStaking, fetchPoolsVolatileInfo } from './fetchPools';
 import {
   fetchUserBalances,
@@ -11,44 +11,47 @@ import {
 import { PoolsState } from '../types';
 
 const initialState: PoolsState = {
-  data: [...seedingPools],
+  data: [...getSeedingPools(80001)],
 };
 
 type Pool = any;
 
 // Thunks
-export const fetchPoolsPublicDataAsync = async (dispatch) => {
-  const poolWithTotalStakedData = await fetchPoolsTotalStaking();
-  const poolWithVolatileInfo = await fetchPoolsVolatileInfo();
+export const fetchPoolsPublicDataAsync =
+  (chainId: number) => async (dispatch) => {
+    const poolWithTotalStakedData = await fetchPoolsTotalStaking(chainId);
+    const poolWithVolatileInfo = await fetchPoolsVolatileInfo(chainId);
 
-  const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
-    const poolVolatileInfo = poolWithVolatileInfo[index];
+    const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
+      const poolVolatileInfo = poolWithVolatileInfo[index];
 
-    return {
-      ...poolWithTotalStaked,
-      ...poolVolatileInfo,
-    };
-  });
+      return {
+        ...poolWithTotalStaked,
+        ...poolVolatileInfo,
+      };
+    });
 
-  dispatch(setPoolsPublicData(merged));
-};
+    dispatch(setPoolsPublicData(merged));
+  };
 
 // Pools
-export const fetchPoolsUserDataAsync = (userAddress) => async (dispatch) => {
-  const allowances = await fetchPoolsAllowance(userAddress);
-  const stakingTokenBalances = await fetchUserBalances(userAddress);
-  const stakedBalances = await fetchUserStakeBalances(userAddress);
-  const pendingRewards = await fetchUserPendingRewards(userAddress);
-  const userData = seedingPools.map((pool) => ({
-    id: pool.id,
-    allowance: allowances[pool.id],
-    stakingTokenBalance: stakingTokenBalances[pool.id],
-    stakedBalance: stakedBalances[pool.id],
-    pendingReward: pendingRewards[pool.id],
-  }));
+export const fetchPoolsUserDataAsync =
+  (userAddress, chainId) => async (dispatch) => {
+    const allowances = await fetchPoolsAllowance(userAddress, chainId);
+    const stakingTokenBalances = await fetchUserBalances(userAddress, chainId);
+    const stakedBalances = await fetchUserStakeBalances(userAddress, chainId);
+    const pendingRewards = await fetchUserPendingRewards(userAddress, chainId);
+    const seedingPools = getSeedingPools(chainId);
+    const userData = seedingPools.map((pool) => ({
+      id: pool.id,
+      allowance: allowances[pool.id],
+      stakingTokenBalance: stakingTokenBalances[pool.id],
+      stakedBalance: stakedBalances[pool.id],
+      pendingReward: pendingRewards[pool.id],
+    }));
 
-  dispatch(setPoolsUserData(userData));
-};
+    dispatch(setPoolsUserData(userData));
+  };
 
 export const PoolsSlice = createSlice({
   name: 'Pools',

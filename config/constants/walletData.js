@@ -10,9 +10,10 @@ export const networks = [
     rpcUrl: 'https://bsc-dataseed.binance.org',
     symbol: 'BNB',
     blockExplorerUrl: 'https://bscscan.com/',
+    decimals: 18
   },
   {
-    id: 137,
+    id: 80001,
     name: 'Polygon',
     icon: '/static/images/wallets/polygon.svg',
     type: 'polygon',
@@ -20,6 +21,7 @@ export const networks = [
     rpcUrl: 'https://rpc-mainnet.matic.network',
     symbol: 'MATIC',
     blockExplorerUrl: 'https://polygonscan.com/',
+    decimals: 6
   },
 ];
 

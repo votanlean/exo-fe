@@ -10,6 +10,7 @@ export interface Network {
     icon: string,
     iconDisable: string,
     type: string,
+    decimals: number
 }
 
 export interface TEXOOrchestratorState {

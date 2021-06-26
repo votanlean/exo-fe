@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { DEFAULT_TOKEN_DECIMAL } from 'config';
+import { BIG_TEN } from 'config';
 import { ethers } from 'ethers';
 
 export const approve = async (stakingTokenContract, orchestrator, account) => {
@@ -14,12 +14,13 @@ export const stake = async (
   amount,
   account,
   ref: string | undefined | null = null,
+  decimals,
 ) => {
   if (ref) {
     return orchestrator.methods
       .deposit(
         poolId,
-        new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString(),
+        new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(),
         ref,
       )
       .send({ from: account, gas: 200000 })
@@ -30,7 +31,7 @@ export const stake = async (
     return orchestrator.methods
       .deposit(
         poolId,
-        new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString(),
+        new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(),
       )
       .send({ from: account, gas: 200000 })
       .on('transactionHash', (tx) => {
@@ -39,11 +40,17 @@ export const stake = async (
   }
 };
 
-export const unstake = async (orchestrator, poolId, amount, account) => {
+export const unstake = async (
+  orchestrator,
+  poolId,
+  amount,
+  account,
+  decimals,
+) => {
   return orchestrator.methods
     .withdraw(
       poolId,
-      new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString(),
+      new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(),
     )
     .send({ from: account, gas: 200000 })
     .on('transactionHash', (tx) => {
