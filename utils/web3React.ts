@@ -68,4 +68,3 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
 }
 
 export const connectorLocalStorageKey = "connectorId";
-

@@ -38,7 +38,6 @@ function StakeAction(props: any) {
         ref = '0x0000000000000000000000000000000000000000';
       }
     }
-
     await onStake(amount, ref);
   };
 
