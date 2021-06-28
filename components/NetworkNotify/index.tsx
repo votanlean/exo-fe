@@ -36,18 +36,12 @@ function index(props) {
     if((appNetwork.id !== parseInt(library?.networkVersion)) && (typeof library?.networkVersion !== "undefined") ){
         return (
             <div className={classes.notify}>
-            <Typography className={classes.p}>
-                App network ({appNetwork.id}) doesn't match to network selected in wallet: {library?.networkVersion}. Learn how to 
-            </Typography>
-                <Link className={classes.link} href="https://help.1inch.io/en/articles/4966690-how-to-use-1inch-on-bsc-binance-smart-chain" onClick={()=>{}}>
-                    change network in wallet
-                </Link>
                 <Typography className={classes.p}>
-                    or
+                    App network ({appNetwork.id}) doesn't match to network selected in wallet: {library?.networkVersion}. Please change your wallet network or
                 </Typography>
                 <Button className={classes.button} onClick={clickHandle}> 
                     Change App network
-                </Button> 
+                </Button>   
             </div>
         );
     }else{

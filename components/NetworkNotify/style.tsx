@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => {
             padding: 0,
             margin: 0,
             width: '100%',
-            height: '52px !important' ,
+            height: '46px !important' ,
             backgroundColor: '#c13d54',
             boxSizing: 'border-box',
             color: '#fff',
@@ -14,21 +14,20 @@ const useStyles = makeStyles((theme) => {
             fontSize: '20px',
             alignItems: 'center',
         },
-        link: {
-            color: '#fff',
-            lineHeight: '46px',
-            textDecoration: 'underline',
-            margin: '0px 10px'
-        },
+        
         
         p: {
-            // lineHeight: '44px',
+            lineHeight: '46px',
             display: 'inline'
 
         },
         button: {
             backgroundColor: '#fff',
-            marginLeft: '10px'
+            marginLeft: '10px',
+            '&:hover': {
+                backgroundColor: '#000',
+                color: '#fff',
+            },
         }
         
     }
