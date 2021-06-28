@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import farms from 'config/constants/farms';
 import Countdown from 'countdown';
 import { useWeb3React } from '@web3-react/core';
 import dayjs from 'dayjs';
@@ -48,6 +47,7 @@ import {
   fetchPoolsUserDataAsync,
 } from '../../state/pools/reducer';
 import { useNetwork } from 'state/hooks';
+import { getFarms } from 'utils/farmsHelpers';
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
@@ -89,10 +89,10 @@ function Pool() {
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
   const poolsData = usePools();
+  const { id: chainId } = useNetwork();
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
-  const { id: chainId } = useNetwork();
 
   const { currentBlock } = useBlockData();
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
@@ -112,12 +112,12 @@ function Pool() {
     dispatch(fetchBlockDataThunk);
     dispatch(fetchPoolsPublicDataAsync(chainId));
     dispatch(fetchAppPrices);
-    dispatch(fetchFAANGPoolsPublicDataAsync);
+    dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account));
       dispatch(fetchPoolsUserDataAsync(account, chainId));
-      dispatch(fetchFAANGPoolsUserDataAsync(account));
+      dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
       dispatch(fetchUserInfoDataThunk(account, chainId));
     }
   };
@@ -131,12 +131,12 @@ function Pool() {
       dispatch(fetchFarmsPublicDataAsync());
       dispatch(fetchTexoTokenDataThunk);
       dispatch(fetchPoolsPublicDataAsync(chainId));
-      dispatch(fetchFAANGPoolsPublicDataAsync);
+      dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
 
       if (account) {
         dispatch(fetchFarmUserDataAsync(account));
         dispatch(fetchPoolsUserDataAsync(account, chainId));
-        dispatch(fetchFAANGPoolsUserDataAsync(account));
+        dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
       }
     }, 30000);
 
@@ -212,7 +212,7 @@ function Pool() {
         </div>
 
         <div className={styles.lpPoolGrid}>
-          {farms.map((farm, index) => {
+          {getFarms().map((farm, index) => {
             let stakingTokenPrice = 0;
 
             if (allTokenPrices.data) {

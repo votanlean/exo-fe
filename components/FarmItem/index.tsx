@@ -43,6 +43,7 @@ function FarmItem(props: any) {
     symbol,
     pid: farmId,
     address,
+    decimals,
     depositFeeBP,
     allocPoint,
     totalStaked,
@@ -65,6 +66,7 @@ function FarmItem(props: any) {
     id: farmId,
     stakingToken: {
       address,
+      decimals,
     },
     orchestratorContract: tEXOOrchestratorContract,
     symbol,

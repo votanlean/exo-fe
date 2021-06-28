@@ -22,7 +22,7 @@ export const useHarvest = (orchestrator: Contract, poolId: number) => {
       setLoading(false);
       dispatch(fetchPoolsUserDataAsync(account, chainId));
       dispatch(fetchFarmUserDataAsync(account));
-      dispatch(fetchFAANGPoolsUserDataAsync(account));
+      dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
       return txHash;
     } catch (error) {
       setLoading(false);

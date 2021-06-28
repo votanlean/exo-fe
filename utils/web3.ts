@@ -15,4 +15,3 @@ const isAddress = (address: string) => {
 
 export { getWeb3NoAccount, isAddress }
 export default web3NoAccount
-

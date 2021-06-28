@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import fAANGPools from 'config/constants/fAANGPools';
+// import fAANGPools from 'config/constants/fAANGPools';
 import {
   fetchFAANGPoolsTotalStaking,
   fetchFAANGPoolsVolatileInfo,
@@ -12,35 +12,47 @@ import {
   fetchFAANGUserPendingRewards,
 } from './fetchFAANGPoolsUser';
 import { FAANGPool } from '../types';
+import { getFAANGPools } from 'utils/poolHelpers';
 
 const initialState = {
-  data: [...fAANGPools],
+  data: [...getFAANGPools()],
 };
 
 // Thunks
-export const fetchFAANGPoolsPublicDataAsync = async (dispatch) => {
-  const poolWithTotalStakedData = await fetchFAANGPoolsTotalStaking();
-  const poolWithVolatileInfo = await fetchFAANGPoolsVolatileInfo();
+export const fetchFAANGPoolsPublicDataAsync =
+  (chainId: number) => async (dispatch) => {
+    const poolWithTotalStakedData = await fetchFAANGPoolsTotalStaking(chainId);
+    const poolWithVolatileInfo = await fetchFAANGPoolsVolatileInfo(chainId);
 
-  const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
-    const poolVolatileInfo = poolWithVolatileInfo[index];
+    const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
+      const poolVolatileInfo = poolWithVolatileInfo[index];
 
-    return {
-      ...poolWithTotalStaked,
-      ...poolVolatileInfo,
-    };
-  });
+      return {
+        ...poolWithTotalStaked,
+        ...poolVolatileInfo,
+      };
+    });
 
-  dispatch(setFAANGPoolsPublicData(merged));
-};
+    dispatch(setFAANGPoolsPublicData(merged));
+  };
 
 // Pools
 export const fetchFAANGPoolsUserDataAsync =
-  (userAddress) => async (dispatch) => {
-    const allowances = await fetchFAANGPoolsAllowance(userAddress);
-    const stakingTokenBalances = await fetchFAANGUserBalances(userAddress);
-    const stakedBalances = await fetchFAANGUserStakeBalances(userAddress);
-    const pendingRewards = await fetchFAANGUserPendingRewards(userAddress);
+  (userAddress, chainId) => async (dispatch) => {
+    const fAANGPools = getFAANGPools(chainId);
+    const allowances = await fetchFAANGPoolsAllowance(userAddress, chainId);
+    const stakingTokenBalances = await fetchFAANGUserBalances(
+      userAddress,
+      chainId,
+    );
+    const stakedBalances = await fetchFAANGUserStakeBalances(
+      userAddress,
+      chainId,
+    );
+    const pendingRewards = await fetchFAANGUserPendingRewards(
+      userAddress,
+      chainId,
+    );
     const userData = fAANGPools.map((pool) => ({
       id: pool.id,
       allowance: allowances[pool.id],

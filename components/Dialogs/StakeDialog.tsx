@@ -108,10 +108,11 @@ export const StakeDialog = (props: any) => {
 
   const onChangeAmount = (e) => {
     const value = e.target.value;
+    const maxAmountConverted = normalizeTokenDecimal(maxAmount).toNumber();
     if (value >= 0) {
-      setAmount(e.target.value);
-      if (e.target.value >= maxAmount) {
-        setAmount(maxAmount);
+      setAmount(value);
+      if (value >= maxAmountConverted) {
+        setAmount(maxAmountConverted);
       }
     } else {
       setAmount(0);

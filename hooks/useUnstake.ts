@@ -11,16 +11,17 @@ import { fetchFAANGPoolsUserDataAsync } from '../state/fAANGpools/reducer';
 import { fetchPoolsUserDataAsync } from '../state/pools/reducer';
 import { Contract } from 'web3-eth-contract';
 import { useNetwork } from 'state/hooks';
+import { getDecimals } from 'utils/decimalsHelper';
 
 export const useUnstake = (orchestrator: Contract, pid: number) => {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [isLoading, setLoading] = useState(false);
   const currentNetwork = useNetwork();
-  const { decimals, id: chainId } = currentNetwork || {};
+  const { id: chainId } = currentNetwork || {};
 
   const handleUnstake = useCallback(
-    async (amount: string) => {
+    async (amount: string, decimals: string) => {
       try {
         setLoading(true);
         const txHash = await unstake(
@@ -33,7 +34,7 @@ export const useUnstake = (orchestrator: Contract, pid: number) => {
         setLoading(false);
         dispatch(fetchPoolsUserDataAsync(account, chainId));
         dispatch(fetchFarmUserDataAsync(account));
-        dispatch(fetchFAANGPoolsUserDataAsync(account));
+        dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
         console.log('txHash useUnstake', txHash);
       } catch (error) {
         setLoading(false);
@@ -41,7 +42,7 @@ export const useUnstake = (orchestrator: Contract, pid: number) => {
       }
     },
 
-    [account, dispatch, orchestrator, pid, decimals, chainId],
+    [account, dispatch, orchestrator, pid, chainId],
   );
 
   return { onUnstake: handleUnstake, isLoading };
@@ -53,10 +54,10 @@ export const useUnstakeFAANG = (pid: number) => {
   const fAANGorchestrator = useFAANGOrchestratorContract();
   const [isLoading, setLoading] = useState(false);
   const currentNetwork = useNetwork();
-  const { decimals, id: chainId } = currentNetwork || {};
+  const { id: chainId } = currentNetwork || {};
 
   const handleUnstake = useCallback(
-    async (amount: string) => {
+    async (amount: string, decimals: string) => {
       try {
         setLoading(true);
         const txHash = await unstake(
@@ -75,7 +76,7 @@ export const useUnstakeFAANG = (pid: number) => {
       }
     },
 
-    [account, dispatch, fAANGorchestrator, pid, decimals, chainId],
+    [account, dispatch, fAANGorchestrator, pid, chainId],
   );
 
   return { onUnstake: handleUnstake, isLoading };

@@ -9,6 +9,8 @@ import { isAddress } from 'utils/web3';
 import rot13 from 'utils/encode';
 
 import { useStyles } from './styles';
+import { getDecimals } from 'utils/decimalsHelper';
+import { useNetwork } from 'state/hooks';
 
 function StakeAction(props: any) {
   const classes = useStyles();
@@ -20,10 +22,12 @@ function StakeAction(props: any) {
     depositFee,
     maxAmountStake,
     refStake,
+    stakingToken,
   } = data || {};
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
 
   const { onStake, isLoading } = useStake(orchestratorContract, id);
+  const { id: chainId } = useNetwork();
 
   const handleConfirmStake = async (amount) => {
     let ref;
@@ -38,7 +42,8 @@ function StakeAction(props: any) {
         ref = '0x0000000000000000000000000000000000000000';
       }
     }
-    await onStake(amount, ref);
+    const decimals = getDecimals(stakingToken.decimals, chainId);
+    await onStake(amount, ref, decimals);
   };
 
   const handleToggleStake = () => {

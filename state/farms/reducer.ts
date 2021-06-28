@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import farmsData from 'config/constants/farms';
 import fetchFarms from './helpers/fetchFarms';
+import { getFarms } from 'utils/farmsHelpers';
 import {
   fetchFarmUserEarnings,
   fetchFarmUserAllowances,
@@ -12,7 +12,7 @@ import {
 type Farm = any;
 
 const initialState = {
-  data: farmsData.map((farm) => ({
+  data: getFarms().map((farm) => ({
     ...farm,
     userData: {
       allowance: '0',
@@ -21,7 +21,7 @@ const initialState = {
       earnings: '0',
     },
   })),
-}
+};
 
 export const farmsSlice = createSlice({
   name: 'Farms',
@@ -36,7 +36,7 @@ export const farmsSlice = createSlice({
         return {
           ...farm,
           ...liveFarmData,
-        }
+        };
       });
     },
     setFarmUserData: (state, action) => {
@@ -49,26 +49,34 @@ export const farmsSlice = createSlice({
         state.data[index] = {
           ...state.data[index],
           userData: userDataEl,
-        }
+        };
       });
     },
   },
-})
+});
 
 // Actions
-export const { setFarmsPublicData, setFarmUserData } = farmsSlice.actions
+export const { setFarmsPublicData, setFarmUserData } = farmsSlice.actions;
 
 // Thunks
 export const fetchFarmsPublicDataAsync = () => async (dispatch) => {
+  const farmsData = getFarms(97);
   const farms = await fetchFarms(farmsData);
 
-  dispatch(setFarmsPublicData(farms))
-}
+  dispatch(setFarmsPublicData(farms));
+};
 
 export const fetchFarmUserDataAsync = (account: string) => async (dispatch) => {
+  const farmsData = getFarms(97);
   const userFarmAllowances = await fetchFarmUserAllowances(account, farmsData);
-  const userFarmTokenBalances = await fetchFarmUserTokenBalances(account, farmsData);
-  const userStakedBalances = await fetchFarmUserStakedBalances(account, farmsData);
+  const userFarmTokenBalances = await fetchFarmUserTokenBalances(
+    account,
+    farmsData,
+  );
+  const userStakedBalances = await fetchFarmUserStakedBalances(
+    account,
+    farmsData,
+  );
   const userFarmEarnings = await fetchFarmUserEarnings(account, farmsData);
 
   const arrayOfUserDataObjects = userFarmAllowances.map((_, index) => {
@@ -78,8 +86,8 @@ export const fetchFarmUserDataAsync = (account: string) => async (dispatch) => {
       tokenBalance: userFarmTokenBalances[index],
       stakedBalance: userStakedBalances[index],
       earnings: userFarmEarnings[index],
-    }
-  })
+    };
+  });
 
-  dispatch(setFarmUserData({ arrayOfUserDataObjects }))
-}
+  dispatch(setFarmUserData({ arrayOfUserDataObjects }));
+};

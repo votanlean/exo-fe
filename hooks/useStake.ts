@@ -7,16 +7,17 @@ import { fetchPoolsUserDataAsync } from '../state/pools/reducer';
 import { fetchFarmUserDataAsync } from '../state/farms/reducer';
 import { fetchFAANGPoolsUserDataAsync } from '../state/fAANGpools/reducer';
 import { useNetwork } from 'state/hooks';
+import { getDecimals } from 'utils/decimalsHelper';
 
 export const useStake = (orchestrator: Contract, poolId: number) => {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [isLoading, setLoading] = useState(false);
   const currentNetwork = useNetwork();
-  const { decimals, id: chainId } = currentNetwork || {};
+  const { id: chainId } = currentNetwork || {};
 
   const handleStake = useCallback(
-    async (amount: string, ref: string | null = null) => {
+    async (amount: string, ref: string | null = null, decimals: string) => {
       try {
         setLoading(true);
         const txHash = await stake(
@@ -30,14 +31,14 @@ export const useStake = (orchestrator: Contract, poolId: number) => {
         setLoading(false);
         dispatch(fetchPoolsUserDataAsync(account, chainId));
         dispatch(fetchFarmUserDataAsync(account));
-        dispatch(fetchFAANGPoolsUserDataAsync(account));
+        dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
         console.info(txHash);
       } catch (error) {
         console.log(error);
         setLoading(false);
       }
     },
-    [account, dispatch, orchestrator, poolId, decimals, chainId],
+    [account, dispatch, orchestrator, poolId, chainId],
   );
 
   return { onStake: handleStake, isLoading };
