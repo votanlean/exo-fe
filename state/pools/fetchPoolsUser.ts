@@ -1,18 +1,18 @@
-import seedingPools from 'config/constants/seedingPools';
 import orchestratorABI from '../../config/abi/TEXOOrchestrator.json';
 import erc20ABI from 'config/abi/erc20.json';
 import multicall from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import BigNumber from 'bignumber.js';
 import contracts from 'config/constants/contracts';
+import { getSeedingPools } from 'utils/poolHelpers';
 
-export const fetchPoolsAllowance = async (userAddress) => {
+export const fetchPoolsAllowance = async (userAddress, chainId) => {
+  let seedingPools = getSeedingPools(chainId);
   const calls = seedingPools.map((p) => ({
     address: getAddress(p.stakingToken.address),
     name: 'allowance',
     params: [userAddress, getAddress(contracts.orchestrator)],
   }));
-
   const allowances = await multicall(erc20ABI, calls);
 
   return seedingPools.reduce(
@@ -21,10 +21,11 @@ export const fetchPoolsAllowance = async (userAddress) => {
       [pool.id]: new BigNumber(allowances[index]).toJSON(),
     }),
     {},
-  )
-}
+  );
+};
 
-export const fetchUserBalances = async (userAddress) => {
+export const fetchUserBalances = async (userAddress, chainId) => {
+  const seedingPools = getSeedingPools(chainId);
   const calls = seedingPools.map((p) => ({
     address: getAddress(p.stakingToken.address),
     name: 'balanceOf',
@@ -42,16 +43,17 @@ export const fetchUserBalances = async (userAddress) => {
   );
 
   return tokenBalances;
-}
+};
 
-export const fetchUserStakeBalances = async (userAddress) => {
+export const fetchUserStakeBalances = async (userAddress, chainId) => {
+  const seedingPools = getSeedingPools(chainId);
   const calls = seedingPools.map((p) => ({
     address: getAddress(contracts.orchestrator),
     name: 'userInfo',
     params: [p.id, userAddress],
   }));
 
-  const userInfo = await multicall(orchestratorABI, calls)
+  const userInfo = await multicall(orchestratorABI, calls);
 
   const stakedBalances = seedingPools.reduce(
     (acc, pool, index) => ({
@@ -62,9 +64,10 @@ export const fetchUserStakeBalances = async (userAddress) => {
   );
 
   return stakedBalances;
-}
+};
 
-export const fetchUserPendingRewards = async (userAddress) => {
+export const fetchUserPendingRewards = async (userAddress, chainId) => {
+  const seedingPools = getSeedingPools(chainId);
   const calls = seedingPools.map((p) => ({
     address: getAddress(contracts.orchestrator),
     name: 'pendingTEXO',
@@ -82,4 +85,4 @@ export const fetchUserPendingRewards = async (userAddress) => {
   );
 
   return pendingRewards;
-}
+};

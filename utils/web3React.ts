@@ -8,6 +8,7 @@ import {
 } from '@web3-react/injected-connector';
 import {WalletConnectConnector} from "@web3-react/walletconnect-connector";
 import Web3 from "web3";
+import { supportedChains } from 'constant/supportedChain';
 
 export function getErrorMessage(error) {
     if (error instanceof NoEthereumProviderError) {
@@ -38,7 +39,7 @@ export const getLibrary = (provider): Web3 => {
 
 
 export const injected = new InjectedConnector({
-    supportedChainIds: [1, 3, 4, 5, 42, 56, 97],
+    supportedChainIds: supportedChains.map(({ chainId }) => chainId),
 });
 
 export const bscConnector = new BscConnector({
@@ -46,8 +47,10 @@ export const bscConnector = new BscConnector({
 });
 
 const walletconnect = new WalletConnectConnector({
-    rpc: { [chainId]: rpcUrl },
-    bridge: 'https://pancakeswap.bridge.walletconnect.org/',
+    rpc: supportedChains.reduce((rpcs, { chainId, rpc }) => ({
+			...rpcs,
+			[chainId]: rpc
+		}), {}),
     qrcode: true,
     pollingInterval: POLLING_INTERVAL,
 })
@@ -65,4 +68,3 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
 }
 
 export const connectorLocalStorageKey = "connectorId";
-

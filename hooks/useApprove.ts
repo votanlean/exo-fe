@@ -10,6 +10,7 @@ import {
 import { fetchPoolsUserDataAsync } from '../state/pools/reducer';
 import { fetchFarmUserDataAsync } from '../state/farms/reducer';
 import { fetchFAANGPoolsUserDataAsync } from '../state/fAANGpools/reducer';
+import { useNetwork } from 'state/hooks';
 
 // Approve a Pool
 export const useApprove = (
@@ -20,6 +21,7 @@ export const useApprove = (
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [isLoading, setLoading] = useState(false);
+  const { id: chainId } = useNetwork();
 
   const handleApprove = useCallback(async () => {
     try {
@@ -30,7 +32,7 @@ export const useApprove = (
         account,
       );
       setLoading(false);
-      dispatch(fetchPoolsUserDataAsync(account));
+      dispatch(fetchPoolsUserDataAsync(account, chainId));
       dispatch(fetchFarmUserDataAsync(account));
       dispatch(fetchFAANGPoolsUserDataAsync(account));
       return tx;

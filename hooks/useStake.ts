@@ -6,19 +6,29 @@ import { Contract } from 'web3-eth-contract';
 import { fetchPoolsUserDataAsync } from '../state/pools/reducer';
 import { fetchFarmUserDataAsync } from '../state/farms/reducer';
 import { fetchFAANGPoolsUserDataAsync } from '../state/fAANGpools/reducer';
+import { useNetwork } from 'state/hooks';
 
 export const useStake = (orchestrator: Contract, poolId: number) => {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [isLoading, setLoading] = useState(false);
+  const currentNetwork = useNetwork();
+  const { decimals, id: chainId } = currentNetwork || {};
 
   const handleStake = useCallback(
     async (amount: string, ref: string | null = null) => {
       try {
         setLoading(true);
-        const txHash = await stake(orchestrator, poolId, amount, account, ref); // will ignore ref if null
+        const txHash = await stake(
+          orchestrator,
+          poolId,
+          amount,
+          account,
+          ref,
+          decimals,
+        ); // will ignore ref if null
         setLoading(false);
-        dispatch(fetchPoolsUserDataAsync(account));
+        dispatch(fetchPoolsUserDataAsync(account, chainId));
         dispatch(fetchFarmUserDataAsync(account));
         dispatch(fetchFAANGPoolsUserDataAsync(account));
         console.info(txHash);
@@ -27,7 +37,7 @@ export const useStake = (orchestrator: Contract, poolId: number) => {
         setLoading(false);
       }
     },
-    [account, dispatch, orchestrator, poolId],
+    [account, dispatch, orchestrator, poolId, decimals, chainId],
   );
 
   return { onStake: handleStake, isLoading };

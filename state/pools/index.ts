@@ -6,8 +6,8 @@ import {
 } from './fetchPoolsUser';
 import { updatePoolsUserData } from './reducer';
 export const updateUserAllowance =
-  (poolId: number, account: string) => async (dispatch) => {
-    const allowances = await fetchPoolsAllowance(account);
+  (poolId: number, account: string, chainId: number) => async (dispatch) => {
+    const allowances = await fetchPoolsAllowance(account, chainId);
     dispatch(
       updatePoolsUserData({
         poolId,
@@ -18,8 +18,8 @@ export const updateUserAllowance =
   };
 
 export const updateUserBalance =
-  (poolId: number, account: string) => async (dispatch) => {
-    const tokenBalances = await fetchUserBalances(account);
+  (poolId: number, account: string, chainId: number) => async (dispatch) => {
+    const tokenBalances = await fetchUserBalances(account, chainId);
     dispatch(
       updatePoolsUserData({
         poolId,
@@ -30,8 +30,8 @@ export const updateUserBalance =
   };
 
 export const updateUserStakedBalance =
-  (poolId: number, account: string) => async (dispatch) => {
-    const stakedBalances = await fetchUserStakeBalances(account);
+  (poolId: number, account: string, chainId: number) => async (dispatch) => {
+    const stakedBalances = await fetchUserStakeBalances(account, chainId);
     dispatch(
       updatePoolsUserData({
         poolId,

@@ -3,6 +3,15 @@ import BigNumber from "bignumber.js";
 export interface Address {
     97: string
     56: string
+    137: string
+    80001: string
+}
+
+export interface Decimals{
+    97: number
+    56: number
+    137: number
+    80001: number
 }
 
 export interface Token {

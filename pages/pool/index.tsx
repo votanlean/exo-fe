@@ -47,6 +47,7 @@ import {
   fetchPoolsPublicDataAsync,
   fetchPoolsUserDataAsync,
 } from '../../state/pools/reducer';
+import { useNetwork } from 'state/hooks';
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
@@ -91,6 +92,7 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
+  const { id: chainId } = useNetwork();
 
   const { currentBlock } = useBlockData();
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
@@ -108,15 +110,15 @@ function Pool() {
     dispatch(fetchTexoTokenDataThunk);
     dispatch(fetchOrchestratorDataThunk);
     dispatch(fetchBlockDataThunk);
-    dispatch(fetchPoolsPublicDataAsync);
+    dispatch(fetchPoolsPublicDataAsync(chainId));
     dispatch(fetchAppPrices);
     dispatch(fetchFAANGPoolsPublicDataAsync);
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account));
-      dispatch(fetchPoolsUserDataAsync(account));
+      dispatch(fetchPoolsUserDataAsync(account, chainId));
       dispatch(fetchFAANGPoolsUserDataAsync(account));
-      dispatch(fetchUserInfoDataThunk(account));
+      dispatch(fetchUserInfoDataThunk(account, chainId));
     }
   };
 
@@ -128,12 +130,12 @@ function Pool() {
     const updateAppDataInterval = setInterval(() => {
       dispatch(fetchFarmsPublicDataAsync());
       dispatch(fetchTexoTokenDataThunk);
-      dispatch(fetchPoolsPublicDataAsync);
+      dispatch(fetchPoolsPublicDataAsync(chainId));
       dispatch(fetchFAANGPoolsPublicDataAsync);
 
       if (account) {
         dispatch(fetchFarmUserDataAsync(account));
-        dispatch(fetchPoolsUserDataAsync(account));
+        dispatch(fetchPoolsUserDataAsync(account, chainId));
         dispatch(fetchFAANGPoolsUserDataAsync(account));
       }
     }, 30000);
@@ -271,7 +273,7 @@ function Pool() {
               (4% Deposit Fee applies for tEXO liquidity)
               <br />
               {poolPageReady
-                ? `Seed Pools reward startblock at {seedingStartBlock}`
+                ? `Seed Pools reward startblock at ${seedingStartBlock}`
                 : ''}
               <br />
               Users can harvest tEXO in
