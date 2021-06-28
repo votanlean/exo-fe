@@ -24,6 +24,7 @@ function SwitchNetworkPopup(props) {
 
   const handleNetWorkChange = (item) => {
     dispatch(changeNetwork(item));
+    onCloseDialog();
   };
 
   return (
