@@ -13,6 +13,7 @@ import styles from './header.module.scss';
 import { useEagerConnect, useInactiveListener } from "../../hooks/useConnect";
 import { useStyles } from './styles';
 import SwitchNetworkPopup from 'components/SwitchNetworkPopup';
+import NetworkNotify from 'components/NetworkNotify';
 
 const Header = () => {
   const classes = useStyles();
@@ -93,6 +94,7 @@ const Header = () => {
             </div>
           </div>
         </div>
+        <NetworkNotify clickHandle={handleSwitchNetworkPopupPopup}/>
       </header>
 
       {/* Connect Popup */}
