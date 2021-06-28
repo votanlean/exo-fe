@@ -3,9 +3,9 @@ import BigNumber from 'bignumber.js';
 import { BIG_ZERO } from 'config';
 import multicall from 'utils/multicall';
 import { getOrchestratorAddress } from 'utils/addressHelpers';
-import farms from 'config/constants/farms';
 import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 import { getSeedingPools } from 'utils/poolHelpers';
+import { getFarms } from 'utils/farmsHelpers';
 export const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState: {
@@ -23,10 +23,13 @@ export const userInfoSlice = createSlice({
 export const fetchUserInfoDataThunk =
   (account: string, chainId: number) => async (dispatch) => {
     const fetchPendingTEXO = async () => {
+      //TODO: Update chainId for getFarms
+      const farms = getFarms(97);
       const callsLP = farms.map((farm) => ({
         address: getOrchestratorAddress(),
         name: 'pendingTEXO',
         params: [farm.pid, account],
+        chainId,
       }));
       const seedingPools = getSeedingPools(chainId);
       const callsSP = seedingPools.map((farm) => ({

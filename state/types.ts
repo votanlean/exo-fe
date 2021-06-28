@@ -92,5 +92,5 @@ export interface State {
     pools: PoolsState
     block: BlockState
     userInfo: UserInfoState
-    fAANGpools: FAANGpoolsState,
+    fAANGpools: FAANGpoolsState
 }

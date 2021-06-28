@@ -34,7 +34,7 @@ export const useApprove = (
       setLoading(false);
       dispatch(fetchPoolsUserDataAsync(account, chainId));
       dispatch(fetchFarmUserDataAsync(account));
-      dispatch(fetchFAANGPoolsUserDataAsync(account));
+      dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
       return tx;
     } catch (e) {
       setLoading(false);

@@ -6,6 +6,8 @@ import { WithdrawDialog } from 'components/Dialogs';
 import { useUnstake } from 'hooks/useUnstake';
 
 import { useStyles } from './styles';
+import { useNetwork } from 'state/hooks';
+import { getDecimals } from 'utils/decimalsHelper';
 
 function WithdrawAction(props: any) {
   const classes = useStyles();
@@ -16,13 +18,16 @@ function WithdrawAction(props: any) {
     symbol,
     maxAmountWithdraw,
     onPoolStateChange,
+    stakingToken,
   } = data || {};
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
 
   const { onUnstake, isLoading } = useUnstake(orchestratorContract, id);
+  const { id: chainId } = useNetwork();
 
   const handleConfirmWithdraw = async (amount) => {
-    await onUnstake(amount);
+    const decimals = getDecimals(stakingToken.decimals, chainId);
+    await onUnstake(amount, decimals);
     onPoolStateChange && onPoolStateChange();
   };
 

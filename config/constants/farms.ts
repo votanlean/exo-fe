@@ -1,6 +1,6 @@
 import tokens from './tokens';
 
-const farms: any[] = [
+export const bnbFarms: any[] = [
   // {
   //   pid: 11,
   //   icon: '/static/images/Swap_tEXO-BNB.png',
@@ -14,6 +14,10 @@ const farms: any[] = [
   //   displayAllocPoint: 5000,
   //   depositFeeBP: 0,
   //   quoteToken: tokens.wbnb,
+  //   decimals: {
+  //     56: 18,
+  //     97: 18,
+  //   },
   // },
   // {
   //   pid: 12,
@@ -29,7 +33,41 @@ const farms: any[] = [
   //   displayAllocPoint: 5000,
   //   depositFeeBP: 0,
   //   quoteToken: tokens.busd,
+  //   decimals: {
+  //     56: 18,
+  //     97: 18,
+  //   },
   // },
 ];
 
-export default farms;
+export const polygonFarms: any[] = [
+  // {
+  //   pid: 10,
+  //   icon: '/static/images/Swap_tEXO-BNB.png',
+  //   symbol: 'tEXO/USDC LP',
+  //   title: 'tEXO/USDC LP',
+  //   address: {
+  //     137: '',
+  //     80001: '',
+  //   },
+  //   token: tokens.texo,
+  //   displayAllocPoint: 5000,
+  //   depositFeeBP: 0,
+  //   quoteToken: tokens.usdc,
+  // },
+  // {
+  //   pid: 11,
+  //   icon: '/static/images/Swap_tEXO-BUSD.png',
+  //   symbol: 'tEXO/wMATIC LP',
+  //   title: 'tEXO/wMATIC LP',
+  //   lpSymbol: 'tEXO-wMATIC LP',
+  //   address: {
+  //     137: '',
+  //     80001: '',
+  //   },
+  //   token: tokens.texo,
+  //   displayAllocPoint: 5000,
+  //   depositFeeBP: 0,
+  //   quoteToken: tokens.wmatic,
+  // },
+];

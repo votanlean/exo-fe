@@ -1,12 +1,16 @@
-import fAANGPools from 'config/constants/fAANGPools';
 import fAANGOrchestratorABI from '../../config/abi/FAANGOrchestrator.json';
 import erc20ABI from 'config/abi/erc20.json';
 import multicall from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import BigNumber from 'bignumber.js';
 import contracts from 'config/constants/contracts';
+import { getFAANGPools } from 'utils/poolHelpers';
 
-export const fetchFAANGPoolsAllowance = async (userAddress) => {
+export const fetchFAANGPoolsAllowance = async (
+  userAddress,
+  chainId: number,
+) => {
+  const fAANGPools = getFAANGPools(chainId);
   const calls = fAANGPools.map((p) => ({
     address: getAddress(p.stakingToken.address),
     name: 'allowance',
@@ -24,7 +28,8 @@ export const fetchFAANGPoolsAllowance = async (userAddress) => {
   );
 };
 
-export const fetchFAANGUserBalances = async (userAddress) => {
+export const fetchFAANGUserBalances = async (userAddress, chainId: number) => {
+  const fAANGPools = getFAANGPools(chainId);
   const calls = fAANGPools.map((p) => ({
     address: getAddress(p.stakingToken.address),
     name: 'balanceOf',
@@ -44,7 +49,11 @@ export const fetchFAANGUserBalances = async (userAddress) => {
   return tokenBalances;
 };
 
-export const fetchFAANGUserStakeBalances = async (userAddress) => {
+export const fetchFAANGUserStakeBalances = async (
+  userAddress,
+  chainId: number,
+) => {
+  const fAANGPools = getFAANGPools(chainId);
   const calls = fAANGPools.map((p) => ({
     address: getAddress(contracts.fAANGOrchestrator),
     name: 'userInfo',
@@ -64,7 +73,11 @@ export const fetchFAANGUserStakeBalances = async (userAddress) => {
   return stakedBalances;
 };
 
-export const fetchFAANGUserPendingRewards = async (userAddress) => {
+export const fetchFAANGUserPendingRewards = async (
+  userAddress,
+  chainId: number,
+) => {
+  const fAANGPools = getFAANGPools(chainId);
   const calls = fAANGPools.map((p) => ({
     address: getAddress(contracts.fAANGOrchestrator),
     name: 'pendingFAANG',
