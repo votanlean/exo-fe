@@ -33,7 +33,7 @@ export const useApprove = (
       );
       setLoading(false);
       dispatch(fetchPoolsUserDataAsync(account, chainId));
-      dispatch(fetchFarmUserDataAsync(account));
+      dispatch(fetchFarmUserDataAsync(account, chainId));
       dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
       return tx;
     } catch (e) {
