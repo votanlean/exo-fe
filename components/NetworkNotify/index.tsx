@@ -25,12 +25,10 @@ function index(props) {
     const dispatch = useAppDispatch();
     useEffect(()=>{
         networks.map((p)=>{
-            console.log(p.id , ' vs ', library?.networkVersion);
             if(p.id === parseInt(library?.networkVersion)){
                 dispatch(changeNetwork(p));
             }
         });
-        console.log('its work');
         setChange(true);
     },[library?.networkVersion]);
     
