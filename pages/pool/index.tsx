@@ -106,7 +106,7 @@ function Pool() {
   const { tEXOReward } = useUserInfoData();
 
   const refreshAppGlobalData = () => {
-    dispatch(fetchFarmsPublicDataAsync());
+    dispatch(fetchFarmsPublicDataAsync(chainId));
     dispatch(fetchTexoTokenDataThunk);
     dispatch(fetchOrchestratorDataThunk);
     dispatch(fetchBlockDataThunk);
@@ -115,7 +115,7 @@ function Pool() {
     dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
 
     if (account) {
-      dispatch(fetchFarmUserDataAsync(account));
+      dispatch(fetchFarmUserDataAsync(account, chainId));
       dispatch(fetchPoolsUserDataAsync(account, chainId));
       dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
       dispatch(fetchUserInfoDataThunk(account, chainId));
@@ -128,13 +128,13 @@ function Pool() {
 
   useEffect(() => {
     const updateAppDataInterval = setInterval(() => {
-      dispatch(fetchFarmsPublicDataAsync());
+      dispatch(fetchFarmsPublicDataAsync(chainId));
       dispatch(fetchTexoTokenDataThunk);
       dispatch(fetchPoolsPublicDataAsync(chainId));
       dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
 
       if (account) {
-        dispatch(fetchFarmUserDataAsync(account));
+        dispatch(fetchFarmUserDataAsync(account, chainId));
         dispatch(fetchPoolsUserDataAsync(account, chainId));
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
       }
@@ -212,7 +212,7 @@ function Pool() {
         </div>
 
         <div className={styles.lpPoolGrid}>
-          {getFarms().map((farm, index) => {
+          {getFarms(chainId).map((farm, index) => {
             let stakingTokenPrice = 0;
 
             if (allTokenPrices.data) {

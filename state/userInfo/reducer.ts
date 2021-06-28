@@ -23,8 +23,7 @@ export const userInfoSlice = createSlice({
 export const fetchUserInfoDataThunk =
   (account: string, chainId: number) => async (dispatch) => {
     const fetchPendingTEXO = async () => {
-      //TODO: Update chainId for getFarms
-      const farms = getFarms(97);
+      const farms = getFarms(chainId);
       const callsLP = farms.map((farm) => ({
         address: getOrchestratorAddress(),
         name: 'pendingTEXO',

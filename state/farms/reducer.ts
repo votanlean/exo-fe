@@ -59,35 +59,40 @@ export const farmsSlice = createSlice({
 export const { setFarmsPublicData, setFarmUserData } = farmsSlice.actions;
 
 // Thunks
-export const fetchFarmsPublicDataAsync = () => async (dispatch) => {
-  const farmsData = getFarms(97);
-  const farms = await fetchFarms(farmsData);
+export const fetchFarmsPublicDataAsync =
+  (chainId: number) => async (dispatch) => {
+    const farmsData = getFarms(chainId);
+    const farms = await fetchFarms(farmsData);
 
-  dispatch(setFarmsPublicData(farms));
-};
+    dispatch(setFarmsPublicData(farms));
+  };
 
-export const fetchFarmUserDataAsync = (account: string) => async (dispatch) => {
-  const farmsData = getFarms(97);
-  const userFarmAllowances = await fetchFarmUserAllowances(account, farmsData);
-  const userFarmTokenBalances = await fetchFarmUserTokenBalances(
-    account,
-    farmsData,
-  );
-  const userStakedBalances = await fetchFarmUserStakedBalances(
-    account,
-    farmsData,
-  );
-  const userFarmEarnings = await fetchFarmUserEarnings(account, farmsData);
+export const fetchFarmUserDataAsync =
+  (account: string, chainId: number) => async (dispatch) => {
+    const farmsData = getFarms(chainId);
+    const userFarmAllowances = await fetchFarmUserAllowances(
+      account,
+      farmsData,
+    );
+    const userFarmTokenBalances = await fetchFarmUserTokenBalances(
+      account,
+      farmsData,
+    );
+    const userStakedBalances = await fetchFarmUserStakedBalances(
+      account,
+      farmsData,
+    );
+    const userFarmEarnings = await fetchFarmUserEarnings(account, farmsData);
 
-  const arrayOfUserDataObjects = userFarmAllowances.map((_, index) => {
-    return {
-      pid: farmsData[index].pid,
-      allowance: userFarmAllowances[index],
-      tokenBalance: userFarmTokenBalances[index],
-      stakedBalance: userStakedBalances[index],
-      earnings: userFarmEarnings[index],
-    };
-  });
+    const arrayOfUserDataObjects = userFarmAllowances.map((_, index) => {
+      return {
+        pid: farmsData[index].pid,
+        allowance: userFarmAllowances[index],
+        tokenBalance: userFarmTokenBalances[index],
+        stakedBalance: userStakedBalances[index],
+        earnings: userFarmEarnings[index],
+      };
+    });
 
-  dispatch(setFarmUserData({ arrayOfUserDataObjects }));
-};
+    dispatch(setFarmUserData({ arrayOfUserDataObjects }));
+  };

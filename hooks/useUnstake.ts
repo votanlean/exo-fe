@@ -33,7 +33,7 @@ export const useUnstake = (orchestrator: Contract, pid: number) => {
         );
         setLoading(false);
         dispatch(fetchPoolsUserDataAsync(account, chainId));
-        dispatch(fetchFarmUserDataAsync(account));
+        dispatch(fetchFarmUserDataAsync(account, chainId));
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
         console.log('txHash useUnstake', txHash);
       } catch (error) {

@@ -30,7 +30,7 @@ export const useStake = (orchestrator: Contract, poolId: number) => {
         ); // will ignore ref if null
         setLoading(false);
         dispatch(fetchPoolsUserDataAsync(account, chainId));
-        dispatch(fetchFarmUserDataAsync(account));
+        dispatch(fetchFarmUserDataAsync(account, chainId));
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
         console.info(txHash);
       } catch (error) {
