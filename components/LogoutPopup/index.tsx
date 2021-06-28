@@ -1,24 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Dialog, DialogContent, Button, Typography, DialogTitle, TableCell, TableRow, Box, Collapse, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@material-ui/core';
-import { Close, ExitToApp, KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
-import { useWeb3React } from '@web3-react/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { getErrorMessage } from '../../utils/web3React';
+import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, TableCell, TableRow, Typography } from '@material-ui/core';
+import { Close, ExitToApp } from '@material-ui/icons';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import TransformIcon from '@material-ui/icons/Transform';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-import { connectorLocalStorageKey, ConnectorNames} from "../../utils/web3React";
-import { useStyles } from './styles';
-import useAuth from '../../hooks/useAuth';
-import { useNetwork } from 'state/hooks';
-import { usePools } from 'state/pools/selectors';
-import {networks, walletsConfig} from '../../config/constants/walletData';
-import { getBalanceNumber } from 'utils/formatBalance';
-import useTokenBalance from 'hooks/useTokenBalance';
-import { getAddress } from 'utils/addressHelpers';
-import { useCoinBalanceSelector } from 'state/coinBalance/selectors';
+import { useWeb3React } from '@web3-react/core';
 import useWeb3 from 'hooks/useWeb3';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useNetwork } from 'state/hooks';
+import { walletsConfig } from '../../config/constants/walletData';
+import useAuth from '../../hooks/useAuth';
+import { getErrorMessage } from '../../utils/web3React';
+import { useStyles } from './styles';
 LogoutPopup.propTypes = {
   onOpen: PropTypes.bool,
   onCloseDialog: PropTypes.func,
@@ -46,7 +38,6 @@ function LogoutPopup(props: any) {
   const web3 = useWeb3();
 
   useEffect( () => {
-    console.log('active: ', active);
     if(active){
       const bal = web3.eth.getBalance(account).then( (balance) => {
         setBalance(parseInt(balance)*0.000000000000000001);
@@ -61,14 +52,17 @@ function LogoutPopup(props: any) {
     }
   }, [error]);
   useEffect(() => {
-    const connectorId = window.localStorage.getItem(connectorLocalStorageKey) as ConnectorNames
-    walletsConfig.map((w) =>{
-      if(w.connectorName === connectorId){
-        setWallet(w.label);
-        setIcon(w.icon);
-      }
-    });
-  },[]);
+    if(typeof library?.isMetaMask !== "undefined"){
+      setWallet(walletsConfig[1].label);
+      setIcon(walletsConfig[1].icon);
+    }else if(typeof library?.bnbSign !== "undefined"){
+      setWallet(walletsConfig[2].label);
+      setIcon(walletsConfig[2].icon);
+    } else if(typeof library?.isMetaMask === "undefined" && typeof library?.bnbSign === "undefined"){
+      setWallet(walletsConfig[0].label);
+      setIcon(walletsConfig[0].icon);
+    }
+  },[account]);
     
   return (
     <Dialog
