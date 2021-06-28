@@ -161,7 +161,7 @@ export const polygonSeedingPools = [
   },
   {
     id: 3,
-    icon: '/static/images/matic-pool/USDT.jpeg',
+    icon: '/static/images/matic-pool/USDT.png',
     title: 'USDT Pool',
     stakingToken: tokens.usdt,
     earningToken: tokens.texo,
@@ -172,7 +172,7 @@ export const polygonSeedingPools = [
   },
   {
     id: 4,
-    icon: '/static/images/matic-pool/WBTC.jpeg',
+    icon: '/static/images/matic-pool/WBTC.png',
     title: 'WBTC Pool',
     stakingToken: tokens.wbtc,
     earningToken: tokens.texo,
@@ -205,7 +205,7 @@ export const polygonSeedingPools = [
   },
   {
     id: 7,
-    icon: '/static/images/matic-pool/XVS.jpeg',
+    icon: '/static/images/matic-pool/LINK.png',
     title: 'LINK Pool',
     stakingToken: tokens.link,
     earningToken: tokens.texo,
