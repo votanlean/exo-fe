@@ -11,7 +11,7 @@ import {
 import { PoolsState } from '../types';
 
 const initialState: PoolsState = {
-  data: [...getSeedingPools(80001)],
+  data: [...getSeedingPools()],
 };
 
 type Pool = any;
