@@ -33,7 +33,7 @@ function index(props) {
     },[library?.networkVersion]);
     
     
-    if(appNetwork.id !== parseInt(library?.networkVersion)){
+    if((appNetwork.id !== parseInt(library?.networkVersion)) && (typeof library?.networkVersion !== "undefined") ){
         return (
             <div className={classes.notify}>
             <Typography className={classes.p}>
