@@ -28,7 +28,7 @@ export const useHarvest = (orchestrator: Contract, poolId: number) => {
       setLoading(false);
       console.log(error);
     }
-  }, [account, dispatch, poolId, orchestrator]);
+  }, [account, dispatch, poolId, orchestrator, chainId]);
 
   return { onReward: handleHarvest, isLoading };
 };

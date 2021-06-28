@@ -23,23 +23,25 @@ export const userInfoSlice = createSlice({
 export const fetchUserInfoDataThunk =
   (account: string, chainId: number) => async (dispatch) => {
     const fetchPendingTEXO = async () => {
+      //TODO: Update chainId for getFarms
       const farms = getFarms(chainId);
       const callsLP = farms.map((farm) => ({
-        address: getOrchestratorAddress(),
+        address: getOrchestratorAddress(chainId),
         name: 'pendingTEXO',
         params: [farm.pid, account],
         chainId,
       }));
       const seedingPools = getSeedingPools(chainId);
       const callsSP = seedingPools.map((farm) => ({
-        address: getOrchestratorAddress(),
+        address: getOrchestratorAddress(chainId),
         name: 'pendingTEXO',
         params: [farm.id, account],
       }));
-      const pendingTEXOBalances = await multicall(orchestratorABI, [
-        ...callsLP,
-        ...callsSP,
-      ]);
+      const pendingTEXOBalances = await multicall(
+        orchestratorABI,
+        [...callsLP, ...callsSP],
+        chainId,
+      );
       const pendingTEXOSum = pendingTEXOBalances.reduce((accum, earning) => {
         return (
           accum +

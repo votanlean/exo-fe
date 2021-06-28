@@ -18,8 +18,8 @@ export const blockSlice = createSlice({
   },
 });
 
-export const fetchBlockDataThunk = async (dispatch) => {
-  const web3 = getWeb3NoAccount();
+export const fetchBlockDataThunk = (chainId) => async (dispatch) => {
+  const web3 = getWeb3NoAccount(chainId);
 
   const currentBlock = await web3.eth.getBlockNumber();
   dispatch(setBlockData({ currentBlock }));

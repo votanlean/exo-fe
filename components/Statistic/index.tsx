@@ -7,10 +7,11 @@ import ConnectPopup from '../ConnectPopup';
 
 import { useStyles } from './styles';
 import BigNumber from 'bignumber.js';
-import useTokenBalance from "../../hooks/useTokenBalance";
-import { getTEXOAddress } from "../../utils/addressHelpers";
-import { getBalanceNumber } from "../../utils/formatBalance";
+import useTokenBalance from '../../hooks/useTokenBalance';
+import { getTEXOAddress } from '../../utils/addressHelpers';
+import { getBalanceNumber } from '../../utils/formatBalance';
 import { normalizeTokenDecimal } from 'utils/bigNumber';
+import { useNetwork } from 'state/hooks';
 
 function calculateMarketCap(tEXOPrice, totalSupply: string) {
   if (!tEXOPrice || !totalSupply) {
@@ -23,13 +24,23 @@ function calculateMarketCap(tEXOPrice, totalSupply: string) {
   return bigNumberTotalSupply.times(bigNumberTEXOPRice).toFixed(2);
 }
 
-
 function Statistic(props) {
-  const { totalSupply, tEXOPrice, currentTEXOPerBlock, burnAmount, tvl, tEXOReward } = props;
+  const {
+    totalSupply,
+    tEXOPrice,
+    currentTEXOPerBlock,
+    burnAmount,
+    tvl,
+    tEXOReward,
+  } = props;
   const normalizedTotalSupply = normalizeTokenDecimal(totalSupply).toNumber();
-  const normalizedEmissionRate = normalizeTokenDecimal(currentTEXOPerBlock).toNumber();
+  const normalizedEmissionRate =
+    normalizeTokenDecimal(currentTEXOPerBlock).toNumber();
   const normalizedBurnAmount = normalizeTokenDecimal(burnAmount).toNumber();
-  const tEXOBalance = getBalanceNumber(useTokenBalance(getTEXOAddress()));
+  const { id: chainId } = useNetwork();
+  const tEXOBalance = getBalanceNumber(
+    useTokenBalance(getTEXOAddress(chainId)),
+  );
 
   const classes = useStyles();
   const { active } = useWeb3React();
@@ -50,7 +61,7 @@ function Statistic(props) {
           p={2}
         >
           <Typography variant="h4" className={'font-bold'}>
-          tEXO Balance
+            tEXO Balance
           </Typography>
           <Avatar
             alt="tEXO"
@@ -62,13 +73,17 @@ function Statistic(props) {
           <Typography className={classes.fadeText}>
             {active ? tEXOReward.toFixed(2) : 'LOCKED'}
           </Typography>
-          <Typography gutterBottom>~${(tEXOPrice * tEXOReward).toFixed(2)}</Typography>
+          <Typography gutterBottom>
+            ~${(tEXOPrice * tEXOReward).toFixed(2)}
+          </Typography>
 
           <Typography>tEXO in Wallet</Typography>
           <Typography className={classes.fadeText}>
-            {active ? tEXOBalance.toFixed(2): 'LOCKED'}
+            {active ? tEXOBalance.toFixed(2) : 'LOCKED'}
           </Typography>
-          <Typography gutterBottom>~${(tEXOPrice * tEXOBalance).toFixed(2)}</Typography>
+          <Typography gutterBottom>
+            ~${(tEXOPrice * tEXOBalance).toFixed(2)}
+          </Typography>
           {!active && (
             <Button
               className={classes.btn}

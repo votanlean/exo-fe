@@ -6,20 +6,20 @@ import { BIG_TEN } from 'utils/bigNumber';
 import { getAddress } from 'utils/addressHelpers';
 import contracts from 'config/constants/contracts';
 
-const fetchFarms = async (farmsToFetch: any[]) => {
+const fetchFarms = async (farmsToFetch: any[], chainId?: number) => {
   const data = await Promise.all(
     farmsToFetch.map(async (farmConfig) => {
-      const lpAddress = getAddress(farmConfig.address);
+      const lpAddress = getAddress(farmConfig.address, chainId);
       const calls = [
         // Balance of token in the LP contract
         {
-          address: getAddress(farmConfig.token.address),
+          address: getAddress(farmConfig.token.address, chainId),
           name: 'balanceOf',
           params: [lpAddress],
         },
         // Balance of quote token on LP contract
         {
-          address: getAddress(farmConfig.quoteToken.address),
+          address: getAddress(farmConfig.quoteToken.address, chainId),
           name: 'balanceOf',
           params: [lpAddress],
         },
@@ -27,7 +27,7 @@ const fetchFarms = async (farmsToFetch: any[]) => {
         {
           address: lpAddress,
           name: 'balanceOf',
-          params: [getAddress(contracts.orchestrator)],
+          params: [getAddress(contracts.orchestrator, chainId)],
         },
         // Total supply of LP tokens
         {
@@ -36,12 +36,12 @@ const fetchFarms = async (farmsToFetch: any[]) => {
         },
         // Token decimals
         {
-          address: getAddress(farmConfig.token.address),
+          address: getAddress(farmConfig.token.address, chainId),
           name: 'decimals',
         },
         // Quote token decimals
         {
-          address: getAddress(farmConfig.quoteToken.address),
+          address: getAddress(farmConfig.quoteToken.address, chainId),
           name: 'decimals',
         },
       ];
@@ -53,7 +53,7 @@ const fetchFarms = async (farmsToFetch: any[]) => {
         lpTotalSupply,
         tokenDecimals,
         quoteTokenDecimals,
-      ] = await multicall(erc20, calls);
+      ] = await multicall(erc20, calls, chainId);
 
       // Ratio in % of LP tokens that are staked in the MC, vs the total number in circulation
       const lpTokenRatio = new BigNumber(lpTokenBalanceMC).div(
@@ -75,17 +75,21 @@ const fetchFarms = async (farmsToFetch: any[]) => {
       // Total staked in LP, in quote token value
       const lpTotalInQuoteToken = quoteTokenAmountMc.times(new BigNumber(2));
 
-      const [info, totalAllocPoint] = await multicall(orchestratorABI, [
-        {
-          address: getAddress(contracts.orchestrator),
-          name: 'poolInfo',
-          params: [farmConfig.pid],
-        },
-        {
-          address: getAddress(contracts.orchestrator),
-          name: 'totalAllocPoint',
-        },
-      ]);
+      const [info, totalAllocPoint] = await multicall(
+        orchestratorABI,
+        [
+          {
+            address: getAddress(contracts.orchestrator, chainId),
+            name: 'poolInfo',
+            params: [farmConfig.pid],
+          },
+          {
+            address: getAddress(contracts.orchestrator, chainId),
+            name: 'totalAllocPoint',
+          },
+        ],
+        chainId,
+      );
 
       const allocPoint = new BigNumber(info.allocPoint._hex);
       const poolWeight = allocPoint.div(new BigNumber(totalAllocPoint));

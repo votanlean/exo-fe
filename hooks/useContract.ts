@@ -6,33 +6,38 @@ import {
   getOrchestratorContract,
   getTEXOContract,
 } from 'utils/contractHelpers';
+import { useNetwork } from 'state/hooks';
 
 /**
  * Helper hooks to get specific contracts (by ABI)
  */
 
 export const useOrchestratorContract = () => {
+  const { id: chainId } = useNetwork()
   const web3 = useWeb3();
 
-  return useMemo(() => getOrchestratorContract(web3), [web3]);
+  return useMemo(() => getOrchestratorContract(web3, chainId), [web3]);
 };
 
 export const useFAANGOrchestratorContract = () => {
+  const { id: chainId } = useNetwork()
   const web3 = useWeb3();
 
-  return useMemo(() => getFAANGOrchestratorContract(web3), [web3]);
+  return useMemo(() => getFAANGOrchestratorContract(web3, chainId), [web3]);
 };
 
 export const useTEXOContract = () => {
+  const { id: chainId } = useNetwork()
   const web3 = useWeb3();
 
-  return useMemo(() => getTEXOContract(web3), [web3]);
+  return useMemo(() => getTEXOContract(web3, chainId), [web3]);
 };
 
 export const useERC20 = (address: string) => {
+  const { id: chainId } = useNetwork()
   const web3 = useWeb3();
 
-  return useMemo(() => getBep20Contract(address, web3), [address, web3]);
+  return useMemo(() => getBep20Contract(address, web3, chainId), [address, web3]);
 };
 //
 // /**

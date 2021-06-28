@@ -17,6 +17,7 @@ import {
   StakeAction,
   WithdrawAction,
 } from 'components/PoolActions';
+import { useNetwork } from 'state/hooks';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -58,8 +59,8 @@ function FarmItem(props: any) {
     stakedBalance,
     tokenBalance,
   } = userData;
-
-  const tokenAddress = getAddress(address);
+  const { id: chainId } = useNetwork();
+  const tokenAddress = getAddress(address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
 
   const dataButton = {

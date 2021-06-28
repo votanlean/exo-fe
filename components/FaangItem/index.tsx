@@ -12,6 +12,7 @@ import {
   WithdrawAction,
   ClaimRewardsAction,
 } from 'components/PoolActions';
+import { useNetwork } from 'state/hooks';
 
 function FaangItem({ pool, account }) {
   const {
@@ -25,7 +26,8 @@ function FaangItem({ pool, account }) {
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
     userData;
-  const tokenAddress = getAddress(stakingToken.address);
+  const { id: chainId } = useNetwork();
+  const tokenAddress = getAddress(stakingToken.address, chainId);
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
 

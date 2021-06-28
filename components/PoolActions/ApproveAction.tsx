@@ -8,19 +8,20 @@ import { useERC20 } from 'hooks/useContract';
 import { getAddress } from 'utils/addressHelpers';
 
 import { useStyles } from './styles';
+import { useNetwork } from 'state/hooks';
 
 function ApproveAction(props: any) {
   const classes = useStyles();
   const { disabled, data, buttonClasses } = props || {};
   const { stakingToken, orchestratorContract, id, account } = data || {};
   const [openPopup, setOpenPopup] = useState(false);
-
+  const { id: chainId } = useNetwork();
   const handleConnectPopup = () => {
     setOpenPopup(!openPopup);
   };
 
   const tokenContract = useERC20(
-    stakingToken.address ? getAddress(stakingToken.address) : '',
+    stakingToken.address ? getAddress(stakingToken.address, chainId) : '',
   );
 
   const { onApprove, isLoading } = useApprove(
