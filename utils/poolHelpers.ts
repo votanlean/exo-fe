@@ -6,9 +6,6 @@ import {
 import { bnbFAANGPools, polygonFAANGPools } from 'config/constants/fAANGPools';
 
 export const getSeedingPools = (chainId?: number): Array<any> => {
-  if (chainId === 56 || chainId === 97) {
-    return bnbSeedingPools;
-  }
   if (chainId === 137 || chainId === 80001) {
     return polygonSeedingPools;
   }
@@ -16,9 +13,6 @@ export const getSeedingPools = (chainId?: number): Array<any> => {
 };
 
 export const getFAANGPools = (chainId?: number): Array<any> => {
-  if (chainId === 56 || chainId === 97) {
-    return bnbFAANGPools;
-  }
   if (chainId === 137 || chainId === 80001) {
     return polygonFAANGPools;
   }
