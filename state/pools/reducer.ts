@@ -11,7 +11,7 @@ import {
 import { PoolsState } from '../types';
 
 const initialState: PoolsState = {
-  data: [...getSeedingPools()],
+  data: getSeedingPools(),
 };
 
 type Pool = any;
@@ -59,12 +59,7 @@ export const PoolsSlice = createSlice({
   reducers: {
     setPoolsPublicData: (state, action) => {
       const livePoolsData: Pool[] = action.payload;
-      state.data = state.data.map((pool) => {
-        const livePoolData = livePoolsData.find(
-          (entry) => entry.id === pool.id,
-        );
-        return { ...pool, ...livePoolData };
-      });
+      state.data = livePoolsData;
     },
     setPoolsUserData: (state, action) => {
       const userData = action.payload;
