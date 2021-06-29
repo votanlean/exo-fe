@@ -24,6 +24,7 @@ import {
   StakeAction,
   WithdrawAction,
 } from 'components/PoolActions';
+import { useNetwork } from 'state/hooks';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -66,7 +67,8 @@ function PoolRow(props: any) {
     userData;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
-  const tokenAddress = getAddress(stakingToken.address);
+  const { id: chainId } = useNetwork();
+  const tokenAddress = getAddress(stakingToken.address, chainId);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   const poolTexoPerBlock = new BigNumber(tEXOPerBlock)
     .times(new BigNumber(allocPoint))

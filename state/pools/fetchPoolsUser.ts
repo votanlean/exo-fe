@@ -9,11 +9,11 @@ import { getSeedingPools } from 'utils/poolHelpers';
 export const fetchPoolsAllowance = async (userAddress, chainId) => {
   let seedingPools = getSeedingPools(chainId);
   const calls = seedingPools.map((p) => ({
-    address: getAddress(p.stakingToken.address),
+    address: getAddress(p.stakingToken.address, chainId),
     name: 'allowance',
-    params: [userAddress, getAddress(contracts.orchestrator)],
+    params: [userAddress, getAddress(contracts.orchestrator, chainId)],
   }));
-  const allowances = await multicall(erc20ABI, calls);
+  const allowances = await multicall(erc20ABI, calls, chainId);
 
   return seedingPools.reduce(
     (acc, pool, index) => ({
@@ -27,12 +27,12 @@ export const fetchPoolsAllowance = async (userAddress, chainId) => {
 export const fetchUserBalances = async (userAddress, chainId) => {
   const seedingPools = getSeedingPools(chainId);
   const calls = seedingPools.map((p) => ({
-    address: getAddress(p.stakingToken.address),
+    address: getAddress(p.stakingToken.address, chainId),
     name: 'balanceOf',
     params: [userAddress],
   }));
 
-  const tokenBalancesRaw = await multicall(erc20ABI, calls);
+  const tokenBalancesRaw = await multicall(erc20ABI, calls, chainId);
 
   const tokenBalances = seedingPools.reduce(
     (acc, pool, index) => ({
@@ -48,12 +48,12 @@ export const fetchUserBalances = async (userAddress, chainId) => {
 export const fetchUserStakeBalances = async (userAddress, chainId) => {
   const seedingPools = getSeedingPools(chainId);
   const calls = seedingPools.map((p) => ({
-    address: getAddress(contracts.orchestrator),
+    address: getAddress(contracts.orchestrator, chainId),
     name: 'userInfo',
     params: [p.id, userAddress],
   }));
 
-  const userInfo = await multicall(orchestratorABI, calls);
+  const userInfo = await multicall(orchestratorABI, calls, chainId);
 
   const stakedBalances = seedingPools.reduce(
     (acc, pool, index) => ({
@@ -69,12 +69,12 @@ export const fetchUserStakeBalances = async (userAddress, chainId) => {
 export const fetchUserPendingRewards = async (userAddress, chainId) => {
   const seedingPools = getSeedingPools(chainId);
   const calls = seedingPools.map((p) => ({
-    address: getAddress(contracts.orchestrator),
+    address: getAddress(contracts.orchestrator, chainId),
     name: 'pendingTEXO',
     params: [p.id, userAddress],
   }));
 
-  const res = await multicall(orchestratorABI, calls);
+  const res = await multicall(orchestratorABI, calls, chainId);
 
   const pendingRewards = seedingPools.reduce(
     (acc, pool, index) => ({

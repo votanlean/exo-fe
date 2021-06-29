@@ -107,9 +107,9 @@ function Pool() {
 
   const refreshAppGlobalData = () => {
     dispatch(fetchFarmsPublicDataAsync(chainId));
-    dispatch(fetchTexoTokenDataThunk);
-    dispatch(fetchOrchestratorDataThunk);
-    dispatch(fetchBlockDataThunk);
+    dispatch(fetchTexoTokenDataThunk(chainId));
+    dispatch(fetchOrchestratorDataThunk(chainId));
+    dispatch(fetchBlockDataThunk(chainId));
     dispatch(fetchPoolsPublicDataAsync(chainId));
     dispatch(fetchAppPrices);
     dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
@@ -122,14 +122,14 @@ function Pool() {
     }
   };
 
-  useEffect(refreshAppGlobalData, [account, dispatch]);
+  useEffect(refreshAppGlobalData, [account, dispatch, chainId]);
 
   const countDownInterval = useRef(null);
 
   useEffect(() => {
     const updateAppDataInterval = setInterval(() => {
       dispatch(fetchFarmsPublicDataAsync(chainId));
-      dispatch(fetchTexoTokenDataThunk);
+      dispatch(fetchTexoTokenDataThunk(chainId));
       dispatch(fetchPoolsPublicDataAsync(chainId));
       dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
 
@@ -143,7 +143,7 @@ function Pool() {
     return () => {
       clearInterval(updateAppDataInterval);
     };
-  }, []);
+  }, [chainId]);
 
   useEffect(() => {
     if (!canClaimRewardsBlock || !currentBlock || countDownInterval.current) {
@@ -217,7 +217,9 @@ function Pool() {
 
             if (allTokenPrices.data) {
               stakingTokenPrice =
-                allTokenPrices.data[getAddress(farm.quoteToken.address)];
+                allTokenPrices.data[
+                  getAddress(farm.quoteToken.address, chainId)
+                ];
             }
 
             return (
@@ -292,7 +294,9 @@ function Pool() {
 
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
-                    allTokenPrices.data[getAddress(pool.stakingToken.address)];
+                    allTokenPrices.data[
+                      getAddress(pool.stakingToken.address, chainId)
+                    ];
                 }
                 return (
                   <PoolRow

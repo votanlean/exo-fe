@@ -12,12 +12,12 @@ export const fetchFAANGPoolsAllowance = async (
 ) => {
   const fAANGPools = getFAANGPools(chainId);
   const calls = fAANGPools.map((p) => ({
-    address: getAddress(p.stakingToken.address),
+    address: getAddress(p.stakingToken.address, chainId),
     name: 'allowance',
-    params: [userAddress, getAddress(contracts.fAANGOrchestrator)],
+    params: [userAddress, getAddress(contracts.fAANGOrchestrator, chainId)],
   }));
 
-  const allowances = await multicall(erc20ABI, calls);
+  const allowances = await multicall(erc20ABI, calls, chainId);
 
   return fAANGPools.reduce(
     (acc, pool, index) => ({
@@ -31,12 +31,12 @@ export const fetchFAANGPoolsAllowance = async (
 export const fetchFAANGUserBalances = async (userAddress, chainId: number) => {
   const fAANGPools = getFAANGPools(chainId);
   const calls = fAANGPools.map((p) => ({
-    address: getAddress(p.stakingToken.address),
+    address: getAddress(p.stakingToken.address, chainId),
     name: 'balanceOf',
     params: [userAddress],
   }));
 
-  const tokenBalancesRaw = await multicall(erc20ABI, calls);
+  const tokenBalancesRaw = await multicall(erc20ABI, calls, chainId);
 
   const tokenBalances = fAANGPools.reduce(
     (acc, pool, index) => ({
@@ -55,12 +55,12 @@ export const fetchFAANGUserStakeBalances = async (
 ) => {
   const fAANGPools = getFAANGPools(chainId);
   const calls = fAANGPools.map((p) => ({
-    address: getAddress(contracts.fAANGOrchestrator),
+    address: getAddress(contracts.fAANGOrchestrator, chainId),
     name: 'userInfo',
     params: [p.id, userAddress],
   }));
 
-  const userInfo = await multicall(fAANGOrchestratorABI, calls);
+  const userInfo = await multicall(fAANGOrchestratorABI, calls, chainId);
 
   const stakedBalances = fAANGPools.reduce(
     (acc, pool, index) => ({
@@ -79,12 +79,12 @@ export const fetchFAANGUserPendingRewards = async (
 ) => {
   const fAANGPools = getFAANGPools(chainId);
   const calls = fAANGPools.map((p) => ({
-    address: getAddress(contracts.fAANGOrchestrator),
+    address: getAddress(contracts.fAANGOrchestrator, chainId),
     name: 'pendingFAANG',
     params: [p.id, userAddress],
   }));
 
-  const res = await multicall(fAANGOrchestratorABI, calls);
+  const res = await multicall(fAANGOrchestratorABI, calls, chainId);
 
   const pendingRewards = fAANGPools.reduce(
     (acc, pool, index) => ({

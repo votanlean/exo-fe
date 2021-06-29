@@ -21,20 +21,20 @@ export const texoTokenSlice = createSlice({
   },
 });
 
-export const fetchTexoTokenDataThunk = async (dispatch) => {
+export const fetchTexoTokenDataThunk = (chainId) => async (dispatch) => {
   const calls = [
     {
-      address: getAddress(tokens.texo.address),
+      address: getAddress(tokens.texo.address, chainId),
       name: 'totalSupply',
     },
     {
-      address: getAddress(tokens.texo.address),
+      address: getAddress(tokens.texo.address, chainId),
       name: 'balanceOf',
-      params: [getAddress(contracts.burn)],
+      params: [getAddress(contracts.burn, chainId)],
     },
   ];
 
-  const texoTokenMultiData = await multicall(erc20ABI, calls);
+  const texoTokenMultiData = await multicall(erc20ABI, calls, chainId);
   const [totalSupply, tEXOBurned] = texoTokenMultiData;
 
   dispatch(

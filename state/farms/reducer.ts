@@ -59,30 +59,27 @@ export const farmsSlice = createSlice({
 export const { setFarmsPublicData, setFarmUserData } = farmsSlice.actions;
 
 // Thunks
-export const fetchFarmsPublicDataAsync =
-  (chainId: number) => async (dispatch) => {
-    const farmsData = getFarms(chainId);
-    const farms = await fetchFarms(farmsData);
+export const fetchFarmsPublicDataAsync = (chainId) => async (dispatch) => {
+  const farmsData = getFarms(chainId);
+  const farms = await fetchFarms(farmsData, chainId);
 
     dispatch(setFarmsPublicData(farms));
   };
 
-export const fetchFarmUserDataAsync =
-  (account: string, chainId: number) => async (dispatch) => {
-    const farmsData = getFarms(chainId);
-    const userFarmAllowances = await fetchFarmUserAllowances(
-      account,
-      farmsData,
-    );
-    const userFarmTokenBalances = await fetchFarmUserTokenBalances(
-      account,
-      farmsData,
-    );
-    const userStakedBalances = await fetchFarmUserStakedBalances(
-      account,
-      farmsData,
-    );
-    const userFarmEarnings = await fetchFarmUserEarnings(account, farmsData);
+export const fetchFarmUserDataAsync = (account: string, chainId?: number) => async (dispatch) => {
+  const farmsData = getFarms(chainId);
+  const userFarmAllowances = await fetchFarmUserAllowances(account, farmsData, chainId);
+  const userFarmTokenBalances = await fetchFarmUserTokenBalances(
+    account,
+    farmsData,
+    chainId
+  );
+  const userStakedBalances = await fetchFarmUserStakedBalances(
+    account,
+    farmsData,
+    chainId
+  );
+  const userFarmEarnings = await fetchFarmUserEarnings(account, farmsData, chainId);
 
     const arrayOfUserDataObjects = userFarmAllowances.map((_, index) => {
       return {

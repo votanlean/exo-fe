@@ -17,7 +17,7 @@ export const usePools = (): Pool[] => {
     if (account) {
       dispatch(fetchPoolsUserDataAsync(account, chainId));
     }
-  }, [account, dispatch, fastRefresh]);
+  }, [account, dispatch, fastRefresh,chainId]);
 
   const pools = useSelector((state: State) => state.pools.data);
   return pools.map(transformPool);

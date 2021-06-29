@@ -2,12 +2,12 @@ import { ConnectorNames } from '../../utils/web3React';
 
 export const networks = [
   {
-    id: 56,
+    id: 97,
     name: 'Binance',
     icon: '/static/images/wallets/binance.svg',
     type: 'binance',
     iconDisable: '/static/images/wallets/binance-disabled.svg',
-    rpcUrl: 'https://bsc-dataseed.binance.org',
+    rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
     symbol: 'BNB',
     blockExplorerUrl: 'https://bscscan.com/',
     decimals: 18
@@ -18,7 +18,7 @@ export const networks = [
     icon: '/static/images/wallets/polygon.svg',
     type: 'polygon',
     iconDisable: '/static/images/wallets/polygon-disabled.svg',
-    rpcUrl: 'https://rpc-mainnet.matic.network',
+    rpcUrl: 'https://rpc-mumbai.matic.today/',
     symbol: 'MATIC',
     blockExplorerUrl: 'https://polygonscan.com/',
     decimals: 6

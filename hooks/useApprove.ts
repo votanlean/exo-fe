@@ -40,7 +40,7 @@ export const useApprove = (
       setLoading(false);
       return false;
     }
-  }, [account, dispatch, stakeTokenContract, orchestratorContract, poolId]);
+  }, [account, dispatch, stakeTokenContract, orchestratorContract, poolId, chainId]);
 
   return { onApprove: handleApprove, isLoading };
 };

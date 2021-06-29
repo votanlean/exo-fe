@@ -11,13 +11,17 @@ export const fetchPoolsTotalStaking = async (chainId) => {
   const seedingPools = getSeedingPools(chainId);
   const seedingPoolCalls = seedingPools.map((seedingPool) => {
     return {
-      address: getAddress(seedingPool.stakingToken.address),
+      address: getAddress(seedingPool.stakingToken.address, chainId),
       name: 'balanceOf',
-      params: [getAddress(contracts.orchestrator)],
+      params: [getAddress(contracts.orchestrator, chainId)],
     };
   });
 
-  const seedingPoolsTotalStaked = await multicall(tEXOABI, seedingPoolCalls);
+  const seedingPoolsTotalStaked = await multicall(
+    tEXOABI,
+    seedingPoolCalls,
+    chainId,
+  );
 
   return seedingPools.map((p, index) => ({
     ...p,
@@ -28,13 +32,14 @@ export const fetchPoolsTotalStaking = async (chainId) => {
 export const fetchPoolsVolatileInfo = async (chainId) => {
   const seedingPools = getSeedingPools(chainId);
   const seedingPoolCalls = seedingPools.map((seedingPool) => ({
-    address: getAddress(contracts.orchestrator),
+    address: getAddress(contracts.orchestrator, chainId),
     name: 'poolInfo',
     params: [seedingPool.id],
   }));
   const seedingPoolsVolatileInfo = await multicall(
     orchestratorABI,
     seedingPoolCalls,
+    chainId,
   );
 
   return seedingPools.map((p, index) => ({

@@ -172,7 +172,7 @@ export const polygonSeedingPools = [
   },
   {
     id: 4,
-    icon: '/static/images/matic-pool/WBTC.png',
+    icon: '/static/images/matic-pool/wBTC.png',
     title: 'WBTC Pool',
     stakingToken: tokens.wbtc,
     earningToken: tokens.texo,

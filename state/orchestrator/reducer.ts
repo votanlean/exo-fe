@@ -24,19 +24,23 @@ export const orchestratorSlice = createSlice({
   },
 });
 
-export const fetchOrchestratorDataThunk = async (dispatch) => {
+export const fetchOrchestratorDataThunk = (chainId) => async (dispatch) => {
   const calls = [
     {
-      address: getAddress(contracts.orchestrator),
+      address: getAddress(contracts.orchestrator, chainId),
       name: 'tEXOPerBlock',
     },
     {
-      address: getAddress(contracts.orchestrator),
+      address: getAddress(contracts.orchestrator, chainId),
       name: 'totalAllocPoint',
     },
   ];
 
-  const orchestratorMultiData = await multicall(orchestratorABI, calls);
+  const orchestratorMultiData = await multicall(
+    orchestratorABI,
+    calls,
+    chainId,
+  );
   const [tEXOPerBlock, totalAllocPoint] = orchestratorMultiData;
 
   dispatch(

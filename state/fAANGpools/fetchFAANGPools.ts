@@ -10,13 +10,17 @@ export const fetchFAANGPoolsTotalStaking = async (chainId: number) => {
   const fAANGPools = getFAANGPools(chainId);
   const fAANGPoolCalls = fAANGPools.map((pool) => {
     return {
-      address: getAddress(pool.stakingToken.address),
+      address: getAddress(pool.stakingToken.address, chainId),
       name: 'balanceOf',
-      params: [getAddress(contracts.fAANGOrchestrator)],
+      params: [getAddress(contracts.fAANGOrchestrator, chainId)],
     };
   });
 
-  const fAANGPoolsTotalStaked = await multicall(fAANGABI, fAANGPoolCalls);
+  const fAANGPoolsTotalStaked = await multicall(
+    fAANGABI,
+    fAANGPoolCalls,
+    chainId,
+  );
   return fAANGPools.map((p, index) => ({
     ...p,
     totalStaked: new BigNumber(fAANGPoolsTotalStaked[index]).toJSON(),
@@ -27,7 +31,7 @@ export const fetchFAANGPoolsTotalStaking = async (chainId: number) => {
 export const fetchFAANGPoolsVolatileInfo = async (chainId: number) => {
   const fAANGPools = getFAANGPools(chainId);
   const fAANGPoolCalls = fAANGPools.map((pool) => ({
-    address: getAddress(contracts.fAANGOrchestrator),
+    address: getAddress(contracts.fAANGOrchestrator, chainId),
     name: 'poolInfo',
     params: [pool.id],
   }));
@@ -35,6 +39,7 @@ export const fetchFAANGPoolsVolatileInfo = async (chainId: number) => {
   const fAANGPoolsVolatileInfo = await multicall(
     orchestratorABI,
     fAANGPoolCalls,
+    chainId,
   );
 
   return fAANGPools.map((p, index) => ({
