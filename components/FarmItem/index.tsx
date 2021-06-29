@@ -92,7 +92,7 @@ function FarmItem(props: any) {
     farmWeight,
     tEXOPrice,
     lpTotalInQuoteToken,
-    normalizeTokenDecimal(tEXOPerBlock),
+    normalizeTokenDecimal(tEXOPerBlock, decimals[chainId]),
   );
 
   const toggleDisplayDetails = () => {
@@ -171,7 +171,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(stakedBalance).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(stakedBalance, decimals[chainId]).toNumber().toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
@@ -186,13 +186,13 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(pendingReward).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(pendingReward, decimals[chainId]).toNumber().toFixed(4)}{' '}
                     tEXO
                   </p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(totalStaked, decimals[chainId]).toNumber().toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
@@ -201,7 +201,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(tokenBalance).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(tokenBalance, decimals[chainId]).toNumber().toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>

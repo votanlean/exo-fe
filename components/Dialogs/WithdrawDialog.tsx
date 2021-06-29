@@ -12,6 +12,8 @@ import {
 import NumberFormat from 'react-number-format';
 import { normalizeTokenDecimal } from 'utils/bigNumber';
 import Button from 'components/Button';
+import { useNetwork } from 'state/hooks';
+import { getDecimals } from 'utils/decimalsHelper';
 
 const useStyles = makeStyles((theme) => {
   const augmentBlue = theme.palette.augmentColor({ main: '#007EF3' });
@@ -94,19 +96,23 @@ export const WithdrawDialog = (props: any) => {
     onClose,
     onConfirm,
     isLoading,
+    decimals,
   } = props || {};
   const classes: any = useStyles();
   const [amount, setAmount] = useState(0);
   const [disableButton, setDisbaleButton] = useState(false);
 
   const isDisabled = false && (disableButton || !amount || amount > maxAmount);
+  const { id: chainId } = useNetwork();
+  const decimal = getDecimals(decimals, chainId);
 
   const onChangeAmount = (e) => {
     const value = e.target.value;
+    const maxAmountConverted = normalizeTokenDecimal(maxAmount, +decimal).toNumber();
     if (value >= 0) {
-      setAmount(e.target.value);
-      if (e.target.value >= maxAmount) {
-        setAmount(maxAmount);
+      setAmount(value);
+      if (value >= maxAmountConverted) {
+        setAmount(maxAmountConverted);
       }
     } else {
       setAmount(0);
@@ -119,7 +125,7 @@ export const WithdrawDialog = (props: any) => {
   };
 
   const onClickMax = () => {
-    setAmount(normalizeTokenDecimal(maxAmount).toNumber());
+    setAmount(normalizeTokenDecimal(maxAmount, +decimal).toNumber());
   };
 
   const onClickConfirm = async () => {
@@ -150,7 +156,7 @@ export const WithdrawDialog = (props: any) => {
             label={title}
             value={amount}
             onChange={onChangeAmount}
-            helperText={`Rewards: ${unit} ${normalizeTokenDecimal(maxAmount)}`}
+            helperText={`Rewards: ${unit} ${normalizeTokenDecimal(maxAmount, +decimal)}`}
             fullWidth
             placeholder={unit}
             FormHelperTextProps={{
