@@ -24,7 +24,7 @@ export const orchestratorSlice = createSlice({
   },
 });
 
-export const fetchOrchestratorDataThunk = (chainId) => async (dispatch) => {
+export const fetchOrchestratorDataThunk = (chainId, network: Network) => async (dispatch) => {
   const calls = [
     {
       address: getAddress(contracts.orchestrator, chainId),
@@ -47,12 +47,12 @@ export const fetchOrchestratorDataThunk = (chainId) => async (dispatch) => {
     setOrchestratorData({
       tEXOPerBlock: tEXOPerBlock[0].toString(),
       totalAllocPoint: totalAllocPoint[0].toString(),
-      seedingStartBlock: new BN(parseInt(process.env.START_BLOCK)).toString(), // startBlock
+      seedingStartBlock: new BN(parseInt(network.startBlock)).toString(), // startBlock
       canClaimRewardsBlock: new BN(
-        parseInt(process.env.START_BLOCK) + 28800 * 5 - 1200,
+        parseInt(network.startBlock) + 28800 * 5 - 1200,
       ).toString(), //after 5 days of startBlock
       seedingFinishBlock: new BN(
-        parseInt(process.env.START_BLOCK) + 28800 * 5,
+        parseInt(network.startBlock) + 28800 * 5,
       ).toString(), //after 5 days of startBlock
     }),
   );

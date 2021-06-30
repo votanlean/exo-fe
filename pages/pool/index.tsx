@@ -104,11 +104,12 @@ function Pool() {
     seedingFinishBlock,
   } = useOrchestratorData();
   const { tEXOReward } = useUserInfoData();
+  const network = useNetwork();
 
   const refreshAppGlobalData = () => {
     dispatch(fetchFarmsPublicDataAsync(chainId));
     dispatch(fetchTexoTokenDataThunk(chainId));
-    dispatch(fetchOrchestratorDataThunk(chainId));
+    dispatch(fetchOrchestratorDataThunk(chainId, network));
     dispatch(fetchBlockDataThunk(chainId));
     dispatch(fetchPoolsPublicDataAsync(chainId));
     dispatch(fetchAppPrices);
