@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, TableCell, TableRow, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Table, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import { Close, ExitToApp } from '@material-ui/icons';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { useWeb3React } from '@web3-react/core';
@@ -83,42 +83,47 @@ function LogoutPopup(props: any) {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <TableRow className={classes.firstRow}>
-            <TableCell style={{ padding: '24px 16px' }} component="th" scope="row">
-              <Box display="flex" alignItems="center">
-                <img src='/static/images/Account_icon.png' alt='metamask-logo' style={{ color: '#fff',borderRadius: '70px',width: '100px',}}/>
-              </Box>
-            </TableCell>
-            <TableCell align="left" className={classes.acountInfo}>
-              <Typography variant="caption">
-                Balance
-              </Typography >
-              <Typography variant="h6" className={classes.label}>
-                {balance.toFixed(4)} {symbol}
-              </Typography>
-            </TableCell>
-            
-            <TableCell align="left" className={classes.acountInfo}>
-              <Typography variant="caption">
-                Network
-              </Typography >
-              <Typography variant="h6" className={classes.label}>
-                {networkName}
-              </Typography>
-            </TableCell>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow className={classes.firstRow}>
+              <TableCell className={classes.AccImgCell} >
+                <Box display="flex" alignItems="center">
+                  <img src='/static/images/Account_icon.png' alt='metamask-logo' className={classes.accountImage} />
+                </Box>
+              </TableCell>
+              <TableCell align="left" className={classes.acountInfo}>
+                <Typography variant="caption">
+                  Balance
+                </Typography >
+                <Typography variant="h6" className={classes.label}>
+                  {balance.toFixed(4)} {symbol}
+                </Typography>
+              </TableCell>
+              
+              <TableCell align="left" className={classes.acountInfo}>
+                <Typography variant="caption">
+                  Network
+                </Typography >
+                <Typography variant="h6" className={classes.label}>
+                  {networkName}
+                </Typography>
+              </TableCell>
 
-            <TableCell align="left" className={classes.acountInfo}>
-              <Typography variant="caption">
-                Wallet
-              </Typography >
-              <Typography variant="h6" className={classes.label}>
-                {wallet}
-              </Typography>
-            </TableCell>
-          </TableRow>
-          <Box display="flex" alignItems="center" className={classes.accountAddress}>
+              <TableCell align="left" className={classes.acountInfo}>
+                <Typography variant="caption">
+                  Wallet
+                </Typography >
+                <Typography variant="h6" className={classes.label}>
+                  {wallet}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+        </Table>
+          <Box display="flex" alignItems="center" className={classes.accountAddressBox}>
             <img src={icon} alt='logo' style={{width: '24px', marginRight: '5px', borderRadius: '20px'}}/>
-            {account}
+            <Typography className={classes.accountAddress}>{account}</Typography>
+            <Typography className={classes.subAccountAddress}>{`${account.substring(0, 12)}...${account.substring(account.length - 4)}`}</Typography>
           </Box>
         <Box display="flex" alignItems="center" style={{marginTop: '20px'}}>
         <CopyToClipboard text={account}>
