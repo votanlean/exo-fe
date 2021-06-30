@@ -1,6 +1,19 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
+
+  const theme = createMuiTheme({
+    breakpoints: {
+      values: {
+        xs: 300,
+        sm: 769,
+        md: 960,
+        lg: 1280,
+        xl: 1920,
+      },
+    },
+  });
+
   return {
     accountListItem: {
       width: '435.953px',
@@ -9,42 +22,65 @@ const useStyles = makeStyles((theme) => {
       borderRadius: '20px'
     },
     acountInfo: {
-      minWidth: '140px'
+      width: '80px',
     },
 
-    accountListButton: {
-      display: 'flex',
-      width: '100%', 
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      borderRadius: '16px',
-      color: '#fff', 
-      marginTop: '10px', 
-      backgroundColor: '#007EF3',
-      textTransform: 'capitalize',
-    },
+    
     firstRow: {
       backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmq2trOAsHP4xdRuwJCq0kizbC4ge-Su3ZRzNeOmDEafDUueLVv4lmBL-NfpPQB7vxZ04&usqp=CAU")`,
       color: '#fff',
-      minWidth: '600px'
+      width: '100%',
     },
     
-    accountAddress: {
+    table: {
+      width: '100%'
+    },
+
+    accountAddressBox: {
       maxWidth: '100%',
       borderRadius: '16px',
       backgroundColor: '#6a98c9',
       marginTop: '15px',
-      fontSize: '1.15rem',
       color: '#fff',
       padding: '10px 20px',
     },
+    accountAddress: {
+      fontSize: '1.15rem',
+      width: '100%',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none'
+			}
+    },
+    subAccountAddress: {
+      fontSize: '1.15rem',
+      display: 'none',
+      [theme.breakpoints.down('xs')]: {
+        display: 'block'
+			}
+    },
+
+    AccImgCell: {
+      [theme.breakpoints.down('xs')]: {
+        display: "none"
+			}
+    },
+    
+    accountImage:{
+      color: '#fff',
+      borderRadius: '70px',
+      padding: '24px 16px',
+      width: '80px',
+      [theme.breakpoints.down('xs')]: {
+				width: "50px",
+			}
+    },
+
     paper: {
-      width: 'auto',
-      minWidth: '700px',
       borderRadius: '24px',
       background: 'linear-gradient(180deg, #0f0f0f 0%, #103c5b 100%)',
       paddingBottom: '15px',
       border: '1px solid rgb(161, 169, 214)',
+      
     },
     button: {
       width: '100%',
