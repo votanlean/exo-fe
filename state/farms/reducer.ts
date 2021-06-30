@@ -30,14 +30,7 @@ export const farmsSlice = createSlice({
     setFarmsPublicData: (state, action) => {
       const liveFarmsData: Farm[] = action.payload;
 
-      state.data = state.data.map((farm) => {
-        const liveFarmData = liveFarmsData.find((f) => f.pid === farm.pid);
-
-        return {
-          ...farm,
-          ...liveFarmData,
-        };
-      });
+      state.data = liveFarmsData;
     },
     setFarmUserData: (state, action) => {
       const { arrayOfUserDataObjects } = action.payload;
