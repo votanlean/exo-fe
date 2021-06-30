@@ -48,7 +48,7 @@ export const polygonFarms: any[] = [
     title: 'tEXO/USDC LP',
     address: {
       137: '',
-      80001: '0xE79002Ea8c05D6118a9561C4C98C0CA0149C0a87',
+      80001: '0x60B7cc009DD9eEC10176349c91F3F4A3FFD7120A',
     },
     token: tokens.texo,
     displayAllocPoint: 5000,

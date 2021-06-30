@@ -18,6 +18,7 @@ import {
   WithdrawAction,
 } from 'components/PoolActions';
 import { useNetwork } from 'state/hooks';
+import { getDecimals } from 'utils/decimalsHelper';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -62,6 +63,7 @@ function FarmItem(props: any) {
   const { id: chainId } = useNetwork();
   const tokenAddress = getAddress(address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
+  const decimal = getDecimals(decimals, chainId);
 
   const dataButton = {
     id: farmId,
@@ -92,7 +94,7 @@ function FarmItem(props: any) {
     farmWeight,
     tEXOPrice,
     lpTotalInQuoteToken,
-    normalizeTokenDecimal(tEXOPerBlock, decimals[chainId]),
+    normalizeTokenDecimal(tEXOPerBlock, +decimal),
   );
 
   const toggleDisplayDetails = () => {
@@ -171,7 +173,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(stakedBalance, decimals[chainId]).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(stakedBalance, +decimal).toNumber().toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
@@ -186,13 +188,13 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(pendingReward, decimals[chainId]).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(pendingReward, +decimal).toNumber().toFixed(4)}{' '}
                     tEXO
                   </p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked, decimals[chainId]).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(totalStaked, +decimal).toNumber().toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
@@ -201,7 +203,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(tokenBalance, decimals[chainId]).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(tokenBalance, +decimal).toNumber().toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
