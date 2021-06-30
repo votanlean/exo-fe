@@ -68,6 +68,7 @@ function StakeAction(props: any) {
         depositFee={depositFee}
         maxAmount={maxAmountStake}
         isLoading={isLoading}
+        decimals={stakingToken.decimals}
       />
     </Box>
   );

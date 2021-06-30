@@ -95,6 +95,7 @@ function Pool() {
   const tvl = useTotalValue();
 
   const { currentBlock } = useBlockData();
+
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
     useTexoTokenData();
   const {
@@ -103,6 +104,7 @@ function Pool() {
     seedingStartBlock,
     seedingFinishBlock,
   } = useOrchestratorData();
+
   const { tEXOReward } = useUserInfoData();
 
   const refreshAppGlobalData = () => {

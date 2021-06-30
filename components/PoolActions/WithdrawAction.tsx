@@ -52,6 +52,7 @@ function WithdrawAction(props: any) {
         unit={symbol}
         maxAmount={maxAmountWithdraw}
         isLoading={isLoading}
+        decimals={stakingToken.decimals}
       />
     </Box>
   );

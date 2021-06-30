@@ -22,10 +22,14 @@ const tokens = {
     address: {
       56: '0x2b0EA770431df39196FF33fB425BE084636d946e',
       97: '0x09EB4dDc76497D28f43ED11F26Aef0ff9D9BcCeE',
+      137: '',
+      80001: '',
     },
     decimals: {
       56: 18,
       97: 18,
+      137: 18,
+      80001: 18,
     },
   },
   usdt: {
