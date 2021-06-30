@@ -10,7 +10,9 @@ export const networks = [
     rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
     symbol: 'BNB',
     blockExplorerUrl: 'https://bscscan.com/',
-    decimals: 18
+    decimals: 18,
+    startBlock: '999999999',
+    secondsPerBlock: 3,
   },
   {
     id: 80001,
@@ -21,7 +23,9 @@ export const networks = [
     rpcUrl: 'https://rpc-mumbai.matic.today/',
     symbol: 'MATIC',
     blockExplorerUrl: 'https://polygonscan.com/',
-    decimals: 6
+    decimals: 6,
+    startBlock: '888888889',
+    secondsPerBlock: 4,
   },
 ];
 

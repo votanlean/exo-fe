@@ -10,7 +10,9 @@ export interface Network {
     icon: string,
     iconDisable: string,
     type: string,
-    decimals: number
+    decimals: number,
+    startBlock: string,
+    secondsPerBlock: number
 }
 
 export interface TEXOOrchestratorState {
