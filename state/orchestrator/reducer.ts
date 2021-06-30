@@ -5,6 +5,7 @@ import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 import multicall from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import BN from 'bn.js';
+import { Network } from 'state/types';
 
 export const orchestratorSlice = createSlice({
   name: 'orchestrator',
@@ -49,10 +50,10 @@ export const fetchOrchestratorDataThunk = (chainId, network: Network) => async (
       totalAllocPoint: totalAllocPoint[0].toString(),
       seedingStartBlock: new BN(parseInt(network.startBlock)).toString(), // startBlock
       canClaimRewardsBlock: new BN(
-        parseInt(network.startBlock) + 28800 * 5 - 1200,
-      ).toString(), //after 5 days of startBlock
+        parseInt(network.startBlock) + (86400/network.secondsPerBlock) * 5 - (3600/network.secondsPerBlock),
+      ).toString(), //after 5 days of startBlock - 1 hour
       seedingFinishBlock: new BN(
-        parseInt(network.startBlock) + 28800 * 5,
+        parseInt(network.startBlock) + (86400/network.secondsPerBlock) * 5,
       ).toString(), //after 5 days of startBlock
     }),
   );

@@ -11,7 +11,8 @@ export const networks = [
     symbol: 'BNB',
     blockExplorerUrl: 'https://bscscan.com/',
     decimals: 18,
-    startBlock: '999999999'
+    startBlock: '999999999',
+    secondsPerBlock: 3,
   },
   {
     id: 80001,
@@ -23,7 +24,8 @@ export const networks = [
     symbol: 'MATIC',
     blockExplorerUrl: 'https://polygonscan.com/',
     decimals: 6,
-    startBlock: '888888889'
+    startBlock: '888888889',
+    secondsPerBlock: 4,
   },
 ];
 
