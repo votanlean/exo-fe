@@ -123,7 +123,7 @@ function LogoutPopup(props: any) {
           <Box display="flex" alignItems="center" className={classes.accountAddressBox}>
             <img src={icon} alt='logo' style={{width: '24px', marginRight: '5px', borderRadius: '20px'}}/>
             <Typography className={classes.accountAddress}>{account}</Typography>
-            <Typography className={classes.subAccountAddress}>{`${account.substring(0, 12)}...${account.substring(account.length - 4)}`}</Typography>
+            <Typography className={classes.subAccountAddress}>{`${account?.substring(0, 12)}...${account?.substring(account.length - 4)}`}</Typography>
           </Box>
         <Box display="flex" alignItems="center" style={{marginTop: '20px'}}>
         <CopyToClipboard text={account}>
