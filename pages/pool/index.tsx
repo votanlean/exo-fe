@@ -12,8 +12,9 @@ import {
 } from '@material-ui/core';
 import BigNumber from 'bignumber.js';
 
-import Statistic from '../../components/Statistic';
-import PoolRow from '../../components/PoolRow';
+import ApolloClient from 'components/ApolloClient';
+import Statistic from 'components/Statistic';
+import PoolRow from 'components/PoolRow';
 
 import styles from './pool.module.scss';
 import { useBlockData } from 'state/block/selectors';
@@ -23,7 +24,7 @@ import {
   fetchFarmsPublicDataAsync,
   fetchFarmUserDataAsync,
 } from 'state/farms/reducer';
-import { getAddress, getTEXOAddress } from 'utils/addressHelpers';
+import { getAddress } from 'utils/addressHelpers';
 import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
 import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
@@ -31,11 +32,10 @@ import { fetchBlockDataThunk } from 'state/block/reducer';
 import { usePools } from 'state/pools/selectors';
 import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
-import { useFarms, useTotalValue } from 'state/farms/selectors';
+import { useFarms, usePolygonTotalValue, useTotalValue } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
 import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
-import ComingSoon from '../../components/ComingSoon';
 import FaangItem from 'components/FaangItem';
 import { useFAANGPools } from '../../state/fAANGpools/selectors';
 import {
@@ -93,6 +93,7 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
+	const polygonTVL = usePolygonTotalValue();
 
   const { currentBlock } = useBlockData();
 
@@ -192,7 +193,7 @@ function Pool() {
       <div className="container pool-container">
         <Statistic
           tEXOPrice={tEXOPrice}
-          tvl={tvl}
+          tvl={chainId === 80001 || chainId === 137 ? polygonTVL : tvl}
           totalSupply={tEXOTotalSupply}
           currentTEXOPerBlock={tEXOPerBlock}
           burnAmount={burnAmount}
@@ -324,4 +325,12 @@ function Pool() {
   );
 }
 
-export default Pool;
+const PoolWrapper = () => {
+	return(
+		<ApolloClient>
+			<Pool />
+		</ApolloClient>
+	)
+}
+
+export default PoolWrapper;

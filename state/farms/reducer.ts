@@ -28,9 +28,7 @@ export const farmsSlice = createSlice({
   initialState,
   reducers: {
     setFarmsPublicData: (state, action) => {
-      const liveFarmsData: Farm[] = action.payload;
-
-      state.data = liveFarmsData;
+      state.data = action.payload;
     },
     setFarmUserData: (state, action) => {
       const { arrayOfUserDataObjects } = action.payload;
@@ -56,8 +54,8 @@ export const fetchFarmsPublicDataAsync = (chainId) => async (dispatch) => {
   const farmsData = getFarms(chainId);
   const farms = await fetchFarms(farmsData, chainId);
 
-    dispatch(setFarmsPublicData(farms));
-  };
+	dispatch(setFarmsPublicData(farms));
+};
 
 export const fetchFarmUserDataAsync = (account: string, chainId?: number) => async (dispatch) => {
   const farmsData = getFarms(chainId);
