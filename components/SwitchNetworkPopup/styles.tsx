@@ -3,8 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => {
   return {
     paper: {
-      width: 'auto',
-      minWidth: '480px',
+      width: '480px',
+      maxWidth: '90%',
       borderRadius: '24px',
       background: 'linear-gradient(180deg, #0f0f0f 0%, #103c5b 100%)',
       paddingBottom: '15px',
