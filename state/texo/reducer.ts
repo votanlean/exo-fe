@@ -10,8 +10,8 @@ export const texoTokenSlice = createSlice({
   name: 'texoToken',
   initialState: {
     data: {
-      totalSupply: BIG_ZERO.toString(),
-      tEXOBurned: BIG_ZERO.toString(),
+      totalSupply: BIG_ZERO.toString(10),
+      tEXOBurned: BIG_ZERO.toString(10),
     },
   },
   reducers: {
@@ -39,8 +39,8 @@ export const fetchTexoTokenDataThunk = (chainId) => async (dispatch) => {
 
   dispatch(
     setTexoTokenData({
-      totalSupply: totalSupply[0].toString(),
-      tEXOBurned: tEXOBurned[0].toString(),
+      totalSupply: totalSupply[0].toString(10),
+      tEXOBurned: tEXOBurned[0].toString(10),
     }),
   );
 };
