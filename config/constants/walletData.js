@@ -20,7 +20,7 @@ export const networks = [
     icon: '/static/images/wallets/polygon.svg',
     type: 'polygon',
     iconDisable: '/static/images/wallets/polygon-disabled.svg',
-    rpcUrl: 'https://rpc-mumbai.matic.today/',
+    rpcUrl: 'https://rpc-mumbai.maticvigil.com/',
     symbol: 'MATIC',
     blockExplorerUrl: 'https://polygonscan.com/',
     decimals: 6,
