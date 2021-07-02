@@ -83,64 +83,37 @@ function LogoutPopup(props: any) {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow className={classes.firstRow}>
-              <TableCell className={classes.AccImgCell} >
-                <Box display="flex" alignItems="center">
-                  <img src='/static/images/Account_icon.png' alt='metamask-logo' className={classes.accountImage} />
-                </Box>
-              </TableCell>
-              <TableCell align="left" className={classes.acountInfo}>
-                <Typography variant="caption">
-                  Balance
-                </Typography >
-                <Typography variant="h6" className={classes.label}>
-                  {balance.toFixed(4)} {symbol}
-                </Typography>
-              </TableCell>
-              
-              <TableCell align="left" className={classes.acountInfo}>
-                <Typography variant="caption">
-                  Network
-                </Typography >
-                <Typography variant="h6" className={classes.label}>
-                  {networkName}
-                </Typography>
-              </TableCell>
-
-              <TableCell align="left" className={classes.acountInfo}>
-                <Typography variant="caption">
-                  Wallet
-                </Typography >
-                <Typography variant="h6" className={classes.label}>
-                  {wallet}
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-        </Table>
+        <div className={classes.userInfo}>
+          <img className={classes.accImg} src={'/static/images/Account_icon.png'} alt="icon" />
+          <ul>
+            <li className={classes.infoItem}><span className={classes.caption}>Balance</span><p>{balance.toFixed(4)} {symbol}</p></li>
+            <li className={classes.infoItem}><span className={classes.caption}>Network</span><p>{networkName}</p></li>
+            <li className={classes.infoItem}><span className={classes.caption}>Wallet</span><p>{wallet}</p></li>
+            <div style={{clear: 'both'}}></div>
+          </ul>
+        </div>
           <Box display="flex" alignItems="center" className={classes.accountAddressBox}>
             <img src={icon} alt='logo' style={{width: '24px', marginRight: '5px', borderRadius: '20px'}}/>
             <Typography className={classes.accountAddress}>{account}</Typography>
             <Typography className={classes.subAccountAddress}>{`${account?.substring(0, 12)}...${account?.substring(account.length - 4)}`}</Typography>
           </Box>
-        <Box display="flex" alignItems="center" style={{marginTop: '20px'}}>
-        <CopyToClipboard text={account}>
-          <Button className={classes.button} onClick={()=>{setCopy('copied')}}>
-            <Typography variant="caption" className={classes.titleButton}>
-              {copy}
-            </Typography>
-            <FileCopyIcon />
-          </Button>
-          </CopyToClipboard >
-          <Button className={classes.button} onClick={onClickLogout}>
-            <Typography variant="caption" className={classes.titleButton}>
-              Log out
-            </Typography>
-            <ExitToApp />
-          </Button>
-        </Box>
+          <div className={classes.buttonArea}>
+            <CopyToClipboard text={account}>
+              <Button className={classes.button} onClick={()=>{setCopy('copied')}}>
+                <Typography variant="caption" className={classes.titleButton}>
+                  {copy}
+                </Typography>
+                <FileCopyIcon />
+              </Button>
+            </CopyToClipboard >
+            <Button className={classes.button} onClick={onClickLogout}>
+                <Typography variant="caption" className={classes.titleButton}>
+                  Log out
+                </Typography>
+                <ExitToApp />
+            </Button>
+          </div>
+          
       </DialogContent>
     </Dialog>
   );

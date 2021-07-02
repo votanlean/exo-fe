@@ -1,39 +1,45 @@
-import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import {  makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => {
-
-  const theme = createMuiTheme({
-    breakpoints: {
-      values: {
-        xs: 300,
-        sm: 769,
-        md: 960,
-        lg: 1280,
-        xl: 1920,
-      },
-    },
-  });
+const useStyles = makeStyles((theme) => {
 
   return {
-    accountListItem: {
-      width: '435.953px',
+    userInfo: {
       color: '#fff',
-      '&:hover': {backgroundColor: '#6a98c9', color: '#fff'},
-      borderRadius: '20px'
-    },
-    acountInfo: {
-      width: '80px',
-    },
-
-    
-    firstRow: {
-      backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmq2trOAsHP4xdRuwJCq0kizbC4ge-Su3ZRzNeOmDEafDUueLVv4lmBL-NfpPQB7vxZ04&usqp=CAU")`,
-      color: '#fff',
+      height: '160px',
       width: '100%',
+      backgroundColor: '#6a98c9',
+      borderRadius: '16px',
+      [theme.breakpoints.down('xs')]: {
+        height: 'auto',
+        paddingBottom: '10px'
+      }
     },
-    
-    table: {
-      width: '100%'
+    accImg: {
+      width: '25%',
+      padding: '16px',
+      borderRadius: '50%',
+      float: 'left',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none'
+			}
+    },
+    infoItem: {
+        float: 'left',
+        width: '22%',
+        display: 'block',
+        textAlign: 'center',
+        marginTop: '20px',
+        fontSize: '20px',
+        [theme.breakpoints.down('xs')]: {
+          float: 'none',
+          width: '100%',
+          marginTop: '10px',
+        }
+    },
+    caption: {
+      width: '100%',
+      opacity: '0.6',
+      lineHeight: '40px'
     },
 
     accountAddressBox: {
@@ -59,21 +65,9 @@ const useStyles = makeStyles(() => {
 			}
     },
 
-    AccImgCell: {
-      [theme.breakpoints.down('xs')]: {
-        display: "none"
-			}
-    },
     
-    accountImage:{
-      color: '#fff',
-      borderRadius: '70px',
-      padding: '24px 16px',
-      width: '80px',
-      [theme.breakpoints.down('xs')]: {
-				width: "50px",
-			}
-    },
+    
+    
 
     paper: {
       borderRadius: '24px',
@@ -82,20 +76,38 @@ const useStyles = makeStyles(() => {
       border: '1px solid rgb(161, 169, 214)',
       
     },
-    button: {
+    buttonArea: {
       width: '100%',
+      marginTop: '16px',
+      textAlign: 'center',
+      
+    },
+    button: {
+      color: '#fff',
+      width: '48%',
+      padding: '10px 15px',
       display: 'flex',
+      margin: '0px 0%',
       alignItems: 'center',
       justifyContent: 'space-between',
       borderRadius: '16px',
-      marginTop: '8px',
-      marginRight: '10px',
       backgroundColor: '#6a98c9',
       textTransform: 'capitalize',
+      float: 'left',
       '&:hover': {
         backgroundColor: '#007EF3',
         color: '#fff',
       },
+      '&:first-child': {
+        marginRight: '16px',
+      },
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+        '&:first-child': {
+          marginBottom: '16px',
+        },
+			}
+
     },
     titleButton: {
       fontWeight: 'bold',
