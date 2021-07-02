@@ -82,7 +82,7 @@ function FaangItem({ pool, account }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              {normalizeTokenDecimal(stakedBalance, +decimal).toNumber().toFixed(4)}{' '}
+              {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
               {symbol}
             </Typography>
           </Box>
@@ -115,7 +115,7 @@ function FaangItem({ pool, account }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              {normalizeTokenDecimal(pendingReward, +decimal).toNumber().toFixed(4)} FAANG
+              {normalizeTokenDecimal(pendingReward, +decimal).toFixed(4)} FAANG
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -131,7 +131,7 @@ function FaangItem({ pool, account }) {
               Wallet Balance
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {normalizeTokenDecimal(stakingTokenBalance, +decimal).toNumber().toFixed(4)}{' '}
+              {normalizeTokenDecimal(stakingTokenBalance, +decimal).toFixed(4)}{' '}
               {symbol}
             </Typography>
           </Box>

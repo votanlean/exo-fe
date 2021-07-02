@@ -173,7 +173,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(stakedBalance, +decimal).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
@@ -188,13 +188,13 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(pendingReward, +decimal).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(pendingReward, +decimal).toFixed(4)}{' '}
                     tEXO
                   </p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked, +decimal).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(totalStaked, +decimal).toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
@@ -203,7 +203,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(tokenBalance, +decimal).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(tokenBalance, +decimal).toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>

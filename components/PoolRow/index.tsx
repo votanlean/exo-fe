@@ -115,7 +115,7 @@ function PoolRow(props: any) {
             {!isTablet ? 'My Rewards' : 'Rewards'}
           </Typography>
           <Typography variant="h6" className={classes.label}>
-            {normalizeTokenDecimal(pendingReward, +decimal).toNumber().toFixed(4)} tEXO
+            {normalizeTokenDecimal(pendingReward, +decimal).toFixed(4)} tEXO
           </Typography>
         </TableCell>
         <TableCell
@@ -136,7 +136,7 @@ function PoolRow(props: any) {
             <TableCell style={{ padding: '24px 16px' }}>
               <Typography variant="caption">My Stake</Typography>
               <Typography variant="h6" className={classes.label}>
-                {normalizeTokenDecimal(stakedBalance, +decimal).toNumber().toFixed(4)}{' '}
+                {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
                 {symbol}
               </Typography>
             </TableCell>
@@ -243,7 +243,6 @@ function PoolRow(props: any) {
                     style={{ marginLeft: 10 }}
                   >
                     {normalizeTokenDecimal(stakingTokenBalance, +decimal)
-                      .toNumber()
                       .toFixed(4)}{' '}
                     {symbol}
                   </Typography>
