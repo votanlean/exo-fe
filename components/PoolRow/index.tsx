@@ -70,7 +70,7 @@ function PoolRow(props: any) {
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
-  const { id: chainId } = useNetwork();
+  const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(stakingToken.address, chainId);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   const poolTexoPerBlock = new BigNumber(tEXOPerBlock)
@@ -82,8 +82,14 @@ function PoolRow(props: any) {
   const apr = getPoolApr(
     stakingTokenPrice,
     tEXOPrice,
-    normalizeTokenDecimal(totalStaked, stakingToken.decimals[chainId]).toNumber(),
-    normalizeTokenDecimal(poolTexoPerBlock, stakingToken.decimals[chainId]).toNumber(),
+    normalizeTokenDecimal(
+      totalStaked,
+      stakingToken.decimals[chainId],
+    ).toNumber(),
+    normalizeTokenDecimal(
+      poolTexoPerBlock,
+      stakingToken.decimals[chainId],
+    ).toNumber(),
   );
 
   const dataButton = {
@@ -114,7 +120,13 @@ function PoolRow(props: any) {
             {!isTablet ? 'My Rewards' : 'Rewards'}
           </Typography>
           <Typography variant="h6" className={classes.label}>
-            {normalizeTokenDecimal(pendingReward, stakingToken.decimals[chainId]).toNumber().toFixed(4)} tEXO
+            {normalizeTokenDecimal(
+              pendingReward,
+              stakingToken.decimals[chainId],
+            )
+              .toNumber()
+              .toFixed(4)}{' '}
+            tEXO
           </Typography>
         </TableCell>
         <TableCell
@@ -135,7 +147,12 @@ function PoolRow(props: any) {
             <TableCell style={{ padding: '24px 16px' }}>
               <Typography variant="caption">My Stake</Typography>
               <Typography variant="h6" className={classes.label}>
-                {normalizeTokenDecimal(stakedBalance, stakingToken.decimals[chainId]).toNumber().toFixed(4)}{' '}
+                {normalizeTokenDecimal(
+                  stakedBalance,
+                  stakingToken.decimals[chainId],
+                )
+                  .toNumber()
+                  .toFixed(4)}{' '}
                 {symbol}
               </Typography>
             </TableCell>
@@ -178,10 +195,10 @@ function PoolRow(props: any) {
               <Box order={isTablet ? 3 : 'unset'}>
                 <a
                   className={classes.linkDetail}
-                  href={`https://bscscan.com/address/${tokenAddress}`}
+                  href={`${blockExplorerUrl}/address/${tokenAddress}`}
                   target="_blank"
                 >
-                  View on Bscan <Launch fontSize="small" />
+                  View on {blockExplorerName} <Launch fontSize="small" />
                 </a>
               </Box>
               <Box
@@ -211,7 +228,10 @@ function PoolRow(props: any) {
                         className={'text-right'}
                         style={{ marginLeft: 10 }}
                       >
-                        {normalizeTokenDecimal(stakedBalance, stakingToken.decimals[chainId]).toFixed(4)}{' '}
+                        {normalizeTokenDecimal(
+                          stakedBalance,
+                          stakingToken.decimals[chainId],
+                        ).toFixed(4)}{' '}
                         {symbol}
                       </Typography>
                     </Box>
@@ -241,7 +261,10 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    {normalizeTokenDecimal(stakingTokenBalance, stakingToken.decimals[chainId])
+                    {normalizeTokenDecimal(
+                      stakingTokenBalance,
+                      stakingToken.decimals[chainId],
+                    )
                       .toNumber()
                       .toFixed(4)}{' '}
                     {symbol}
@@ -253,7 +276,11 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    {normalizeTokenDecimal(totalStaked, stakingToken.decimals[chainId]).toFixed(4)} {symbol}
+                    {normalizeTokenDecimal(
+                      totalStaked,
+                      stakingToken.decimals[chainId],
+                    ).toFixed(4)}{' '}
+                    {symbol}
                   </Typography>
                 </Box>
                 <Box className={classes.rowDetail}>
@@ -264,8 +291,10 @@ function PoolRow(props: any) {
                   >
                     $
                     {Number(
-                      normalizeTokenDecimal(totalStaked, stakingToken.decimals[chainId]).toNumber() *
-                        stakingTokenPrice,
+                      normalizeTokenDecimal(
+                        totalStaked,
+                        stakingToken.decimals[chainId],
+                      ).toNumber() * stakingTokenPrice,
                     ).toFixed(2)}
                   </Typography>
                 </Box>

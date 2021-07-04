@@ -1,15 +1,6 @@
-import React, { useState } from 'react';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import BigNumber from 'bignumber.js';
-
-import styles from './farmItem.module.scss';
-import { getFarmApr } from '../../hookApi/apr';
-import { useOrchestratorData } from 'state/orchestrator/selectors';
-import { getAddress } from '../../utils/addressHelpers';
-import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
-import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
-import { useOrchestratorContract } from '../../hooks/useContract';
 import {
   ApproveAction,
   ClaimRewardsAction,
@@ -17,7 +8,15 @@ import {
   StakeAction,
   WithdrawAction,
 } from 'components/PoolActions';
+import React, { useState } from 'react';
 import { useNetwork } from 'state/hooks';
+import { useOrchestratorData } from 'state/orchestrator/selectors';
+import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
+import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
+import { getFarmApr } from '../../hookApi/apr';
+import { useOrchestratorContract } from '../../hooks/useContract';
+import { getAddress } from '../../utils/addressHelpers';
+import styles from './farmItem.module.scss';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -59,7 +58,7 @@ function FarmItem(props: any) {
     stakedBalance,
     tokenBalance,
   } = userData;
-  const { id: chainId } = useNetwork();
+  const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
 
@@ -117,10 +116,10 @@ function FarmItem(props: any) {
       </div>
       <a
         style={{ fontSize: '19px', color: '#007EF3' }}
-        href={`https://bscscan.com/address/${tokenAddress}`}
+        href={`${blockExplorerUrl}/address/${tokenAddress}`}
         target="_blank"
       >
-        View on Bscan
+        View on {blockExplorerName}
       </a>
     </div>
   ) : null;
@@ -171,7 +170,9 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(stakedBalance, decimals[chainId]).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(stakedBalance, decimals[chainId])
+                      .toNumber()
+                      .toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
@@ -186,13 +187,17 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(pendingReward, decimals[chainId]).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(pendingReward, decimals[chainId])
+                      .toNumber()
+                      .toFixed(4)}{' '}
                     tEXO
                   </p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked, decimals[chainId]).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(totalStaked, decimals[chainId])
+                      .toNumber()
+                      .toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
@@ -201,7 +206,9 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(tokenBalance, decimals[chainId]).toNumber().toFixed(4)}{' '}
+                    {normalizeTokenDecimal(tokenBalance, decimals[chainId])
+                      .toNumber()
+                      .toFixed(4)}{' '}
                     {symbol}
                   </p>
                 </RowPoolItem>
