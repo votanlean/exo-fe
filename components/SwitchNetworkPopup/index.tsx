@@ -11,10 +11,13 @@ import { Close } from '@material-ui/icons';
 import { useAppDispatch } from 'state';
 import { useNetwork } from 'state/hooks';
 import { changeNetwork } from 'state/network';
+import { getNetworks } from 'utils/networkHelpers';
 
-import { networks } from 'config/constants/walletData';
+// import { networks } from 'config/constants/walletData';
 import NetworkItem from '../ConnectPopup/NetworkItem';
 import { useStyles } from './styles';
+
+const networks = getNetworks();
 
 function SwitchNetworkPopup(props) {
   const classes: any = useStyles();

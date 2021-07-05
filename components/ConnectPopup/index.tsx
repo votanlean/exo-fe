@@ -21,12 +21,15 @@ import {
   connectorLocalStorageKey,
   ConnectorNames,
 } from '../../utils/web3React';
-import { networks, walletsConfig } from 'config/constants/walletData';
+import { walletsConfig } from 'config/constants/walletData';
 import NetworkItem from './NetworkItem';
 import WalletItem from './WalletItem';
 
 import { useStyles } from './styles';
 import useAuth from '../../hooks/useAuth';
+import { getNetworks } from 'utils/networkHelpers';
+
+const networks = getNetworks();
 
 ConnectPopup.propTypes = {
   onOpen: PropTypes.bool,

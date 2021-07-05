@@ -1,8 +1,10 @@
 import Web3 from 'web3'
 import { HttpProviderOptions } from 'web3-core-helpers'
-import { networks } from 'config/constants/walletData';
+// import { networks } from 'config/constants/walletData';
 import { Network } from 'state/types'
+import { getNetworks } from './networkHelpers'
 
+const networks = getNetworks();
 
 const getWeb3NoAccount = (chainId?: number) => {
     const network = networks.find(network => network.id === chainId)
