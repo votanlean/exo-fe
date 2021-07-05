@@ -6,6 +6,7 @@ export interface Network {
     name: string,
     rpcUrl: string,
     symbol: string,
+    blockExplorerName: string,
     blockExplorerUrl: string,
     icon: string,
     iconDisable: string,

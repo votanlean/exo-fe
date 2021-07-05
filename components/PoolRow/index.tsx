@@ -70,7 +70,7 @@ function PoolRow(props: any) {
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
-  const { id: chainId } = useNetwork();
+  const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(stakingToken.address, chainId);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   const poolTexoPerBlock = new BigNumber(tEXOPerBlock)
@@ -179,10 +179,10 @@ function PoolRow(props: any) {
               <Box order={isTablet ? 3 : 'unset'}>
                 <a
                   className={classes.linkDetail}
-                  href={`https://bscscan.com/address/${tokenAddress}`}
+                  href={`${blockExplorerUrl}/address/${tokenAddress}`}
                   target="_blank"
                 >
-                  View on Bscan <Launch fontSize="small" />
+                  View on {blockExplorerName} <Launch fontSize="small" />
                 </a>
               </Box>
               <Box

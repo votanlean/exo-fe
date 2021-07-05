@@ -27,7 +27,7 @@ function FaangItem({ pool, account }) {
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
     userData;
-  const { id: chainId } = useNetwork();
+  const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(stakingToken.address, chainId);
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
@@ -176,14 +176,14 @@ function FaangItem({ pool, account }) {
               </Typography>
             </Box>
             <Link
-              href={`https://bscscan.com/address/${tokenAddress}`}
+              href={`${blockExplorerUrl}/address/${tokenAddress}`}
               target="_blank"
             >
               <Typography
                 component="p"
                 style={{ fontSize: '19px', color: '#007EF3' }}
               >
-                View on Bscan
+                View on {blockExplorerName}
               </Typography>
             </Link>
           </Box>

@@ -32,7 +32,11 @@ import { fetchBlockDataThunk } from 'state/block/reducer';
 import { usePools } from 'state/pools/selectors';
 import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
-import { useFarms, usePolygonTotalValue, useTotalValue } from 'state/farms/selectors';
+import {
+  useFarms,
+  usePolygonTotalValue,
+  useTotalValue,
+} from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
 import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
@@ -93,7 +97,7 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
-	const polygonTVL = usePolygonTotalValue();
+  const polygonTVL = usePolygonTotalValue();
 
   const { currentBlock } = useBlockData();
 
@@ -326,11 +330,11 @@ function Pool() {
 }
 
 const PoolWrapper = () => {
-	return(
-		<ApolloClient>
-			<Pool />
-		</ApolloClient>
-	)
-}
+  return (
+    <ApolloClient>
+      <Pool />
+    </ApolloClient>
+  );
+};
 
 export default PoolWrapper;
