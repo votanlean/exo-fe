@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme) => {
       paddingRight: 12,
       background: 'linear-gradient(-90deg, #0f0f0f 0%, #103c5b 100%)',
       marginRight: 20,
+      [theme.breakpoints.down('sm')]: {
+        marginRight: 0,
+      },
     },
     networkIcon: {
       width: 34,
@@ -17,12 +20,21 @@ const useStyles = makeStyles((theme) => {
       fontSize: 14,
       textTransform: 'initial',
       marginLeft: 8,
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
     connectBtn: {
+      height: '34px',
       borderRadius: 20,
       padding: '8px ​12px',
       background: 'linear-gradient(-90deg, #0f0f0f 0%, #103c5b 100%)',
     },
+    accAddress:{
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
+    }
   };
 });
 

@@ -89,7 +89,7 @@ const Header = () => {
                 onClick={!account ? handleConnectPopup : handleLogoutPopup}
                 startIcon={<AccountBalanceWalletOutlined />}
               >
-                {account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : 'Connect'}
+                <p className={classes.accAddress}>{account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : 'Connect'}</p>
               </Button>
             </div>
           </div>

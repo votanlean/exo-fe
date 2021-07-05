@@ -13,6 +13,7 @@ import {
   ClaimRewardsAction,
 } from 'components/PoolActions';
 import { useNetwork } from 'state/hooks';
+import { getDecimals } from 'utils/decimalsHelper';
 
 function FaangItem({ pool, account }) {
   const {
@@ -30,6 +31,7 @@ function FaangItem({ pool, account }) {
   const tokenAddress = getAddress(stakingToken.address, chainId);
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
+  const decimal = getDecimals(stakingToken.decimals, chainId);
 
   const orchestratorContract = useFAANGOrchestratorContract();
 
@@ -80,12 +82,7 @@ function FaangItem({ pool, account }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              {normalizeTokenDecimal(
-                stakedBalance,
-                stakingToken.decimals[chainId],
-              )
-                .toNumber()
-                .toFixed(4)}{' '}
+              {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
               {symbol}
             </Typography>
           </Box>
@@ -118,13 +115,7 @@ function FaangItem({ pool, account }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              {normalizeTokenDecimal(
-                pendingReward,
-                stakingToken.decimals[chainId],
-              )
-                .toNumber()
-                .toFixed(4)}{' '}
-              FAANG
+              {normalizeTokenDecimal(pendingReward, +decimal).toFixed(4)} FAANG
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -132,11 +123,7 @@ function FaangItem({ pool, account }) {
               Total Staked
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {normalizeTokenDecimal(
-                totalStaked,
-                stakingToken.decimals[chainId],
-              ).toFixed(4)}{' '}
-              {symbol}
+              {normalizeTokenDecimal(totalStaked, +decimal).toFixed(4)} {symbol}
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -144,12 +131,7 @@ function FaangItem({ pool, account }) {
               Wallet Balance
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {normalizeTokenDecimal(
-                stakingTokenBalance,
-                stakingToken.decimals[chainId],
-              )
-                .toNumber()
-                .toFixed(4)}{' '}
+              {normalizeTokenDecimal(stakingTokenBalance, +decimal).toFixed(4)}{' '}
               {symbol}
             </Typography>
           </Box>
