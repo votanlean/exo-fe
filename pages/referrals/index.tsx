@@ -67,7 +67,7 @@ function Referrals() {
       );
     }
     setTotalReferrals(referralsCount);
-  }, [account]);
+  }, [account, referralsCount]);
 
   const onCopyReferralLink = async (e) => {
     try {
