@@ -168,7 +168,7 @@ const tokens = {
   weth: {
     symbol: 'WETH',
     address: {
-      137: ' 0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+      137: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
       80001: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
     },
     decimals: {
