@@ -7,7 +7,7 @@ const tokens = {
     address: {
       56: '0xF1afb5674Bf946458BD1163163F62dE683B07D65',
       97: '0xc93BA03A93C61ef22ebbd95Db11BB35F96a0736A',
-      137: '',
+      137: '0x298A15cBfb1A331814E18EAB36891Dde49d3f58E',
       80001: '0x73a739D0c54f5A24406b6f0F674424eCAdD64Acc',
     },
     decimals: {
@@ -22,7 +22,7 @@ const tokens = {
     address: {
       56: '0x2b0EA770431df39196FF33fB425BE084636d946e',
       97: '0x09EB4dDc76497D28f43ED11F26Aef0ff9D9BcCeE',
-      137: '',
+      137: '0x0f30C74A34DF0B9CCbd37915d74a2E8c636E2b70',
       80001: '0x29E35F2d89d9Ee3FA9ebfc48DCef6e798aaC11F4',
     },
     decimals: {

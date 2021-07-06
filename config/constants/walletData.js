@@ -12,7 +12,7 @@ export const networks = [
     blockExplorerName: 'Bscscan',
     blockExplorerUrl: 'https://bscscan.com/',
     decimals: 18,
-    startBlock: '999999999',
+    startBlock: '99999999',
     secondsPerBlock: 3,
   },
   {
@@ -26,7 +26,7 @@ export const networks = [
     blockExplorerName: 'Bscscan',
     blockExplorerUrl: 'https://bscscan.com/',
     decimals: 18,
-    startBlock: '999999999',
+    startBlock: '16764784',
     secondsPerBlock: 3,
   },
   {
@@ -40,7 +40,7 @@ export const networks = [
     blockExplorerName: 'Polygonscan',
     blockExplorerUrl: 'https://polygonscan.com/',
     decimals: 6,
-    startBlock: '888888889',
+    startBlock: '99999999',
     secondsPerBlock: 4,
   },
   {
@@ -54,8 +54,8 @@ export const networks = [
     blockExplorerName: 'Polygonscan',
     blockExplorerUrl: 'https://polygonscan.com/',
     decimals: 6,
-    startBlock: '888888889',
-    secondsPerBlock: 4,
+    startBlock: '16548784',
+    secondsPerBlock: 2,
   },
 ];
 

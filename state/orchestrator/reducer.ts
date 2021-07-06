@@ -51,12 +51,11 @@ export const fetchOrchestratorDataThunk =
         totalAllocPoint: totalAllocPoint[0].toString(10),
         seedingStartBlock: new BN(parseInt(network.startBlock)).toString(10), // startBlock
         canClaimRewardsBlock: new BN(
-          parseInt(network.startBlock) +
-            (86400 / network.secondsPerBlock) * 5 -
-            3600 / network.secondsPerBlock,
+          parseInt(network.startBlock) + (86400 / network.secondsPerBlock) * 5 - (3600 / network.secondsPerBlock),
         ).toString(), //after 5 days of startBlock - 1 hour
         seedingFinishBlock: new BN(
-          parseInt(network.startBlock) + (86400 / network.secondsPerBlock) * 5,
+          parseInt(network.startBlock) 
+          + (86400 / network.secondsPerBlock) * 5,
         ).toString(), //after 5 days of startBlock
       }),
     );
