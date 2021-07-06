@@ -42,7 +42,7 @@ export const bnbFarms: any[] = [
 
 export const polygonFarms: any[] = [
   {
-    pid: 11,
+    pid: 10,
     icon: '/static/images/polygon-farm/tEXO-MATIC.png',
     symbol: 'tEXO/wMATIC LP',
     title: 'tEXO/wMATIC LP',
@@ -61,7 +61,7 @@ export const polygonFarms: any[] = [
     },
   },
   {
-    pid: 10,
+    pid: 11,
     icon: '/static/images/polygon-farm/tEXO-USDC.png',
     symbol: 'tEXO/USDC LP',
     title: 'tEXO/USDC LP',
