@@ -90,7 +90,7 @@ function Pool() {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [countDownString, setCountDownString] = useState('');
-
+  const [countDownStringFarm, setCountDownStringFarm] = useState('');
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
   const poolsData = usePools();
@@ -134,6 +134,7 @@ function Pool() {
   useEffect(refreshAppGlobalData, [account, dispatch, chainId]);
 
   const countDownInterval = useRef(null);
+  const countDownIntervalFarm = useRef(null);
 
   useEffect(() => {
     const updateAppDataInterval = setInterval(() => {
@@ -155,12 +156,19 @@ function Pool() {
   }, [chainId]);
 
   useEffect(() => {
-    if (!canClaimRewardsBlock || !currentBlock || countDownInterval.current) {
+    if (!canClaimRewardsBlock || !seedingFinishBlock || !currentBlock || countDownInterval.current) {
       return;
     }
     const claimRewardDate = getClaimRewardsDate(
       currentBlock,
       canClaimRewardsBlock,
+      dayjs(),
+      network.secondsPerBlock
+    ).toDate();
+
+    const claimFarmRewardDate = getClaimRewardsDate(
+      currentBlock,
+      seedingFinishBlock,
       dayjs(),
       network.secondsPerBlock
     ).toDate();
@@ -180,6 +188,21 @@ function Pool() {
       setCountDownString(countDownString);
     }, 1000);
 
+    const intervalFarm = setInterval(() => {
+      const hasPassedRewardLockDate = dayjs().isAfter(dayjs(claimFarmRewardDate));
+      if (hasPassedRewardLockDate) {
+        countDownIntervalFarm.current = null;
+        clearInterval(intervalFarm);
+        setCountDownStringFarm('0 seconds');
+        return;
+      }
+
+      const countDownString = Countdown(new Date(), claimFarmRewardDate).toString();
+
+      setCountDownStringFarm(countDownString);
+    }, 1000);
+
+    countDownIntervalFarm.current = intervalFarm;
     countDownInterval.current = interval;
 
     return () => {
@@ -187,8 +210,14 @@ function Pool() {
         clearInterval(countDownInterval.current);
         countDownInterval.current = null;
       }
+      if (countDownIntervalFarm.current) {
+        clearInterval(countDownIntervalFarm.current);
+        countDownIntervalFarm.current = null;
+      }
     };
-  }, [currentBlock, canClaimRewardsBlock]);
+  }, [currentBlock, canClaimRewardsBlock, seedingFinishBlock]);
+
+  
 
   return (
     <>
@@ -217,7 +246,7 @@ function Pool() {
             Farming reward will be generated in
           </Typography>
           <Typography variant="h3" color="primary">
-            {poolPageReady ? countDownString : 'Coming Soon'}
+            {poolPageReady ? countDownStringFarm : 'Coming Soon'}
           </Typography>
         </div>
 
