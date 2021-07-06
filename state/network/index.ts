@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { networks } from 'config/constants/walletData';
+// import { networks } from 'config/constants/walletData';
+import { getNetworks } from 'utils/networkHelpers';
+
+const networks = getNetworks();
 
 export const networkSlice = createSlice({
   name: 'network',
