@@ -42,31 +42,13 @@ export const bnbFarms: any[] = [
 
 export const polygonFarms: any[] = [
   {
-    pid: 10,
-    icon: '/static/images/polygon-farm/tEXO-USDC.png',
-    symbol: 'tEXO/USDC LP',
-    title: 'tEXO/USDC LP',
-    address: {
-      137: '',
-      80001: '0x60B7cc009DD9eEC10176349c91F3F4A3FFD7120A',
-    },
-    token: tokens.texo,
-    displayAllocPoint: 5000,
-    depositFeeBP: 0,
-    quoteToken: tokens.usdc,
-    decimals: {
-      137: 18,
-      80001: 18,
-    },
-  },
-  {
     pid: 11,
     icon: '/static/images/polygon-farm/tEXO-MATIC.png',
     symbol: 'tEXO/wMATIC LP',
     title: 'tEXO/wMATIC LP',
     lpSymbol: 'tEXO-wMATIC LP',
     address: {
-      137: '',
+      137: '0x6ba88e0ac0e85a7d3d3f203f694bea24c231c5c0',
       80001: '0x3B7096cF713E147BbF5aEDE30BB2ADa4405B5130',
     },
     token: tokens.texo,
@@ -78,4 +60,23 @@ export const polygonFarms: any[] = [
       80001: 18,
     },
   },
+  {
+    pid: 10,
+    icon: '/static/images/polygon-farm/tEXO-USDC.png',
+    symbol: 'tEXO/USDC LP',
+    title: 'tEXO/USDC LP',
+    address: {
+      137: '0x96caf7ea8ff36cfcdb3d62c19972ae9b5d9fff7b',
+      80001: '0x60B7cc009DD9eEC10176349c91F3F4A3FFD7120A',
+    },
+    token: tokens.texo,
+    displayAllocPoint: 5000,
+    depositFeeBP: 0,
+    quoteToken: tokens.usdc,
+    decimals: {
+      137: 18,
+      80001: 18,
+    },
+  },
+  
 ];

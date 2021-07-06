@@ -52,6 +52,8 @@ import {
 } from '../../state/pools/reducer';
 import { useNetwork } from 'state/hooks';
 import { getFarms } from 'utils/farmsHelpers';
+import network from 'state/network';
+import { Network } from 'state/types';
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
@@ -64,7 +66,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
+function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate, secondPerBlock ) {
   if (!currentBlock || !canClaimRewardsBlock) {
     return dayjs();
   }
@@ -74,9 +76,8 @@ function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate) {
     return dayjs();
   }
 
-  const secondsDiff = Math.ceil(blockDiff * 3);
+  const secondsDiff = Math.ceil(blockDiff * secondPerBlock);
   const claimRewardDate = startDate.add(secondsDiff, 'seconds');
-
   return claimRewardDate;
 }
 
@@ -161,6 +162,7 @@ function Pool() {
       currentBlock,
       canClaimRewardsBlock,
       dayjs(),
+      network.secondsPerBlock
     ).toDate();
 
     const interval = setInterval(() => {
