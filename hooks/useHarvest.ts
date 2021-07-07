@@ -15,23 +15,20 @@ export const useHarvest = (orchestrator: Contract, poolId: number) => {
   const [isLoading, setLoading] = useState(false);
   const { id: chainId } = useNetwork();
 
-  const handleHarvest = useCallback(
-    async (ref: string | null = null) => {
-      try {
-        setLoading(true);
-        const txHash = await harvest(orchestrator, poolId, account, ref);
-        setLoading(false);
-        dispatch(fetchPoolsUserDataAsync(account, chainId));
-        dispatch(fetchFarmUserDataAsync(account, chainId));
-        dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
-        return txHash;
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-      }
-    },
-    [account, dispatch, poolId, orchestrator, chainId],
-  );
+  const handleHarvest = useCallback(async () => {
+    try {
+      setLoading(true);
+      const txHash = await harvest(orchestrator, poolId, account);
+      setLoading(false);
+      dispatch(fetchPoolsUserDataAsync(account, chainId));
+      dispatch(fetchFarmUserDataAsync(account, chainId));
+      dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+      return txHash;
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  }, [account, dispatch, poolId, orchestrator, chainId]);
 
   return { onReward: handleHarvest, isLoading };
 };
