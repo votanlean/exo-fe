@@ -1,15 +1,32 @@
 import { useSelector } from 'react-redux';
-import { FARM_ID } from 'constant/farms';
+import { BSC_FARM_ID, POLYGON_FARM_ID } from 'constant/farms';
 import { useFarmFromPid } from 'state/farms/selectors';
 import BigNumber from 'bignumber.js';
 import { State } from '../types';
+import { useNetwork } from 'state/hooks';
 
 export const useTexoTokenData = () => {
   return useSelector((state: State) => state.texoToken.data);
 };
 
 export const useTexoTokenPrice = () => {
-  return useFarmQuoteTokenPrice(FARM_ID.TEXO_BUSD);
+	const { id: chainId } = useNetwork();
+	let farmId: number;
+
+	switch (chainId) {
+		case 56:
+		case 97:
+			farmId = BSC_FARM_ID.TEXO_BUSD;
+			break;
+		case 137:
+		case 80001:
+			farmId = POLYGON_FARM_ID.TEXO_USDC;
+			break;
+		default:
+			break;
+	}
+	const price = useFarmQuoteTokenPrice(farmId)
+	return price;
 };
 
 export const useFarmQuoteTokenPrice = (farmId) => {

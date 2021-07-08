@@ -111,7 +111,7 @@ function Statistic(props) {
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Total tEXO Supply</Typography>
             <Typography className={'font-bold'}>
-              {Math.round(normalizedTotalSupply)} tEXO
+              {Number(normalizedTotalSupply).toFixed(2)} tEXO
             </Typography>
           </Box>
 
