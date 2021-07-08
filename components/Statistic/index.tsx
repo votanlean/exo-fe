@@ -33,9 +33,11 @@ function Statistic(props) {
     tvl,
     tEXOReward,
   } = props;
+
   const normalizedTotalSupply = normalizeTokenDecimal(totalSupply).toNumber();
   const normalizedEmissionRate =
     normalizeTokenDecimal(currentTEXOPerBlock).toNumber();
+	const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
   const normalizedBurnAmount = normalizeTokenDecimal(burnAmount).toNumber();
   const { id: chainId } = useNetwork();
   const tEXOBalance = getBalanceNumber(
@@ -118,14 +120,14 @@ function Statistic(props) {
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>tEXO Price</Typography>
             <Typography className={'font-bold'}>
-              ${Number(tEXOPrice).toFixed(2)}
+              ${Number(normalizeTexoPrice).toFixed(2)}
             </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Market Cap</Typography>
             <Typography className={'font-bold'}>
-              ${calculateMarketCap(tEXOPrice, totalSupply)}
+              ${calculateMarketCap(normalizeTexoPrice, totalSupply)}
             </Typography>
           </Box>
 
