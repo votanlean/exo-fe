@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { FARM_ID } from "constant/farms";
+import { BSC_FARM_ID } from "constant/farms";
 import { useSelector } from "react-redux";
 import { useFarmQuoteTokenPrice, useTexoTokenPrice } from "state/texo/selectors";
 import tokens from "config/constants/tokens";
@@ -19,7 +19,7 @@ export const useFarms = () => {
 export const useTotalValue = (): BigNumber => {
   const busdPrice = new BigNumber(1);
   const texoPrice = new BigNumber(useTexoTokenPrice());
-  const bnbPerTexoPrice = new BigNumber(useFarmQuoteTokenPrice(FARM_ID.TEXO_BNB));
+  const bnbPerTexoPrice = new BigNumber(useFarmQuoteTokenPrice(BSC_FARM_ID.TEXO_BNB));
   const bnbPrice = bnbPerTexoPrice.times(texoPrice);
   const farms = useFarms();
   let value = new BigNumber(0);
