@@ -32,10 +32,7 @@ import { fetchBlockDataThunk } from 'state/block/reducer';
 import { usePools } from 'state/pools/selectors';
 import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
-import {
-  useFarms,
-  useTotalValue,
-} from 'state/farms/selectors';
+import { useFarms, useTotalValue } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
 import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
 import { useUserInfoData } from '../../state/userInfo/selectors';
@@ -65,7 +62,12 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate, secondPerBlock ) {
+function getClaimRewardsDate(
+  currentBlock,
+  canClaimRewardsBlock,
+  startDate,
+  secondPerBlock,
+) {
   if (!currentBlock || !canClaimRewardsBlock) {
     return dayjs();
   }
@@ -145,6 +147,7 @@ function Pool() {
         dispatch(fetchFarmUserDataAsync(account, chainId));
         dispatch(fetchPoolsUserDataAsync(account, chainId));
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+        dispatch(fetchUserInfoDataThunk(account, chainId));
       }
     }, 30000);
 
@@ -154,21 +157,26 @@ function Pool() {
   }, [chainId]);
 
   useEffect(() => {
-    if (!canClaimRewardsBlock || !seedingFinishBlock || !currentBlock || countDownInterval.current) {
+    if (
+      !canClaimRewardsBlock ||
+      !seedingFinishBlock ||
+      !currentBlock ||
+      countDownInterval.current
+    ) {
       return;
     }
     const claimRewardDate = getClaimRewardsDate(
       currentBlock,
       canClaimRewardsBlock,
       dayjs(),
-      network.secondsPerBlock
+      network.secondsPerBlock,
     ).toDate();
 
     const claimFarmRewardDate = getClaimRewardsDate(
       currentBlock,
       seedingFinishBlock,
       dayjs(),
-      network.secondsPerBlock
+      network.secondsPerBlock,
     ).toDate();
 
     const interval = setInterval(() => {
@@ -187,7 +195,9 @@ function Pool() {
     }, 1000);
 
     const intervalFarm = setInterval(() => {
-      const hasPassedRewardLockDate = dayjs().isAfter(dayjs(claimFarmRewardDate));
+      const hasPassedRewardLockDate = dayjs().isAfter(
+        dayjs(claimFarmRewardDate),
+      );
       if (hasPassedRewardLockDate) {
         countDownIntervalFarm.current = null;
         clearInterval(intervalFarm);
@@ -195,7 +205,10 @@ function Pool() {
         return;
       }
 
-      const countDownString = Countdown(new Date(), claimFarmRewardDate).toString();
+      const countDownString = Countdown(
+        new Date(),
+        claimFarmRewardDate,
+      ).toString();
 
       setCountDownStringFarm(countDownString);
     }, 1000);
@@ -214,8 +227,6 @@ function Pool() {
       }
     };
   }, [currentBlock, canClaimRewardsBlock, seedingFinishBlock]);
-
-  
 
   return (
     <>

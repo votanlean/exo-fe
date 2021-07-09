@@ -9,6 +9,7 @@ import theme from '../components/theme/theme';
 import MainLayout from '../components/Layout';
 import '../styles/main.scss';
 import { useRouter } from 'next/router';
+import {RefreshContextProvider} from 'contexts/RefreshContext'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
@@ -39,9 +40,11 @@ function MyApp({ Component, pageProps }) {
         <Web3ReactProvider getLibrary={getLibrary}>
           <Provider store={store}>
             <QueryParamProvider history={history} location={location}>
+            <RefreshContextProvider>
               <MainLayout>
                 <Component {...pageProps} />
               </MainLayout>
+              </RefreshContextProvider>
             </QueryParamProvider>
           </Provider>
         </Web3ReactProvider>
