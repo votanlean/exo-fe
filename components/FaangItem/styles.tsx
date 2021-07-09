@@ -68,7 +68,15 @@ const useStyles = makeStyles(() => {
       cursor: 'auto !important',
     },
     approveButton: {
+      marginTop: '10px',
       marginBottom: 0,
+    },
+    doubleBtn:{
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+    btnItem: {
+      width: '49%',
     },
   };
 });

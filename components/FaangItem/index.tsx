@@ -15,7 +15,7 @@ import {
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
 
-function FaangItem({ pool, account }) {
+function FaangItem({ pool, account, tEXOPrice }) {
   const {
     symbol,
     totalStaked,
@@ -23,6 +23,7 @@ function FaangItem({ pool, account }) {
     depositFeeBP,
     stakingToken,
     canClaimReward,
+    
   } = pool;
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
@@ -32,6 +33,7 @@ function FaangItem({ pool, account }) {
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const decimal = getDecimals(stakingToken.decimals, chainId);
+  const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
 
   const orchestratorContract = useFAANGOrchestratorContract();
 
@@ -142,7 +144,7 @@ function FaangItem({ pool, account }) {
           flexDirection="column"
           justifyContent="space-between"
         >
-          <Box>
+          <Box className={classes.texoInfo}>
             <Box className={classes.flexRow}>
               <Typography
                 component="p"
@@ -172,7 +174,7 @@ function FaangItem({ pool, account }) {
                 className={classes.pTitle}
                 style={{ color: '#6A98C9' }}
               >
-                $0.00
+                ${(Number(normalizeTexoPrice)* Number(normalizeTokenDecimal(totalStaked, +decimal))).toFixed(2)}
               </Typography>
             </Box>
             <Link
@@ -195,19 +197,28 @@ function FaangItem({ pool, account }) {
             />
           ) : null}
 
-          {!canClaimReward && isAlreadyApproved ? (
-            <StakeAction data={dataButton} disabled={canClaimReward} />
+          {isAlreadyApproved ? (
+            <StakeAction data={dataButton} />
           ) : null}
 
-          {canWithdraw && isAlreadyApproved ? (
-            <WithdrawAction data={dataButton} />
-          ) : null}
+          <Box className={classes.doubleBtn}>
+            
+            {canWithdraw && isAlreadyApproved ? (
+              <Box className={classes.btnItem}>
+              <WithdrawAction data={dataButton} />
+              </Box>
+            ) : null}
 
-          {canClaimReward &&
-          Number(stakedBalance) > 0 &&
-          Number(pendingReward) > 0 ? (
-            <ClaimRewardsAction data={dataButton} />
-          ) : null}
+            {
+            Number(stakedBalance) > 0 &&
+            Number(pendingReward) > 0 ? (
+              <Box className={classes.btnItem}>
+              <ClaimRewardsAction data={dataButton} />
+              </Box>
+            ) : null}
+          </Box>
+          
+
         </Box>
       </Box>
     </>

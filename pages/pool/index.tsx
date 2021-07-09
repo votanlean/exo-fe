@@ -288,7 +288,7 @@ function Pool() {
 
         <div className={styles.lpPoolGrid}>
           {fAANGData.map((pool) => (
-            <FaangItem key={pool.id} pool={pool} account={account} />
+            <FaangItem key={pool.id} pool={pool} tEXOPrice={tEXOPrice} account={account} />
           ))}
         </div>
 
