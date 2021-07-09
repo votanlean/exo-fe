@@ -3,10 +3,6 @@ import { useWeb3React } from '@web3-react/core';
 import { Contract } from 'web3-eth-contract';
 import { useAppDispatch } from 'state';
 import { approve } from 'utils/callHelpers';
-import {
-  useFAANGOrchestratorContract,
-  useOrchestratorContract,
-} from './useContract';
 import { fetchPoolsUserDataAsync } from '../state/pools/reducer';
 import { fetchFarmUserDataAsync } from '../state/farms/reducer';
 import { fetchFAANGPoolsUserDataAsync } from '../state/fAANGpools/reducer';

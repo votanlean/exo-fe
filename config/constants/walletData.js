@@ -12,7 +12,7 @@ export const networks = [
     blockExplorerName: 'Bscscan',
     blockExplorerUrl: 'https://bscscan.com/',
     decimals: 18,
-    startBlock: '99999999',
+    startBlock: '10445296',
     secondsPerBlock: 3,
   },
   {
