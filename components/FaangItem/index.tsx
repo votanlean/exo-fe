@@ -144,7 +144,7 @@ function FaangItem({ pool, account, tEXOPrice }) {
           flexDirection="column"
           justifyContent="space-between"
         >
-          <Box className={classes.texoInfo}>
+          <Box>
             <Box className={classes.flexRow}>
               <Typography
                 component="p"
