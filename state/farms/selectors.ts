@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { BSC_FARM_ID } from "constant/farms";
+import { BSC_FARM_ID, POLYGON_FARM_ID } from "constant/farms";
 import { useSelector } from "react-redux";
 import { useFarmQuoteTokenPrice, useTexoTokenPrice } from "state/texo/selectors";
 import tokens from "config/constants/tokens";
@@ -17,10 +17,28 @@ export const useFarms = () => {
 }
 
 export const useTotalValue = (): BigNumber => {
-  const busdPrice = new BigNumber(1);
+  const stableCoinPrice = new BigNumber(1);
   const texoPrice = new BigNumber(useTexoTokenPrice());
-  const bnbPerTexoPrice = new BigNumber(useFarmQuoteTokenPrice(BSC_FARM_ID.TEXO_BNB));
-  const bnbPrice = bnbPerTexoPrice.times(texoPrice);
+
+	const { id: chainId } = useNetwork();
+	let farmId: number;
+
+	switch (chainId) {
+		case 56:
+		case 97:
+			farmId = BSC_FARM_ID.TEXO_BUSD;
+			break;
+		case 137:
+		case 80001:
+			farmId = POLYGON_FARM_ID.TEXO_USDC;
+			break;
+		default:
+			break;
+	}
+
+  const quoteTokenPerTexoPrice = new BigNumber(useFarmQuoteTokenPrice(farmId));
+  const quoteTokenPrice = quoteTokenPerTexoPrice.times(texoPrice);
+
   const farms = useFarms();
   let value = new BigNumber(0);
 
@@ -30,10 +48,10 @@ export const useTotalValue = (): BigNumber => {
     if (farm.lpTotalInQuoteToken) {
       let val;
 
-      if (farm.quoteTokenSymbol === tokens.wbnb) {
-        val = (bnbPrice.times(farm.lpTotalInQuoteToken));
-      } else if (farm.quoteTokenSymbol === tokens.busd) {
-        val = (busdPrice.times(farm.lpTotalInQuoteToken));
+      if (farm.quoteTokenSymbol === tokens.wbnb || farm.quoteTokenSymbol === tokens.wmatic) {
+        val = (quoteTokenPrice.times(farm.lpTotalInQuoteToken));
+      } else if (farm.quoteTokenSymbol === tokens.busd || farm.quoteTokenSymbol === tokens.usdc) {
+        val = (stableCoinPrice.times(farm.lpTotalInQuoteToken));
       } else {
         val = (farm.lpTotalInQuoteToken);
       }

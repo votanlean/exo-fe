@@ -34,7 +34,6 @@ import { fetchAppPrices } from 'state/prices/reducer';
 import { useAppPrices } from 'state/prices/selectors';
 import {
   useFarms,
-  usePolygonTotalValue,
   useTotalValue,
 } from 'state/farms/selectors';
 import FarmItem from 'components/FarmItem';
@@ -98,7 +97,6 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
-  const polygonTVL = usePolygonTotalValue();
 
   const { currentBlock } = useBlockData();
 
@@ -228,7 +226,7 @@ function Pool() {
       <div className="container pool-container">
         <Statistic
           tEXOPrice={tEXOPrice}
-          tvl={chainId === 80001 || chainId === 137 ? polygonTVL : tvl}
+          tvl={tvl}
           totalSupply={tEXOTotalSupply}
           currentTEXOPerBlock={tEXOPerBlock}
           burnAmount={burnAmount}
