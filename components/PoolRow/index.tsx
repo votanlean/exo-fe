@@ -277,7 +277,6 @@ function PoolRow(props: any) {
                 order={isTablet ? 1 : 'unset'}
               >
                 {canClaimReward &&
-                Number(stakedBalance) > 0 &&
                 Number(pendingReward) > 0 ? (
                   <Box className={classes.buttonBoxItem}>
                     <ClaimRewardsAction
