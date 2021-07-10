@@ -45,6 +45,7 @@ import {
 import {
   fetchPoolsPublicDataAsync,
   fetchPoolsUserDataAsync,
+  replacePoolAsync,
 } from '../../state/pools/reducer';
 import { useNetwork } from 'state/hooks';
 import { getFarms } from 'utils/farmsHelpers';
@@ -119,7 +120,7 @@ function Pool() {
     dispatch(fetchTexoTokenDataThunk(chainId));
     dispatch(fetchOrchestratorDataThunk(chainId, network));
     dispatch(fetchBlockDataThunk(chainId));
-    dispatch(fetchPoolsPublicDataAsync(chainId));
+    dispatch(replacePoolAsync(chainId));
     dispatch(fetchAppPrices(chainId));
     dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
 
@@ -299,7 +300,12 @@ function Pool() {
 
         <div className={styles.lpPoolGrid}>
           {fAANGData.map((pool) => (
-            <FaangItem key={pool.id} pool={pool} tEXOPrice={tEXOPrice} account={account} />
+            <FaangItem
+              key={pool.id}
+              pool={pool}
+              tEXOPrice={tEXOPrice}
+              account={account}
+            />
           ))}
         </div>
 
