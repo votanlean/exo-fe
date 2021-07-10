@@ -210,7 +210,6 @@ function FaangItem({ pool, account, tEXOPrice }) {
             ) : null}
 
             {
-            Number(stakedBalance) > 0 &&
             Number(pendingReward) > 0 ? (
               <Box className={classes.btnItem}>
               <ClaimRewardsAction data={dataButton} />

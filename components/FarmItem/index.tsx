@@ -212,7 +212,7 @@ function FarmItem(props: any) {
               <div
                 className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
               >
-                {canClaimReward && Number(stakedBalance) > 0 ? (
+                {canClaimReward && Number(pendingReward) > 0 ? (
                   <ClaimRewardsAction
                     data={dataButton}
                     disabled={!canClaimReward}
