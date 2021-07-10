@@ -53,13 +53,37 @@ export const fetchPoolsUserDataAsync =
     dispatch(setPoolsUserData(userData));
   };
 
+//Thunk
+export const replacePoolAsync = (chainId: number) => async (dispatch) => {
+  const poolWithTotalStakedData = await fetchPoolsTotalStaking(chainId);
+  const poolWithVolatileInfo = await fetchPoolsVolatileInfo(chainId);
+
+  const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
+    const poolVolatileInfo = poolWithVolatileInfo[index];
+
+    return {
+      ...poolWithTotalStaked,
+      ...poolVolatileInfo,
+    };
+  });
+
+  dispatch(setPool(merged));
+};
+
 export const PoolsSlice = createSlice({
   name: 'Pools',
   initialState,
   reducers: {
     setPoolsPublicData: (state, action) => {
-      const livePoolsData: Pool[] = action.payload;
-      state.data = livePoolsData;
+      // const livePoolsData: Pool[] = action.payload;
+      // state.data = livePoolsData;
+      const publicData: Pool[] = action.payload;
+      state.data = state.data.map((pool) => {
+        const publicDataPerPool = publicData.find(
+          (entry) => entry.id === pool.id,
+        );
+        return { ...pool, ...publicDataPerPool };
+      });
     },
     setPoolsUserData: (state, action) => {
       const userData = action.payload;
@@ -79,9 +103,17 @@ export const PoolsSlice = createSlice({
         };
       }
     },
+    setPool: (state, action) => {
+      const newPoolsData: Pool[] = action.payload;
+      state.data = newPoolsData;
+    },
   },
 });
 
 // Actions
-export const { setPoolsUserData, setPoolsPublicData, updatePoolsUserData } =
-  PoolsSlice.actions;
+export const {
+  setPoolsUserData,
+  setPoolsPublicData,
+  updatePoolsUserData,
+  setPool,
+} = PoolsSlice.actions;
