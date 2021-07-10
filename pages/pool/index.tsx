@@ -120,7 +120,7 @@ function Pool() {
     dispatch(fetchOrchestratorDataThunk(chainId, network));
     dispatch(fetchBlockDataThunk(chainId));
     dispatch(fetchPoolsPublicDataAsync(chainId));
-    dispatch(fetchAppPrices);
+    dispatch(fetchAppPrices(chainId));
     dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
 
     if (account) {
