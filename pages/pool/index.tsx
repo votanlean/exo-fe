@@ -120,9 +120,8 @@ function Pool() {
     dispatch(fetchTexoTokenDataThunk(chainId));
     dispatch(fetchOrchestratorDataThunk(chainId, network));
     dispatch(fetchBlockDataThunk(chainId));
-    // dispatch(fetchPoolsPublicDataAsync(chainId));
     dispatch(replacePoolAsync(chainId));
-    dispatch(fetchAppPrices);
+    dispatch(fetchAppPrices(chainId));
     dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
 
     if (account) {

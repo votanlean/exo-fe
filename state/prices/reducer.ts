@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchPrices } from 'hookApi/prices';
+import { fetchPrices, fetchPolygonPrices } from 'hookApi/prices';
 
 export const appPricesSlice = createSlice({
   name: 'appPrices',
@@ -14,10 +14,19 @@ export const appPricesSlice = createSlice({
   },
 });
 
-export const fetchAppPrices = async (dispatch) => {
-  const appPrices = await fetchPrices();
-
-  dispatch(setAppPrices(appPrices));
+export const fetchAppPrices = (chainId?: number) => async (dispatch) => {
+	switch(chainId) {
+		case 137:
+		case 80001:
+			const polygonAppPrices = await fetchPolygonPrices();
+			dispatch(setAppPrices(polygonAppPrices));
+			break;
+		case 56:
+		case 97:
+			const appPrices = await fetchPrices();
+			dispatch(setAppPrices(appPrices));
+			break;
+	}
 };
 
 export const { setAppPrices } = appPricesSlice.actions;
