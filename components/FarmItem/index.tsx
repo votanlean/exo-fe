@@ -120,6 +120,13 @@ function FarmItem(props: any) {
         <h3>${Number(lpTotalInQuoteToken).toFixed(2)}</h3>
       </div>
       <a
+        style={{ fontSize: '19px', marginBottom: '10px', color: '#007EF3' }}
+        href={liquidityLink + texoAddress}
+        target="_blank"
+      >
+        Get {symbol}
+      </a>
+      <a
         style={{ fontSize: '19px', color: '#007EF3' }}
         href={`${blockExplorerUrl}/address/${tokenAddress}`}
         target="_blank"
@@ -230,13 +237,7 @@ function FarmItem(props: any) {
                 ) : null}
               </div>
 
-              <a
-                style={{ fontSize: '19px', marginBottom: '10px', color: '#007EF3' }}
-                href={liquidityLink + texoAddress}
-                target="_blank"
-              >
-                Add Liquidity
-              </a>
+              
 
               <div
                 className={styles.detailsButtonContainer}
