@@ -276,8 +276,7 @@ function PoolRow(props: any) {
                 justifyContent="flex-end"
                 order={isTablet ? 1 : 'unset'}
               >
-                {canClaimReward &&
-                Number(pendingReward) > 0 ? (
+                {Number(pendingReward) > 0 ? (
                   <Box className={classes.buttonBoxItem}>
                     <ClaimRewardsAction
                       data={dataButton}
@@ -291,13 +290,10 @@ function PoolRow(props: any) {
                     <Box className={classes.buttonBoxItem}>
                       <WithdrawAction data={dataButton} />
                     </Box>
-                    {!canClaimReward ? (
-                      <Box className={classes.buttonBoxItem}>
-                        <StakeAction data={dataButton} />
-                      </Box>
-                    ) : null}
                   </>
-                ) : isAlreadyApproved && !canClaimReward ? (
+                ) : null}
+
+                {isAlreadyApproved ? (
                   <Box className={classes.buttonBoxItem}>
                     <StakeAction data={dataButton} />
                   </Box>
