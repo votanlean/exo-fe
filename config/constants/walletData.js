@@ -27,7 +27,7 @@ export const networks = [
     blockExplorerName: 'Bscscan',
     blockExplorerUrl: 'https://bscscan.com',
     decimals: 18,
-    startBlock: '8914914',
+    startBlock: '9055746',
     secondsPerBlock: 3,
     swapLink: 'https://exchange.pancakeswap.finance/#/swap?outputCurrency=',
 
