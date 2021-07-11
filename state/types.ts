@@ -14,6 +14,7 @@ export interface Network {
     decimals: number,
     startBlock: string,
     secondsPerBlock: number
+    swapLink: string
 }
 
 export interface TEXOOrchestratorState {

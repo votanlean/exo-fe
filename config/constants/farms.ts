@@ -1,5 +1,6 @@
 import tokens from './tokens';
 
+
 export const bnbFarms: any[] = [
   {
     pid: 11,
@@ -18,6 +19,7 @@ export const bnbFarms: any[] = [
       56: 18,
       97: 18,
     },
+    liquidityLink: 'https://exchange.pancakeswap.finance/#/add/BNB/',
   },
   {
     pid: 12,
@@ -37,6 +39,7 @@ export const bnbFarms: any[] = [
       56: 18,
       97: 18,
     },
+    liquidityLink: 'https://exchange.pancakeswap.finance/#/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/',
   },
 ];
 
@@ -59,6 +62,7 @@ export const polygonFarms: any[] = [
       137: 18,
       80001: 18,
     },
+    liquidityLink: 'https://quickswap.exchange/#/add/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/',
   },
   {
     pid: 11,
@@ -77,6 +81,7 @@ export const polygonFarms: any[] = [
       137: 18,
       80001: 18,
     },
+    liquidityLink: 'https://quickswap.exchange/#/add/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174/',
   },
   
 ];
