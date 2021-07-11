@@ -34,7 +34,6 @@ export const useStake = (orchestrator: Contract, poolId: number) => {
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
         console.info(txHash);
       } catch (error) {
-        console.log(error);
         setLoading(false);
       }
     },

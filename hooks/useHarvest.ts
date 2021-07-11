@@ -26,7 +26,6 @@ export const useHarvest = (orchestrator: Contract, poolId: number) => {
       return txHash;
     } catch (error) {
       setLoading(false);
-      console.log(error);
     }
   }, [account, dispatch, poolId, orchestrator, chainId]);
 

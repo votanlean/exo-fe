@@ -23,6 +23,7 @@ import { useAppDispatch } from 'state';
 import {
   fetchFarmsPublicDataAsync,
   fetchFarmUserDataAsync,
+  replaceFarmWithoutUserDataAsync,
 } from 'state/farms/reducer';
 import { getAddress } from 'utils/addressHelpers';
 import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
@@ -41,11 +42,12 @@ import { useFAANGPools } from '../../state/fAANGpools/selectors';
 import {
   fetchFAANGPoolsPublicDataAsync,
   fetchFAANGPoolsUserDataAsync,
+  replaceFAANGPoolsWithoutUserData,
 } from '../../state/fAANGpools/reducer';
 import {
   fetchPoolsPublicDataAsync,
   fetchPoolsUserDataAsync,
-  replacePoolAsync,
+  replacePoolWithoutUserDataAsync,
 } from '../../state/pools/reducer';
 import { useNetwork } from 'state/hooks';
 import { getFarms } from 'utils/farmsHelpers';
@@ -116,13 +118,13 @@ function Pool() {
   const network = useNetwork();
 
   const refreshAppGlobalData = () => {
-    dispatch(fetchFarmsPublicDataAsync(chainId));
+    dispatch(replaceFarmWithoutUserDataAsync(chainId));
     dispatch(fetchTexoTokenDataThunk(chainId));
     dispatch(fetchOrchestratorDataThunk(chainId, network));
     dispatch(fetchBlockDataThunk(chainId));
-    dispatch(replacePoolAsync(chainId));
+    dispatch(replacePoolWithoutUserDataAsync(chainId));
     dispatch(fetchAppPrices(chainId));
-    dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
+    dispatch(replaceFAANGPoolsWithoutUserData(chainId));
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account, chainId));

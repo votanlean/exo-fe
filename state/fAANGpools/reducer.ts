@@ -64,6 +64,24 @@ export const fetchFAANGPoolsUserDataAsync =
     dispatch(setFAANGPoolsUserData(userData));
   };
 
+//Thunk
+export const replaceFAANGPoolsWithoutUserData =
+  (chainId: number) => async (dispatch) => {
+    const poolWithTotalStakedData = await fetchFAANGPoolsTotalStaking(chainId);
+    const poolWithVolatileInfo = await fetchFAANGPoolsVolatileInfo(chainId);
+
+    const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
+      const poolVolatileInfo = poolWithVolatileInfo[index];
+
+      return {
+        ...poolWithTotalStaked,
+        ...poolVolatileInfo,
+      };
+    });
+
+    dispatch(setFAANGPools(merged));
+  };
+
 export const FAANGPoolsSlice = createSlice({
   name: 'FAANGPools',
   initialState,
@@ -84,9 +102,12 @@ export const FAANGPoolsSlice = createSlice({
         return { ...pool, userData: userPoolData };
       });
     },
+    setFAANGPools: (state, action) => {
+      state.data = action.payload;
+    },
   },
 });
 
 // Actions
-export const { setFAANGPoolsUserData, setFAANGPoolsPublicData } =
+export const { setFAANGPoolsUserData, setFAANGPoolsPublicData, setFAANGPools } =
   FAANGPoolsSlice.actions;

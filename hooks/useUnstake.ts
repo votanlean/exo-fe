@@ -35,10 +35,8 @@ export const useUnstake = (orchestrator: Contract, pid: number) => {
         dispatch(fetchPoolsUserDataAsync(account, chainId));
         dispatch(fetchFarmUserDataAsync(account, chainId));
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
-        console.log('txHash useUnstake', txHash);
       } catch (error) {
         setLoading(false);
-        console.log(error);
       }
     },
 
@@ -69,10 +67,8 @@ export const useUnstakeFAANG = (pid: number) => {
         );
         setLoading(false);
         dispatch(fetchPoolsUserDataAsync(account, chainId));
-        console.log('txHash useUnstakeFAANG', txHash);
       } catch (error) {
         setLoading(false);
-        console.log(error);
       }
     },
 

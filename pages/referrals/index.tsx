@@ -72,9 +72,7 @@ function Referrals() {
   const onCopyReferralLink = async (e) => {
     try {
       await navigator.clipboard.writeText(referralLink);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const handleConnectPopup = () => {
