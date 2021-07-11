@@ -314,7 +314,7 @@ function Pool() {
           ))}
         </div>
 
-        {currentBlock > seedingFinishBlock ? (
+        {currentBlock > seedingFinishBlock && poolPageReady == true ? (
           <div className={styles.countdownContainer}>
             <Typography variant="h3" color="primary">
               Seed phase already completed
