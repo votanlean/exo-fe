@@ -16,7 +16,7 @@ import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
 import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
 import { getFarmApr } from '../../hookApi/apr';
 import { useOrchestratorContract } from '../../hooks/useContract';
-import { getAddress } from '../../utils/addressHelpers';
+import { getAddress, getTEXOAddress } from '../../utils/addressHelpers';
 import styles from './farmItem.module.scss';
 import { getDecimals } from 'utils/decimalsHelper';
 
@@ -52,6 +52,7 @@ function FarmItem(props: any) {
     displayAllocPoint,
     userData = {},
     lpTotalInQuoteToken = BIG_ZERO,
+    liquidityLink
   } = farmData;
 
   const {
@@ -84,6 +85,7 @@ function FarmItem(props: any) {
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
 
+  const texoAddress = getTEXOAddress(chainId);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   const farmWeight = new BigNumber(allocPoint).div(
     new BigNumber(totalAllocPoint),
@@ -227,6 +229,14 @@ function FarmItem(props: any) {
                   <ApproveAction data={dataButton} />
                 ) : null}
               </div>
+
+              <a
+                style={{ fontSize: '19px', marginBottom: '10px', color: '#007EF3' }}
+                href={liquidityLink + texoAddress}
+                target="_blank"
+              >
+                Add Liquidity
+              </a>
 
               <div
                 className={styles.detailsButtonContainer}

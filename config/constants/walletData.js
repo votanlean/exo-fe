@@ -14,6 +14,7 @@ export const networks = [
     decimals: 18,
     startBlock: '10445296',
     secondsPerBlock: 3,
+    swapLink: 'https://exchange.pancakeswap.finance/#/swap?outputCurrency=',
   },
   {
     id: 56,
@@ -28,6 +29,8 @@ export const networks = [
     decimals: 18,
     startBlock: '8914914',
     secondsPerBlock: 3,
+    swapLink: 'https://exchange.pancakeswap.finance/#/swap?outputCurrency=',
+
   },
   {
     id: 80001,
@@ -42,6 +45,7 @@ export const networks = [
     decimals: 6,
     startBlock: '99999999',
     secondsPerBlock: 4,
+    swapLink: 'https://quickswap.exchange/#/swap?outputCurrency='
   },
   {
     id: 137,
@@ -56,6 +60,7 @@ export const networks = [
     decimals: 6,
     startBlock: '16556414',
     secondsPerBlock: 2,
+    swapLink: 'https://quickswap.exchange/#/swap?outputCurrency='
   },
 ];
 

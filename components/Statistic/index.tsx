@@ -39,11 +39,11 @@ function Statistic(props) {
     normalizeTokenDecimal(currentTEXOPerBlock).toNumber();
 	const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
   const normalizedBurnAmount = normalizeTokenDecimal(burnAmount).toNumber();
-  const { id: chainId } = useNetwork();
+  const { id: chainId, swapLink } = useNetwork();
   const tEXOBalance = getBalanceNumber(
     useTokenBalance(getTEXOAddress(chainId)),
   );
-
+  const texoAddress = getTEXOAddress(chainId);
   const classes = useStyles();
   const { active } = useWeb3React();
   const [openPopup, setOpenPopup] = useState(false);
@@ -107,7 +107,7 @@ function Statistic(props) {
             className={'font-bold'}
             gutterBottom
           >
-            TEXO Stats
+            tEXO Stats
           </Typography>
 
           <Box display="flex" justifyContent="space-between">
@@ -144,6 +144,13 @@ function Statistic(props) {
               {normalizedEmissionRate} tEXO / block
             </Typography>
           </Box>
+          <a
+            style={{ fontSize: '1rem', marginTop:'10px', color: '#007EF3' }}
+            href={swapLink + texoAddress}
+            target="_blank"
+          >
+            Buy tEXO
+          </a>
         </Box>
       </Grid>
 
