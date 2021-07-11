@@ -54,21 +54,22 @@ export const fetchPoolsUserDataAsync =
   };
 
 //Thunk
-export const replacePoolAsync = (chainId: number) => async (dispatch) => {
-  const poolWithTotalStakedData = await fetchPoolsTotalStaking(chainId);
-  const poolWithVolatileInfo = await fetchPoolsVolatileInfo(chainId);
+export const replacePoolWithoutUserDataAsync =
+  (chainId: number) => async (dispatch) => {
+    const poolWithTotalStakedData = await fetchPoolsTotalStaking(chainId);
+    const poolWithVolatileInfo = await fetchPoolsVolatileInfo(chainId);
 
-  const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
-    const poolVolatileInfo = poolWithVolatileInfo[index];
+    const merged = poolWithTotalStakedData.map((poolWithTotalStaked, index) => {
+      const poolVolatileInfo = poolWithVolatileInfo[index];
 
-    return {
-      ...poolWithTotalStaked,
-      ...poolVolatileInfo,
-    };
-  });
+      return {
+        ...poolWithTotalStaked,
+        ...poolVolatileInfo,
+      };
+    });
 
-  dispatch(setPool(merged));
-};
+    dispatch(setPool(merged));
+  };
 
 export const PoolsSlice = createSlice({
   name: 'Pools',
