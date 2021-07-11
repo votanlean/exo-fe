@@ -203,15 +203,13 @@ function FaangItem({ pool, account, tEXOPrice }) {
 
           <Box className={classes.doubleBtn}>
             
-            {canWithdraw && isAlreadyApproved ? (
+            {canWithdraw ? (
               <Box className={classes.btnItem}>
               <WithdrawAction data={dataButton} />
               </Box>
             ) : null}
 
-            {
-            Number(stakedBalance) > 0 &&
-            Number(pendingReward) > 0 ? (
+            {Number(pendingReward) > 0 ? (
               <Box className={classes.btnItem}>
               <ClaimRewardsAction data={dataButton} />
               </Box>

@@ -43,6 +43,7 @@ function PoolRow(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     canClaimReward,
+    seedingFinish,
     account,
   } = props || {};
 
@@ -276,9 +277,7 @@ function PoolRow(props: any) {
                 justifyContent="flex-end"
                 order={isTablet ? 1 : 'unset'}
               >
-                {canClaimReward &&
-                Number(stakedBalance) > 0 &&
-                Number(pendingReward) > 0 ? (
+                {Number(pendingReward) > 0 ? (
                   <Box className={classes.buttonBoxItem}>
                     <ClaimRewardsAction
                       data={dataButton}
@@ -292,15 +291,12 @@ function PoolRow(props: any) {
                     <Box className={classes.buttonBoxItem}>
                       <WithdrawAction data={dataButton} />
                     </Box>
-                    {!canClaimReward ? (
-                      <Box className={classes.buttonBoxItem}>
-                        <StakeAction data={dataButton} />
-                      </Box>
-                    ) : null}
                   </>
-                ) : isAlreadyApproved && !canClaimReward ? (
+                ) : null}
+
+                {isAlreadyApproved ? (
                   <Box className={classes.buttonBoxItem}>
-                    <StakeAction data={dataButton} />
+                    <StakeAction disabled={seedingFinish} data={dataButton} />
                   </Box>
                 ) : null}
 
@@ -308,7 +304,7 @@ function PoolRow(props: any) {
                   <Box className={classes.buttonBoxItem}>
                     <ApproveAction
                       data={dataButton}
-                      disabled={canClaimReward}
+                      disabled={seedingFinish}
                     />
                   </Box>
                 ) : null}
