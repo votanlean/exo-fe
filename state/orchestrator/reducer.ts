@@ -52,11 +52,11 @@ export const fetchOrchestratorDataThunk =
         seedingStartBlock: new BN(parseInt(network.startBlock)).toString(10), // startBlock
         canClaimRewardsBlock: new BN(
           parseInt(network.startBlock) 
-          + ((3600 * parseInt(process.env.HOURS_TO_INACTIVE_BLOCK)) / network.secondsPerBlock) - (3600 / network.secondsPerBlock),
+          + ((3600 * parseInt(process.env.SEEDING_DURATION_HOURS)) / network.secondsPerBlock) - (3600 / network.secondsPerBlock),
         ).toString(), //after 5 days of startBlock - 1 hour
         seedingFinishBlock: new BN(
           parseInt(network.startBlock) 
-          + ((3600 * parseInt(process.env.HOURS_TO_INACTIVE_BLOCK)) / network.secondsPerBlock),
+          + ((3600 * parseInt(process.env.SEEDING_DURATION_HOURS)) / network.secondsPerBlock),
         ).toString(), //after 5 days of startBlock
       }),
     );

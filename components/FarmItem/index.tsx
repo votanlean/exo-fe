@@ -215,7 +215,6 @@ function FarmItem(props: any) {
                 {Number(pendingReward) > 0 ? (
                   <ClaimRewardsAction
                     data={dataButton}
-                    disabled={!canClaimReward}
                   />
                 ) : null}
 

@@ -43,6 +43,7 @@ function PoolRow(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     canClaimReward,
+    seedingFinish,
     account,
   } = props || {};
 
@@ -295,7 +296,7 @@ function PoolRow(props: any) {
 
                 {isAlreadyApproved ? (
                   <Box className={classes.buttonBoxItem}>
-                    <StakeAction data={dataButton} />
+                    <StakeAction disabled={seedingFinish} data={dataButton} />
                   </Box>
                 ) : null}
 
@@ -303,7 +304,7 @@ function PoolRow(props: any) {
                   <Box className={classes.buttonBoxItem}>
                     <ApproveAction
                       data={dataButton}
-                      disabled={canClaimReward}
+                      disabled={seedingFinish}
                     />
                   </Box>
                 ) : null}

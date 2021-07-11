@@ -361,6 +361,9 @@ function Pool() {
                     canClaimReward={
                       currentBlock && currentBlock >= canClaimRewardsBlock
                     }
+                    seedingFinish={
+                      currentBlock && currentBlock > seedingFinishBlock
+                    }
                     stakingTokenPrice={stakingTokenPrice}
                     tEXOPrice={tEXOPrice}
                     countDownString={countDownString}
