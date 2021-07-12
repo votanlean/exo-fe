@@ -23,7 +23,6 @@ function FaangItem({ pool, account, tEXOPrice }) {
     depositFeeBP,
     stakingToken,
     canClaimReward,
-    
   } = pool;
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
@@ -32,7 +31,6 @@ function FaangItem({ pool, account, tEXOPrice }) {
   const tokenAddress = getAddress(stakingToken.address, chainId);
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
-  const decimal = getDecimals(stakingToken.decimals, chainId);
   const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
 
   const orchestratorContract = useFAANGOrchestratorContract();
@@ -84,8 +82,7 @@ function FaangItem({ pool, account, tEXOPrice }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
-              {symbol}
+              {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -117,7 +114,7 @@ function FaangItem({ pool, account, tEXOPrice }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              {normalizeTokenDecimal(pendingReward, +decimal).toFixed(4)} FAANG
+              {normalizeTokenDecimal(pendingReward).toFixed(4)} FAANG
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -125,7 +122,7 @@ function FaangItem({ pool, account, tEXOPrice }) {
               Total Staked
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {normalizeTokenDecimal(totalStaked, +decimal).toFixed(4)} {symbol}
+              {normalizeTokenDecimal(totalStaked).toFixed(4)} {symbol}
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -133,8 +130,7 @@ function FaangItem({ pool, account, tEXOPrice }) {
               Wallet Balance
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {normalizeTokenDecimal(stakingTokenBalance, +decimal).toFixed(4)}{' '}
-              {symbol}
+              {normalizeTokenDecimal(stakingTokenBalance).toFixed(4)} {symbol}
             </Typography>
           </Box>
         </Box>
@@ -174,7 +170,11 @@ function FaangItem({ pool, account, tEXOPrice }) {
                 className={classes.pTitle}
                 style={{ color: '#6A98C9' }}
               >
-                ${(Number(normalizeTexoPrice)* Number(normalizeTokenDecimal(totalStaked, +decimal))).toFixed(2)}
+                $
+                {(
+                  Number(normalizeTexoPrice) *
+                  Number(normalizeTokenDecimal(totalStaked))
+                ).toFixed(2)}
               </Typography>
             </Box>
             <Link
@@ -197,26 +197,21 @@ function FaangItem({ pool, account, tEXOPrice }) {
             />
           ) : null}
 
-          {isAlreadyApproved ? (
-            <StakeAction data={dataButton} />
-          ) : null}
+          {isAlreadyApproved ? <StakeAction data={dataButton} /> : null}
 
           <Box className={classes.doubleBtn}>
-            
             {canWithdraw ? (
               <Box className={classes.btnItem}>
-              <WithdrawAction data={dataButton} />
+                <WithdrawAction data={dataButton} />
               </Box>
             ) : null}
 
             {Number(pendingReward) > 0 ? (
               <Box className={classes.btnItem}>
-              <ClaimRewardsAction data={dataButton} />
+                <ClaimRewardsAction data={dataButton} />
               </Box>
             ) : null}
           </Box>
-          
-
         </Box>
       </Box>
     </>

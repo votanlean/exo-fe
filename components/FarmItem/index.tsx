@@ -52,7 +52,7 @@ function FarmItem(props: any) {
     displayAllocPoint,
     userData = {},
     lpTotalInQuoteToken = BIG_ZERO,
-    liquidityLink
+    liquidityLink,
   } = farmData;
 
   const {
@@ -64,7 +64,6 @@ function FarmItem(props: any) {
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
-  const decimal = getDecimals(decimals, chainId);
 
   const dataButton = {
     id: farmId,
@@ -96,7 +95,7 @@ function FarmItem(props: any) {
     farmWeight,
     tEXOPrice,
     lpTotalInQuoteToken,
-    normalizeTokenDecimal(tEXOPerBlock, +decimal),
+    normalizeTokenDecimal(tEXOPerBlock),
   );
 
   const toggleDisplayDetails = () => {
@@ -182,8 +181,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
-                    {symbol}
+                    {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -196,15 +194,11 @@ function FarmItem(props: any) {
                   title="My Rewards"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>
-                    {normalizeTokenDecimal(pendingReward, +decimal).toFixed(4)}{' '}
-                    tEXO
-                  </p>
+                  <p>{normalizeTokenDecimal(pendingReward).toFixed(4)} tEXO</p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked, +decimal).toFixed(4)}{' '}
-                    {symbol}
+                    {normalizeTokenDecimal(totalStaked).toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -212,8 +206,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(tokenBalance, +decimal).toFixed(4)}{' '}
-                    {symbol}
+                    {normalizeTokenDecimal(tokenBalance).toFixed(4)} {symbol}
                   </p>
                 </RowPoolItem>
               </div>
@@ -222,9 +215,7 @@ function FarmItem(props: any) {
                 className={`${styles.poolItemGrid} w-full ${styles.poolButton}`}
               >
                 {Number(pendingReward) > 0 ? (
-                  <ClaimRewardsAction
-                    data={dataButton}
-                  />
+                  <ClaimRewardsAction data={dataButton} />
                 ) : null}
 
                 {canWithdraw ? <WithdrawAction data={dataButton} /> : null}
@@ -235,8 +226,6 @@ function FarmItem(props: any) {
                   <ApproveAction data={dataButton} />
                 ) : null}
               </div>
-
-              
 
               <div
                 className={styles.detailsButtonContainer}

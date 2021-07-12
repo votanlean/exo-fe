@@ -116,7 +116,7 @@ function PoolRow(props: any) {
             {!isTablet ? 'My Rewards' : 'Rewards'}
           </Typography>
           <Typography variant="h6" className={classes.label}>
-            {normalizeTokenDecimal(pendingReward, +decimal).toFixed(4)} tEXO
+            {normalizeTokenDecimal(pendingReward).toFixed(4)} tEXO
           </Typography>
         </TableCell>
         <TableCell
@@ -213,7 +213,9 @@ function PoolRow(props: any) {
                         className={'text-right'}
                         style={{ marginLeft: 10 }}
                       >
-                        {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
+                        {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(
+                          4,
+                        )}{' '}
                         {symbol}
                       </Typography>
                     </Box>
@@ -243,8 +245,10 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    {normalizeTokenDecimal(stakingTokenBalance, +decimal)
-                      .toFixed(4)}{' '}
+                    {normalizeTokenDecimal(
+                      stakingTokenBalance,
+                      +decimal,
+                    ).toFixed(4)}{' '}
                     {symbol}
                   </Typography>
                 </Box>
@@ -254,7 +258,8 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    {normalizeTokenDecimal(totalStaked, +decimal).toFixed(4)} {symbol}
+                    {normalizeTokenDecimal(totalStaked, +decimal).toFixed(4)}{' '}
+                    {symbol}
                   </Typography>
                 </Box>
                 <Box className={classes.rowDetail}>
@@ -302,10 +307,7 @@ function PoolRow(props: any) {
 
                 {!isAlreadyApproved ? (
                   <Box className={classes.buttonBoxItem}>
-                    <ApproveAction
-                      data={dataButton}
-                      disabled={seedingFinish}
-                    />
+                    <ApproveAction data={dataButton} disabled={seedingFinish} />
                   </Box>
                 ) : null}
               </Box>
