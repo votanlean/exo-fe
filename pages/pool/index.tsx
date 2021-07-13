@@ -53,6 +53,7 @@ import { useNetwork } from 'state/hooks';
 import { getFarms } from 'utils/farmsHelpers';
 import network from 'state/network';
 import { Network } from 'state/types';
+import { useFAANGOrchestratorData } from '../../state/FAANGOrchestrator/selectors';
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
@@ -102,6 +103,7 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
+  const { FAANGFinishBlock } = useFAANGOrchestratorData();
 
   const { currentBlock } = useBlockData();
 
@@ -112,6 +114,7 @@ function Pool() {
     canClaimRewardsBlock,
     seedingStartBlock,
     seedingFinishBlock,
+    farmStartBlock,
   } = useOrchestratorData();
 
   const { tEXOReward } = useUserInfoData();
@@ -161,6 +164,7 @@ function Pool() {
 
   useEffect(() => {
     if (
+      !farmStartBlock||
       !canClaimRewardsBlock ||
       !seedingFinishBlock ||
       !currentBlock ||
@@ -177,7 +181,7 @@ function Pool() {
 
     const claimFarmRewardDate = getClaimRewardsDate(
       currentBlock,
-      seedingFinishBlock,
+      farmStartBlock,
       dayjs(),
       network.secondsPerBlock,
     ).toDate();
@@ -229,7 +233,7 @@ function Pool() {
         countDownIntervalFarm.current = null;
       }
     };
-  }, [currentBlock, canClaimRewardsBlock, seedingFinishBlock]);
+  }, [currentBlock, canClaimRewardsBlock, seedingFinishBlock, farmStartBlock]);
 
   return (
     <>
@@ -256,9 +260,9 @@ function Pool() {
             {chainId === 56 || chainId === 97 ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
             : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
             <br />
-            {currentBlock && currentBlock < seedingFinishBlock ? 'Farming reward will be generated in' : null}
+            {currentBlock && currentBlock < farmStartBlock ? 'Farming reward will be generated in' : null}
           </Typography>
-          {currentBlock && currentBlock < seedingFinishBlock ? 
+          {currentBlock && currentBlock < farmStartBlock ? 
             <Typography variant="h3" color="primary">
               {poolPageReady ? countDownStringFarm : 'Coming Soon'}
             </Typography>
@@ -280,9 +284,6 @@ function Pool() {
               <FarmItem
                 selectedAccount={account}
                 onPoolStateChange={refreshAppGlobalData}
-                canClaimReward={
-                  currentBlock && currentBlock >= canClaimRewardsBlock
-                }
                 stakingTokenPrice={stakingTokenPrice}
                 tEXOPrice={tEXOPrice}
                 farmData={farmsData[index]}
@@ -310,6 +311,7 @@ function Pool() {
               pool={pool}
               tEXOPrice={tEXOPrice}
               account={account}
+              FAANGFinish={currentBlock >= FAANGFinishBlock}
             />
           ))}
         </div>
