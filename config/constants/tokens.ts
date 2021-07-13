@@ -5,9 +5,9 @@ const tokens = {
   texo: {
     symbol: 'TEXO',
     address: {
-      56: '0x090540483182ce8368f4259Deed84eF14F99542D',
+      56: '0xF1afb5674Bf946458BD1163163F62dE683B07D65',
       97: '0x18271771249Fa3355A28D56ae43B284BB4D26ed7',
-      137: '0x4386b94966ae2a7d1a046fd2A65eBA1022b603c6',
+      137: '0xF1afb5674Bf946458BD1163163F62dE683B07D65',
       80001: '0x73a739D0c54f5A24406b6f0F674424eCAdD64Acc',
     },
     decimals: {
@@ -20,9 +20,9 @@ const tokens = {
   faang: {
     symbol: 'FAANG',
     address: {
-      56: '0xeC9C227E7C99D46CC0c980f745147cE8b005b4C4',
+      56: '0xe2fab6c603c70aae2ccdef140dcd8b7d6ccdff35',
       97: '0xdC7FD2A64e78197a1754063fE90DdCb8eCeCafCB',
-      137: '0xc49590191e7dD089b42B27Fc05e582C7C4d171ef',
+      137: '0xAa40849abB7Ba1689cC1272f0D00Ccc04c9bAA04',
       80001: '0x29E35F2d89d9Ee3FA9ebfc48DCef6e798aaC11F4',
     },
     decimals: {
