@@ -15,7 +15,7 @@ import {
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
 
-function FaangItem({ pool, account, tEXOPrice }) {
+function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
   const {
     symbol,
     totalStaked,
@@ -192,12 +192,14 @@ function FaangItem({ pool, account, tEXOPrice }) {
           {!isAlreadyApproved ? (
             <ApproveAction
               data={dataButton}
-              disabled={canClaimReward}
+              disabled={FAANGFinish}
               buttonClasses={classes.approveButton}
             />
           ) : null}
 
-          {isAlreadyApproved ? <StakeAction data={dataButton} /> : null}
+          {isAlreadyApproved ? (
+            <StakeAction disabled={FAANGFinish} data={dataButton} />
+          ) : null}
 
           <Box className={classes.doubleBtn}>
             {canWithdraw ? (
