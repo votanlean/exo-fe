@@ -45,7 +45,7 @@ export const fetchOrchestratorDataThunk =
       {
         address: getAddress(contracts.orchestrator, chainId),
         name: 'poolInfo',
-        params: [10]
+        params: [11]
       },
     ];
 
