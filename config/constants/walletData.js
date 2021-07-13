@@ -12,7 +12,7 @@ export const networks = [
     blockExplorerName: 'Bscscan',
     blockExplorerUrl: 'https://bscscan.com',
     decimals: 18,
-    startBlock: '10445296',
+    startBlock: '99999999',
     secondsPerBlock: 3,
     swapLink: 'https://exchange.pancakeswap.finance/#/swap?outputCurrency=',
   },
@@ -27,7 +27,7 @@ export const networks = [
     blockExplorerName: 'Bscscan',
     blockExplorerUrl: 'https://bscscan.com',
     decimals: 18,
-    startBlock: '9055746',
+    startBlock: '99999999',
     secondsPerBlock: 3,
     swapLink: 'https://exchange.pancakeswap.finance/#/swap?outputCurrency=',
 
@@ -58,7 +58,7 @@ export const networks = [
     blockExplorerName: 'Polygonscan',
     blockExplorerUrl: 'https://polygonscan.com',
     decimals: 6,
-    startBlock: '16556414',
+    startBlock: '99999999',
     secondsPerBlock: 2,
     swapLink: 'https://quickswap.exchange/#/swap?outputCurrency='
   },
