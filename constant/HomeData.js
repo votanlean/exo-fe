@@ -3,6 +3,7 @@ import FaangLogo from 'components/FaangLogo';
 export const ecosystemData = [
   {
     title: 'tEXO',
+    logo: <img className='img-icon texo-icon'  src="/static/images/home/texo_logo_white_backgound.png" />,
     desc: () => (
       <>
         <p>
@@ -23,6 +24,7 @@ export const ecosystemData = [
   },
   {
     title: 'FAANG',
+    logo: <img className='faang-icon img-icon' src="/static/images/home/FAANG.png"/>,
     desc: () => (
       <>
         <p>
@@ -74,6 +76,7 @@ export const ecosystemData = [
   },
   {
     title: 'tDollar',
+    logo: <img className='tdollar-icon img-icon' src="/static/images/home/TDOLLARS_2B.png"/>,
     desc: () => (
       <>
         <p>
