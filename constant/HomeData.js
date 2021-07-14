@@ -3,7 +3,7 @@ import FaangLogo from 'components/FaangLogo';
 export const ecosystemData = [
   {
     title: 'tEXO',
-    logo: <img className='img-icon texo-icon'  src="/static/images/home/texo_logo_white_backgound.png" />,
+    logo: <img className='img-icon texo-icon'  src="/static/images/tEXO-Icon.png" />,
     desc: () => (
       <>
         <p>
