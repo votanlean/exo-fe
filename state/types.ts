@@ -24,6 +24,13 @@ export interface TEXOOrchestratorState {
         seedingStartBlock,
         canClaimRewardsBlock,
         seedingFinishBlock,
+        farmStartBlock
+    },
+}
+
+export interface FAANGOrchestratorState {
+    data: {
+        FAANGFinishBlock: number,
     },
 }
 
@@ -97,4 +104,5 @@ export interface State {
     block: BlockState
     userInfo: UserInfoState
     fAANGpools: FAANGpoolsState
+    FAANGOrchestrator: FAANGOrchestratorState
 }

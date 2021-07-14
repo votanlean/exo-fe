@@ -36,7 +36,6 @@ function FarmItem(props: any) {
     onPoolStateChange,
     stakingTokenPrice,
     tEXOPrice,
-    canClaimReward,
     selectedAccount,
   } = props;
   const {

@@ -10,6 +10,7 @@ import orchestratorReducer from './orchestrator';
 import appPricesReducer from './prices';
 import userInfoReducer from './userInfo';
 import networkReducer from './network';
+import FAANGOrchestratorReducer from './FAANGOrchestrator';
 
 export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
@@ -23,6 +24,7 @@ export const store = configureStore({
     appPrices: appPricesReducer,
     userInfo: userInfoReducer,
     network: networkReducer,
+    FAANGOrchestrator: FAANGOrchestratorReducer,
   },
 });
 

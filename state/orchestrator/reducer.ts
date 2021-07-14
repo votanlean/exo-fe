@@ -16,6 +16,7 @@ export const orchestratorSlice = createSlice({
       seedingStartBlock: BIG_ZERO.toString(10),
       canClaimRewardsBlock: BIG_ZERO.toString(10),
       seedingFinishBlock: BIG_ZERO.toString(10),
+      farmStartBlock: BIG_ZERO.toString(10),
     },
   },
   reducers: {
@@ -36,6 +37,11 @@ export const fetchOrchestratorDataThunk =
         address: getAddress(contracts.orchestrator, chainId),
         name: 'totalAllocPoint',
       },
+      {
+        address: getAddress(contracts.orchestrator, chainId),
+        name: 'poolInfo',
+        params: [0]
+      }
     ];
 
     const orchestratorMultiData = await multicall(
@@ -43,21 +49,18 @@ export const fetchOrchestratorDataThunk =
       calls,
       chainId,
     );
-    const [tEXOPerBlock, totalAllocPoint] = orchestratorMultiData;
-
+    const [tEXOPerBlock, totalAllocPoint, seedingBlock, farmBlock] = orchestratorMultiData;
     dispatch(
       setOrchestratorData({
         tEXOPerBlock: tEXOPerBlock[0].toString(10),
         totalAllocPoint: totalAllocPoint[0].toString(10),
         seedingStartBlock: new BN(parseInt(network.startBlock)).toString(10), // startBlock
         canClaimRewardsBlock: new BN(
-          parseInt(network.startBlock) 
-          + ((3600 * parseInt(process.env.SEEDING_DURATION_HOURS)) / network.secondsPerBlock) - (3600 / network.secondsPerBlock),
+          seedingBlock['blockToReceiveReward'].toNumber(),
         ).toString(), //after 5 days of startBlock - 1 hour
-        seedingFinishBlock: new BN(
-          parseInt(network.startBlock) 
-          + ((3600 * parseInt(process.env.SEEDING_DURATION_HOURS)) / network.secondsPerBlock),
+        seedingFinishBlock: new BN(seedingBlock['inActiveBlock'].toNumber()
         ).toString(), //after 5 days of startBlock
+        farmStartBlock: seedingBlock['inActiveBlock'].toNumber(),
       }),
     );
   };
