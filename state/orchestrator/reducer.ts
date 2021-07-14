@@ -41,12 +41,7 @@ export const fetchOrchestratorDataThunk =
         address: getAddress(contracts.orchestrator, chainId),
         name: 'poolInfo',
         params: [0]
-      },
-      {
-        address: getAddress(contracts.orchestrator, chainId),
-        name: 'poolInfo',
-        params: [11]
-      },
+      }
     ];
 
     const orchestratorMultiData = await multicall(
@@ -65,7 +60,7 @@ export const fetchOrchestratorDataThunk =
         ).toString(), //after 5 days of startBlock - 1 hour
         seedingFinishBlock: new BN(seedingBlock['inActiveBlock'].toNumber()
         ).toString(), //after 5 days of startBlock
-        farmStartBlock: farmBlock['blockToReceiveReward'].toNumber(),
+        farmStartBlock: seedingBlock['inActiveBlock'].toNumber(),
       }),
     );
   };
