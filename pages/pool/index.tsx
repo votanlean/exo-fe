@@ -25,7 +25,7 @@ import {
   fetchFarmUserDataAsync,
   replaceFarmWithoutUserDataAsync,
 } from 'state/farms/reducer';
-import { getAddress } from 'utils/addressHelpers';
+import { getAddress, getLowerCaseAddress } from 'utils/addressHelpers';
 import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
 import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
@@ -359,7 +359,7 @@ function Pool() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                      getAddress(pool.stakingToken.address, chainId).toLowerCase()
+                      getLowerCaseAddress(pool.stakingToken.address, chainId)
                     ];
                 }
                 return (

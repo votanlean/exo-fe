@@ -8,6 +8,12 @@ export const getAddress = (address: Address, chainId: number): string => {
   return address[chainId] ? address[chainId] : address[mainNetChainId];
 };
 
+export const getLowerCaseAddress = (address: Address, chainId: number): string => {
+  const mainNetChainId = 56;
+
+  return address[chainId] ? address[chainId].toLowerCase() : address[mainNetChainId].toLowerCase();
+};
+
 export const getOrchestratorAddress = (chainId?: number) => {
   return getAddress(contracts.orchestrator, chainId);
 };
