@@ -42,7 +42,7 @@ export const fetchFAANGOrchestratorDataThunk =
     const [finishBlock] = FAANGorchestratorMultiData;
     dispatch(
       setOrchestratorData({
-        FAANGFinishBlock: finishBlock['inActiveBlock'].toNumber(),
+        FAANGFinishBlock: finishBlock['inActiveBlock'] ? finishBlock['inActiveBlock'].toNumber() : 0,
       }),
     );
   };
