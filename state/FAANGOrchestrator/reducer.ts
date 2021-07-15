@@ -24,7 +24,7 @@ export const FAANGOrchestratorSlice = createSlice({
 });
 
 
-export const fetchOrchestratorDataThunk =
+export const fetchFAANGOrchestratorDataThunk =
   (chainId, network: Network) => async (dispatch) => {
     const calls = [
       {
@@ -42,7 +42,7 @@ export const fetchOrchestratorDataThunk =
     const [finishBlock] = FAANGorchestratorMultiData;
     dispatch(
       setOrchestratorData({
-        FAANGFinishBlock: finishBlock['inActiveBlock'],
+        FAANGFinishBlock: finishBlock['inActiveBlock'] ? finishBlock['inActiveBlock'].toNumber() : 0,
       }),
     );
   };

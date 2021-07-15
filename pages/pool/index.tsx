@@ -54,6 +54,7 @@ import { getFarms } from 'utils/farmsHelpers';
 import network from 'state/network';
 import { Network } from 'state/types';
 import { useFAANGOrchestratorData } from '../../state/FAANGOrchestrator/selectors';
+import { fetchFAANGOrchestratorDataThunk } from 'state/FAANGOrchestrator/reducer';
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
@@ -124,6 +125,7 @@ function Pool() {
     dispatch(replaceFarmWithoutUserDataAsync(chainId));
     dispatch(fetchTexoTokenDataThunk(chainId));
     dispatch(fetchOrchestratorDataThunk(chainId, network));
+    dispatch(fetchFAANGOrchestratorDataThunk(chainId, network));
     dispatch(fetchBlockDataThunk(chainId));
     dispatch(replacePoolWithoutUserDataAsync(chainId));
     dispatch(fetchAppPrices(chainId));
