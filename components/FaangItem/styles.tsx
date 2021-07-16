@@ -25,15 +25,24 @@ const useStyles = makeStyles(() => {
       display: 'flex',
       justifyContent: 'space-between',
       flexWrap: 'wrap',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+      }
     },
     header: {
       display: 'flex',
       alignItems: 'center',
       width: '100%',
       marginBottom: '20px',
+      [theme.breakpoints.down('xs')]: {
+        justifyContent: 'space-between',
+      }
     },
     rowItem: {
       width: '45%',
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+      }
     },
     img: {
       height: '40px',
@@ -50,6 +59,7 @@ const useStyles = makeStyles(() => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
+      
     },
     button: {
       width: '100%',
@@ -77,10 +87,16 @@ const useStyles = makeStyles(() => {
       marginTop: '10px',
       flex: '50',
       margin: '0 -5px',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column'
+      }
     },
     btnItem: {
       flex: '1',
       margin: '0 5px',
+      [theme.breakpoints.down('xs')]: {
+        marginBottom: '10px'
+      }
     }
   };
 });
