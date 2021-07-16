@@ -207,10 +207,6 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
                 <WithdrawAction data={dataButton} />
               </Box>
             ) : null}
-
-            {canWithdraw && (Number(pendingReward)) > 0 ? (
-              <Box className={classes.blank}></Box>
-            ) : null}
             {Number(pendingReward) > 0 ? (
               <Box className={classes.btnItem}>
                 <ClaimRewardsAction data={dataButton} />

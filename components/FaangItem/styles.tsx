@@ -74,13 +74,13 @@ const useStyles = makeStyles(() => {
     doubleBtn:{
       display: 'flex',
       justifyContent: 'space-between',
-      marginTop: '10px'
+      marginTop: '10px',
+      flex: '50',
+      margin: '0 -5px',
     },
     btnItem: {
-      flex: '20'
-    },
-    blank: {
-      flex: '1'
+      flex: '1',
+      margin: '0 5px',
     }
   };
 });
