@@ -16,7 +16,6 @@ const useStyles = makeStyles(() => {
   return {
     button: {
       width: '100%',
-      marginBottom: '20px',
     },
     pTitle: {
       fontWeight: 'bold',
