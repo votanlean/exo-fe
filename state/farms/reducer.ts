@@ -32,7 +32,7 @@ export const farmsSlice = createSlice({
       const publicDataArray = action.payload;
       state.data = state.data.map((farm) => {
         const publicData = publicDataArray.find(
-          (entry) => (entry.pid = farm.pid),
+          (entry) => entry.pid === farm.pid,
         );
         return { ...farm, ...publicData };
       });
