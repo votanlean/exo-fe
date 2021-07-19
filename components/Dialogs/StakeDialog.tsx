@@ -113,7 +113,7 @@ export const StakeDialog = (props: any) => {
 
   const onChangeAmount = (e) => {
     const value = e.target.value;
-    const maxAmountConverted = normalizeTokenDecimal(maxAmount, +decimal).toNumber();
+    const maxAmountConverted = normalizeTokenDecimal(maxAmount, +decimal).toFixed(+decimal, 1);
     if (value >= 0) {
       setAmount(value);
       if (value >= maxAmountConverted) {
@@ -130,7 +130,7 @@ export const StakeDialog = (props: any) => {
   };
 
   const onClickMax = () => {
-    setAmount(normalizeTokenDecimal(maxAmount, +decimal).toNumber());
+    setAmount(normalizeTokenDecimal(maxAmount, +decimal).toFixed(+decimal, 1));
   };
 
   const onClickConfirm = async () => {
