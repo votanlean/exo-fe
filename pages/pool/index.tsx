@@ -162,11 +162,11 @@ function Pool() {
     return () => {
       clearInterval(updateAppDataInterval);
     };
-  }, [chainId]);
+  }, [chainId, account]);
 
   useEffect(() => {
     if (
-      !farmStartBlock||
+      !farmStartBlock ||
       !canClaimRewardsBlock ||
       !seedingFinishBlock ||
       !currentBlock ||
@@ -259,16 +259,19 @@ function Pool() {
             align="center"
             style={{ marginBottom: '30px', lineHeight: '40px' }}
           >
-            {chainId === 56 || chainId === 97 ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
-            : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
+            {chainId === 56 || chainId === 97
+              ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
+              : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
             <br />
-            {currentBlock && currentBlock < farmStartBlock ? 'Farming reward will be generated in' : null}
+            {currentBlock && currentBlock < farmStartBlock
+              ? 'Farming reward will be generated in'
+              : null}
           </Typography>
-          {currentBlock && currentBlock < farmStartBlock ? 
+          {currentBlock && currentBlock < farmStartBlock ? (
             <Typography variant="h3" color="primary">
               {poolPageReady ? countDownStringFarm : 'Coming Soon'}
             </Typography>
-          : null}
+          ) : null}
         </div>
 
         <div className={styles.lpPoolGrid}>
@@ -332,8 +335,8 @@ function Pool() {
               paragraph
               style={{ marginBottom: '10px', lineHeight: '40px' }}
             >
-              {chainId === 56 || chainId === 97 ? 
-                'Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO.' 
+              {chainId === 56 || chainId === 97
+                ? 'Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO.'
                 : 'Equitable Distribution of tEXO in seed pools. Stake ERC-20 tokens for tEXO.'}
               <br />
               (4% Deposit Fee applies for tEXO liquidity)
@@ -342,13 +345,15 @@ function Pool() {
                 ? `Seed Pools reward startblock at ${seedingStartBlock}`
                 : ''}
               <br />
-              {currentBlock && currentBlock < canClaimRewardsBlock ? 'Users can harvest tEXO in' : null}
+              {currentBlock && currentBlock < canClaimRewardsBlock
+                ? 'Users can harvest tEXO in'
+                : null}
             </Typography>
-            {currentBlock && currentBlock < canClaimRewardsBlock ?
+            {currentBlock && currentBlock < canClaimRewardsBlock ? (
               <Typography variant="h3" color="primary">
                 {poolPageReady ? countDownString : 'Coming Soon'}
               </Typography>
-            : null}
+            ) : null}
           </div>
         )}
 
