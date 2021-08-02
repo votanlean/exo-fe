@@ -181,6 +181,23 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <section className="audit-parties">
+        <div className="container logo-text">
+          <LogoTitle
+            firstText="Audit "
+            secondText="Parties"
+            color="#0F0F0F"
+          />
+        </div>
+        <div className="container techrate-logo">
+          <a href="https://github.com/TechRate/Smart-Contract-Audits/blob/main/ExoniumDEX%20Standart%20Smart%20Contract%20Security%20Audit.pdf">
+            <img
+              src="/static/images/techrate-logo.png"
+              alt="techrate"
+            />
+          </a>
+        </div>
+      </section>
     </div>
   );
 };
