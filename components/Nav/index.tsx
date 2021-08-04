@@ -9,7 +9,7 @@ const data = [
   { title: 'Pool', path: '/pool' },
   { title: 'Exchange', path: '/exchange' },
   { title: 'tASSET', path: '/tASSET' },
-  { title: 'Bridge', path: '/bridge' },
+  // { title: 'Bridge', path: '/bridge' },
   { title: 'GOV', path: '/governance' },
 ];
 
