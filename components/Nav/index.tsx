@@ -10,7 +10,7 @@ const data = [
 	{ title: 'Yield', path: '/yield' },
   { title: 'Exchange', path: '/exchange' },
   { title: 'tASSET', path: '/tASSET' },
-  { title: 'Bridge', path: '/bridge' },
+  // { title: 'Bridge', path: '/bridge' },
   { title: 'GOV', path: '/governance' },
 ];
 

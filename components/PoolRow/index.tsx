@@ -85,7 +85,7 @@ function PoolRow(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     normalizeTokenDecimal(totalStaked, +decimal).toNumber(),
-    normalizeTokenDecimal(poolTexoPerBlock, +decimal).toNumber(),
+    normalizeTokenDecimal(poolTexoPerBlock).toNumber(),
   );
 
   const dataButton = {
