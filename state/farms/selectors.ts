@@ -5,6 +5,10 @@ import { useFarmQuoteTokenPrice, useTexoTokenPrice } from "state/texo/selectors"
 import tokens from "config/constants/tokens";
 import { useNetwork } from "state/hooks";
 import { gql, useQuery } from '@apollo/client'
+import { usePools } from "state/pools/selectors";
+import { useAppPrices } from "state/prices/selectors";
+import { getAddress } from 'utils/addressHelpers';
+import { getDecimals } from 'utils/decimalsHelper';
 
 export const useFarmFromPid = (pid): any => {
   const farm = useSelector((state: any) => state.farms.data.find((f) => f.pid === pid));
@@ -21,6 +25,9 @@ export const useTotalValue = (): BigNumber => {
   const texoPrice = new BigNumber(useTexoTokenPrice());
 
 	const { id: chainId } = useNetwork();
+	const pools = usePools();
+	const allTokenPrices = useAppPrices();
+
 	let farmId: number;
 
 	switch (chainId) {
@@ -38,7 +45,7 @@ export const useTotalValue = (): BigNumber => {
 
   const quoteTokenPerTexoPrice = new BigNumber(useFarmQuoteTokenPrice(farmId));
   const quoteTokenPrice = quoteTokenPerTexoPrice.times(texoPrice);
-
+	// console.log(quoteTokenPerTexoPrice.toJSON(), texoPrice.toJSON(), quoteTokenPrice.toJSON())
   const farms = useFarms();
   let value = new BigNumber(0);
 
@@ -59,6 +66,21 @@ export const useTotalValue = (): BigNumber => {
       value = value.plus(val);
     }
   }
+
+	pools.forEach((pool) => {
+		let stakingTokenPrice = 0;
+
+		if (allTokenPrices.data) {
+			stakingTokenPrice =
+				allTokenPrices.data[
+					getAddress(pool.stakingToken.address, chainId)?.toLowerCase()
+				];
+		}
+		const decimal = getDecimals(pool.stakingToken.decimals as any, chainId);
+		const poolTotal = pool.totalStaked?.div(new BigNumber(10).pow(decimal)).times(stakingTokenPrice) || 0;
+
+		value = value.plus(poolTotal);
+	})
 
   return value;
 }
