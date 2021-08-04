@@ -94,7 +94,8 @@ function Pool() {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [countDownString, setCountDownString] = useState('');
-  const [countDownStringToStartSeeding, setCountDownStringToStartSeeding] = useState('');
+  const [countDownStringToStartSeeding, setCountDownStringToStartSeeding] =
+    useState('');
   const [countDownStringFarm, setCountDownStringFarm] = useState('');
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
@@ -123,14 +124,18 @@ function Pool() {
   let blockExplorerToCountDownSeeding;
 
   if (currentBlock < seedingStartBlock) {
-    blockExplorerToCountDownSeeding = blockExplorerUrl + '/block/countdown/' + seedingStartBlock;
+    blockExplorerToCountDownSeeding =
+      blockExplorerUrl + '/block/countdown/' + seedingStartBlock;
   } else if (currentBlock < canClaimRewardsBlock) {
-    blockExplorerToCountDownSeeding = blockExplorerUrl + '/block/countdown/' + canClaimRewardsBlock;
+    blockExplorerToCountDownSeeding =
+      blockExplorerUrl + '/block/countdown/' + canClaimRewardsBlock;
   } else {
-    blockExplorerToCountDownSeeding = blockExplorerUrl + '/block/countdown/' + seedingFinishBlock;
+    blockExplorerToCountDownSeeding =
+      blockExplorerUrl + '/block/countdown/' + seedingFinishBlock;
   }
 
-  const blockExplorerToCountDownFarming = blockExplorerUrl + '/block/countdown/' + farmStartBlock;
+  const blockExplorerToCountDownFarming =
+    blockExplorerUrl + '/block/countdown/' + farmStartBlock;
 
   const refreshAppGlobalData = () => {
     dispatch(replaceFarmWithoutUserDataAsync(chainId));
@@ -232,7 +237,10 @@ function Pool() {
         return;
       }
 
-      const countDownString = Countdown(new Date(), seedingStartDate).toString();
+      const countDownString = Countdown(
+        new Date(),
+        seedingStartDate,
+      ).toString();
 
       setCountDownStringToStartSeeding(countDownString);
     }, 1000);
@@ -258,7 +266,7 @@ function Pool() {
 
     countDownIntervalFarm.current = intervalFarm;
     countDownInterval.current = interval;
-    countDownIntervalSeedingStart.current = intervalToSeedingStart
+    countDownIntervalSeedingStart.current = intervalToSeedingStart;
 
     return () => {
       if (countDownInterval.current) {
@@ -274,7 +282,13 @@ function Pool() {
         countDownIntervalFarm.current = null;
       }
     };
-  }, [currentBlock, canClaimRewardsBlock, seedingStartBlock, seedingFinishBlock, farmStartBlock]);
+  }, [
+    currentBlock,
+    canClaimRewardsBlock,
+    seedingStartBlock,
+    seedingFinishBlock,
+    farmStartBlock,
+  ]);
 
   return (
     <>
@@ -292,6 +306,146 @@ function Pool() {
           tEXOReward={new BigNumber(tEXOReward)}
         />
 
+        {currentBlock >= seedingFinishBlock && (
+          <div className={styles.countdownContainer}>
+            <Typography variant="h5" color="primary">
+              Seed phase already completed. Deposit paused. Users may withdraw
+              their deposits and harvest tEXO for farming.
+            </Typography>
+          </div>
+        )}
+
+        {currentBlock < seedingFinishBlock && (
+          <div className={styles.countdownContainer}>
+            <Typography
+              variant="h5"
+              align="center"
+              paragraph
+              style={{ marginBottom: '10px', lineHeight: '40px' }}
+            >
+              {chainId === 56 || chainId === 97
+                ? 'Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO.'
+                : 'Equitable Distribution of tEXO in seed pools. Stake ERC-20 tokens for tEXO.'}
+              <br />
+              (4% Deposit Fee applies for tEXO liquidity)
+              <br />
+              {currentBlock < seedingStartBlock && 'Seed Pool Reward starts in'}
+              {currentBlock >= seedingStartBlock &&
+                currentBlock < canClaimRewardsBlock &&
+                'Users can harvest tEXO in'}
+              {currentBlock >= canClaimRewardsBlock &&
+              currentBlock < seedingFinishBlock ? (
+                <>
+                  <span>
+                    Users may now harvest tEXO and provide liquidity for LP
+                    farming
+                  </span>
+                  <br />
+                  <span>tEXO rewards in seed pool will stop in</span>
+                </>
+              ) : null}
+            </Typography>
+
+            {currentBlock < seedingStartBlock && (
+              <Typography variant="h3" color="primary" align="center">
+                {countDownStringToStartSeeding}
+              </Typography>
+            )}
+
+            {currentBlock >= seedingStartBlock &&
+              currentBlock < canClaimRewardsBlock && (
+                <Typography variant="h3" color="primary" align="center">
+                  {countDownString}
+                </Typography>
+              )}
+
+            {currentBlock >= canClaimRewardsBlock &&
+              currentBlock < seedingFinishBlock && (
+                <Typography variant="h3" color="primary" align="center">
+                  {countDownStringFarm}
+                </Typography>
+              )}
+
+            {currentBlock < seedingFinishBlock && (
+              <>
+                <Typography align="center" variant="h6">
+                  <a
+                    target="_blank"
+                    style={{ color: '#007EF3' }}
+                    href={blockExplorerToCountDownSeeding}
+                  >
+                    Check explorer for the most accurate countdown
+                  </a>
+                  <br />
+                </Typography>
+                <br />
+              </>
+            )}
+            <br />
+            <Typography
+              variant="h5"
+              align="center"
+              paragraph
+              style={{ marginBottom: '10px', lineHeight: '40px' }}
+            >
+              Click{' '}
+              <a
+                target="_blank"
+                style={{ color: '#007EF3' }}
+                href="https://texo.gitbook.io/exoniumdex/launch"
+              >
+                here
+              </a>{' '}
+              for more information about tEXO seed pools. Always verify{' '}
+              <a
+                style={{ color: '#007EF3' }}
+                target="_blank"
+                href="https://texo.gitbook.io/exoniumdex/smart-contracts-and-audits/smart-contracts"
+              >
+                contracts
+              </a>{' '}
+              before depositing.
+            </Typography>
+          </div>
+        )}
+
+        <TableContainer className={classes.tableContainer && styles.lpPoolGrid}>
+          <Table aria-label="collapsible table">
+            <TableBody>
+              {poolsData.map((pool) => {
+                let stakingTokenPrice = 0;
+
+                if (allTokenPrices.data) {
+                  stakingTokenPrice =
+                    allTokenPrices.data[
+                      getAddress(
+                        pool.stakingToken.address,
+                        chainId,
+                      )?.toLowerCase()
+                    ];
+                }
+                return (
+                  <PoolRow
+                    key={pool.id}
+                    pool={pool}
+                    account={account}
+                    onPoolStateChange={refreshAppGlobalData}
+                    canClaimReward={
+                      currentBlock && currentBlock >= canClaimRewardsBlock
+                    }
+                    seedingFinish={
+                      currentBlock && currentBlock > seedingFinishBlock
+                    }
+                    stakingTokenPrice={stakingTokenPrice}
+                    tEXOPrice={tEXOPrice}
+                    countDownString={countDownString}
+                  />
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
         <div className={styles.countdownContainer}>
           <Typography
             variant="h5"
@@ -307,16 +461,19 @@ function Pool() {
               : null}
           </Typography>
           {currentBlock && currentBlock < farmStartBlock ? (
-            <Typography variant="h3" color="primary">
+            <Typography variant="h3" color="primary" align="center">
               {poolPageReady ? countDownStringFarm : 'Coming Soon'}
             </Typography>
           ) : null}
-            <Typography
-              variant="h6"
-              >
-              <a target="_blank" style={{ color: '#007EF3' }} href={blockExplorerToCountDownFarming}>Check explorer for the most accurate countdown</a>
-              </Typography>
-          
+          <Typography variant="h6" align="center">
+            <a
+              target="_blank"
+              style={{ color: '#007EF3' }}
+              href={blockExplorerToCountDownFarming}
+            >
+              Check explorer for the most accurate countdown
+            </a>
+          </Typography>
         </div>
 
         <div className={styles.lpPoolGrid}>
@@ -365,112 +522,6 @@ function Pool() {
             />
           ))}
         </div>
-
-        {currentBlock >= seedingFinishBlock && 
-          <div className={styles.countdownContainer}>
-              <Typography variant="h5" color="primary">
-                Seed phase already completed. Deposit paused. Users may withdraw their deposits and harvest tEXO for farming.
-              </Typography> 
-          </div>
-        }
-
-        {currentBlock < seedingFinishBlock &&
-            <div className={styles.countdownContainer}>
-                <Typography
-                  variant="h5"
-                  align="center"
-                  paragraph
-                  style={{ marginBottom: '10px', lineHeight: '40px' }}
-                >
-                  {chainId === 56 || chainId === 97
-                    ? 'Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO.'
-                    : 'Equitable Distribution of tEXO in seed pools. Stake ERC-20 tokens for tEXO.'}
-                  <br />
-                  (4% Deposit Fee applies for tEXO liquidity)
-                  <br />
-                  {currentBlock < seedingStartBlock && 'Seed Pool Reward starts in'}
-  
-                  {currentBlock >= seedingStartBlock && currentBlock < canClaimRewardsBlock && 'Users can harvest tEXO in'}
-
-                  {currentBlock >= canClaimRewardsBlock && currentBlock < seedingFinishBlock 
-                    ? (<><span>Users may now harvest tEXO and provide liquidity for LP farming</span><br/><span>tEXO rewards in seed pool will stop in</span></>)
-                    : null
-                }
-  
-                </Typography>
-  
-                {currentBlock < seedingStartBlock && <Typography variant="h3" color="primary">
-                    {countDownStringToStartSeeding}
-                  </Typography>}
-  
-                {currentBlock >= seedingStartBlock && currentBlock < canClaimRewardsBlock && 
-                  <Typography variant="h3" color="primary">
-                    {countDownString}
-                  </Typography>}
-
-                {currentBlock >= canClaimRewardsBlock && currentBlock < seedingFinishBlock && 
-                <Typography variant="h3" color="primary">
-                  {countDownStringFarm}
-                </Typography>}
-
-                  {currentBlock < seedingFinishBlock && (
-                      <>
-                        <Typography
-                        variant="h6"
-                        >
-                        <a target="_blank" style={{ color: '#007EF3' }} href={blockExplorerToCountDownSeeding}>Check explorer for the most accurate countdown</a>
-                        <br />
-                        </Typography>
-                        <br/>
-                      </>
-                      )
-                  }
-                      
-                <Typography
-                      variant="h5"
-                      align="center"
-                      paragraph
-                      style={{ marginBottom: '10px', lineHeight: '40px' }}
-                    >
-                  Click <a target="_blank" style={{ color: '#007EF3' }} href="https://texo.gitbook.io/exoniumdex/launch">here</a> for more information about tEXO seed pools. Always verify <a style={{ color: '#007EF3' }} target="_blank" href="https://texo.gitbook.io/exoniumdex/smart-contracts-and-audits/smart-contracts">contracts</a> before depositing.
-                </Typography>
-              </div>
-        }
-
-        
-        <TableContainer className={classes.tableContainer}>
-          <Table aria-label="collapsible table">
-            <TableBody>
-              {poolsData.map((pool) => {
-                let stakingTokenPrice = 0;
-
-                if (allTokenPrices.data) {
-                  stakingTokenPrice =
-                    allTokenPrices.data[
-                      getAddress(pool.stakingToken.address, chainId)?.toLowerCase()
-                    ];
-                }
-                return (
-                  <PoolRow
-                    key={pool.id}
-                    pool={pool}
-                    account={account}
-                    onPoolStateChange={refreshAppGlobalData}
-                    canClaimReward={
-                      currentBlock && currentBlock >= canClaimRewardsBlock
-                    }
-                    seedingFinish={
-                      currentBlock && currentBlock > seedingFinishBlock
-                    }
-                    stakingTokenPrice={stakingTokenPrice}
-                    tEXOPrice={tEXOPrice}
-                    countDownString={countDownString}
-                  />
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
       </div>
     </>
   );
