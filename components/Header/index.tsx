@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
 import { Button, Avatar, Typography } from '@material-ui/core';
 import { AccountBalanceWalletOutlined } from '@material-ui/icons';
+import { getNetworks } from 'utils/networkHelpers';
 
 import ConnectPopup from '../ConnectPopup';
 import LogoutPopup from '../LogoutPopup';
@@ -14,9 +15,12 @@ import { useEagerConnect, useInactiveListener } from "../../hooks/useConnect";
 import { useStyles } from './styles';
 import SwitchNetworkPopup from 'components/SwitchNetworkPopup';
 import NetworkNotify from 'components/NetworkNotify';
+import { changeNetwork } from 'state/network';
+import { useAppDispatch } from 'state';
 
 const Header = () => {
   const classes = useStyles();
+  const networks = getNetworks();
   const [openPopup, setOpenPopup] = useState(false);
   const [openSwitchNetworkPopup, setOpenSwitchNetworkPopup] = useState(false);
   const [openLogoutPopup, setOpenLogoutPopup] = useState(false);
@@ -51,6 +55,11 @@ const Header = () => {
     setOpenSwitchNetworkPopup(!openSwitchNetworkPopup);
   };
 
+  const dispatch = useAppDispatch();
+  const handleNetWorkChange = (item) => {
+    dispatch(changeNetwork(item));
+  }
+
   return (
     <>
       <header
@@ -71,16 +80,19 @@ const Header = () => {
             </div>
 
             <div className={styles.item3}>
-              <Button
+              {networks.map((item, index) => (
+                <Button
                 variant="contained"
                 color="primary"
                 size="small"
                 classes={{ root: classes.networkBtn }}
-                onClick={handleSwitchNetworkPopupPopup}
-              >
-                <Avatar src={networkIcon} className={classes.networkIcon} />
-                <Typography className={classes.networkName}>{networkName}</Typography>
+                onClick={() => handleNetWorkChange(item)}
+                className={(network.id === item.id ? '' : classes.active)}
+                >
+                <Avatar src={item.icon} className={classes.networkIcon} />
+                <Typography className={classes.networkName}>{item.name}</Typography>
               </Button>
+              ))}
               <Button
                 variant="contained"
                 color="primary"
