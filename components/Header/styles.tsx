@@ -9,7 +9,9 @@ const useStyles = makeStyles((theme) => {
       background: 'linear-gradient(-90deg, #0f0f0f 0%, #103c5b 100%)',
       marginRight: 20,
       [theme.breakpoints.down('sm')]: {
+        paddingRight: 5,
         marginRight: 0,
+        minWidth: 0,
       },
     },
     networkIcon: {
@@ -34,6 +36,9 @@ const useStyles = makeStyles((theme) => {
       [theme.breakpoints.down('xs')]: {
         display: 'none',
       },
+    },
+    active:{
+      opacity: '0.4'
     }
   };
 });
