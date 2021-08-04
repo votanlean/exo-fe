@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useStyles } from './style';
-import { useNetwork } from 'state/hooks';
+import { Button, Typography } from '@material-ui/core';
 import { useWeb3React } from '@web3-react/core';
-import { Button, Link, Typography } from '@material-ui/core';
-import { useEffect } from 'react';
-// import { networks } from 'config/constants/walletData';
-import { changeNetwork } from 'state/network';
-import { useAppDispatch } from 'state';
+
+import { useNetwork } from 'state/hooks';
 import { getNetworks } from 'utils/networkHelpers';
+
+declare const window: any;
+
+import { useStyles } from './style';
+
 index.propTypes = {
   clickHandle: PropTypes.func,
 };
@@ -18,21 +19,45 @@ const networks = getNetworks();
 function index(props) {
   const { clickHandle } = props;
   const appNetwork = useNetwork();
-  const { library, connector } = useWeb3React();
+  const { library } = useWeb3React();
   const classes = useStyles();
-  const [change, setChange] = useState(false);
-  const handleNetWorkChange = (item) => {
-    dispatch(changeNetwork(item));
-  };
-  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    networks.map((p) => {
-      if (p.id === parseInt(library?.networkVersion)) {
-        dispatch(changeNetwork(p));
-      }
-    });
-    setChange(true);
-  }, [library?.networkVersion]);
+    if (appNetwork.id !== parseInt(library?.networkVersion) &&
+    typeof library?.networkVersion !== 'undefined') {
+			// try to request the user to connect to the current app network
+			if (window.ethereum) {
+				window.ethereum.request({
+					method: 'wallet_switchEthereumChain',
+					params: [{
+						chainId: `0x${appNetwork.id.toString(16)}`
+					}]
+				}).catch((switchError) => {
+					if (switchError.code === 4902) {
+						// wallet dont have the network id, try adding it
+						window.ethereum.request({
+							method: 'wallet_addEthereumChain',
+							params: [{
+								chainId: `0x${appNetwork.id.toString(16)}`,
+								rpcUrl: appNetwork.rpcUrl
+							}]
+						}).then(() => {
+							window.ethereum.request({
+								method: 'wallet_switchEthereumChain',
+								params: [{
+									chainId: `0x${appNetwork.id.toString(16)}`
+								}]
+							})
+						})
+					}
+
+					throw switchError
+				}).catch((error) => {
+					console.log('RPC Error: ', error)
+				})
+			}
+		}
+  }, [library?.networkVersion, appNetwork.id]);
 
   if (
     appNetwork.id !== parseInt(library?.networkVersion) &&
