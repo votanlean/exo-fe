@@ -189,13 +189,23 @@ const Home = () => {
             color="#0F0F0F"
           />
         </div>
-        <div className="container techrate-logo">
-          <a href="https://github.com/TechRate/Smart-Contract-Audits/blob/main/ExoniumDEX%20Standart%20Smart%20Contract%20Security%20Audit.pdf">
-            <img
-              src="/static/images/techrate-logo.png"
-              alt="techrate"
-            />
-          </a>
+        <div className="container d-flex items-center parties-logo">
+          <div className="techrate-logo">
+            <a href="https://github.com/TechRate/Smart-Contract-Audits/blob/main/ExoniumDEX%20Standart%20Smart%20Contract%20Security%20Audit.pdf">
+              <img
+                src="/static/images/techrate-logo.png"
+                alt="techrate"
+              />
+            </a>
+          </div>
+          <div className="blockchain-fg-logo">
+            <a href="https://github.com/BCFG-Audit/Smart_Contract_Security_Audits/blob/main/ExoniumDEX_BCFG_AUDIT_Final.pdf">
+              <img
+                src="/static/images/blockchain-focus-group.png"
+                alt="blockchain-focus-group"
+              />
+            </a>
+          </div>
         </div>
       </section>
     </div>
