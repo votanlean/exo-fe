@@ -10,13 +10,6 @@ import {
 import { KeyboardArrowDown, KeyboardArrowUp, Launch } from '@material-ui/icons';
 import BigNumber from 'bignumber.js';
 
-import { getPoolApr } from 'hookApi/apr';
-import { useOrchestratorData } from 'state/orchestrator/selectors';
-import { getAddress } from 'utils/addressHelpers';
-import { normalizeTokenDecimal } from 'utils/bigNumber';
-
-import { useStyles } from './styles';
-import { useOrchestratorContract } from '../../hooks/useContract';
 import {
   ApproveAction,
   ClaimRewardsAction,
@@ -24,8 +17,18 @@ import {
   StakeAction,
   WithdrawAction,
 } from 'components/PoolActions';
+
 import { useNetwork } from 'state/hooks';
+import { useOrchestratorData } from 'state/orchestrator/selectors';
+
+import { useOrchestratorContract } from 'hooks/useContract';
+import { getPoolApr } from 'hookApi/apr';
+
+import { getAddress } from 'utils/addressHelpers';
+import { normalizeTokenDecimal } from 'utils/bigNumber';
 import { getDecimals } from 'utils/decimalsHelper';
+
+import { useStyles } from './styles';
 
 function YieldFarm(props: any) {
   const {
@@ -174,11 +177,11 @@ function YieldFarm(props: any) {
 								</Box>
               </Box>
               <Box
-								flexGrow={1}
+								flex={1}
                 display='flex'
                 justifyContent="center"
 								flexDirection='column'
-								marginLeft='20px'
+								marginLeft={isTablet ? '0' : '20px'}
               >
 								<Box className={classes.rowDetail} flex={1}>
                   <Typography>Total unstaked</Typography>
@@ -199,46 +202,56 @@ function YieldFarm(props: any) {
                 </Box>
 								
               </Box>
-							<Box
-								flexGrow={1}
-                display='flex'
-                justifyContent="center"
-								flexDirection='column'
-								marginLeft='20px'
-              >
-								<Box className={classes.buttonBoxItem} flex={1}>
-									<StakeAction disabled data={dataButton} />
-								</Box>
-								<Box className={classes.buttonBoxItem} flex={1}>
-									<ClaimRewardsAction
-										data={dataButton}
-										disabled
-									/>
-								</Box>
-              </Box>
-              <Box
-                flexGrow={1}
-                display='flex'
-                justifyContent="center"
-								flexDirection='column'
-								marginLeft='20px'
-              >
-								{isAlreadyApproved ? (
-                  <Box className={classes.buttonBoxItem} flex={1}>
-                    <StakeAction disabled data={dataButton} />
-                  </Box>
-                ) : null}
+							{!!account && (
+								<>
+									<Box
+										flex={1}
+										display='flex'
+										justifyContent="center"
+										flexDirection='column'
+										marginLeft={isTablet ? '0' : '20px'}
+										marginBottom={isTablet ? '8px' : '0'}
+									>
+										<Box className={classes.buttonBoxItem} flex={1}>
+											<StakeAction data={dataButton} disabled={!isAlreadyApproved}/>
+										</Box>
+										<Box className={classes.buttonBoxItem} flex={1}>
+											<ClaimRewardsAction
+												data={dataButton}
+												disabled
+											/>
+										</Box>
+									</Box>
+									<Box
+										flex={1}
+										display='flex'
+										justifyContent="center"
+										flexDirection='column'
+										marginLeft={isTablet ? '0' : '20px'}
+										marginTop={isTablet ? '8px' : '0'}
+									>
+										<Box className={classes.buttonBoxItem} flex={1}>
+											<ApproveAction data={dataButton} disabled={isAlreadyApproved} />
+										</Box>
 
-                {!isAlreadyApproved ? (
-                  <Box className={classes.buttonBoxItem} flex={1}>
-                    <ApproveAction data={dataButton} disabled />
-                  </Box>
-                ) : null}
-
-								<Box className={classes.buttonBoxItem} flex={1}>
-									<WithdrawAction data={dataButton} disabled/>
+										<Box className={classes.buttonBoxItem} flex={1}>
+											<WithdrawAction data={dataButton} disabled/>
+										</Box>
+									</Box>
+								</>
+							)}
+							{!account && (
+								<Box
+									flex={2}
+									display='flex'
+									alignItems='center'
+									marginLeft={isTablet ? '0' : '20px'}
+								>
+									<Box className={classes.buttonBoxItem} flex={1}>
+										<ApproveAction data={dataButton} disabled={isAlreadyApproved} />
+									</Box>							
 								</Box>
-              </Box>
+							)}
             </Box>
           </Collapse>
         </TableCell>
