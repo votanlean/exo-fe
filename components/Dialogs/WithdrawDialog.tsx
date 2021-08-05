@@ -156,7 +156,7 @@ export const WithdrawDialog = (props: any) => {
             label={title}
             value={amount}
             onChange={onChangeAmount}
-            helperText={`Rewards: ${unit} ${normalizeTokenDecimal(maxAmount, +decimal)}`}
+            helperText={`Balance: ${unit} ${normalizeTokenDecimal(maxAmount, +decimal)}`}
             fullWidth
             placeholder={unit}
             FormHelperTextProps={{
