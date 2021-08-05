@@ -106,8 +106,8 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <NetworkNotify clickHandle={handleSwitchNetworkPopupPopup}/>
       </header>
+      <NetworkNotify clickHandle={handleSwitchNetworkPopupPopup}/>
 
       {/* Connect Popup */}
       <ConnectPopup
