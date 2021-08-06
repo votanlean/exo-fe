@@ -96,6 +96,29 @@ const useStyles = makeStyles(() => {
         marginLeft: '0',
       },
     },
+    APRInfo: {
+      [theme.breakpoints.down('sm')]: {
+        display: 'none'
+      }
+    },
+    mobileAPRInfo: {
+      display: 'none',
+      [theme.breakpoints.down('sm')]: {
+        display: 'block'
+      }
+    },
+    APRColumn: {
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: '0px !important',
+        paddingRight: '0px !important'
+      }
+    },
+    ArrowColumn: {
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: '8px !important',
+        paddingRight: '8px !important'
+      }
+    }
   };
 });
 

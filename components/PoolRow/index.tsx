@@ -120,12 +120,19 @@ function PoolRow(props: any) {
           </Typography>
         </TableCell>
         <TableCell
+          className={classes.APRColumn}
           style={{ padding: '24px 16px', paddingLeft: isTablet ? '0' : '16px' }}
         >
           <Typography variant="caption">APR</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
-              {apr ? `${apr}%` : 'N/A'}
+              <div className={classes.APRInfo}>
+                {apr ? `${apr}%` : 'N/A'}
+              </div>
+            
+              <div className={classes.mobileAPRInfo}>
+                {apr ? `${apr.toFixed(2)}%` : 'N/A'}
+              </div>
             </Typography>
             {!isTablet ? (
               <RoiAction apr={apr} tokenPrice={stakingTokenPrice} />
@@ -155,7 +162,7 @@ function PoolRow(props: any) {
             </TableCell>
           </>
         )}
-        <TableCell style={{ padding: '24px 16px' }}>
+        <TableCell className={classes.ArrowColumn} style={{ padding: '24px 16px' }}>
           <Box display="flex" alignItems="center">
             {!isTablet ? (
               <Typography variant="caption">Details</Typography>
