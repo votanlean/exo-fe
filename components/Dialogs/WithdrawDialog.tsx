@@ -108,12 +108,12 @@ export const WithdrawDialog = (props: any) => {
 
   const onChangeAmount = (e) => {
     const value = e.target.value;
-    const maxAmountConverted = normalizeTokenDecimal(maxAmount, +decimal).toFixed(+decimal, 1);
+    // const maxAmountConverted = normalizeTokenDecimal(maxAmount, +decimal).toFixed(+decimal, 1);
     if (value >= 0) {
       setAmount(value);
-      if (value >= maxAmountConverted) {
-        setAmount(maxAmountConverted);
-      }
+      // if (value >= maxAmountConverted) {
+      //   setAmount(maxAmountConverted);
+      // }
     } else {
       setAmount(0);
     }
