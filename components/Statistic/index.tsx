@@ -12,6 +12,7 @@ import { getTEXOAddress } from '../../utils/addressHelpers';
 import { getBalanceNumber } from '../../utils/formatBalance';
 import { normalizeTokenDecimal } from 'utils/bigNumber';
 import { useNetwork } from 'state/hooks';
+import { numberWithCommas } from 'utils/numberWithComma';
 
 function calculateMarketCap(tEXOPrice, totalSupply: string) {
   if (!tEXOPrice || !totalSupply) {
@@ -40,7 +41,7 @@ function Statistic(props) {
     normalizeTokenDecimal(currentTEXOPerBlock).toNumber();
 	const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
   const normalizedBurnAmount = normalizeTokenDecimal(burnAmount).toNumber();
-  const { id: chainId, name, swapLink } = useNetwork();
+  const { id: chainId, swapLink } = useNetwork();
   const tEXOBalance = getBalanceNumber(
     useTokenBalance(getTEXOAddress(chainId)),
   );
@@ -167,11 +168,11 @@ function Statistic(props) {
           </Typography>
 
 					<Typography variant="h4" className={'font-bold'}>
-            ${allChainTvl.toFixed(2)}
+            ${numberWithCommas(allChainTvl.toFixed(2))}
           </Typography>
 
           <Typography variant="h4" className={'font-bold'}>
-            ${`${tvl.toFixed(2)} (${name})`}
+            ${`${numberWithCommas(tvl.toFixed(2))} (${chainId === 56 || chainId === 97 ? 'BSC' : 'Polygon'})`}
           </Typography>
 
           <Typography color="textPrimary" className={'font-bold'}>
