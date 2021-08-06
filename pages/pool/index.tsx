@@ -330,8 +330,12 @@ function Pool() {
               (4% Deposit Fee applies for tEXO liquidity)
               <br />
               {currentBlock < seedingStartBlock && 'Seed Pool Reward starts in'}
-              {currentBlock >= seedingStartBlock &&
-                currentBlock < canClaimRewardsBlock &&
+              {currentBlock < seedingStartBlock && (
+                <Typography variant="h3" color="primary" align="center">
+                  {countDownStringToStartSeeding}
+                </Typography>
+              )}
+              {currentBlock < canClaimRewardsBlock &&
                 'Users can harvest tEXO in'}
               {currentBlock >= canClaimRewardsBlock &&
               currentBlock < seedingFinishBlock ? (
@@ -346,18 +350,11 @@ function Pool() {
               ) : null}
             </Typography>
 
-            {currentBlock < seedingStartBlock && (
+            {currentBlock < canClaimRewardsBlock && (
               <Typography variant="h3" color="primary" align="center">
-                {countDownStringToStartSeeding}
+                {countDownString}
               </Typography>
             )}
-
-            {currentBlock >= seedingStartBlock &&
-              currentBlock < canClaimRewardsBlock && (
-                <Typography variant="h3" color="primary" align="center">
-                  {countDownString}
-                </Typography>
-              )}
 
             {currentBlock >= canClaimRewardsBlock &&
               currentBlock < seedingFinishBlock && (
@@ -404,7 +401,15 @@ function Pool() {
               >
                 contracts
               </a>{' '}
-              before depositing.
+              before depositing. Click{' '}
+              <a
+                style={{ color: '#007EF3' }}
+                target="_blank"
+                href="https://texo.gitbook.io/exoniumdex/smart-contracts-and-audits/audits"
+              >
+                here
+              </a>{' '}
+              for audit reports.
             </Typography>
           </div>
         )}
