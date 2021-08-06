@@ -32,6 +32,7 @@ function Statistic(props) {
     burnAmount,
     tvl,
     tEXOReward,
+		allChainTvl = new BigNumber(0)
   } = props;
 
   const normalizedTotalSupply = normalizeTokenDecimal(totalSupply).toNumber();
@@ -39,7 +40,7 @@ function Statistic(props) {
     normalizeTokenDecimal(currentTEXOPerBlock).toNumber();
 	const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
   const normalizedBurnAmount = normalizeTokenDecimal(burnAmount).toNumber();
-  const { id: chainId, swapLink } = useNetwork();
+  const { id: chainId, name, swapLink } = useNetwork();
   const tEXOBalance = getBalanceNumber(
     useTokenBalance(getTEXOAddress(chainId)),
   );
@@ -165,8 +166,12 @@ function Statistic(props) {
             Total Value Locked (TVL)
           </Typography>
 
+					<Typography variant="h4" className={'font-bold'}>
+            ${allChainTvl.toFixed(2)}
+          </Typography>
+
           <Typography variant="h4" className={'font-bold'}>
-            ${tvl.toFixed(2)}
+            ${`${tvl.toFixed(2)} (${name})`}
           </Typography>
 
           <Typography color="textPrimary" className={'font-bold'}>

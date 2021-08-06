@@ -53,6 +53,9 @@ import { useNetwork } from 'state/hooks';
 import { getFarms } from 'utils/farmsHelpers';
 import { useFAANGOrchestratorData } from '../../state/FAANGOrchestrator/selectors';
 import { fetchFAANGOrchestratorDataThunk } from 'state/FAANGOrchestrator/reducer';
+import { useAllChainTotalValue } from 'state/tlv/selectors';
+import { fetchTLV } from 'state/tlv/reducer';
+
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
@@ -104,6 +107,7 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
+	const totalTvl = useAllChainTotalValue();
   const { FAANGFinishBlock } = useFAANGOrchestratorData();
 
   const { currentBlock } = useBlockData();
@@ -146,6 +150,7 @@ function Pool() {
     dispatch(replacePoolWithoutUserDataAsync(chainId));
     dispatch(fetchAppPrices(chainId));
     dispatch(replaceFAANGPoolsWithoutUserData(chainId));
+		dispatch(fetchTLV);
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account, chainId));
@@ -304,6 +309,7 @@ function Pool() {
           currentTEXOPerBlock={tEXOPerBlock}
           burnAmount={burnAmount}
           tEXOReward={new BigNumber(tEXOReward)}
+					allChainTvl={totalTvl}
         />
 
         {currentBlock >= seedingFinishBlock && (
