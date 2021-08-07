@@ -55,6 +55,7 @@ import { useFAANGOrchestratorData } from '../../state/FAANGOrchestrator/selector
 import { fetchFAANGOrchestratorDataThunk } from 'state/FAANGOrchestrator/reducer';
 import { useAllChainTotalValue } from 'state/tlv/selectors';
 import { fetchTLV } from 'state/tlv/reducer';
+import BannerCoinTelegraph from 'components/BannerCoinTelegraph';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -311,6 +312,8 @@ function Pool() {
           tEXOReward={new BigNumber(tEXOReward)}
 					allChainTvl={totalTvl}
         />
+
+        <BannerCoinTelegraph/>
 
         {currentBlock >= seedingFinishBlock && (
           <div className={styles.countdownContainer}>
