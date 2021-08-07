@@ -19,6 +19,7 @@ import { useOrchestratorContract } from '../../hooks/useContract';
 import { getAddress, getTEXOAddress } from '../../utils/addressHelpers';
 import styles from './farmItem.module.scss';
 import { getDecimals } from 'utils/decimalsHelper';
+import { numberWithCommas } from 'utils/numberWithComma';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -193,11 +194,11 @@ function FarmItem(props: any) {
                   title="My Rewards"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>{normalizeTokenDecimal(pendingReward).toFixed(4)} tEXO</p>
+                  <p>{numberWithCommas(normalizeTokenDecimal(pendingReward).toFixed(4))} tEXO</p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {normalizeTokenDecimal(totalStaked).toFixed(4)} {symbol}
+                    {numberWithCommas(normalizeTokenDecimal(totalStaked).toFixed(4))} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -205,7 +206,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {normalizeTokenDecimal(tokenBalance).toFixed(4)} {symbol}
+                    {numberWithCommas(normalizeTokenDecimal(tokenBalance).toFixed(4))} {symbol}
                   </p>
                 </RowPoolItem>
               </div>

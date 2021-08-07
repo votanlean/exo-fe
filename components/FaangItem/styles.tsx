@@ -88,15 +88,13 @@ const useStyles = makeStyles(() => {
       flex: '50',
       margin: '0 -5px',
       [theme.breakpoints.down('xs')]: {
-        flexDirection: 'column'
+        flexDirection: 'column',
+        marginTop: '0px',
       }
     },
     btnItem: {
       flex: '1',
       margin: '0 5px',
-      [theme.breakpoints.down('xs')]: {
-        marginBottom: '10px'
-      }
     }
   };
 });

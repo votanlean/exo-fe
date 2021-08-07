@@ -53,6 +53,9 @@ import { useNetwork } from 'state/hooks';
 import { getFarms } from 'utils/farmsHelpers';
 import { useFAANGOrchestratorData } from '../../state/FAANGOrchestrator/selectors';
 import { fetchFAANGOrchestratorDataThunk } from 'state/FAANGOrchestrator/reducer';
+import { useAllChainTotalValue } from 'state/tlv/selectors';
+import { fetchTLV } from 'state/tlv/reducer';
+
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
@@ -104,6 +107,7 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
+	const totalTvl = useAllChainTotalValue();
   const { FAANGFinishBlock } = useFAANGOrchestratorData();
 
   const { currentBlock } = useBlockData();
@@ -146,6 +150,7 @@ function Pool() {
     dispatch(replacePoolWithoutUserDataAsync(chainId));
     dispatch(fetchAppPrices(chainId));
     dispatch(replaceFAANGPoolsWithoutUserData(chainId));
+		dispatch(fetchTLV);
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account, chainId));
@@ -304,6 +309,7 @@ function Pool() {
           currentTEXOPerBlock={tEXOPerBlock}
           burnAmount={burnAmount}
           tEXOReward={new BigNumber(tEXOReward)}
+					allChainTvl={totalTvl}
         />
 
         {currentBlock >= seedingFinishBlock && (
@@ -330,8 +336,12 @@ function Pool() {
               (4% Deposit Fee applies for tEXO liquidity)
               <br />
               {currentBlock < seedingStartBlock && 'Seed Pool Reward starts in'}
-              {currentBlock >= seedingStartBlock &&
-                currentBlock < canClaimRewardsBlock &&
+              {currentBlock < seedingStartBlock && (
+                <Typography variant="h3" color="primary" align="center">
+                  {countDownStringToStartSeeding}
+                </Typography>
+              )}
+              {currentBlock < canClaimRewardsBlock &&
                 'Users can harvest tEXO in'}
               {currentBlock >= canClaimRewardsBlock &&
               currentBlock < seedingFinishBlock ? (
@@ -346,18 +356,11 @@ function Pool() {
               ) : null}
             </Typography>
 
-            {currentBlock < seedingStartBlock && (
+            {currentBlock < canClaimRewardsBlock && (
               <Typography variant="h3" color="primary" align="center">
-                {countDownStringToStartSeeding}
+                {countDownString}
               </Typography>
             )}
-
-            {currentBlock >= seedingStartBlock &&
-              currentBlock < canClaimRewardsBlock && (
-                <Typography variant="h3" color="primary" align="center">
-                  {countDownString}
-                </Typography>
-              )}
 
             {currentBlock >= canClaimRewardsBlock &&
               currentBlock < seedingFinishBlock && (
@@ -404,7 +407,15 @@ function Pool() {
               >
                 contracts
               </a>{' '}
-              before depositing.
+              before depositing. Click{' '}
+              <a
+                style={{ color: '#007EF3' }}
+                target="_blank"
+                href="https://texo.gitbook.io/exoniumdex/smart-contracts-and-audits/audits"
+              >
+                here
+              </a>{' '}
+              for audit reports.
             </Typography>
           </div>
         )}

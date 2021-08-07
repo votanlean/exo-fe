@@ -11,6 +11,7 @@ import appPricesReducer from './prices';
 import userInfoReducer from './userInfo';
 import networkReducer from './network';
 import FAANGOrchestratorReducer from './FAANGOrchestrator';
+import tlvReducer from './tlv';
 
 export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
@@ -25,6 +26,7 @@ export const store = configureStore({
     userInfo: userInfoReducer,
     network: networkReducer,
     FAANGOrchestrator: FAANGOrchestratorReducer,
+		tlv: tlvReducer
   },
 });
 

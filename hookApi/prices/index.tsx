@@ -38,14 +38,17 @@ export interface Token {
 	derivedETH: string;
 }
 
-const QUERY_POLYGON_TOKENS_PRICES = gql`
-	query QUERY_POLYGON_TOKENS_PRICES($ids: [ID!]) {
+const QUERY_POLYGON_ETH_PRICE = gql`
+	query QUERY_POLYGON_ETH_PRICE {
 		bundle(id: 1) {
 			ethPrice
 		}
-		tokens(where: {
-			id_in: $ids
-		}) {
+	}
+`;
+
+const QUERY_POLYGON_TOKEN = gql`
+	query QUERY_POLYGON_TOKEN($id: ID!) {
+		token(id: $id) {
 			id
 			symbol
 			name
@@ -56,30 +59,43 @@ const QUERY_POLYGON_TOKENS_PRICES = gql`
 `;
 
 export const fetchPolygonPrices = async () => {
-	const response = await apolloClient.query<{
+	const ethPriceResponse = await apolloClient.query<{
 		bundle: Bundle,
-		tokens: Token[]
-	}, {
-		ids: string[]
 	}>({
-		query: QUERY_POLYGON_TOKENS_PRICES,
-		variables: {
-			ids: Object.values(tokens).reduce((ids, token: any) => {
-				if (token.address && token.address[137]) {
-					ids.push(token.address[137].toLowerCase())
-				}
-
-				return ids
-			}, [] as string[])
+		query: QUERY_POLYGON_ETH_PRICE
+	});
+	const tokenIds = Object.values(tokens).reduce((ids, token: any) => {
+		if (token.address && token.address[137]) {
+			ids.push(token.address[137].toLowerCase())
 		}
-	})
+
+		return ids
+	}, [] as string[])
+
+	const tokensData = await Promise.all(tokenIds.map(async (id) => {
+		const res = await apolloClient.query<{
+			token: Token
+		}, {
+			id: string
+		}>({
+			query: QUERY_POLYGON_TOKEN,
+			variables: {
+				id
+			}
+		});
+		
+		return {
+			id,
+			...res.data.token
+		};
+	}))
 
 	return {
 		updated_at: Date.now(),
-		data: response.data.tokens.reduce((tokens, token) => {
+		data: tokensData.reduce((tokens, token) => {
 			return {
 				...tokens,
-				[token.id]: parseFloat(token.derivedETH) * parseFloat(response.data.bundle.ethPrice)
+				[token.id]: parseFloat(token.derivedETH) * parseFloat(ethPriceResponse.data.bundle.ethPrice)
 			}
 		}, {})
 	}
