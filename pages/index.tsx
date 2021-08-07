@@ -9,6 +9,8 @@ import rot13 from '../utils/encode';
 import { useQueryParam, StringParam } from 'use-query-params';
 import Cookies from 'universal-cookie';
 
+import BannerCoinTelegraph from 'components/BannerCoinTelegraph';
+
 const Home = () => {
   const cookies = new Cookies();
   const [ref] = useQueryParam('ref', StringParam);
@@ -47,6 +49,10 @@ const Home = () => {
             </Link>
           </div>
         </div>
+      </section>
+
+      <section className="banner">
+        <BannerCoinTelegraph/>
       </section>
 
       <section className="the-use">

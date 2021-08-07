@@ -272,6 +272,28 @@
   }
 }
 
+.banner-cointelegraph {
+  cursor: pointer;
+  width: 100%;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("../../public/static/images/coin-telegraph.webp");
+  overflow: hidden;
+  object-fit: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-top: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  background-position: bottom;
+}
+
+.banner {
+  margin: 20px;
+}
+
 @media (max-width: 992px){
   .audit-parties {
     .logo-text {
