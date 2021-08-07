@@ -26,6 +26,7 @@ import {
 } from 'components/PoolActions';
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
+import { numberWithCommas } from 'utils/numberWithComma';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -116,7 +117,7 @@ function PoolRow(props: any) {
             {!isTablet ? 'My Rewards' : 'Rewards'}
           </Typography>
           <Typography variant="h6" className={classes.label}>
-            {normalizeTokenDecimal(pendingReward).toFixed(4)} tEXO
+            {numberWithCommas(normalizeTokenDecimal(pendingReward).toFixed(4))} tEXO
           </Typography>
         </TableCell>
         <TableCell
@@ -127,11 +128,11 @@ function PoolRow(props: any) {
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
               <div className={classes.APRInfo}>
-                {apr ? `${apr}%` : 'N/A'}
+                {apr ? `${numberWithCommas(apr)}%` : 'N/A'}
               </div>
             
               <div className={classes.mobileAPRInfo}>
-                {apr ? `${apr.toFixed(2)}%` : 'N/A'}
+                {apr ? `${numberWithCommas(apr.toFixed(2))}%` : 'N/A'}
               </div>
             </Typography>
             {!isTablet ? (
@@ -144,7 +145,7 @@ function PoolRow(props: any) {
             <TableCell style={{ padding: '24px 16px' }}>
               <Typography variant="caption">My Stake</Typography>
               <Typography variant="h6" className={classes.label}>
-                {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
+                {numberWithCommas(normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4))}{' '}
                 {symbol}
               </Typography>
             </TableCell>
@@ -220,9 +221,9 @@ function PoolRow(props: any) {
                         className={'text-right'}
                         style={{ marginLeft: 10 }}
                       >
-                        {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(
+                        {numberWithCommas(normalizeTokenDecimal(stakedBalance, +decimal).toFixed(
                           4,
-                        )}{' '}
+                        ))}{' '}
                         {symbol}
                       </Typography>
                     </Box>
@@ -252,10 +253,10 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    {normalizeTokenDecimal(
+                    {numberWithCommas(normalizeTokenDecimal(
                       stakingTokenBalance,
                       +decimal,
-                    ).toFixed(4)}{' '}
+                    ).toFixed(4))}{' '}
                     {symbol}
                   </Typography>
                 </Box>
@@ -265,7 +266,7 @@ function PoolRow(props: any) {
                     className={'text-right'}
                     style={{ marginLeft: 10 }}
                   >
-                    {normalizeTokenDecimal(totalStaked, +decimal).toFixed(4)}{' '}
+                    {numberWithCommas(normalizeTokenDecimal(totalStaked, +decimal).toFixed(4))}{' '}
                     {symbol}
                   </Typography>
                 </Box>
@@ -276,10 +277,10 @@ function PoolRow(props: any) {
                     style={{ marginLeft: 10 }}
                   >
                     $
-                    {Number(
+                    {numberWithCommas(Number(
                       normalizeTokenDecimal(totalStaked, +decimal).toNumber() *
                         stakingTokenPrice,
-                    ).toFixed(2)}
+                    ).toFixed(2))}
                   </Typography>
                 </Box>
               </Box>

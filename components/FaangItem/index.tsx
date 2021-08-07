@@ -14,6 +14,7 @@ import {
 } from 'components/PoolActions';
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
+import { numberWithCommas } from 'utils/numberWithComma';
 
 function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
   const {
@@ -114,7 +115,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              {normalizeTokenDecimal(pendingReward).toFixed(4)} FAANG
+              {numberWithCommas(normalizeTokenDecimal(pendingReward).toFixed(4))} FAANG
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -122,7 +123,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               Total Staked
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {normalizeTokenDecimal(totalStaked).toFixed(4)} {symbol}
+              {numberWithCommas(normalizeTokenDecimal(totalStaked).toFixed(4))} {symbol}
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -130,7 +131,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               Wallet Balance
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {normalizeTokenDecimal(stakingTokenBalance).toFixed(4)} {symbol}
+              {numberWithCommas(normalizeTokenDecimal(stakingTokenBalance).toFixed(4))} {symbol}
             </Typography>
           </Box>
         </Box>
@@ -171,10 +172,10 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
                 style={{ color: '#6A98C9' }}
               >
                 $
-                {(
+                {numberWithCommas((
                   Number(normalizeTexoPrice) *
                   Number(normalizeTokenDecimal(totalStaked))
-                ).toFixed(2)}
+                ).toFixed(2))}
               </Typography>
             </Box>
             <Link

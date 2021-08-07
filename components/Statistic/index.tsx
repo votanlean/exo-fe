@@ -75,7 +75,7 @@ function Statistic(props) {
 
           <Typography>tEXO to Harvest</Typography>
           <Typography className={classes.fadeText}>
-            {active ? tEXOReward.toFixed(2) : 'LOCKED'}
+            {active ? numberWithCommas(tEXOReward.toFixed(2)) : 'LOCKED'}
           </Typography>
           <Typography gutterBottom>
             ~${(tEXOPrice * tEXOReward).toFixed(2)}
@@ -83,10 +83,10 @@ function Statistic(props) {
 
           <Typography>tEXO in Wallet</Typography>
           <Typography className={classes.fadeText}>
-            {active ? tEXOBalance.toFixed(2) : 'LOCKED'}
+            {active ? numberWithCommas(tEXOBalance.toFixed(2)) : 'LOCKED'}
           </Typography>
           <Typography gutterBottom>
-            ~${(tEXOPrice * tEXOBalance).toFixed(2)}
+            ~${numberWithCommas((tEXOPrice * tEXOBalance).toFixed(2))}
           </Typography>
           {!active && (
             <Button
@@ -115,35 +115,35 @@ function Statistic(props) {
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Total tEXO Supply</Typography>
             <Typography className={'font-bold'}>
-              {Number(normalizedTotalSupply).toFixed(2)} tEXO
+              {numberWithCommas(Number(normalizedTotalSupply).toFixed(2))} tEXO
             </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>tEXO Price</Typography>
             <Typography className={'font-bold'}>
-              ${Number(normalizeTexoPrice).toFixed(2)}
+              ${numberWithCommas(Number(normalizeTexoPrice).toFixed(2))}
             </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Market Cap</Typography>
             <Typography className={'font-bold'}>
-              ${calculateMarketCap(normalizeTexoPrice, totalSupply)}
+              ${numberWithCommas(calculateMarketCap(normalizeTexoPrice, totalSupply))}
             </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Total tEXO Burned</Typography>
             <Typography className={'font-bold'}>
-              {normalizedBurnAmount} tEXO
+              {numberWithCommas(normalizedBurnAmount)} tEXO
             </Typography>
           </Box>
 
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>New tEXO/block</Typography>
             <Typography className={'font-bold'}>
-              {normalizedEmissionRate} tEXO / block
+              {numberWithCommas(normalizedEmissionRate)} tEXO / block
             </Typography>
           </Box>
           <a
