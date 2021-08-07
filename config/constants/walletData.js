@@ -59,7 +59,7 @@ export const networks = [
     blockExplorerUrl: 'https://polygonscan.com',
     decimals: 6,
     startBlock: '17694805',
-    secondsPerBlock: 2,
+    secondsPerBlock: 2.3,
     swapLink: 'https://quickswap.exchange/#/swap?outputCurrency='
   },
 ];
