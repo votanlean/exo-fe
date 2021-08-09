@@ -54,7 +54,8 @@ function YieldFarm(props: any) {
     depositFeeBP,
     userData = {},
     lpTotalInQuoteToken = BIG_ZERO,
-		allocPoint
+		allocPoint,
+		vaultSymbol
   } = yieldFarmData;
 
   const classes = useStyles();
@@ -201,7 +202,7 @@ function YieldFarm(props: any) {
                     className={'text-right'}
                   >
                     {normalizeTokenDecimal(0).toFixed(4)}{' '}
-                    {symbol}
+                    {vaultSymbol}
                   </Typography>
                 </Box>
 								<Box className={classes.rowDetail} flex={1}>

@@ -5,6 +5,7 @@ export const bnbFarms: any[] = [
     pid: 11,
     icon: '/static/images/Swap_tEXO-BNB.png',
     symbol: 'tEXO/BNB LP',
+		vaultSymbol: 'bftEXO/BNB',
     title: 'tEXO/BNB LP',
     address: {
       56: '0x572274F3f1a2d4016d85EB1BA2c4DA671805218e',
@@ -24,6 +25,7 @@ export const bnbFarms: any[] = [
     pid: 12,
     icon: '/static/images/Swap_tEXO-BUSD.png',
     symbol: 'tEXO/BUSD LP',
+		vaultSymbol: 'bftEXO/BUSD',
     title: 'tEXO/BUSD LP',
     lpSymbol: 'tEXO-BUSD LP',
     address: {
