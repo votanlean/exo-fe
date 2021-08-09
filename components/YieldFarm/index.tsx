@@ -22,32 +22,40 @@ import { useNetwork } from 'state/hooks';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 
 import { useOrchestratorContract } from 'hooks/useContract';
-import { getPoolApr } from 'hookApi/apr';
+import { getFarmApr } from 'hookApi/apr';
 
 import { getAddress } from 'utils/addressHelpers';
-import { normalizeTokenDecimal } from 'utils/bigNumber';
+import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
 import { getDecimals } from 'utils/decimalsHelper';
 
 import { useStyles } from './styles';
 
+interface IYieldFarmProps {
+	farm: any,
+}
+
 function YieldFarm(props: any) {
   const {
-    pool = {},
+    yieldFarmData = {},
     stakingTokenPrice,
     tEXOPrice,
     account,
+		onPoolStateChange,
+		selectedAccount
   } = props || {};
 
   const {
-    id: poolId,
     icon,
     title,
     symbol,
-    totalStaked,
-    allocPoint,
+    pid: farmId,
+    address,
+    decimals,
+    depositFeeBP,
     userData = {},
-    stakingToken,
-  } = pool;
+    lpTotalInQuoteToken = BIG_ZERO,
+		allocPoint
+  } = yieldFarmData;
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -55,38 +63,42 @@ function YieldFarm(props: any) {
   const isTablet = useMediaQuery('(max-width: 768px)');
   const isMobile = useMediaQuery('(max-width: 600px)');
 
-  const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
+  const { allowance, pendingReward, stakedBalance, stakingTokenBalance, tokenBalance } =
     userData;
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
-  const tokenAddress = getAddress(stakingToken.address, chainId);
+  const tokenAddress = getAddress(address, chainId);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
-  const poolTexoPerBlock = new BigNumber(tEXOPerBlock)
-    .times(new BigNumber(allocPoint))
-    .div(new BigNumber(totalAllocPoint));
-  const decimal = getDecimals(stakingToken.decimals, chainId);
+	const farmWeight = new BigNumber(allocPoint).div(
+		new BigNumber(totalAllocPoint),
+	);
+  const decimal = getDecimals(decimals, chainId);
 
   const tEXOOrchestratorContract = useOrchestratorContract();
 
-  const apr = getPoolApr(
-    stakingTokenPrice,
+  const apr = getFarmApr(
+    farmWeight,
     tEXOPrice,
-    normalizeTokenDecimal(totalStaked, +decimal).toNumber(),
-    normalizeTokenDecimal(poolTexoPerBlock, +decimal).toNumber(),
+    lpTotalInQuoteToken,
+    normalizeTokenDecimal(tEXOPerBlock),
   );
 
   const dataButton = {
-    id: poolId,
-    stakingToken,
+    id: farmId,
+    stakingToken: {
+      address,
+      decimals,
+    },
     orchestratorContract: tEXOOrchestratorContract,
     symbol,
-    depositFee: 0,
-    maxAmountStake: stakingTokenBalance,
+    depositFee: depositFeeBP,
+    maxAmountStake: tokenBalance,
     maxAmountWithdraw: stakedBalance,
+    onPoolStateChange,
     refStake: true,
-    account,
+    account: selectedAccount,
   };
 
   return (

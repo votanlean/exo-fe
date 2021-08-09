@@ -6,18 +6,18 @@ import { useWeb3React } from '@web3-react/core';
 
 import classes from './yield.module.scss';
 import YieldFarm from 'components/YieldFarm';
-import { usePools } from 'state/pools/selectors';
 import { useAppPrices } from 'state/prices/selectors';
 import { getAddress } from 'utils/addressHelpers';
 import { useNetwork } from 'state/hooks';
 import { useTexoTokenPrice } from 'state/texo/selectors';
+import { useYieldFarms } from 'state/yield/selector';
 
 export default function Yield() {
 	const [searchText, setSearchText] = useState<undefined | null | string>();
 
 	const { account } = useWeb3React();
 	const { id: chainId } = useNetwork();
-	const poolsData = usePools();
+	const yieldFarms = useYieldFarms();
 	const allTokenPrices = useAppPrices();
 	const tEXOPrice = useTexoTokenPrice();
 
@@ -60,20 +60,20 @@ export default function Yield() {
 				<TableContainer className={classes.tableContainer}>
           <Table aria-label="collapsible table">
             <TableBody>
-              {poolsData.map((pool) => {
+              {yieldFarms.map((yieldFarm) => {
                 let stakingTokenPrice = 0;
 
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                      getAddress(pool.stakingToken.address, chainId)?.toLowerCase()
+                      getAddress(yieldFarm.stakingToken.address, chainId)?.toLowerCase()
                     ];
                 }
                 return (
                   <YieldFarm
-                    key={pool.id}
-                    pool={pool}
-                    account={account}
+                    key={yieldFarm.id}
+                    yieldFarmData={yieldFarm}
+                    selectedAccount={account}
                     onPoolStateChange={refreshAppGlobalData}
                     stakingTokenPrice={stakingTokenPrice}
                     tEXOPrice={tEXOPrice}
@@ -83,7 +83,6 @@ export default function Yield() {
             </TableBody>
           </Table>
         </TableContainer>
-				
 			</div>
 		</>
 	);
