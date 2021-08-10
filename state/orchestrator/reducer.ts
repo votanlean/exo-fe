@@ -49,7 +49,7 @@ export const fetchOrchestratorDataThunk =
       calls,
       chainId,
     );
-    const [tEXOPerBlock, totalAllocPoint, seedingBlock, farmBlock] = orchestratorMultiData;
+    const [tEXOPerBlock, totalAllocPoint, seedingBlock] = orchestratorMultiData;
     dispatch(
       setOrchestratorData({
         tEXOPerBlock: tEXOPerBlock[0].toString(10),

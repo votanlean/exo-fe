@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { BLOCKS_PER_YEAR, CAKE_PER_BLOCK } from '../config'
+import { BLOCKS_PER_YEAR, POLYGON_BLOCKS_PER_YEAR } from '../config'
 
 /**
  * Get the APR value in %
@@ -7,6 +7,7 @@ import { BLOCKS_PER_YEAR, CAKE_PER_BLOCK } from '../config'
  * @param rewardTokenPrice Token price in the same quote currency
  * @param totalStaked Total amount of stakingToken in the pool
  * @param tokenPerBlock Amount of new cake allocated to the pool for each new block
+ * @param chainId network chain Id
  * @returns Null if the APR is NaN or infinite.
  */
 export const getPoolApr = (
@@ -14,8 +15,23 @@ export const getPoolApr = (
   rewardTokenPrice: number,
   totalStaked: number,
   tokenPerBlock: number,
+	chainId: number
 ): number => {
-  const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock).times(BLOCKS_PER_YEAR);
+	let blockPerYear: BigNumber;
+
+	switch(chainId) {
+		case 137:
+		case 80001:
+			blockPerYear = POLYGON_BLOCKS_PER_YEAR;
+			break;
+		case 56:
+		case 97:
+		default:
+			blockPerYear = BLOCKS_PER_YEAR;
+			break;
+	}
+
+  const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock).times(blockPerYear);
   const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked);
   const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100);
 
@@ -27,6 +43,7 @@ export const getPoolApr = (
  * @param poolWeight allocationPoint / totalAllocationPoint
  * @param tEXOPriceUSD Cake price in USD
  * @param poolLiquidityUsd Total pool liquidity in USD
+ * @param chainId network chain Id
  * @returns
  */
 export const getFarmApr = (
@@ -34,8 +51,23 @@ export const getFarmApr = (
   tEXOPriceUSD: BigNumber,
   poolLiquidityUsd: BigNumber,
   tEXOPerBlock: BigNumber,
+	chainId: number
 ): number => {
-  const yearlyCakeRewardAllocation = tEXOPerBlock.times(BLOCKS_PER_YEAR).times(poolWeight)
+	let blockPerYear: BigNumber;
+
+	switch(chainId) {
+		case 137:
+		case 80001:
+			blockPerYear = POLYGON_BLOCKS_PER_YEAR;
+			break;
+		case 56:
+		case 97:
+		default:
+			blockPerYear = BLOCKS_PER_YEAR;
+			break;
+	}
+
+  const yearlyCakeRewardAllocation = tEXOPerBlock.times(blockPerYear).times(poolWeight)
   const apr = yearlyCakeRewardAllocation.times(tEXOPriceUSD).div(poolLiquidityUsd).times(100)
   return apr.isNaN() || !apr.isFinite() ? null : apr.toNumber()
 }
