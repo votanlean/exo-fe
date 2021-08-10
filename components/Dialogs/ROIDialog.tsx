@@ -9,7 +9,7 @@ import {
   IconButton,
 } from '@material-ui/core'
 import { Close, Launch } from '@material-ui/icons'
-import { getRoi, tokenEarnedPerThousandDollarsCompounding } from 'utils/compoundApyHelpers'
+import { getRoi, tokenEarnedPerThousandDollars } from 'utils/compoundApyHelpers'
 
 const useStyles = makeStyles(theme => {
   return {
@@ -71,25 +71,25 @@ export const ROIDialog = (props: any) => {
   const { apr, tokenPrice } = poolData;
   const oneThousandDollarsWorthOfToken = 1000 / tokenPrice;
 
-  const tokenEarnedPerThousand1D = tokenEarnedPerThousandDollarsCompounding({
+  const tokenEarnedPerThousand1D = tokenEarnedPerThousandDollars({
     numberOfDays: 1,
     farmApr: apr,
     tokenPrice,
   });
 
-  const tokenEarnedPerThousand7D = tokenEarnedPerThousandDollarsCompounding({
+  const tokenEarnedPerThousand7D = tokenEarnedPerThousandDollars({
     numberOfDays: 7,
     farmApr: apr,
     tokenPrice,
   });
 
-  const tokenEarnedPerThousand30D = tokenEarnedPerThousandDollarsCompounding({
+  const tokenEarnedPerThousand30D = tokenEarnedPerThousandDollars({
     numberOfDays: 30,
     farmApr: apr,
     tokenPrice,
   });
   
-  const tokenEarnedPerThousand365D = tokenEarnedPerThousandDollarsCompounding({
+  const tokenEarnedPerThousand365D = tokenEarnedPerThousandDollars({
     numberOfDays: 365,
     farmApr: apr,
     tokenPrice,
