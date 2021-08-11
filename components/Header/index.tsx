@@ -82,6 +82,7 @@ const Header = () => {
             <div className={styles.item3}>
               {networks.map((item, index) => (
                 <Button
+                key={index}
                 variant="contained"
                 color="primary"
                 size="small"
