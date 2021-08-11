@@ -233,24 +233,6 @@ function Pool() {
       setCountDownString(countDownString);
     }, 1000);
 
-    const intervalToSeedingStart = setInterval(() => {
-      const hasPassedSeedingStart = dayjs().isAfter(dayjs(seedingStartDate));
-      if (hasPassedSeedingStart) {
-        countDownInterval.current = null;
-        clearInterval(interval);
-        setCountDownStringToStartSeeding('0 seconds');
-
-        return;
-      }
-
-      const countDownString = Countdown(
-        new Date(),
-        seedingStartDate,
-      ).toString();
-
-      setCountDownStringToStartSeeding(countDownString);
-    }, 1000);
-
     const intervalFarm = setInterval(() => {
       const hasPassedRewardLockDate = dayjs().isAfter(
         dayjs(claimFarmRewardDate),
@@ -272,16 +254,11 @@ function Pool() {
 
     countDownIntervalFarm.current = intervalFarm;
     countDownInterval.current = interval;
-    countDownIntervalSeedingStart.current = intervalToSeedingStart;
 
     return () => {
       if (countDownInterval.current) {
         clearInterval(countDownInterval.current);
         countDownInterval.current = null;
-      }
-      if (countDownIntervalSeedingStart.current) {
-        clearInterval(countDownIntervalSeedingStart.current);
-        countDownIntervalSeedingStart.current = null;
       }
       if (countDownIntervalFarm.current) {
         clearInterval(countDownIntervalFarm.current);
@@ -294,6 +271,7 @@ function Pool() {
     seedingStartBlock,
     seedingFinishBlock,
     farmStartBlock,
+    network?.secondsPerBlock
   ]);
 
   return (
@@ -338,12 +316,6 @@ function Pool() {
               <br />
               (4% Deposit Fee applies for tEXO liquidity)
               <br />
-              {currentBlock < seedingStartBlock && 'Seed Pool Reward starts in'}
-              {currentBlock < seedingStartBlock && (
-                <Typography variant="h3" color="primary" align="center">
-                  {countDownStringToStartSeeding}
-                </Typography>
-              )}
               {currentBlock < canClaimRewardsBlock &&
                 'Users can harvest tEXO in'}
               {currentBlock >= canClaimRewardsBlock &&
