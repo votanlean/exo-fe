@@ -89,14 +89,16 @@ function FarmItem(props: any) {
     new BigNumber(totalAllocPoint),
   );
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
-	const totalLiquidity = new BigNumber(lpTotalInQuoteToken).times(stakingTokenPrice)
+  const totalLiquidity = new BigNumber(lpTotalInQuoteToken).times(
+    stakingTokenPrice,
+  );
 
   const apr = getFarmApr(
     farmWeight,
     tEXOPrice,
-    lpTotalInQuoteToken,
+    totalLiquidity,
     normalizeTokenDecimal(tEXOPerBlock),
-		chainId
+    chainId,
   );
 
   const toggleDisplayDetails = () => {
@@ -195,11 +197,19 @@ function FarmItem(props: any) {
                   title="My Rewards"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>{numberWithCommas(normalizeTokenDecimal(pendingReward).toFixed(4))} tEXO</p>
+                  <p>
+                    {numberWithCommas(
+                      normalizeTokenDecimal(pendingReward).toFixed(4),
+                    )}{' '}
+                    tEXO
+                  </p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {numberWithCommas(normalizeTokenDecimal(totalStaked).toFixed(4))} {symbol}
+                    {numberWithCommas(
+                      normalizeTokenDecimal(totalStaked).toFixed(4),
+                    )}{' '}
+                    {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -207,7 +217,10 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {numberWithCommas(normalizeTokenDecimal(tokenBalance).toFixed(4))} {symbol}
+                    {numberWithCommas(
+                      normalizeTokenDecimal(tokenBalance).toFixed(4),
+                    )}{' '}
+                    {symbol}
                   </p>
                 </RowPoolItem>
               </div>
