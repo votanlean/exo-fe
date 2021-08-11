@@ -1,8 +1,9 @@
-import React, { useEffect, useState, ChangeEventHandler } from 'react';
+import React, { useEffect, useState, ChangeEvent, useCallback } from 'react';
 import Head from 'next/head';
 import { TextField, Typography, Switch, TableContainer, Table, TableBody } from '@material-ui/core';
 import { useDebounceCallback } from '@react-hook/debounce'
 import { useWeb3React } from '@web3-react/core';
+import { useDispatch } from 'react-redux';
 
 import classes from './yield.module.scss';
 import YieldFarm from 'components/YieldFarm';
@@ -12,6 +13,8 @@ import { useNetwork } from 'state/hooks';
 import { useTexoTokenPrice } from 'state/texo/selectors';
 import { useYieldFarms } from 'state/yield/selector';
 
+import { fetchYieldFarmPublicData } from 'state/yield/reducer';
+
 export default function Yield() {
 	const [searchText, setSearchText] = useState<undefined | null | string>();
 
@@ -20,22 +23,20 @@ export default function Yield() {
 	const yieldFarms = useYieldFarms();
 	const allTokenPrices = useAppPrices();
 	const tEXOPrice = useTexoTokenPrice();
+	const dispatch = useDispatch();
 
-	const refreshAppGlobalData = () => {
-		console.log('refresh');
-	};
+	const refreshAppGlobalData = useCallback(() => {
+		dispatch(fetchYieldFarmPublicData(chainId));
+	}, [chainId]);
 
-	const onSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
+	const debounceFunc = useDebounceCallback<[ChangeEvent<HTMLInputElement>]>((e) => {
 		setSearchText(e.target.value)
-	}
-
-	const debounceFunc = useDebounceCallback((text) => {
-		console.log(text)
+		console.log(e.target.value)
 	}, 500);
 
-	useEffect(() => {	
-		debounceFunc(searchText);
-	}, [searchText])
+	useEffect(() => {
+		refreshAppGlobalData()
+	}, []);
 
 	return (
 		<>
@@ -53,7 +54,7 @@ export default function Yield() {
 					<TextField
 						placeholder='Search vault'
 						variant='outlined'
-						onChange={onSearch}
+						onChange={debounceFunc}
 					/>
 				</div>
 

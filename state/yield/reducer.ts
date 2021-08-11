@@ -5,6 +5,7 @@ import { fetchYieldFarms } from './helpers';
 const initialState = getYieldFarms().map((yieldFarm) => {
 	return {
 		...yieldFarm,
+		underlyingVaultBalance: '0',
 		userData: {
 			balance: 0,
 			stakedBalance: 0,
@@ -17,7 +18,19 @@ export const yieldSlice = createSlice({
 	name: "yield",
 	initialState,
 	reducers: {
-		setYieldFarmPublicData: (state, action) => {},
+		setYieldFarmPublicData: (state, action) =>
+			state.map((yieldFarm) => {
+				const foundByPid = action.payload.find((y) => y.pid === yieldFarm.pid);
+
+				if (!foundByPid) {
+					return yieldFarm
+				}
+
+				return {
+					...yieldFarm,
+					...foundByPid
+				}
+			}),
 		setYieldFarmUserData: (state, action) => {}
 	}
 })

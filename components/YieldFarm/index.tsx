@@ -29,6 +29,7 @@ import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
 import { getDecimals } from 'utils/decimalsHelper';
 
 import { useStyles } from './styles';
+import { numberWithCommas } from 'utils/numberWithComma';
 
 interface IYieldFarmProps {
 	farm: any,
@@ -39,7 +40,6 @@ function YieldFarm(props: any) {
     yieldFarmData = {},
     stakingTokenPrice,
     tEXOPrice,
-    account,
 		onPoolStateChange,
 		selectedAccount
   } = props || {};
@@ -55,7 +55,9 @@ function YieldFarm(props: any) {
     userData = {},
     lpTotalInQuoteToken = BIG_ZERO,
 		allocPoint,
-		vaultSymbol
+		vaultSymbol,
+		underlying,
+		underlyingVaultBalance,
   } = yieldFarmData;
 
   const classes = useStyles();
@@ -140,7 +142,12 @@ function YieldFarm(props: any) {
             <TableCell style={{ padding: '24px 16px' }}>
               <Typography variant="caption">Total Deposited</Typography>
               <Typography variant="h6" className={classes.label}>
-                100000000
+                {numberWithCommas(
+									normalizeTokenDecimal(
+										underlyingVaultBalance,
+										+getDecimals(underlying.decimals, chainId)
+									).toFixed(2)
+								)}
               </Typography>
             </TableCell>
           </>
@@ -215,7 +222,7 @@ function YieldFarm(props: any) {
                 </Box>
 								
               </Box>
-							{!!account && (
+							{!!selectedAccount && (
 								<>
 									<Box
 										flex={1}
@@ -253,17 +260,20 @@ function YieldFarm(props: any) {
 									</Box>
 								</>
 							)}
-							{!account && (
-								<Box
-									flex={2}
-									display='flex'
-									alignItems='center'
-									marginLeft={isTablet ? '0' : '20px'}
-								>
-									<Box className={classes.buttonBoxItem} flex={1}>
-										<ApproveAction data={dataButton} disabled={isAlreadyApproved} />
-									</Box>							
-								</Box>
+							{!selectedAccount && (
+								<>
+									<Box flex={1} />
+									<Box
+										flex={1}
+										display='flex'
+										alignItems='center'
+										marginLeft={isTablet ? '0' : '20px'}
+									>
+										<Box className={classes.buttonBoxItem} flex={1}>
+											<ApproveAction data={dataButton} disabled={isAlreadyApproved} />
+										</Box>							
+									</Box>
+								</>
 							)}
             </Box>
           </Collapse>
