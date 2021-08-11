@@ -120,7 +120,7 @@ body {
 }
 
 .btn-cta {
-  // height: 48px;
+  color: $white;
   background: $blue-primary;
   display: inline-block;
   padding: 12px 18px;
@@ -131,8 +131,9 @@ body {
   position: relative;
   border: 1px solid transparent;
   transition: all .2s ease-in-out;
-
+  
   &:hover {
+    color: $white;
     background: transparent;
     &::before {
       opacity: 0;

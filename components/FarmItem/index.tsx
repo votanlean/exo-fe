@@ -14,11 +14,10 @@ import { useNetwork } from 'state/hooks';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
 import { shouldComponentDisplay } from 'utils/componentDisplayHelper';
-import { getFarmApr } from '../../hookApi/apr';
+import { getFarmApr } from 'hookApi/apr';
 import { useOrchestratorContract } from '../../hooks/useContract';
 import { getAddress, getTEXOAddress } from '../../utils/addressHelpers';
 import styles from './farmItem.module.scss';
-import { getDecimals } from 'utils/decimalsHelper';
 import { numberWithCommas } from 'utils/numberWithComma';
 
 function formatDepositFee(depositFee, decimals = 4) {
@@ -96,6 +95,7 @@ function FarmItem(props: any) {
     tEXOPrice,
     lpTotalInQuoteToken,
     normalizeTokenDecimal(tEXOPerBlock),
+		chainId
   );
 
   const toggleDisplayDetails = () => {
@@ -172,7 +172,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.colorLight}`}
                 >
                   <div className={`d-flex items-center`}>
-                    <RoiAction apr={apr} tokenPrice={stakingTokenPrice} />
+                    <RoiAction apr={apr} tokenPrice={tEXOPrice} />
                     <p>{apr ? `${apr}%` : 'N/A'}</p>
                   </div>
                 </RowPoolItem>

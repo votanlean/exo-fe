@@ -87,6 +87,7 @@ function PoolRow(props: any) {
     tEXOPrice,
     normalizeTokenDecimal(totalStaked, +decimal).toNumber(),
     normalizeTokenDecimal(poolTexoPerBlock).toNumber(),
+		chainId
   );
 
   const dataButton = {
@@ -136,7 +137,7 @@ function PoolRow(props: any) {
               </div>
             </Typography>
             {!isTablet ? (
-              <RoiAction apr={apr} tokenPrice={stakingTokenPrice} />
+              <RoiAction apr={apr} tokenPrice={tEXOPrice} />
             ) : null}
           </Box>
         </TableCell>
@@ -205,7 +206,7 @@ function PoolRow(props: any) {
                     <Box className={classes.rowDetail}>
                       <Typography>APR</Typography>
                       <Box display="flex" alignItems="center">
-                        <RoiAction apr={apr} tokenPrice={stakingTokenPrice} />
+                        <RoiAction apr={apr} tokenPrice={tEXOPrice} />
 
                         <Typography
                           className={'text-right'}

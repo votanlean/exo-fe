@@ -4,7 +4,6 @@ const useStyles = makeStyles((theme) => {
   return {
     root: {
       paddingBottom: theme.spacing(9),
-      borderBottom: '1px solid rgb(161, 169, 214)',
     },
     box: {
       display: 'flex',

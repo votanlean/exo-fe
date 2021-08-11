@@ -1,7 +1,8 @@
-export const tokenEarnedPerThousandDollarsCompounding = ({
+export const tokenEarnedPerThousandDollars = ({
   numberOfDays,
   farmApr,
   tokenPrice,
+	autocompound = false,
   roundingDecimals = 2,
   compoundFrequency = 1,
   performanceFee = 0,
@@ -21,8 +22,15 @@ export const tokenEarnedPerThousandDollarsCompounding = ({
   const daysAsDecimalOfYear = numberOfDays / 365
   // Calculate the starting TOKEN balance with a dollar balance of $1000.
   const principal = 1000 / tokenPrice
-  // This is a translation of the typical mathematical compounding APY formula. Details here: https://www.calculatorsoup.com/calculators/financial/compound-interest-calculator.php
-  const finalAmount = principal * (1 + aprAsDecimal / timesCompounded) ** (timesCompounded * daysAsDecimalOfYear)
+
+	let finalAmount = 0;
+
+	if (autocompound) {
+		// This is a translation of the typical mathematical compounding APY formula. Details here: https://www.calculatorsoup.com/calculators/financial/compound-interest-calculator.php
+		finalAmount = principal * (1 + aprAsDecimal / timesCompounded) ** (timesCompounded * daysAsDecimalOfYear)	
+	} else {
+		finalAmount = principal * (1 + aprAsDecimal * daysAsDecimalOfYear)
+	}
   // To get the TOKEN amount earned, deduct the amount after compounding (finalAmount) from the starting TOKEN balance (principal)
   const interestEarned = finalAmount - principal
 
