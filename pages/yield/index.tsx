@@ -72,7 +72,7 @@ export default function Yield() {
                 }
                 return (
                   <YieldFarm
-                    key={yieldFarm.id}
+                    key={yieldFarm.pid}
                     yieldFarmData={yieldFarm}
                     selectedAccount={account}
                     onPoolStateChange={refreshAppGlobalData}

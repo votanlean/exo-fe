@@ -86,6 +86,7 @@ function YieldFarm(props: any) {
     tEXOPrice,
     lpTotalInQuoteToken,
     normalizeTokenDecimal(tEXOPerBlock),
+		chainId
   );
 
   const dataButton = {
