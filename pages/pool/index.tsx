@@ -108,7 +108,7 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
-	const totalTvl = useAllChainTotalValue();
+  const totalTvl = useAllChainTotalValue();
   const { FAANGFinishBlock } = useFAANGOrchestratorData();
 
   const { currentBlock } = useBlockData();
@@ -151,7 +151,7 @@ function Pool() {
     dispatch(replacePoolWithoutUserDataAsync(chainId));
     dispatch(fetchAppPrices(chainId));
     dispatch(replaceFAANGPoolsWithoutUserData(chainId));
-		dispatch(fetchTLV);
+    dispatch(fetchTLV);
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account, chainId));
@@ -271,7 +271,7 @@ function Pool() {
     seedingStartBlock,
     seedingFinishBlock,
     farmStartBlock,
-    network?.secondsPerBlock
+    network?.secondsPerBlock,
   ]);
 
   return (
@@ -288,10 +288,87 @@ function Pool() {
           currentTEXOPerBlock={tEXOPerBlock}
           burnAmount={burnAmount}
           tEXOReward={new BigNumber(tEXOReward)}
-					allChainTvl={totalTvl}
+          allChainTvl={totalTvl}
         />
 
-        <BannerCoinTelegraph/>
+        <BannerCoinTelegraph />
+
+        <div className={styles.countdownContainer}>
+          <Typography
+            variant="h5"
+            align="center"
+            style={{ marginBottom: '30px', lineHeight: '40px' }}
+          >
+            {chainId === 56 || chainId === 97
+              ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
+              : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
+            <br />
+            {currentBlock && currentBlock < farmStartBlock
+              ? 'Farming reward will be generated in'
+              : null}
+          </Typography>
+          {currentBlock && currentBlock < farmStartBlock ? (
+            <Typography variant="h3" color="primary" align="center">
+              {poolPageReady ? countDownStringFarm : 'Coming Soon'}
+            </Typography>
+          ) : null}
+          <Typography variant="h6" align="center">
+            <a
+              target="_blank"
+              style={{ color: '#007EF3' }}
+              href={blockExplorerToCountDownFarming}
+            >
+              Check explorer for the most accurate countdown
+            </a>
+          </Typography>
+        </div>
+
+        <div className={styles.lpPoolGrid}>
+          {getFarms(chainId).map((farm, index) => {
+            let stakingTokenPrice = 0;
+
+            if (allTokenPrices.data) {
+              stakingTokenPrice =
+                allTokenPrices.data[
+                  getAddress(farm.quoteToken.address, chainId)
+                ];
+            }
+
+            return (
+              <FarmItem
+                selectedAccount={account}
+                onPoolStateChange={refreshAppGlobalData}
+                stakingTokenPrice={stakingTokenPrice}
+                tEXOPrice={tEXOPrice}
+                farmData={farmsData[index]}
+                key={farm.pid}
+                countDownString={countDownString}
+              />
+            );
+          })}
+        </div>
+
+        <div className={styles.titleSection}>
+          <Typography
+            variant="h5"
+            align="center"
+            style={{ lineHeight: '40px' }}
+          >
+            Stake tEXO for FAANG
+          </Typography>
+        </div>
+
+        <div className={styles.lpPoolGrid}>
+          {fAANGData.map((pool) => (
+            <FaangItem
+              key={pool.id}
+              pool={pool}
+              tEXOPrice={tEXOPrice}
+              account={account}
+              FAANGFinish={currentBlock >= FAANGFinishBlock}
+            />
+          ))}
+        </div>
 
         {currentBlock >= seedingFinishBlock && (
           <div className={styles.countdownContainer}>
@@ -431,83 +508,6 @@ function Pool() {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <div className={styles.countdownContainer}>
-          <Typography
-            variant="h5"
-            align="center"
-            style={{ marginBottom: '30px', lineHeight: '40px' }}
-          >
-            {chainId === 56 || chainId === 97
-              ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
-              : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
-            <br />
-            {currentBlock && currentBlock < farmStartBlock
-              ? 'Farming reward will be generated in'
-              : null}
-          </Typography>
-          {currentBlock && currentBlock < farmStartBlock ? (
-            <Typography variant="h3" color="primary" align="center">
-              {poolPageReady ? countDownStringFarm : 'Coming Soon'}
-            </Typography>
-          ) : null}
-          <Typography variant="h6" align="center">
-            <a
-              target="_blank"
-              style={{ color: '#007EF3' }}
-              href={blockExplorerToCountDownFarming}
-            >
-              Check explorer for the most accurate countdown
-            </a>
-          </Typography>
-        </div>
-
-        <div className={styles.lpPoolGrid}>
-          {getFarms(chainId).map((farm, index) => {
-            let stakingTokenPrice = 0;
-
-            if (allTokenPrices.data) {
-              stakingTokenPrice =
-                allTokenPrices.data[
-                  getAddress(farm.quoteToken.address, chainId)
-                ];
-            }
-
-            return (
-              <FarmItem
-                selectedAccount={account}
-                onPoolStateChange={refreshAppGlobalData}
-                stakingTokenPrice={stakingTokenPrice}
-                tEXOPrice={tEXOPrice}
-                farmData={farmsData[index]}
-                key={farm.pid}
-                countDownString={countDownString}
-              />
-            );
-          })}
-        </div>
-
-        <div className={styles.titleSection}>
-          <Typography
-            variant="h5"
-            align="center"
-            style={{ lineHeight: '40px' }}
-          >
-            Stake tEXO for FAANG
-          </Typography>
-        </div>
-
-        <div className={styles.lpPoolGrid}>
-          {fAANGData.map((pool) => (
-            <FaangItem
-              key={pool.id}
-              pool={pool}
-              tEXOPrice={tEXOPrice}
-              account={account}
-              FAANGFinish={currentBlock >= FAANGFinishBlock}
-            />
-          ))}
-        </div>
       </div>
     </>
   );
