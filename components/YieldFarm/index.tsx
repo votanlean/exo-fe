@@ -205,7 +205,7 @@ function YieldFarm(props: any) {
 								marginLeft={isTablet ? '0' : '20px'}
               >
 								<Box className={classes.rowDetail} flex={1}>
-                  <Typography>Total unstaked</Typography>
+                  <Typography>Your unstaked</Typography>
                   <Typography
                     className={'text-right'}
                   >
@@ -214,7 +214,7 @@ function YieldFarm(props: any) {
                   </Typography>
                 </Box>
 								<Box className={classes.rowDetail} flex={1}>
-                  <Typography>Total reward</Typography>
+                  <Typography>Your reward</Typography>
                   <Typography
                     className={'text-right'}
                   >
