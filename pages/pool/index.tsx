@@ -330,7 +330,7 @@ function Pool() {
             if (allTokenPrices.data) {
               stakingTokenPrice =
                 allTokenPrices.data[
-                  getAddress(farm.quoteToken.address, chainId)
+                  getAddress(farm.quoteToken.address, chainId).toLowerCase()
                 ];
             }
 
