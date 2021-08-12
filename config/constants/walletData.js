@@ -30,7 +30,21 @@ export const networks = [
     startBlock: '9794888',
     secondsPerBlock: 3,
     swapLink: 'https://exchange.pancakeswap.finance/#/swap?outputCurrency=',
-
+  },
+  {
+    id: 5600,
+    name: 'Binance',
+    icon: '/static/images/wallets/binance.svg',
+    type: 'binance',
+    iconDisable: '/static/images/wallets/binance-disabled.svg',
+    rpcUrl: 'http://188.166.228.206:3001',
+    symbol: 'BNB',
+    blockExplorerName: 'Bscscan',
+    blockExplorerUrl: 'https://bscscan.com',
+    decimals: 18,
+    startBlock: '9794888',
+    secondsPerBlock: 3,
+    swapLink: 'https://exchange.pancakeswap.finance/#/swap?outputCurrency=',
   },
   {
     id: 80001,
@@ -45,7 +59,7 @@ export const networks = [
     decimals: 6,
     startBlock: '99999999',
     secondsPerBlock: 4,
-    swapLink: 'https://quickswap.exchange/#/swap?outputCurrency='
+    swapLink: 'https://quickswap.exchange/#/swap?outputCurrency=',
   },
   {
     id: 137,
@@ -60,7 +74,7 @@ export const networks = [
     decimals: 6,
     startBlock: '17694805',
     secondsPerBlock: 2.3,
-    swapLink: 'https://quickswap.exchange/#/swap?outputCurrency='
+    swapLink: 'https://quickswap.exchange/#/swap?outputCurrency=',
   },
 ];
 

@@ -1,7 +1,7 @@
 import { bnbFarms, polygonFarms } from 'config/constants/farms';
 
 export const getFarms = (chainId?: number): Array<any> => {
-  if (chainId === 56 || chainId === 97) {
+  if (chainId === 56 || chainId === 97 || chainId === 5600) {
     return bnbFarms;
   }
   if (chainId === 137 || chainId === 80001) {

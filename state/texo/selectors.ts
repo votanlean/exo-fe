@@ -10,23 +10,24 @@ export const useTexoTokenData = () => {
 };
 
 export const useTexoTokenPrice = () => {
-	const { id: chainId } = useNetwork();
-	let farmId: number;
+  const { id: chainId } = useNetwork();
+  let farmId: number;
 
-	switch (chainId) {
-		case 56:
-		case 97:
-			farmId = BSC_FARM_ID.TEXO_BUSD;
-			break;
-		case 137:
-		case 80001:
-			farmId = POLYGON_FARM_ID.TEXO_USDC;
-			break;
-		default:
-			break;
-	}
-	const price = useFarmQuoteTokenPrice(farmId)
-	return price;
+  switch (chainId) {
+    case 56:
+    case 5600:
+    case 97:
+      farmId = BSC_FARM_ID.TEXO_BUSD;
+      break;
+    case 137:
+    case 80001:
+      farmId = POLYGON_FARM_ID.TEXO_USDC;
+      break;
+    default:
+      break;
+  }
+  const price = useFarmQuoteTokenPrice(farmId);
+  return price;
 };
 
 export const useFarmQuoteTokenPrice = (farmId) => {
