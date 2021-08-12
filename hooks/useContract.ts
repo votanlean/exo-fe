@@ -16,28 +16,28 @@ export const useOrchestratorContract = () => {
   const { id: chainId } = useNetwork()
   const web3 = useWeb3();
 
-  return useMemo(() => getOrchestratorContract(web3, chainId), [web3]);
+  return useMemo(() => getOrchestratorContract(web3, chainId), [web3, chainId]);
 };
 
 export const useFAANGOrchestratorContract = () => {
   const { id: chainId } = useNetwork()
   const web3 = useWeb3();
 
-  return useMemo(() => getFAANGOrchestratorContract(web3, chainId), [web3]);
+  return useMemo(() => getFAANGOrchestratorContract(web3, chainId), [web3, chainId]);
 };
 
 export const useTEXOContract = () => {
   const { id: chainId } = useNetwork()
   const web3 = useWeb3();
 
-  return useMemo(() => getTEXOContract(web3, chainId), [web3]);
+  return useMemo(() => getTEXOContract(web3, chainId), [web3, chainId]);
 };
 
 export const useERC20 = (address: string) => {
   const { id: chainId } = useNetwork()
   const web3 = useWeb3();
 
-  return useMemo(() => getBep20Contract(address, web3, chainId), [address, web3]);
+  return useMemo(() => getBep20Contract(address, web3, chainId), [address, web3, chainId]);
 };
 //
 // /**
