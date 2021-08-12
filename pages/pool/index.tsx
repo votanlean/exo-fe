@@ -108,7 +108,7 @@ function Pool() {
   const fAANGData = useFAANGPools();
   const farmsData = useFarms();
   const tvl = useTotalValue();
-	const totalTvl = useAllChainTotalValue();
+  const totalTvl = useAllChainTotalValue();
   const { FAANGFinishBlock } = useFAANGOrchestratorData();
 
   const { currentBlock } = useBlockData();
@@ -151,7 +151,7 @@ function Pool() {
     dispatch(replacePoolWithoutUserDataAsync(chainId));
     dispatch(fetchAppPrices(chainId));
     dispatch(replaceFAANGPoolsWithoutUserData(chainId));
-		dispatch(fetchTLV);
+    dispatch(fetchTLV);
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account, chainId));
@@ -310,10 +310,10 @@ function Pool() {
           currentTEXOPerBlock={tEXOPerBlock}
           burnAmount={burnAmount}
           tEXOReward={new BigNumber(tEXOReward)}
-					allChainTvl={totalTvl}
+          allChainTvl={totalTvl}
         />
 
-        <BannerCoinTelegraph/>
+        <BannerCoinTelegraph />
 
         {currentBlock >= seedingFinishBlock && (
           <div className={styles.countdownContainer}>
@@ -332,7 +332,7 @@ function Pool() {
               paragraph
               style={{ marginBottom: '10px', lineHeight: '40px' }}
             >
-              {chainId === 56 || chainId === 97
+              {chainId === 56 || chainId === 97 || chainId === 5600
                 ? 'Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO.'
                 : 'Equitable Distribution of tEXO in seed pools. Stake ERC-20 tokens for tEXO.'}
               <br />
@@ -466,7 +466,7 @@ function Pool() {
             align="center"
             style={{ marginBottom: '30px', lineHeight: '40px' }}
           >
-            {chainId === 56 || chainId === 97
+            {chainId === 56 || chainId === 97 || chainId === 5600
               ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
               : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
             <br />
