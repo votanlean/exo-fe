@@ -66,7 +66,7 @@ function YieldFarm(props: any) {
   const isTablet = useMediaQuery('(max-width: 768px)');
   const isMobile = useMediaQuery('(max-width: 600px)');
 
-  const { allowance, pendingReward, stakedBalance, stakingTokenBalance, tokenBalance } =
+  const { allowance, stakedBalance, balance, inVaultBalance } =
     userData;
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
@@ -98,7 +98,7 @@ function YieldFarm(props: any) {
     orchestratorContract: tEXOOrchestratorContract,
     symbol,
     depositFee: depositFeeBP,
-    maxAmountStake: tokenBalance,
+    maxAmountStake: balance,
     maxAmountWithdraw: stakedBalance,
     onPoolStateChange,
     refStake: true,
@@ -209,7 +209,7 @@ function YieldFarm(props: any) {
                   <Typography
                     className={'text-right'}
                   >
-                    {normalizeTokenDecimal(0).toFixed(4)}{' '}
+                    {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
                     {vaultSymbol}
                   </Typography>
                 </Box>

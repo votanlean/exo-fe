@@ -13,7 +13,7 @@ import { useNetwork } from 'state/hooks';
 import { useTexoTokenPrice } from 'state/texo/selectors';
 import { useYieldFarms } from 'state/yield/selector';
 
-import { fetchYieldFarmPublicData } from 'state/yield/reducer';
+import { fetchYieldFarmPublicData, fetchYieldUserData } from 'state/yield/reducer';
 
 export default function Yield() {
 	const [searchText, setSearchText] = useState<undefined | null | string>();
@@ -27,7 +27,11 @@ export default function Yield() {
 
 	const refreshAppGlobalData = useCallback(() => {
 		dispatch(fetchYieldFarmPublicData(chainId));
-	}, [chainId]);
+
+		if (account) {
+			dispatch(fetchYieldUserData(account, chainId));
+		}
+	}, [account, chainId]);
 
 	const debounceFunc = useDebounceCallback<[ChangeEvent<HTMLInputElement>]>((e) => {
 		setSearchText(e.target.value)
@@ -36,7 +40,7 @@ export default function Yield() {
 
 	useEffect(() => {
 		refreshAppGlobalData()
-	}, []);
+	}, [account, chainId]);
 
 	return (
 		<>
