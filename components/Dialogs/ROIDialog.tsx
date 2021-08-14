@@ -7,11 +7,14 @@ import {
   Box,
   Typography,
   IconButton,
-} from '@material-ui/core'
-import { Close, Launch } from '@material-ui/icons'
-import { getRoi, tokenEarnedPerThousandDollars } from 'utils/compoundApyHelpers'
+} from '@material-ui/core';
+import { Close, Launch } from '@material-ui/icons';
+import {
+  getRoi,
+  tokenEarnedPerThousandDollars,
+} from 'utils/compoundApyHelpers';
 
-const useStyles = makeStyles(theme => {
+const useStyles = makeStyles((theme) => {
   return {
     paper: {
       width: 'auto',
@@ -58,15 +61,11 @@ const useStyles = makeStyles(theme => {
       alignItems: 'center',
       justifyContent: 'center',
     },
-  }
-})
+  };
+});
 
 export const ROIDialog = (props: any) => {
-  const {
-    open,
-    onClose,
-    poolData = {},
-  } = props || {};
+  const { open, onClose, poolData = {} } = props || {};
   const classes: any = useStyles();
   const { apr, tokenPrice } = poolData;
   const oneThousandDollarsWorthOfToken = 1000 / tokenPrice;
@@ -88,16 +87,16 @@ export const ROIDialog = (props: any) => {
     farmApr: apr,
     tokenPrice,
   });
-  
+
   const tokenEarnedPerThousand365D = tokenEarnedPerThousandDollars({
     numberOfDays: 365,
     farmApr: apr,
     tokenPrice,
-  })
+  });
 
   const onCloseDialog = () => {
-    onClose()
-  }
+    onClose();
+  };
 
   return (
     <Dialog
@@ -146,7 +145,11 @@ export const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              {getRoi({ amountEarned: tokenEarnedPerThousand1D, amountInvested: oneThousandDollarsWorthOfToken }).toFixed(2)}%
+              {getRoi({
+                amountEarned: tokenEarnedPerThousand1D,
+                amountInvested: oneThousandDollarsWorthOfToken,
+              }).toFixed(2)}
+              %
             </Typography>
           </div>
           <div>
@@ -161,7 +164,11 @@ export const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-            {getRoi({ amountEarned: tokenEarnedPerThousand7D, amountInvested: oneThousandDollarsWorthOfToken }).toFixed(2)}%
+              {getRoi({
+                amountEarned: tokenEarnedPerThousand7D,
+                amountInvested: oneThousandDollarsWorthOfToken,
+              }).toFixed(2)}
+              %
             </Typography>
           </div>
           <div>
@@ -176,7 +183,11 @@ export const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-            {getRoi({ amountEarned: tokenEarnedPerThousand30D, amountInvested: oneThousandDollarsWorthOfToken }).toFixed(2)}%
+              {getRoi({
+                amountEarned: tokenEarnedPerThousand30D,
+                amountInvested: oneThousandDollarsWorthOfToken,
+              }).toFixed(2)}
+              %
             </Typography>
           </div>
           <div>
@@ -186,12 +197,16 @@ export const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              365d(APY)
+              365d(APR)
             </Typography>
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-            {getRoi({ amountEarned: tokenEarnedPerThousand365D, amountInvested: oneThousandDollarsWorthOfToken }).toFixed(2)}%
+              {getRoi({
+                amountEarned: tokenEarnedPerThousand365D,
+                amountInvested: oneThousandDollarsWorthOfToken,
+              }).toFixed(2)}
+              %
             </Typography>
           </div>
           <div>
@@ -199,13 +214,6 @@ export const ROIDialog = (props: any) => {
               {tokenEarnedPerThousand365D}
             </Typography>
           </div>
-        </Box>
-        <Box>
-          <Typography variant="caption" className={classes.desc}>
-            Calculated based on current rates. Compounding once daily. Rates are
-            estimates provided for your convenience only, and by no means
-            represent guaranteed returns.
-          </Typography>
         </Box>
         <Box textAlign="center">
           <a href="/exchange" target="_blank" className={classes.getTexoLink}>
@@ -215,5 +223,5 @@ export const ROIDialog = (props: any) => {
       </DialogContent>
       <DialogActions className={classes.footer}></DialogActions>
     </Dialog>
-  )
-}
+  );
+};
