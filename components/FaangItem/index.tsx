@@ -6,6 +6,7 @@ import { normalizeTokenDecimal } from '../../utils/bigNumber';
 import { getAddress } from '../../utils/addressHelpers';
 import { useFAANGOrchestratorContract } from '../../hooks/useContract';
 import BigNumber from 'bignumber.js';
+import tokens from "../../config/constants/tokens";
 import {
   ApproveAction,
   StakeAction,
@@ -30,6 +31,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
     userData;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(stakingToken.address, chainId);
+  const FAANGAddress = getAddress(tokens.faang.address, chainId);
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
@@ -179,6 +181,17 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               </Typography>
             </Box>
             <Link
+              href={`${blockExplorerUrl}/address/${FAANGAddress}`}
+              target="_blank"
+            >
+              <Typography
+                component="p"
+                style={{ fontSize: '19px', color: '#007EF3' }}
+              >
+                View FAANG on {blockExplorerName}
+              </Typography>
+            </Link>
+            <Link
               href={`${blockExplorerUrl}/address/${tokenAddress}`}
               target="_blank"
             >
@@ -186,7 +199,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
                 component="p"
                 style={{ fontSize: '19px', color: '#007EF3' }}
               >
-                View on {blockExplorerName}
+                View tEXO on {blockExplorerName}
               </Typography>
             </Link>
           </Box>

@@ -57,7 +57,7 @@ function index(props) {
 				})
 			}
 		}
-  }, [library?.networkVersion, appNetwork.id]);
+  }, [appNetwork.id]);
 
   if (
     appNetwork.id !== parseInt(library?.networkVersion) &&
