@@ -70,8 +70,13 @@ function YieldFarm(props: any) {
   const isTablet = useMediaQuery('(max-width: 768px)');
   const isMobile = useMediaQuery('(max-width: 600px)');
 
-  const { allowance, stakedBalance, balance, inVaultBalance } =
-    userData;
+  const {
+    allowance,
+    stakedBalance,
+    balance,
+    inVaultBalance,
+    earnings: pendingReward,
+  } = userData;
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
@@ -237,15 +242,20 @@ function YieldFarm(props: any) {
                     marginLeft={isTablet ? '0' : '20px'}
                     marginBottom={isTablet ? '8px' : '0'}
                   >
-                    <Box className={classes.buttonBoxItem} flex={1}>
-                      <StakeAction data={dataButton} disabled={!isAlreadyApproved} />
-                    </Box>
-                    <Box className={classes.buttonBoxItem} flex={1}>
-                      <ClaimRewardsAction
-                        data={dataButton}
-                        disabled
-                      />
-                    </Box>
+                    {isAlreadyApproved ? 
+                      <Box className={classes.buttonBoxItem} flex={1}>
+                        <StakeAction data={dataButton} disabled={!isAlreadyApproved} />
+                      </Box>
+                    : null}
+
+                    {Number(pendingReward) > 0 ? 
+                      <Box className={classes.buttonBoxItem} flex={1}>
+                        <ClaimRewardsAction
+                          data={dataButton}
+                          disabled
+                        />
+                      </Box>
+                    : null}
                   </Box>
                   <Box
                     flex={1}
@@ -255,13 +265,16 @@ function YieldFarm(props: any) {
                     marginLeft={isTablet ? '0' : '20px'}
                     marginTop={isTablet ? '8px' : '0'}
                   >
-                    <Box className={classes.buttonBoxItem} flex={1}>
-                      <ApproveAction data={dataButton} disabled={isAlreadyApproved} />
-                    </Box>
+                    {!isAlreadyApproved ?
+                      <Box className={classes.buttonBoxItem} flex={1}>
+                        <ApproveAction data={dataButton} disabled={isAlreadyApproved} />
+                      </Box> : null}
 
-                    <Box className={classes.buttonBoxItem} flex={1}>
-                      <WithdrawAction data={dataButton} disabled />
-                    </Box>
+                    {canWithdraw ? 
+                      <Box className={classes.buttonBoxItem} flex={1}>
+                        <WithdrawAction data={dataButton} disabled />
+                      </Box>
+                    : null}
                   </Box>
                 </>
               )}
