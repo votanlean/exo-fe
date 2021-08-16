@@ -37,7 +37,7 @@ function FarmItem(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     selectedAccount,
-        onApprove
+    onApprove
   } = props;
   const {
     icon,
@@ -96,7 +96,7 @@ function FarmItem(props: any) {
     tEXOPrice,
     lpTotalInQuoteToken,
     normalizeTokenDecimal(tEXOPerBlock),
-        chainId
+    chainId
   );
 
   const toggleDisplayDetails = () => {
