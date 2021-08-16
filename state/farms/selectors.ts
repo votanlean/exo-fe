@@ -9,6 +9,8 @@ import { usePools } from "state/pools/selectors";
 import { useAppPrices } from "state/prices/selectors";
 import { getAddress } from 'utils/addressHelpers';
 import { getDecimals } from 'utils/decimalsHelper';
+import { useFAANGPools } from "state/fAANGpools/selectors";
+import { normalizeTokenDecimal } from "utils/bigNumber";
 
 export const useFarmFromPid = (pid): any => {
   const farm = useSelector((state: any) => state.farms.data.find((f) => f.pid === pid));
@@ -26,6 +28,7 @@ export const useTotalValue = (): BigNumber => {
 
 	const { id: chainId } = useNetwork();
 	const pools = usePools();
+	const fAANGs = useFAANGPools();
 	const allTokenPrices = useAppPrices();
 
 	let farmId: number;
@@ -44,29 +47,25 @@ export const useTotalValue = (): BigNumber => {
 	}
 
   const quoteTokenPerTexoPrice = new BigNumber(useFarmQuoteTokenPrice(farmId));
-  const quoteTokenPrice = quoteTokenPerTexoPrice.times(texoPrice);
-	// console.log(quoteTokenPerTexoPrice.toJSON(), texoPrice.toJSON(), quoteTokenPrice.toJSON())
+
+  const quoteTokenPrice = quoteTokenPerTexoPrice != (new BigNumber(0)) ? texoPrice.div(quoteTokenPerTexoPrice): (new BigNumber(1));
   const farms = useFarms();
   let value = new BigNumber(0);
-
   for (let i = 0; i < farms.length; i++) {
     const farm = farms[i];
-
     if (farm.lpTotalInQuoteToken) {
       let val;
 
-      if (farm.quoteTokenSymbol === tokens.wbnb || farm.quoteTokenSymbol === tokens.wmatic) {
+      if (farm.quoteToken.symbol === tokens.wbnb.symbol || farm.quoteToken.symbol === tokens.wmatic.symbol) {
         val = (quoteTokenPrice.times(farm.lpTotalInQuoteToken));
-      } else if (farm.quoteTokenSymbol === tokens.busd || farm.quoteTokenSymbol === tokens.usdc) {
+      } else if (farm.quoteToken.symbol === tokens.busd.symbol || farm.quoteToken.symbol === tokens.usdc.symbol) {
         val = (stableCoinPrice.times(farm.lpTotalInQuoteToken));
       } else {
         val = (farm.lpTotalInQuoteToken);
       }
-
       value = value.plus(val);
     }
   }
-
 	pools.forEach((pool) => {
 		let stakingTokenPrice = 0;
 
@@ -82,6 +81,11 @@ export const useTotalValue = (): BigNumber => {
 		value = value.plus(poolTotal);
 	})
 
+	fAANGs.forEach((faang)=>{
+		const totalStaked = normalizeTokenDecimal(faang.totalStaked);
+		const val = totalStaked.times(texoPrice)
+		value = value.plus(val)
+	})
   return value;
 }
 
@@ -139,7 +143,7 @@ const POLYGON_QUERY = ({
 			reserve0
 			reserve1
 		}
-		
+
 		`
 	}
 	return gql`
