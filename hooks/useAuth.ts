@@ -18,14 +18,15 @@ import { useNetwork } from 'state/hooks'
 const useAuth = () => {
   const dispatch = useAppDispatch()
   const { activate, deactivate } = useWeb3React()
-  const { rpcUrl } = useNetwork()
+  const appNetwork = useNetwork();
 
   const login = useCallback((connectorID: ConnectorNames) => {
     const connector = connectorsByName[connectorID]
     if (connector) {
       activate(connector, async (error: Error) => {
         if (error instanceof UnsupportedChainIdError) {
-          const hasSetup = await setupNetwork(rpcUrl)
+          const hasSetup = await setupNetwork(appNetwork)
+          console.log('hasSetup: ', hasSetup);
           if (hasSetup) {
             activate(connector)
           }
@@ -51,7 +52,7 @@ const useAuth = () => {
       alert('The connector config is wrong')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rpcUrl])
+  }, [appNetwork])
 
   const logout = useCallback(() => {
     deactivate()

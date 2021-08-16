@@ -39,7 +39,14 @@ function index(props) {
 							method: 'wallet_addEthereumChain',
 							params: [{
 								chainId: `0x${appNetwork.id.toString(16)}`,
-								rpcUrl: appNetwork.rpcUrl
+								chainName: appNetwork.name,
+								nativeCurrency: {
+									name: appNetwork.symbol,
+									symbol: appNetwork.symbol,
+									decimals: 18,
+								  },
+								rpcUrls: [appNetwork.rpcUrl],
+								blockExplorerUrls: [appNetwork.blockExplorerUrl],
 							}]
 						}).then(() => {
 							window.ethereum.request({
