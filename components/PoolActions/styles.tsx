@@ -16,9 +16,7 @@ const useStyles = makeStyles(() => {
   return {
     button: {
       width: '100%',
-      [theme.breakpoints.down('sm')]: {
-        marginBottom: 8
-      },
+      marginBottom: 8
     },
     pTitle: {
       fontWeight: 'bold',

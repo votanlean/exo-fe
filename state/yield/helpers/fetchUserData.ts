@@ -29,9 +29,6 @@ export default async function fetchUserData(yieldFarms: any[], account: string, 
 			}
 		];
 
-		const userAllowance = await fetchYieldUserAllowance(account, yieldFarm, chainId);
-		console.log('foo: ',userAllowance);
-
 		const [
 			userUnderlyingBalance,
 			userVaultBalance
@@ -52,22 +49,4 @@ export default async function fetchUserData(yieldFarms: any[], account: string, 
 	}));
 
 	return data;
-}
-
-export const fetchYieldUserAllowance = async (account ,yieldFarm, chainId) => {
-	const masterChefAddress = getAddress(contracts.orchestrator, chainId);
-
-	const calls = [
-		{
-			address: masterChefAddress,
-			name: 'userInfo',
-			params: [yieldFarm.pid, account],
-		}
-	]
-
-	const rawStakedBalances = await multicall(orchestratorABI, calls, chainId);
-	const parsedStakedBalances = rawStakedBalances.map((stakedBalance) => {
-		return new BigNumber(stakedBalance[0]._hex).toJSON();
-	});
-	return parsedStakedBalances;
 }

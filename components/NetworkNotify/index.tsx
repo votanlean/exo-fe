@@ -25,39 +25,39 @@ function index(props) {
   useEffect(() => {
     if (appNetwork.id !== parseInt(library?.networkVersion) &&
     typeof library?.networkVersion !== 'undefined') {
-			// try to request the user to connect to the current app network
-			if (window.ethereum) {
-				window.ethereum.request({
-					method: 'wallet_switchEthereumChain',
-					params: [{
-						chainId: `0x${appNetwork.id.toString(16)}`
-					}]
-				}).catch((switchError) => {
-					if (switchError.code === 4902) {
-						// wallet dont have the network id, try adding it
-						window.ethereum.request({
-							method: 'wallet_addEthereumChain',
-							params: [{
-								chainId: `0x${appNetwork.id.toString(16)}`,
-								rpcUrl: appNetwork.rpcUrl
-							}]
-						}).then(() => {
-							window.ethereum.request({
-								method: 'wallet_switchEthereumChain',
-								params: [{
-									chainId: `0x${appNetwork.id.toString(16)}`
-								}]
-							})
-						})
-					}
+            // try to request the user to connect to the current app network
+            if (window.ethereum) {
+                window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{
+                        chainId: `0x${appNetwork.id.toString(16)}`
+                    }]
+                }).catch((switchError) => {
+                    if (switchError.code === 4902) {
+                        // wallet dont have the network id, try adding it
+                        window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: `0x${appNetwork.id.toString(16)}`,
+                                rpcUrl: appNetwork.rpcUrl
+                            }]
+                        }).then(() => {
+                            window.ethereum.request({
+                                method: 'wallet_switchEthereumChain',
+                                params: [{
+                                    chainId: `0x${appNetwork.id.toString(16)}`
+                                }]
+                            })
+                        })
+                    }
 
-					throw switchError
-				}).catch((error) => {
-					console.log('RPC Error: ', error)
-				})
-			}
-		}
-  }, [library?.networkVersion, appNetwork.id]);
+                    throw switchError
+                }).catch((error) => {
+                    console.log('RPC Error: ', error)
+                })
+            }
+        }
+  }, [appNetwork.id]);
 
   if (
     appNetwork.id !== parseInt(library?.networkVersion) &&

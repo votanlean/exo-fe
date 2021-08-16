@@ -20,11 +20,21 @@ import { useAppDispatch } from 'state';
 
 const Header = () => {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
   const networks = getNetworks();
   const [openPopup, setOpenPopup] = useState(false);
   const [openSwitchNetworkPopup, setOpenSwitchNetworkPopup] = useState(false);
   const [openLogoutPopup, setOpenLogoutPopup] = useState(false);
   const { account, active, connector } = useWeb3React();
+  const { library } = useWeb3React();
+  useEffect(()=>{
+    networks.forEach((item)=>{
+      if(item.id == parseInt(library?.networkVersion))
+      {
+        dispatch(changeNetwork(item));
+      }
+    });
+  }, [library?.networkVersion]);
   const network = useNetwork();
   const { icon: networkIcon, name: networkName } = network || {};
 
@@ -55,7 +65,7 @@ const Header = () => {
     setOpenSwitchNetworkPopup(!openSwitchNetworkPopup);
   };
 
-  const dispatch = useAppDispatch();
+  
   const handleNetWorkChange = (item) => {
     dispatch(changeNetwork(item));
   }
@@ -82,6 +92,7 @@ const Header = () => {
             <div className={styles.item3}>
               {networks.map((item, index) => (
                 <Button
+                key={index}
                 variant="contained"
                 color="primary"
                 size="small"

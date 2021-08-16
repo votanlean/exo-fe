@@ -1,7 +1,7 @@
 export function numberWithCommas(x) {
-	const floatingPoint = x.toString().split('.');
+    const floatingPoint = x.toString().split('.');
 
-	floatingPoint[0] = floatingPoint[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    floatingPoint[0] = floatingPoint[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-	return floatingPoint.join('.');
+    return floatingPoint.join('.');
 }

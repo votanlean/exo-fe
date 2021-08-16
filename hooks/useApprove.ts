@@ -1,42 +1,41 @@
 import { useCallback, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Contract } from 'web3-eth-contract';
-import { useAppDispatch } from 'state';
 import { approve } from 'utils/callHelpers';
-import { fetchPoolsUserDataAsync } from '../state/pools/reducer';
-import { fetchFarmUserDataAsync } from '../state/farms/reducer';
-import { fetchFAANGPoolsUserDataAsync } from '../state/fAANGpools/reducer';
-import { useNetwork } from 'state/hooks';
+
+export interface IUseAprrove {
+    tokenContract: Contract;
+    requestingContract: Contract;
+    onApprove?: (transaction: any) => void;
+}
 
 // Approve a Pool
-export const useApprove = (
-  stakeTokenContract: Contract,
-  orchestratorContract: Contract,
-  poolId,
-) => {
-  const dispatch = useAppDispatch();
+export const useApprove = ({
+  tokenContract,
+  requestingContract,
+    onApprove
+}: IUseAprrove) => {
   const { account } = useWeb3React();
   const [isLoading, setLoading] = useState(false);
-  const { id: chainId } = useNetwork();
 
   const handleApprove = useCallback(async () => {
     try {
       setLoading(true);
       const tx = await approve(
-        stakeTokenContract,
-        orchestratorContract,
+        tokenContract,
+        requestingContract,
         account,
       );
       setLoading(false);
-      dispatch(fetchPoolsUserDataAsync(account, chainId));
-      dispatch(fetchFarmUserDataAsync(account, chainId));
-      dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+            if (onApprove) {
+                onApprove(tx);
+            }
       return tx;
     } catch (e) {
       setLoading(false);
       return false;
     }
-  }, [account, dispatch, stakeTokenContract, orchestratorContract, poolId, chainId]);
+  }, [account, tokenContract, requestingContract]);
 
-  return { onApprove: handleApprove, isLoading };
+  return { approve: handleApprove, isLoading };
 };

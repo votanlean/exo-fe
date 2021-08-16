@@ -19,10 +19,10 @@ const useStyles = makeStyles((theme) => {
             alignItems: 'center',
             marginTop: '62px',
             [theme.breakpoints.down('sm')]: {
-				flexDirection: 'column',
+                flexDirection: 'column',
                 paddingBottom: '12px',
                 paddingTop: '4px'
-			}
+            }
         },
         
         

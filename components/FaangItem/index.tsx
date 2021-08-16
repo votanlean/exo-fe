@@ -6,6 +6,7 @@ import { normalizeTokenDecimal } from '../../utils/bigNumber';
 import { getAddress } from '../../utils/addressHelpers';
 import { useFAANGOrchestratorContract } from '../../hooks/useContract';
 import BigNumber from 'bignumber.js';
+import tokens from "../../config/constants/tokens";
 import {
   ApproveAction,
   StakeAction,
@@ -15,21 +16,22 @@ import {
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
 import { numberWithCommas } from 'utils/numberWithComma';
+import { useCallback } from 'react';
 
-function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
+function FaangItem({ pool, account, tEXOPrice, FAANGFinish, onApprove }) {
   const {
     symbol,
     totalStaked,
     userData = {},
     depositFeeBP,
     stakingToken,
-    canClaimReward,
   } = pool;
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
     userData;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(stakingToken.address, chainId);
+  const FAANGAddress = getAddress(tokens.faang.address, chainId);
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
@@ -39,7 +41,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
   const dataButton = {
     id: 0,
     stakingToken,
-    orchestratorContract,
+    requestingContract: orchestratorContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: stakingTokenBalance,
@@ -179,6 +181,17 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               </Typography>
             </Box>
             <Link
+              href={`${blockExplorerUrl}/address/${FAANGAddress}`}
+              target="_blank"
+            >
+              <Typography
+                component="p"
+                style={{ fontSize: '19px', color: '#007EF3' }}
+              >
+                View FAANG on {blockExplorerName}
+              </Typography>
+            </Link>
+            <Link
               href={`${blockExplorerUrl}/address/${tokenAddress}`}
               target="_blank"
             >
@@ -186,7 +199,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
                 component="p"
                 style={{ fontSize: '19px', color: '#007EF3' }}
               >
-                View on {blockExplorerName}
+                View tEXO on {blockExplorerName}
               </Typography>
             </Link>
           </Box>
@@ -195,6 +208,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               data={dataButton}
               disabled={FAANGFinish}
               buttonClasses={classes.approveButton}
+                            onApprove={onApprove}
             />
           ) : null}
 

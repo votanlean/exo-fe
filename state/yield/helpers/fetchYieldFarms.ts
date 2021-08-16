@@ -1,27 +1,43 @@
 import { getAddress } from "utils/addressHelpers";
 import multicall from 'utils/multicall';
 import erc20 from 'config/abi/erc20.json';
+import vault from 'config/abi/Vault.json';
 import BigNumber from "bignumber.js";
 
 export default async function fetchYieldFarms(yieldFarms: any[], chainId?: number) {
-	const data = await Promise.all(yieldFarms.map(async (yieldFarm) => {
-		const calls = [
-			{
-				address: getAddress(yieldFarm.underlying.address, chainId),
-				name: 'balanceOf',
-				params: [getAddress(yieldFarm.vaultAddress, chainId)]
-			}
-		];
+    const data = await Promise.all(yieldFarms.map(async (yieldFarm) => {
+        const ercCalls = [
+            {
+                address: getAddress(yieldFarm.underlying.address, chainId),
+                name: 'balanceOf',
+                params: [getAddress(yieldFarm.vaultAddress, chainId)]
+            }
+        ];
 
-		const [
-			underlyingVaultBalance
-		] = await multicall(erc20, calls, chainId)
+        const vaultCalls = [
+            {
+                address: getAddress(yieldFarm.vaultAddress, chainId),
+                name: "strategy",
+                params: []
+            }
+        ]
 
-		return {
-			...yieldFarm,
-			underlyingVaultBalance: new BigNumber(underlyingVaultBalance).toJSON()
-		}
-	}));
+        const [
+            underlyingVaultBalance
+        ] = await multicall(erc20, ercCalls, chainId);
 
-	return data;
+        const [
+            vaultStrategyAddress
+        ] = await multicall(vault, vaultCalls, chainId);
+
+        return {
+            ...yieldFarm,
+            strategy: {
+                address: vaultStrategyAddress
+            },
+            underlyingVaultBalance: new BigNumber(underlyingVaultBalance).toJSON()
+        }
+    }));
+
+    return data;
 }
