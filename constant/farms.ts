@@ -4,6 +4,6 @@ export enum BSC_FARM_ID {
 }
 
 export enum POLYGON_FARM_ID {
-	TEXO_MATIC = 10,
-	TEXO_USDC = 11
+    TEXO_MATIC = 10,
+    TEXO_USDC = 11
 }

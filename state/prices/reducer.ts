@@ -15,18 +15,18 @@ export const appPricesSlice = createSlice({
 });
 
 export const fetchAppPrices = (chainId?: number) => async (dispatch) => {
-	switch(chainId) {
-		case 137:
-		case 80001:
-			const polygonAppPrices = await fetchPolygonPrices();
-			dispatch(setAppPrices(polygonAppPrices));
-			break;
-		case 56:
-		case 97:
-			const appPrices = await fetchPrices();
-			dispatch(setAppPrices(appPrices));
-			break;
-	}
+    switch(chainId) {
+        case 137:
+        case 80001:
+            const polygonAppPrices = await fetchPolygonPrices();
+            dispatch(setAppPrices(polygonAppPrices));
+            break;
+        case 56:
+        case 97:
+            const appPrices = await fetchPrices();
+            dispatch(setAppPrices(appPrices));
+            break;
+    }
 };
 
 export const { setAppPrices } = appPricesSlice.actions;

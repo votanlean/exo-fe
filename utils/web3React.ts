@@ -48,9 +48,9 @@ export const bscConnector = new BscConnector({
 
 const walletconnect = new WalletConnectConnector({
     rpc: supportedChains.reduce((rpcs, { chainId, rpc }) => ({
-			...rpcs,
-			[chainId]: rpc
-		}), {}),
+            ...rpcs,
+            [chainId]: rpc
+        }), {}),
     qrcode: true,
     pollingInterval: POLLING_INTERVAL,
 })

@@ -8,9 +8,9 @@ const useStyles = makeStyles((theme) => {
       background: 'linear-gradient(180deg, #0f0f0f 0%, #103c5b 100%)',
       paddingBottom: '15px',
       border: '1px solid rgb(161, 169, 214)',
-			[theme.breakpoints.down('xs')]: {
-				minWidth: "300px"
-			}
+            [theme.breakpoints.down('xs')]: {
+                minWidth: "300px"
+            }
     },
     title: {
       borderBottom: '1px solid rgb(161, 169, 214)',
