@@ -8,6 +8,7 @@ const initialState = getYieldFarms().map((yieldFarm) => {
 		...yieldFarm,
 		underlyingVaultBalance: '0',
 		userData: {
+			allowance: '0',
 			balance: '0',
 			stakedBalance: '0',
 			inVaultBalance: '0'

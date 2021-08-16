@@ -32,7 +32,7 @@ import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
 
 interface IYieldFarmProps {
-	farm: any,
+  farm: any,
 }
 
 function YieldFarm(props: any) {
@@ -40,8 +40,8 @@ function YieldFarm(props: any) {
     yieldFarmData = {},
     stakingTokenPrice,
     tEXOPrice,
-		onPoolStateChange,
-		selectedAccount
+    onPoolStateChange,
+    selectedAccount
   } = props || {};
 
   const {
@@ -54,10 +54,10 @@ function YieldFarm(props: any) {
     depositFeeBP,
     userData = {},
     lpTotalInQuoteToken = BIG_ZERO,
-		allocPoint,
-		vaultSymbol,
-		underlying,
-		underlyingVaultBalance,
+    allocPoint,
+    vaultSymbol,
+    underlying,
+    underlyingVaultBalance,
   } = yieldFarmData;
 
   const classes = useStyles();
@@ -66,17 +66,22 @@ function YieldFarm(props: any) {
   const isTablet = useMediaQuery('(max-width: 768px)');
   const isMobile = useMediaQuery('(max-width: 600px)');
 
-  const { allowance, stakedBalance, balance, inVaultBalance } =
-    userData;
+  const {
+    allowance,
+    stakedBalance,
+    balance,
+    inVaultBalance,
+    earnings: pendingReward,
+  } = userData;
 
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(address, chainId);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
-	const farmWeight = new BigNumber(allocPoint).div(
-		new BigNumber(totalAllocPoint),
-	);
+  const farmWeight = new BigNumber(allocPoint).div(
+    new BigNumber(totalAllocPoint),
+  );
   const decimal = getDecimals(decimals, chainId);
 
   const tEXOOrchestratorContract = useOrchestratorContract();
@@ -86,7 +91,7 @@ function YieldFarm(props: any) {
     tEXOPrice,
     lpTotalInQuoteToken,
     normalizeTokenDecimal(tEXOPerBlock),
-		chainId
+    chainId
   );
 
   const dataButton = {
@@ -138,17 +143,17 @@ function YieldFarm(props: any) {
             </TableCell>
           </>
         )}
-				{!isTablet && (
+        {!isTablet && (
           <>
             <TableCell style={{ padding: '24px 16px' }}>
               <Typography variant="caption">Total Deposited</Typography>
               <Typography variant="h6" className={classes.label}>
                 {numberWithCommas(
-									normalizeTokenDecimal(
-										underlyingVaultBalance,
-										+getDecimals(underlying.decimals, chainId)
-									).toFixed(2)
-								)}
+                  normalizeTokenDecimal(
+                    underlyingVaultBalance,
+                    +getDecimals(underlying.decimals, chainId)
+                  ).toFixed(2)
+                )}
               </Typography>
             </TableCell>
           </>
@@ -176,35 +181,35 @@ function YieldFarm(props: any) {
               paddingY="16px"
             >
               <Box
-								paddingRight='10px'
-							>
+                paddingRight='10px'
+              >
                 <Box>
-									<a
-										className={classes.linkDetail}
-										href={`${blockExplorerUrl}/address/${tokenAddress}`}
-										target="_blank"
-									>
-										View Vault on {blockExplorerName} <Launch fontSize="small" />
-									</a>
-								</Box>
-								<Box>
-									<a
-										className={classes.linkDetail}
-										href={`${blockExplorerUrl}/address/${tokenAddress}`}
-										target="_blank"
-									>
-										View Pool on {blockExplorerName} <Launch fontSize="small" />
-									</a>
-								</Box>
+                  <a
+                    className={classes.linkDetail}
+                    href={`${blockExplorerUrl}/address/${tokenAddress}`}
+                    target="_blank"
+                  >
+                    View Vault on {blockExplorerName} <Launch fontSize="small" />
+                  </a>
+                </Box>
+                <Box>
+                  <a
+                    className={classes.linkDetail}
+                    href={`${blockExplorerUrl}/address/${tokenAddress}`}
+                    target="_blank"
+                  >
+                    View Pool on {blockExplorerName} <Launch fontSize="small" />
+                  </a>
+                </Box>
               </Box>
               <Box
-								flex={1}
+                flex={1}
                 display='flex'
                 justifyContent="center"
-								flexDirection='column'
-								marginLeft={isTablet ? '0' : '20px'}
+                flexDirection='column'
+                marginLeft={isTablet ? '0' : '20px'}
               >
-								<Box className={classes.rowDetail} flex={1}>
+                <Box className={classes.rowDetail} flex={1}>
                   <Typography>Your unstaked</Typography>
                   <Typography
                     className={'text-right'}
@@ -213,7 +218,7 @@ function YieldFarm(props: any) {
                     {vaultSymbol}
                   </Typography>
                 </Box>
-								<Box className={classes.rowDetail} flex={1}>
+                <Box className={classes.rowDetail} flex={1}>
                   <Typography>Your reward</Typography>
                   <Typography
                     className={'text-right'}
@@ -221,61 +226,69 @@ function YieldFarm(props: any) {
                     {normalizeTokenDecimal(0).toFixed(4)}{' tEXO'}
                   </Typography>
                 </Box>
-								
-              </Box>
-							{!!selectedAccount && (
-								<>
-									<Box
-										flex={1}
-										display='flex'
-										justifyContent="center"
-										flexDirection='column'
-										marginLeft={isTablet ? '0' : '20px'}
-										marginBottom={isTablet ? '8px' : '0'}
-									>
-										<Box className={classes.buttonBoxItem} flex={1}>
-											<StakeAction data={dataButton} disabled={!isAlreadyApproved}/>
-										</Box>
-										<Box className={classes.buttonBoxItem} flex={1}>
-											<ClaimRewardsAction
-												data={dataButton}
-												disabled
-											/>
-										</Box>
-									</Box>
-									<Box
-										flex={1}
-										display='flex'
-										justifyContent="center"
-										flexDirection='column'
-										marginLeft={isTablet ? '0' : '20px'}
-										marginTop={isTablet ? '8px' : '0'}
-									>
-										<Box className={classes.buttonBoxItem} flex={1}>
-											<ApproveAction data={dataButton} disabled={isAlreadyApproved} />
-										</Box>
 
-										<Box className={classes.buttonBoxItem} flex={1}>
-											<WithdrawAction data={dataButton} disabled/>
-										</Box>
-									</Box>
-								</>
-							)}
-							{!selectedAccount && (
-								<>
-									<Box flex={1} />
-									<Box
-										flex={1}
-										display='flex'
-										alignItems='center'
-										marginLeft={isTablet ? '0' : '20px'}
-									>
-										<Box className={classes.buttonBoxItem} flex={1}>
-											<ApproveAction data={dataButton} disabled={isAlreadyApproved} />
-										</Box>							
-									</Box>
-								</>
-							)}
+              </Box>
+              {!!selectedAccount && (
+                <>
+                  <Box
+                    flex={1}
+                    display='flex'
+                    justifyContent="center"
+                    flexDirection='column'
+                    marginLeft={isTablet ? '0' : '20px'}
+                    marginBottom={isTablet ? '8px' : '0'}
+                  >
+                    {isAlreadyApproved ? 
+                      <Box className={classes.buttonBoxItem} flex={1}>
+                        <StakeAction data={dataButton} disabled={!isAlreadyApproved} />
+                      </Box>
+                    : null}
+
+                    {Number(pendingReward) > 0 ? 
+                      <Box className={classes.buttonBoxItem} flex={1}>
+                        <ClaimRewardsAction
+                          data={dataButton}
+                          disabled
+                        />
+                      </Box>
+                    : null}
+                  </Box>
+                  <Box
+                    flex={1}
+                    display='flex'
+                    justifyContent="center"
+                    flexDirection='column'
+                    marginLeft={isTablet ? '0' : '20px'}
+                    marginTop={isTablet ? '8px' : '0'}
+                  >
+                    {!isAlreadyApproved ?
+                      <Box className={classes.buttonBoxItem} flex={1}>
+                        <ApproveAction data={dataButton} disabled={isAlreadyApproved} />
+                      </Box> : null}
+
+                    {canWithdraw ? 
+                      <Box className={classes.buttonBoxItem} flex={1}>
+                        <WithdrawAction data={dataButton} disabled />
+                      </Box>
+                    : null}
+                  </Box>
+                </>
+              )}
+              {!selectedAccount && (
+                <>
+                  <Box flex={1} />
+                  <Box
+                    flex={1}
+                    display='flex'
+                    alignItems='center'
+                    marginLeft={isTablet ? '0' : '20px'}
+                  >
+                    <Box className={classes.buttonBoxItem} flex={1}>
+                      <ApproveAction data={dataButton} disabled={isAlreadyApproved} />
+                    </Box>
+                  </Box>
+                </>
+              )}
             </Box>
           </Collapse>
         </TableCell>

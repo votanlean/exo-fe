@@ -35,7 +35,6 @@ export default function Yield() {
 
 	const debounceFunc = useDebounceCallback<[ChangeEvent<HTMLInputElement>]>((e) => {
 		setSearchText(e.target.value)
-		console.log(e.target.value)
 	}, 500);
 
 	useEffect(() => {
@@ -44,13 +43,13 @@ export default function Yield() {
 
 	return (
 		<>
-      <Head>
-        <title>Yield Farming</title>
-      </Head>
+			<Head>
+				<title>Yield Farming</title>
+			</Head>
 			<div className={`container ${classes.yieldContainer}`}>
 				<Typography variant='h4' className='font-bold'>
-          VAULT LIST
-        </Typography>
+					VAULT LIST
+				</Typography>
 				<div className={classes.header}>
 					<div>
 						Deposited only <Switch />
@@ -63,31 +62,31 @@ export default function Yield() {
 				</div>
 
 				<TableContainer className={classes.tableContainer}>
-          <Table aria-label="collapsible table">
-            <TableBody>
-              {yieldFarms.map((yieldFarm) => {
-                let stakingTokenPrice = 0;
+					<Table aria-label="collapsible table">
+						<TableBody>
+							{yieldFarms.map((yieldFarm) => {
+								let stakingTokenPrice = 0;
 
-                if (allTokenPrices.data) {
-                  stakingTokenPrice =
-                    allTokenPrices.data[
-                      getAddress(yieldFarm.stakingToken.address, chainId)?.toLowerCase()
-                    ];
-                }
-                return (
-                  <YieldFarm
-                    key={yieldFarm.pid}
-                    yieldFarmData={yieldFarm}
-                    selectedAccount={account}
-                    onPoolStateChange={refreshAppGlobalData}
-                    stakingTokenPrice={stakingTokenPrice}
-                    tEXOPrice={tEXOPrice}
-                  />
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+								if (allTokenPrices.data) {
+									stakingTokenPrice =
+										allTokenPrices.data[
+										getAddress(yieldFarm.stakingToken.address, chainId)?.toLowerCase()
+										];
+								}
+								return (
+									<YieldFarm
+										key={yieldFarm.pid}
+										yieldFarmData={yieldFarm}
+										selectedAccount={account}
+										onPoolStateChange={refreshAppGlobalData}
+										stakingTokenPrice={stakingTokenPrice}
+										tEXOPrice={tEXOPrice}
+									/>
+								);
+							})}
+						</TableBody>
+					</Table>
+				</TableContainer>
 			</div>
 		</>
 	);
