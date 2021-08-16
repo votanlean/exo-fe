@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => {
       float: 'left',
       [theme.breakpoints.down('xs')]: {
         display: 'none'
-			}
+            }
     },
     infoItem: {
         float: 'left',
@@ -55,14 +55,14 @@ const useStyles = makeStyles((theme) => {
       width: '100%',
       [theme.breakpoints.down('xs')]: {
         display: 'none'
-			}
+            }
     },
     subAccountAddress: {
       fontSize: '1.15rem',
       display: 'none',
       [theme.breakpoints.down('xs')]: {
         display: 'block'
-			}
+            }
     },
 
     
@@ -106,7 +106,7 @@ const useStyles = makeStyles((theme) => {
         '&:first-child': {
           marginBottom: '16px',
         },
-			}
+            }
 
     },
     titleButton: {

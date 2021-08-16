@@ -46,7 +46,7 @@ function PoolRow(props: any) {
     canClaimReward,
     seedingFinish,
     account,
-		onApprove
+        onApprove
   } = props || {};
 
   const {
@@ -88,7 +88,7 @@ function PoolRow(props: any) {
     tEXOPrice,
     normalizeTokenDecimal(totalStaked, +decimal).toNumber(),
     normalizeTokenDecimal(poolTexoPerBlock).toNumber(),
-		chainId
+        chainId
   );
 
   const dataButton = {

@@ -27,7 +27,7 @@ function ApproveAction(props: any) {
   const { approve, isLoading } = useApprove({
     tokenContract,
     requestingContract,
-		onApprove
+        onApprove
   });
 
   if (!account) {

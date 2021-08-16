@@ -187,11 +187,11 @@ function Pool() {
     };
   }, [chainId, account]);
 
-	const onApprove = useCallback(() => {
-		dispatch(fetchPoolsUserDataAsync(account, chainId));
-		dispatch(fetchFarmUserDataAsync(account, chainId));
-		dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
-	}, [dispatch, account, chainId]);
+    const onApprove = useCallback(() => {
+        dispatch(fetchPoolsUserDataAsync(account, chainId));
+        dispatch(fetchFarmUserDataAsync(account, chainId));
+        dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+    }, [dispatch, account, chainId]);
 
   useEffect(() => {
     if (
@@ -299,84 +299,84 @@ function Pool() {
 
         <BannerCoinTelegraph />
 
-				<div className={styles.countdownContainer}>
-					<Typography
-						variant="h5"
-						align="center"
-						style={{ marginBottom: '30px', lineHeight: '40px' }}
-					>
-						{chainId === 56 || chainId === 97 || chainId === 5600
-							? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
-							: 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
-						<br />
-						{currentBlock && currentBlock < farmStartBlock
-							? 'Farming reward will be generated in'
-							: null}
-					</Typography>
-					{currentBlock && currentBlock < farmStartBlock ? (
-						<Typography variant="h3" color="primary" align="center">
-							{poolPageReady ? countDownStringFarm : 'Coming Soon'}
-						</Typography>
-					) : null}
-					<Typography variant="h6" align="center">
-						<a
-							target="_blank"
-							style={{ color: '#007EF3' }}
-							href={blockExplorerToCountDownFarming}
-						>
-							Check explorer for the most accurate countdown
-						</a>
-					</Typography>
-					</div>
+                <div className={styles.countdownContainer}>
+                    <Typography
+                        variant="h5"
+                        align="center"
+                        style={{ marginBottom: '30px', lineHeight: '40px' }}
+                    >
+                        {chainId === 56 || chainId === 97 || chainId === 5600
+                            ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
+                            : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
+                        <br />
+                        {currentBlock && currentBlock < farmStartBlock
+                            ? 'Farming reward will be generated in'
+                            : null}
+                    </Typography>
+                    {currentBlock && currentBlock < farmStartBlock ? (
+                        <Typography variant="h3" color="primary" align="center">
+                            {poolPageReady ? countDownStringFarm : 'Coming Soon'}
+                        </Typography>
+                    ) : null}
+                    <Typography variant="h6" align="center">
+                        <a
+                            target="_blank"
+                            style={{ color: '#007EF3' }}
+                            href={blockExplorerToCountDownFarming}
+                        >
+                            Check explorer for the most accurate countdown
+                        </a>
+                    </Typography>
+                    </div>
 
-					<div className={styles.lpPoolGrid}>
-					{getFarms(chainId).map((farm, index) => {
-						let stakingTokenPrice = 0;
+                    <div className={styles.lpPoolGrid}>
+                    {getFarms(chainId).map((farm, index) => {
+                        let stakingTokenPrice = 0;
 
-						if (allTokenPrices.data) {
-							stakingTokenPrice =
-								allTokenPrices.data[
-									getAddress(farm.quoteToken.address, chainId)
-								];
-						}
+                        if (allTokenPrices.data) {
+                            stakingTokenPrice =
+                                allTokenPrices.data[
+                                    getAddress(farm.quoteToken.address, chainId)
+                                ];
+                        }
 
-						return (
-							<FarmItem
-								selectedAccount={account}
-								onPoolStateChange={refreshAppGlobalData}
-								stakingTokenPrice={stakingTokenPrice}
-								tEXOPrice={tEXOPrice}
-								farmData={farmsData[index]}
-								key={farm.pid}
-								countDownString={countDownString}
-								onApprove={onApprove}
-							/>
-						);
-					})}
-					</div>
+                        return (
+                            <FarmItem
+                                selectedAccount={account}
+                                onPoolStateChange={refreshAppGlobalData}
+                                stakingTokenPrice={stakingTokenPrice}
+                                tEXOPrice={tEXOPrice}
+                                farmData={farmsData[index]}
+                                key={farm.pid}
+                                countDownString={countDownString}
+                                onApprove={onApprove}
+                            />
+                        );
+                    })}
+                    </div>
 
-					<div className={styles.titleSection}>
-					<Typography
-						variant="h5"
-						align="center"
-						style={{ lineHeight: '40px' }}
-					>
-						Stake tEXO for FAANG
-					</Typography>
-					</div>
+                    <div className={styles.titleSection}>
+                    <Typography
+                        variant="h5"
+                        align="center"
+                        style={{ lineHeight: '40px' }}
+                    >
+                        Stake tEXO for FAANG
+                    </Typography>
+                    </div>
 
-					<div className={styles.lpPoolGrid}>
-					{fAANGData.map((pool) => (
-						<FaangItem
-							key={pool.id}
-							pool={pool}
-							tEXOPrice={tEXOPrice}
-							account={account}
-							FAANGFinish={currentBlock >= FAANGFinishBlock}
-							onApprove={onApprove}
-						/>
-					))}
-					</div>
+                    <div className={styles.lpPoolGrid}>
+                    {fAANGData.map((pool) => (
+                        <FaangItem
+                            key={pool.id}
+                            pool={pool}
+                            tEXOPrice={tEXOPrice}
+                            account={account}
+                            FAANGFinish={currentBlock >= FAANGFinishBlock}
+                            onApprove={onApprove}
+                        />
+                    ))}
+                    </div>
 
         {currentBlock >= seedingFinishBlock && (
           <div className={styles.countdownContainer}>
@@ -510,7 +510,7 @@ function Pool() {
                     stakingTokenPrice={stakingTokenPrice}
                     tEXOPrice={tEXOPrice}
                     countDownString={countDownString}
-										onApprove={onApprove}
+                                        onApprove={onApprove}
                   />
                 );
               })}

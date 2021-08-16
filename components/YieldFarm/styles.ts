@@ -85,15 +85,15 @@ const useStyles = makeStyles(() => {
       justifyContent: 'space-between',
       alignItems: 'center',
       marginTop: '4px',
-			marginBottom: '4px'
+            marginBottom: '4px'
     },
     buttonBoxItem: {
-			"&:not(:first-child)": {
-				marginTop: theme.spacing(1)
-			},
-			"&:not(:last-child)": {
-				marginBottom: theme.spacing(1)
-			},
+            "&:not(:first-child)": {
+                marginTop: theme.spacing(1)
+            },
+            "&:not(:last-child)": {
+                marginBottom: theme.spacing(1)
+            },
       [theme.breakpoints.down('sm')]: {
         width: 'auto',
         marginLeft: '0',
