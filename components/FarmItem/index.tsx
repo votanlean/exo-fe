@@ -37,6 +37,7 @@ function FarmItem(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     selectedAccount,
+		onApprove
   } = props;
   const {
     icon,
@@ -70,7 +71,7 @@ function FarmItem(props: any) {
       address,
       decimals,
     },
-    orchestratorContract: tEXOOrchestratorContract,
+    requestingContract: tEXOOrchestratorContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: tokenBalance,
@@ -237,7 +238,7 @@ function FarmItem(props: any) {
                 {isAlreadyApproved ? <StakeAction data={dataButton} /> : null}
 
                 {!isAlreadyApproved ? (
-                  <ApproveAction data={dataButton} />
+                  <ApproveAction data={dataButton} onApprove={onApprove} />
                 ) : null}
               </div>
 

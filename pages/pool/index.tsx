@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import Countdown from 'countdown';
 import { useWeb3React } from '@web3-react/core';
@@ -187,6 +187,12 @@ function Pool() {
     };
   }, [chainId, account]);
 
+	const onApprove = useCallback(() => {
+		dispatch(fetchPoolsUserDataAsync(account, chainId));
+		dispatch(fetchFarmUserDataAsync(account, chainId));
+		dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+	}, [dispatch, account, chainId]);
+
   useEffect(() => {
     if (
       !farmStartBlock ||
@@ -343,6 +349,7 @@ function Pool() {
 								farmData={farmsData[index]}
 								key={farm.pid}
 								countDownString={countDownString}
+								onApprove={onApprove}
 							/>
 						);
 					})}
@@ -366,6 +373,7 @@ function Pool() {
 							tEXOPrice={tEXOPrice}
 							account={account}
 							FAANGFinish={currentBlock >= FAANGFinishBlock}
+							onApprove={onApprove}
 						/>
 					))}
 					</div>
@@ -502,6 +510,7 @@ function Pool() {
                     stakingTokenPrice={stakingTokenPrice}
                     tEXOPrice={tEXOPrice}
                     countDownString={countDownString}
+										onApprove={onApprove}
                   />
                 );
               })}

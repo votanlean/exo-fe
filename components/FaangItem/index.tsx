@@ -16,15 +16,15 @@ import {
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
 import { numberWithCommas } from 'utils/numberWithComma';
+import { useCallback } from 'react';
 
-function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
+function FaangItem({ pool, account, tEXOPrice, FAANGFinish, onApprove }) {
   const {
     symbol,
     totalStaked,
     userData = {},
     depositFeeBP,
     stakingToken,
-    canClaimReward,
   } = pool;
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
@@ -41,7 +41,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
   const dataButton = {
     id: 0,
     stakingToken,
-    orchestratorContract,
+    requestingContract: orchestratorContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: stakingTokenBalance,
@@ -208,6 +208,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               data={dataButton}
               disabled={FAANGFinish}
               buttonClasses={classes.approveButton}
+							onApprove={onApprove}
             />
           ) : null}
 

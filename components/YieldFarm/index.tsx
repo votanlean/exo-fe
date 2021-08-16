@@ -21,7 +21,6 @@ import {
 import { useNetwork } from 'state/hooks';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 
-import { useOrchestratorContract } from 'hooks/useContract';
 import { getFarmApr } from 'hookApi/apr';
 
 import { getAddress } from 'utils/addressHelpers';
@@ -58,7 +57,12 @@ function YieldFarm(props: any) {
 		vaultSymbol,
 		underlying,
 		underlyingVaultBalance,
+		strategy = {}
   } = yieldFarmData;
+
+	const {
+		address: strategyAddress
+	} = strategy;
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -72,14 +76,14 @@ function YieldFarm(props: any) {
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
-  const tokenAddress = getAddress(address, chainId);
+
+  const vaultAddress = getAddress(address, chainId);
+
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
 	const farmWeight = new BigNumber(allocPoint).div(
 		new BigNumber(totalAllocPoint),
 	);
   const decimal = getDecimals(decimals, chainId);
-
-  const tEXOOrchestratorContract = useOrchestratorContract();
 
   const apr = getFarmApr(
     farmWeight,
@@ -95,7 +99,7 @@ function YieldFarm(props: any) {
       address,
       decimals,
     },
-    orchestratorContract: tEXOOrchestratorContract,
+		requestingContract: vaultAddress,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: balance,
@@ -181,7 +185,7 @@ function YieldFarm(props: any) {
                 <Box>
 									<a
 										className={classes.linkDetail}
-										href={`${blockExplorerUrl}/address/${tokenAddress}`}
+										href={`${blockExplorerUrl}/address/${vaultAddress}`}
 										target="_blank"
 									>
 										View Vault on {blockExplorerName} <Launch fontSize="small" />
@@ -190,7 +194,7 @@ function YieldFarm(props: any) {
 								<Box>
 									<a
 										className={classes.linkDetail}
-										href={`${blockExplorerUrl}/address/${tokenAddress}`}
+										href={`${blockExplorerUrl}/address/${strategyAddress}`}
 										target="_blank"
 									>
 										View Pool on {blockExplorerName} <Launch fontSize="small" />

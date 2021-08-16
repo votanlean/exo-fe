@@ -46,6 +46,7 @@ function PoolRow(props: any) {
     canClaimReward,
     seedingFinish,
     account,
+		onApprove
   } = props || {};
 
   const {
@@ -93,7 +94,7 @@ function PoolRow(props: any) {
   const dataButton = {
     id: poolId,
     stakingToken,
-    orchestratorContract: tEXOOrchestratorContract,
+    requestingContract: tEXOOrchestratorContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: stakingTokenBalance,
@@ -316,7 +317,7 @@ function PoolRow(props: any) {
 
                 {!isAlreadyApproved ? (
                   <Box className={classes.buttonBoxItem}>
-                    <ApproveAction data={dataButton} disabled={seedingFinish} />
+                    <ApproveAction data={dataButton} disabled={seedingFinish} onApprove={onApprove} />
                   </Box>
                 ) : null}
               </Box>
