@@ -27,8 +27,8 @@ export const store = configureStore({
     userInfo: userInfoReducer,
     network: networkReducer,
     FAANGOrchestrator: FAANGOrchestratorReducer,
-        tlv: tlvReducer,
-        yield: yieldReducer,
+		tlv: tlvReducer,
+		yield: yieldReducer,
   },
 });
 
