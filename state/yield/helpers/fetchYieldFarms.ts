@@ -10,13 +10,13 @@ export default async function fetchYieldFarms(yieldFarms: any[], chainId?: numbe
             {
                 address: getAddress(yieldFarm.underlying.address, chainId),
                 name: 'balanceOf',
-                params: [getAddress(yieldFarm.vaultAddress, chainId)]
+                params: [getAddress(yieldFarm.address, chainId)]
             }
         ];
 
         const vaultCalls = [
             {
-                address: getAddress(yieldFarm.vaultAddress, chainId),
+                address: getAddress(yieldFarm.address, chainId),
                 name: "strategy",
                 params: []
             }
