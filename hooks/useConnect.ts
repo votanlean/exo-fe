@@ -35,22 +35,8 @@ export function useEagerConnect() {
 
                 return
             }
-
-            const isConnectorWalletConnect = connectorId === ConnectorNames.WalletConnect
-            if (isConnectorWalletConnect) {
-                login(connectorId);
-                return;
-            }
-
-            injected.isAuthorized().then((isAuthorized: boolean) => {
-                if (isAuthorized) {
-                    activate(injected, undefined, true).catch(() => {
-                        setTried(true)
-                    })
-                } else {
-                    setTried(true)
-                }
-            })
+            login(connectorId);
+            setTried(true)
         }
 
     }, []) // intentionally only running on mount (make sure it's only mounted once :))
