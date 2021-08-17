@@ -26,7 +26,7 @@ export const store = configureStore({
     userInfo: userInfoReducer,
     network: networkReducer,
     FAANGOrchestrator: FAANGOrchestratorReducer,
-		tlv: tlvReducer
+        tlv: tlvReducer
   },
 });
 

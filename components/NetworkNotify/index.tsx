@@ -57,13 +57,12 @@ function index(props) {
 							})
 						})
 					}
-
-					throw switchError
-				}).catch((error) => {
-					console.log('RPC Error: ', error)
-				})
-			}
-		}
+                    throw switchError
+                }).catch((error) => {
+                    console.log('RPC Error: ', error)
+                })
+            }
+        }
   }, [appNetwork.id]);
 
   if (

@@ -87,7 +87,7 @@ function PoolRow(props: any) {
     tEXOPrice,
     normalizeTokenDecimal(totalStaked, +decimal).toNumber(),
     normalizeTokenDecimal(poolTexoPerBlock).toNumber(),
-		chainId
+        chainId
   );
 
   const dataButton = {

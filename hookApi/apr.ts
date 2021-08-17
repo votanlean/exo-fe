@@ -15,21 +15,21 @@ export const getPoolApr = (
   rewardTokenPrice: number,
   totalStaked: number,
   tokenPerBlock: number,
-	chainId: number
+    chainId: number
 ): number => {
-	let blockPerYear: BigNumber;
+    let blockPerYear: BigNumber;
 
-	switch(chainId) {
-		case 137:
-		case 80001:
-			blockPerYear = POLYGON_BLOCKS_PER_YEAR;
-			break;
-		case 56:
-		case 97:
-		default:
-			blockPerYear = BLOCKS_PER_YEAR;
-			break;
-	}
+    switch(chainId) {
+        case 137:
+        case 80001:
+            blockPerYear = POLYGON_BLOCKS_PER_YEAR;
+            break;
+        case 56:
+        case 97:
+        default:
+            blockPerYear = BLOCKS_PER_YEAR;
+            break;
+    }
 
   const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock).times(blockPerYear);
   const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked);
@@ -51,21 +51,21 @@ export const getFarmApr = (
   tEXOPriceUSD: BigNumber,
   poolLiquidityUsd: BigNumber,
   tEXOPerBlock: BigNumber,
-	chainId: number
+    chainId: number
 ): number => {
-	let blockPerYear: BigNumber;
+    let blockPerYear: BigNumber;
 
-	switch(chainId) {
-		case 137:
-		case 80001:
-			blockPerYear = POLYGON_BLOCKS_PER_YEAR;
-			break;
-		case 56:
-		case 97:
-		default:
-			blockPerYear = BLOCKS_PER_YEAR;
-			break;
-	}
+    switch(chainId) {
+        case 137:
+        case 80001:
+            blockPerYear = POLYGON_BLOCKS_PER_YEAR;
+            break;
+        case 56:
+        case 97:
+        default:
+            blockPerYear = BLOCKS_PER_YEAR;
+            break;
+    }
 
   const yearlyCakeRewardAllocation = tEXOPerBlock.times(blockPerYear).times(poolWeight)
   const apr = yearlyCakeRewardAllocation.times(tEXOPriceUSD).div(poolLiquidityUsd).times(100)
