@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import {
   Box,
   Collapse,
@@ -29,6 +29,7 @@ import { getDecimals } from 'utils/decimalsHelper';
 
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
+import { useVaultContract } from 'hooks/useContract';
 
 interface IYieldFarmProps {
   farm: any,
@@ -83,7 +84,7 @@ function YieldFarm(props: any) {
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
 
   const vaultAddress = getAddress(address, chainId);
-
+  const vaultContract = useVaultContract(vaultAddress);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   const farmWeight = new BigNumber(allocPoint).div(
     new BigNumber(totalAllocPoint),
@@ -98,13 +99,17 @@ function YieldFarm(props: any) {
     chainId
   );
 
+  const onAppove = useCallback(()=>{
+
+  },[])
+
   const dataButton = {
     id: farmId,
     stakingToken: {
       address,
       decimals,
     },
-    requestingContract: vaultAddress,
+    requestingContract: vaultContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: balance,
@@ -242,13 +247,13 @@ function YieldFarm(props: any) {
                     marginLeft={isTablet ? '0' : '20px'}
                     marginBottom={isTablet ? '8px' : '0'}
                   >
-                    {isAlreadyApproved ? 
+                    {isAlreadyApproved ?
                       <Box className={classes.buttonBoxItem} flex={1}>
                         <StakeAction data={dataButton} disabled={!isAlreadyApproved} />
                       </Box>
                     : null}
 
-                    {Number(pendingReward) > 0 ? 
+                    {Number(pendingReward) > 0 ?
                       <Box className={classes.buttonBoxItem} flex={1}>
                         <ClaimRewardsAction
                           data={dataButton}
@@ -270,7 +275,7 @@ function YieldFarm(props: any) {
                         <ApproveAction data={dataButton} disabled={isAlreadyApproved} />
                       </Box> : null}
 
-                    {canWithdraw ? 
+                    {canWithdraw ?
                       <Box className={classes.buttonBoxItem} flex={1}>
                         <WithdrawAction data={dataButton} disabled />
                       </Box>
@@ -288,7 +293,7 @@ function YieldFarm(props: any) {
                     marginLeft={isTablet ? '0' : '20px'}
                   >
                     <Box className={classes.buttonBoxItem} flex={1}>
-                      <ApproveAction data={dataButton} disabled={isAlreadyApproved} />
+                      <ApproveAction data={dataButton} disabled={isAlreadyApproved} onAppove={onAppove}/>
                     </Box>
                   </Box>
                 </>

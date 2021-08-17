@@ -14,13 +14,16 @@ export const bnbFarms: any[] = [
     },
     vaultAddress: {
       97: '0xca965B8868a6F5DFB83164B8dBB74ba8F7c85f53',
+      5600: '0x530B50A60d7B5F1295b86f28962558eFB2F722e4'
     },
     underlying: {
       decimals: {
         97: 18,
+        5600: 18
       },
       address: {
         97: '0x0f988f09b121ecd60a47efed62cd4d69270e1a1a',
+        5600: '0x824eb9faDFb377394430d2744fa7C42916DE3eCe'
       },
     },
     token: tokens.texo,
