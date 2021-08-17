@@ -53,7 +53,7 @@ export const networks = [
     icon: '/static/images/wallets/polygon.svg',
     type: 'polygon',
     iconDisable: '/static/images/wallets/polygon-disabled.svg',
-    rpcUrl: 'https://rpc-mainnet.maticvigil.com/',
+    rpcUrl: 'https://matic-mainnet.chainstacklabs.com',
     symbol: 'MATIC',
     blockExplorerName: 'Polygonscan',
     blockExplorerUrl: 'https://polygonscan.com',
