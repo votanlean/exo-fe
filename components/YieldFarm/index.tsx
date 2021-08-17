@@ -14,7 +14,6 @@ import {
   ApproveAction,
   ClaimRewardsAction,
   RoiAction,
-  StakeAction,
   WithdrawAction,
 } from 'components/PoolActions';
 
@@ -30,6 +29,7 @@ import { getDecimals } from 'utils/decimalsHelper';
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
 import { useVaultContract } from 'hooks/useContract';
+import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 
 interface IYieldFarmProps {
   farm: any,
@@ -249,7 +249,7 @@ function YieldFarm(props: any) {
                   >
                     {isAlreadyApproved ?
                       <Box className={classes.buttonBoxItem} flex={1}>
-                        <StakeAction data={dataButton} disabled={!isAlreadyApproved} />
+                        <StakeVaultAction data={dataButton} disabled={!isAlreadyApproved} />
                       </Box>
                     : null}
 
