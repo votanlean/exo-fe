@@ -82,7 +82,7 @@ function YieldFarm(props: any) {
   const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
-
+  const underlyingAddress = underlying.address;
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
@@ -106,7 +106,7 @@ function YieldFarm(props: any) {
   const dataButton = {
     id: vaultId,
     stakingToken: {
-      address,
+      address : underlyingAddress,
       decimals,
     },
     requestingContract: vaultContract,
