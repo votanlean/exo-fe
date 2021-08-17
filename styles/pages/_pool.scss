@@ -4,4 +4,10 @@
 }
 .pool-container {
   padding-top: 14rem;
+  padding-bottom: 6rem;
+
+  @media (max-width: 767px) {
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
 }

@@ -9,12 +9,15 @@ import {
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => {
-  const augmentBlue = theme.palette.augmentColor({ main: '#007EF3' });
   return {
     paper: {
       width: 'auto',
       minWidth: '320px',
       borderRadius: '8px',
+      background: theme.palette.themeBg.default,
+    },
+    dialogTitle: {
+      borderBottom: '1px solid rgb(233, 234, 235)',
     },
   };
 });
@@ -33,8 +36,11 @@ const HistoryDialog = ({ open, onClose }) => {
       onClose={onCloseDialog}
       open={open}
       classes={{ paper: classes.paper }}
+      disableScrollLock
     >
-      <DialogTitle className={classes.title}>Recent transactions</DialogTitle>
+      <DialogTitle className={`${classes.title} ${classes.dialogTitle}`}>
+        Recent transactions
+      </DialogTitle>
       <DialogContent>
         <Typography variant="h6">
           Please connect your wallet to view your recent transactions

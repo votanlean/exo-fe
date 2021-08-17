@@ -12,12 +12,12 @@ import {
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => {
-  const augmentBlue = theme.palette.augmentColor({ main: '#007EF3' });
   return {
     paper: {
       width: 'auto',
       minWidth: '320px',
       borderRadius: '8px',
+      background: theme.palette.themeBg.default,
     },
     label: {
       fontSize: 16,
@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => {
       marginRight: 10,
       padding: '7px 15px',
       border: 'none',
+      color: '#000000',
     },
     input: {
       marginRight: 5,
@@ -40,6 +41,12 @@ const useStyles = makeStyles((theme) => {
     inputTransaction: {
       maxWidth: 100,
       marginRight: 5,
+    },
+    content: {
+      padding: 20,
+    },
+    dialogTitle: {
+      borderBottom: '1px solid rgb(233, 234, 235)',
     },
   };
 });
@@ -72,9 +79,10 @@ const SettingsDialog = ({ open, onClose }) => {
       onClose={onCloseDialog}
       open={open}
       classes={{ paper: classes.paper }}
+      disableScrollLock
     >
-      <DialogTitle>Settings</DialogTitle>
-      <DialogContent>
+      <DialogTitle className={classes.dialogTitle}>Settings</DialogTitle>
+      <DialogContent className={classes.content}>
         <Box marginBottom={5}>
           <Typography className={classes.label}>Slippage tolerance</Typography>
           <Box display="flex" alignItems="center">

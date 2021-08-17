@@ -34,6 +34,7 @@
     p {
       font-size: 16px;
       line-height: 23px;
+      margin: 20px 0;
     }
   }
 }
@@ -48,8 +49,20 @@
       font-size: 24px;
       font-weight: $font-light;
       line-height: 30px;
+      color: #000000;
       &:last-child {
         margin-top: 24px;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    .the-use-grid {
+      display: block;
+
+      .content {
+        margin-left: 0;
+        margin-top: 20px;
       }
     }
   }
@@ -148,6 +161,21 @@
       }
     }
   }
+
+  @media (max-width: 767px) {
+    .ecosystem-item {
+      .ecosystem-grid {
+        display: block;
+        .content {
+          margin-left: 0;
+        }
+
+        .img-icon{
+          margin: 20px 0px,
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 992px) {
@@ -180,8 +208,7 @@
 }
 
 .ecosystem-partecipants {
-  padding-top: 55px;
-  padding-bottom: 1px;
+  padding: 55px 0;
   background: #f6f6f6;
   .logo-text {
     margin-bottom: 65px;
@@ -215,6 +242,7 @@
         font-weight: $font-light;
         margin-right: 10px;
         margin-bottom: 5px;
+        color: #000000;
       }
       h2 {
         font-size: 48px;
@@ -227,6 +255,7 @@
         font-size: 18px;
         line-height: 24px;
         font-weight: 400;
+        color: #000000;
       }
     }
     .third-col {
@@ -239,6 +268,51 @@
     }
     .fourth-col {
       width: calc(100% - 330px);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .logo-text {
+      margin-bottom: 20px;
+    }
+    .partecipants-item {
+      .second-col {
+        width: 100%;
+      }
+      .title {
+        p {
+          font-size: 16px;
+        }
+        h2 {
+          font-size: 24px;
+        }
+      }
+      .content {
+        p {
+          font-size: 14px;
+          line-height: 18px;
+        }
+      }
+      .fourth-col {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    .partecipants-item {
+      & > div {
+        display: block;
+      }
+
+      .first-item {
+        margin-bottom: 10px;
+      }
+
+      .second-col, .first-col, .third-col, .fourth-col {
+        width: auto;
+        margin-right: 0;
+      }
     }
   }
 }
@@ -315,33 +389,6 @@
           width: 300px;
           height: 100px;
         }
-      }
-    }
-  }
-  .ecosystem-partecipants {
-    .logo-text {
-      margin-bottom: 20px;
-    }
-    .partecipants-item {
-      .second-col {
-        width: 100%;
-      }
-      .title {
-        p {
-          font-size: 16px;
-        }
-        h2 {
-          font-size: 24px;
-        }
-      }
-      .content {
-        p {
-          font-size: 14px;
-          line-height: 18px;
-        }
-      }
-      .fourth-col {
-        width: 100%;
       }
     }
   }

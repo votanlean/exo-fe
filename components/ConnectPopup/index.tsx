@@ -102,6 +102,7 @@ function ConnectPopup(props: any) {
       onClose={onCloseDialog}
       open={onOpen}
       classes={{ paper: classes.paper }}
+      disableScrollLock
     >
       <DialogTitle className={classes.title}>
         <Typography variant="caption" className={classes.dialogTitleText}>

@@ -77,6 +77,7 @@ const SelectTokenDialog = ({ title, open, onClose, onConfirm, fromTo }) => {
       onClose={onCloseDialog}
       open={open}
       classes={{ paper: classes.paper }}
+      disableScrollLock
     >
       <DialogTitle className={classes.title}>
         <Box display="flex" alignItems="center">

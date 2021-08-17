@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Box } from '@material-ui/core';
 
 import LogoTitle from '../components/LogoTitle';
 import { ecosystemData } from '../constant/HomeData';
@@ -21,9 +22,9 @@ const Home = () => {
     }
   }
   return (
-    <div>
+    <Box style={{ background: '#ffffff' }}>
       <Head>
-        <title>Home</title>
+        <title>Home | tExo</title>
       </Head>
 
       <section
@@ -52,12 +53,12 @@ const Home = () => {
       </section>
 
       <section className="banner">
-        <BannerCoinTelegraph/>
+        <BannerCoinTelegraph />
       </section>
 
       <section className="the-use">
         <div className="container">
-          <div className="d-flex items-center">
+          <div className="d-flex items-center the-use-grid">
             <LogoTitle firstText="The " secondText="use" color="#103C5B" />
             <div className="content">
               <p>
@@ -87,7 +88,7 @@ const Home = () => {
           />
           {ecosystemData.map((item, index) => (
             <div className={`ecosystem-item color-${item.color}`} key={index}>
-              <div className="d-flex justify-between items-center">
+              <div className="d-flex justify-between items-center ecosystem-grid">
                 <div className="title">
                   <p>{index + 1}.</p>
                   <h2>{item.title}</h2>
@@ -110,7 +111,7 @@ const Home = () => {
         </div>
         <div className="container mr-auto partecipants-item">
           <div className="d-flex">
-            <div className="first-col item">
+            <div className="first-col item first-item">
               <div className="title">
                 <p>1.</p>
                 <h2>Trader</h2>
@@ -189,19 +190,12 @@ const Home = () => {
       </section>
       <section className="audit-parties">
         <div className="container logo-text">
-          <LogoTitle
-            firstText="Audit "
-            secondText="Parties"
-            color="#0F0F0F"
-          />
+          <LogoTitle firstText="Audit " secondText="Parties" color="#0F0F0F" />
         </div>
         <div className="container d-flex items-center parties-logo">
           <div className="techrate-logo">
             <a href="https://github.com/TechRate/Smart-Contract-Audits/blob/main/ExoniumDEX%20Standart%20Smart%20Contract%20Security%20Audit.pdf">
-              <img
-                src="/static/images/techrate-logo.png"
-                alt="techrate"
-              />
+              <img src="/static/images/techrate-logo.png" alt="techrate" />
             </a>
           </div>
           <div className="blockchain-fg-logo">
@@ -214,7 +208,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </div>
+    </Box>
   );
 };
 

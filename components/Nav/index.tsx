@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
+import {
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  useMediaQuery,
+} from '@material-ui/core';
+import { Brightness2, Menu, MenuOpen, WbSunny } from '@material-ui/icons';
 import { useRouter } from 'next/router';
-import ActiveLink from '../ActiveLink';
 
+import ActiveLink from '../ActiveLink';
+import { useAppDispatch } from 'state';
+import { setDarkMode } from 'state/appTheme';
+import { useAppTheme } from 'state/hooks';
+
+import { useStyles } from './styles';
 import styles from './nav.module.scss';
 
 const data = [
@@ -9,89 +24,106 @@ const data = [
   { title: 'Pool', path: '/pool' },
   { title: 'Exchange', path: '/exchange' },
   { title: 'tASSET', path: '/tASSET' },
-  // { title: 'Bridge', path: '/bridge' },
   { title: 'GOV', path: '/governance' },
+  {
+    title: 'Docs',
+    path: 'https://texo.gitbook.io/exoniumdex',
+    target: '_blank',
+  },
+  {
+    title: 'Blog',
+    path: 'https://medium.com/exonium-exchange',
+    target: '_blank',
+  },
+  { title: 'Referrals', path: '/referrals' },
 ];
 
-const Nav = (props) => {
-  const { asPath } = useRouter();
+const Nav = () => {
+  const classes = useStyles();
   const [isExpandedMenu, setIsExpandedMenu] = useState(false);
+  const isTablet = useMediaQuery('(max-width: 1024px)');
+  const router = useRouter();
+  const { darkMode } = useAppTheme();
+  const dispatch = useAppDispatch();
 
-  const handleOpenBurger = () => {
-    setIsExpandedMenu(true);
+  const toggleMenuMobile = () => {
+    setIsExpandedMenu(!isExpandedMenu);
   };
 
-  const handleCloseBurger = () => {
-    setIsExpandedMenu(false);
+  const onToggleThemePreferred = () => {
+    const preferred = window.localStorage.getItem('preferred-theme');
+    if (preferred === 'dark') {
+      window.localStorage.setItem('preferred-theme', 'light');
+      dispatch(setDarkMode(false));
+    } else {
+      window.localStorage.setItem('preferred-theme', 'dark');
+      dispatch(setDarkMode(true));
+    }
   };
+
   return (
     <nav>
-      <i
-        className={styles.faBars}
-        onClick={!isExpandedMenu ? handleOpenBurger : handleCloseBurger}
-      >
-        <div className={styles.hamburger}></div>
-        <div className={styles.hamburger}></div>
-        <div className={styles.hamburger}></div>
-      </i>
+      {isTablet ? (
+        <div className={classes.drawer}>
+          <IconButton
+            onClick={toggleMenuMobile}
+            style={{ padding: 7, color: '#ffffff' }}
+          >
+            {isExpandedMenu ? <MenuOpen /> : <Menu />}
+          </IconButton>
 
-      <ul className={`${styles.menu} ${isExpandedMenu ? styles.active : ''}`}>
-        {data.map((menu, index) =>
-          menu.title === 'Bridge' ? (
-            <li key={index}>
-              <a
-                href="https://www.binance.org/en/bridge"
-                target="_blank"
-                className={`${styles.menuLink} menu-link`}
-                onClick={handleCloseBurger}
+          <Drawer
+            anchor="left"
+            open={isExpandedMenu}
+            onClose={toggleMenuMobile}
+            disableScrollLock
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div className={classes.toolbar} />
+            <Divider />
+            <List>
+              {data.map((menu) => (
+                <ListItem button key={menu.title} className={classes.listItem}>
+                  <div
+                    className={
+                      router.pathname === menu.path ? classes.activeMenu : ''
+                    }
+                  />
+                  <a
+                    href={menu.path}
+                    className={`${styles.menuLink} menu-link`}
+                    onClick={toggleMenuMobile}
+                  >
+                    <ListItemText primary={menu.title} />
+                  </a>
+                </ListItem>
+              ))}
+            </List>
+            <div className={classes.toolbarFooter}>
+              <Divider />
+              <IconButton
+                className={classes.toggleDarkModeBtn}
+                onClick={onToggleThemePreferred}
               >
-                Bridge
-              </a>
-            </li>
-          ) : (
+                <WbSunny style={{ opacity: darkMode ? 0.4 : 1 }} /> /{' '}
+                <Brightness2 style={{ opacity: darkMode ? 1 : 0.4 }} />
+              </IconButton>
+            </div>
+          </Drawer>
+        </div>
+      ) : (
+        <ul className={styles.menu}>
+          {data.map((menu, index) => (
             <li key={index}>
-              <ActiveLink href={menu.path}>
-                <a
-                  className={`${styles.menuLink} menu-link `}
-                  onClick={handleCloseBurger}
-                >
-                  {menu.title}
-                </a>
+              <ActiveLink href={menu.path} target={menu?.target}>
+                <a className={`${styles.menuLink} menu-link`}>{menu.title}</a>
               </ActiveLink>
             </li>
-          ),
-        )}
-        <li>
-          <a
-            href="https://texo.gitbook.io/exoniumdex"
-            target="_blank"
-            className={`${styles.menuLink} menu-link`}
-            onClick={handleCloseBurger}
-          >
-            Docs
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://medium.com/exonium-exchange"
-            target="_blank"
-            className={`${styles.menuLink} menu-link`}
-            onClick={handleCloseBurger}
-          >
-            Blog
-          </a>
-        </li>
-        <li>
-          <ActiveLink href="/referrals">
-            <a
-              className={`${styles.menuLink} menu-link `}
-              onClick={handleCloseBurger}
-            >
-              Referrals
-            </a>
-          </ActiveLink>
-        </li>
-      </ul>
+          ))}
+        </ul>
+      )}
     </nav>
   );
 };

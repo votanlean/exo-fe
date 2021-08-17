@@ -94,6 +94,10 @@ export interface UserInfoState {
     tEXOBalance: number
 }
 
+export interface Theme {
+    darkMode: boolean
+}
+
 // Global state
 export interface State {
     network: Network,
@@ -104,5 +108,6 @@ export interface State {
     block: BlockState
     userInfo: UserInfoState
     fAANGpools: FAANGpoolsState
-    FAANGOrchestrator: FAANGOrchestratorState
+    FAANGOrchestrator: FAANGOrchestratorState,
+    theme: Theme
 }

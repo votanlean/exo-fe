@@ -6,7 +6,7 @@ import { normalizeTokenDecimal } from '../../utils/bigNumber';
 import { getAddress } from '../../utils/addressHelpers';
 import { useFAANGOrchestratorContract } from '../../hooks/useContract';
 import BigNumber from 'bignumber.js';
-import tokens from "../../config/constants/tokens";
+import tokens from '../../config/constants/tokens';
 import {
   ApproveAction,
   StakeAction,
@@ -14,7 +14,6 @@ import {
   ClaimRewardsAction,
 } from 'components/PoolActions';
 import { useNetwork } from 'state/hooks';
-import { getDecimals } from 'utils/decimalsHelper';
 import { numberWithCommas } from 'utils/numberWithComma';
 
 function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
@@ -117,7 +116,10 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               className={classes.pTitle}
               style={{ color: '#6A98C9' }}
             >
-              {numberWithCommas(normalizeTokenDecimal(pendingReward).toFixed(4))} FAANG
+              {numberWithCommas(
+                normalizeTokenDecimal(pendingReward).toFixed(4),
+              )}{' '}
+              FAANG
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -125,7 +127,8 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               Total Staked
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {numberWithCommas(normalizeTokenDecimal(totalStaked).toFixed(4))} {symbol}
+              {numberWithCommas(normalizeTokenDecimal(totalStaked).toFixed(4))}{' '}
+              {symbol}
             </Typography>
           </Box>
           <Box className={classes.flexRow}>
@@ -133,7 +136,10 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               Wallet Balance
             </Typography>
             <Typography component="p" className={classes.pTitle}>
-              {numberWithCommas(normalizeTokenDecimal(stakingTokenBalance).toFixed(4))} {symbol}
+              {numberWithCommas(
+                normalizeTokenDecimal(stakingTokenBalance).toFixed(4),
+              )}{' '}
+              {symbol}
             </Typography>
           </Box>
         </Box>
@@ -174,34 +180,32 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
                 style={{ color: '#6A98C9' }}
               >
                 $
-                {numberWithCommas((
-                  Number(normalizeTexoPrice) *
-                  Number(normalizeTokenDecimal(totalStaked))
-                ).toFixed(2))}
+                {numberWithCommas(
+                  (
+                    Number(normalizeTexoPrice) *
+                    Number(normalizeTokenDecimal(totalStaked))
+                  ).toFixed(2),
+                )}
               </Typography>
             </Box>
-            <Link
-              href={`${blockExplorerUrl}/address/${FAANGAddress}`}
-              target="_blank"
-            >
-              <Typography
-                component="p"
-                style={{ fontSize: '19px', color: '#007EF3' }}
+            <Typography component="p" style={{ fontSize: '19px' }}>
+              <Link
+                href={`${blockExplorerUrl}/address/${FAANGAddress}`}
+                target="_blank"
+                style={{ color: '#007EF3' }}
               >
                 View FAANG on {blockExplorerName}
-              </Typography>
-            </Link>
-            <Link
-              href={`${blockExplorerUrl}/address/${tokenAddress}`}
-              target="_blank"
-            >
-              <Typography
-                component="p"
-                style={{ fontSize: '19px', color: '#007EF3' }}
+              </Link>
+            </Typography>
+            <Typography component="p" style={{ fontSize: '19px' }}>
+              <Link
+                href={`${blockExplorerUrl}/address/${tokenAddress}`}
+                target="_blank"
+                style={{ color: '#007EF3' }}
               >
                 View tEXO on {blockExplorerName}
-              </Typography>
-            </Link>
+              </Link>
+            </Typography>
           </Box>
           {!isAlreadyApproved ? (
             <ApproveAction

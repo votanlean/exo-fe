@@ -1,7 +1,7 @@
 import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => {
-  const theme = createMuiTheme({
+const useStyles = makeStyles((theme) => {
+  const customTheme = createMuiTheme({
     breakpoints: {
       values: {
         xs: 600,
@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => {
       height: 40,
       borderRadius: 20,
       marginRight: 10,
-      [theme.breakpoints.down('sm')]: {
+      [customTheme.breakpoints.down('sm')]: {
         width: 24,
         height: 24,
         borderRadius: 12,
@@ -47,7 +47,7 @@ const useStyles = makeStyles(() => {
       paddingBottom: 0,
       paddingTop: 0,
       borderBottom: 'unset',
-      background: 'rgb(250, 249, 250)',
+      background: theme.palette.tableRowBg.default,
     },
     label: {
       fontSize: 16,
@@ -74,11 +74,11 @@ const useStyles = makeStyles(() => {
       padding: '8px',
       border: '2px solid rgb(238, 234, 244)',
       minHeight: '80px',
-      [theme.breakpoints.up('sm')]: {
+      [customTheme.breakpoints.up('sm')]: {
         marginLeft: '20px',
         width: '100%',
       },
-      [theme.breakpoints.down('sm')]: {
+      [customTheme.breakpoints.down('sm')]: {
         marginBottom: '20px',
       },
     },
@@ -86,39 +86,40 @@ const useStyles = makeStyles(() => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginY: '4px',
+      marginTop: '4px',
+      marginBottom: '4px',
     },
     buttonBoxItem: {
       width: '50%',
       marginLeft: '20px',
-      [theme.breakpoints.down('sm')]: {
+      [customTheme.breakpoints.down('sm')]: {
         width: 'auto',
         marginLeft: '0',
       },
     },
     APRInfo: {
-      [theme.breakpoints.down('sm')]: {
-        display: 'none'
-      }
+      [customTheme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
     },
     mobileAPRInfo: {
       display: 'none',
-      [theme.breakpoints.down('sm')]: {
-        display: 'block'
-      }
+      [customTheme.breakpoints.down('sm')]: {
+        display: 'block',
+      },
     },
     APRColumn: {
-      [theme.breakpoints.down('sm')]: {
+      [customTheme.breakpoints.down('sm')]: {
         paddingLeft: '0px !important',
-        paddingRight: '0px !important'
-      }
+        paddingRight: '0px !important',
+      },
     },
     ArrowColumn: {
-      [theme.breakpoints.down('sm')]: {
+      [customTheme.breakpoints.down('sm')]: {
         paddingLeft: '8px !important',
-        paddingRight: '8px !important'
-      }
-    }
+        paddingRight: '8px !important',
+      },
+    },
   };
 });
 

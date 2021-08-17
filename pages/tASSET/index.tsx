@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Paper, Typography } from '@material-ui/core';
 
 import { tAssetData } from 'constant/tASSETData';
 import TAssetItem from 'components/TAssetItem';
@@ -51,9 +51,9 @@ function tASSET() {
   };
 
   return (
-    <>
+    <Paper className="paper-root">
       <Head>
-        <title>tASSET</title>
+        <title>tASSET | tExo</title>
       </Head>
 
       <Box className={`container ${classes.tassetContainer}`}>
@@ -93,7 +93,7 @@ function tASSET() {
           ))}
         </Grid>
       </Box>
-    </>
+    </Paper>
   );
 }
 

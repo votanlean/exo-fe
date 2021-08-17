@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => {
       width: 'auto',
       minWidth: '360px',
       borderRadius: '16px',
+      background: theme.palette.themeBg.default,
     },
     closeButton: {
       position: 'absolute',
@@ -103,6 +104,7 @@ export const ROIDialog = (props: any) => {
       onClose={onCloseDialog}
       open={open}
       classes={{ paper: classes.paper }}
+      disableScrollLock
     >
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <Typography variant="h6" className={classes.dialogTitleText}>
