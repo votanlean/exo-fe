@@ -70,7 +70,7 @@ export default function Yield() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                    getAddress(yieldFarm.stakingToken.address, chainId)?.toLowerCase()
+                    getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
                     ];
                 }
                 return (

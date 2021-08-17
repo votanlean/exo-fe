@@ -1,4 +1,4 @@
-import { bnbFarms } from 'config/constants/yieldFarms';
+import { bnbVaults } from 'config/constants/yieldFarms';
 
 export const getYieldFarms = (chainId?: number): Array<any> => {
   switch (chainId) {
@@ -6,6 +6,6 @@ export const getYieldFarms = (chainId?: number): Array<any> => {
     case 5600:
     case 97:
     default:
-      return bnbFarms;
+      return bnbVaults;
   }
 };

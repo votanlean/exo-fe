@@ -3,8 +3,6 @@ import multicall from "utils/multicall";
 import erc20 from 'config/abi/erc20.json';
 import vault from 'config/abi/Vault.json';
 import BigNumber from "bignumber.js";
-import contracts from "config/constants/contracts";
-import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 
 export default async function fetchUserData(yieldFarms: any[], account: string, chainId: number) {
 	const data = await Promise.all(yieldFarms.map(async (yieldFarm) => {
@@ -15,7 +13,7 @@ export default async function fetchUserData(yieldFarms: any[], account: string, 
 				params: [account]
 			},
 			{
-				address: getAddress(yieldFarm.vaultAddress, chainId),
+				address: getAddress(yieldFarm.address, chainId),
 				name: 'balanceOf',
 				params: [account]
 			}
@@ -23,7 +21,7 @@ export default async function fetchUserData(yieldFarms: any[], account: string, 
 
 		const vaultCalls = [
 			{
-				address: getAddress(yieldFarm.vaultAddress, chainId),
+				address: getAddress(yieldFarm.address, chainId),
 				name: "underlyingBalanceWithInvestmentForHolder",
 				params: [account]
 			}

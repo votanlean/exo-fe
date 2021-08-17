@@ -48,7 +48,7 @@ function YieldFarm(props: any) {
     icon,
     title,
     symbol,
-    pid: farmId,
+    pid: vaultId,
     address,
     decimals,
     depositFeeBP,
@@ -104,7 +104,7 @@ function YieldFarm(props: any) {
   },[])
 
   const dataButton = {
-    id: farmId,
+    id: vaultId,
     stakingToken: {
       address,
       decimals,
