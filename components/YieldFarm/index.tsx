@@ -247,14 +247,14 @@ function YieldFarm(props: any) {
                       </Box>
                     : null}
 
-                    {Number(pendingReward) > 0 ?
+                    {/* {Number(pendingReward) > 0 ?
                       <Box className={classes.buttonBoxItem} flex={1}>
                         <StakeAction
                           data={dataButton}
                           disabled={!isAlreadyApproved}
                         />
                       </Box>
-                    ) : null}
+                     : null} */}
 
                     {/* {Number(pendingReward) > 0 ? ( */}
                     {/* <Box className={classes.buttonBoxItem} flex={1}>
