@@ -45,6 +45,10 @@ export default function Yield() {
     dispatch(fetchYieldUserData(account, chainId));
   },[dispatch, account, chainId]);
 
+  const onAction = useCallback(()=>{
+    dispatch(fetchYieldFarmPublicData(chainId));
+  },[dispatch, account, chainId]);
+
   return (
     <>
       <Head>
@@ -86,6 +90,7 @@ export default function Yield() {
                     stakingTokenPrice={stakingTokenPrice}
                     // tEXOPrice={tEXOPrice}
                     onApprove={onApprove}
+                    onAction={onAction}
                   />
                 );
               })}

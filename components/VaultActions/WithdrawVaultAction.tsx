@@ -11,7 +11,7 @@ import { getDecimals } from 'utils/decimalsHelper';
 
 function WithdrawAction(props: any) {
     const classes = useStyles();
-    const { disabled, data } = props || {};
+    const { disabled, data, onAction } = props || {};
     const {
       requestingContract,
       symbol,
@@ -26,6 +26,7 @@ function WithdrawAction(props: any) {
   const handleConfirmWithdraw = async (amount) => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
     await onVaultUnstake(amount, decimals);
+    onAction();
   };
 
   const handleToggleWithdraw = () => {
