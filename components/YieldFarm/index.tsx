@@ -43,6 +43,7 @@ function YieldFarm(props: any) {
     // tEXOPrice,
     onPoolStateChange,
     selectedAccount,
+    onApprove
   } = props || {};
 
   const {
@@ -276,6 +277,7 @@ function YieldFarm(props: any) {
                         <ApproveAction
                           data={dataButton}
                           disabled={isAlreadyApproved}
+                          onApprove={onApprove}
                         />
                       </Box>
                     ) : null}
@@ -302,6 +304,7 @@ function YieldFarm(props: any) {
                         data={dataButton}
                         disabled={isAlreadyApproved}
                         onAppove={onAppove}
+                        onApprove={onApprove}
                       />
                     </Box>
                   </Box>
