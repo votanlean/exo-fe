@@ -32,16 +32,16 @@ import { useVaultContract } from 'hooks/useContract';
 import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 
 interface IYieldFarmProps {
-  farm: any,
+  farm: any;
 }
 
 function YieldFarm(props: any) {
   const {
     yieldFarmData = {},
     stakingTokenPrice,
-    tEXOPrice,
+    // tEXOPrice,
     onPoolStateChange,
-    selectedAccount
+    selectedAccount,
   } = props || {};
 
   const {
@@ -53,17 +53,15 @@ function YieldFarm(props: any) {
     decimals,
     depositFeeBP,
     userData = {},
-    lpTotalInQuoteToken = BIG_ZERO,
-    allocPoint,
+    // lpTotalInQuoteToken = BIG_ZERO,
+    // allocPoint,
     vaultSymbol,
     underlying,
     underlyingVaultBalance,
-    strategy = {}
+    strategy = {},
   } = yieldFarmData;
 
-  const {
-    address: strategyAddress
-  } = strategy;
+  const { address: strategyAddress } = strategy;
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -76,44 +74,45 @@ function YieldFarm(props: any) {
     stakedBalance,
     balance,
     inVaultBalance,
-    earnings: pendingReward,
+    // earnings: pendingReward,
   } = userData;
 
-  const canWithdraw = new BigNumber(stakedBalance).toNumber() > 0;
+  const canWithdraw = new BigNumber(inVaultBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const underlyingAddress = underlying.address;
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
-  const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
-  const farmWeight = new BigNumber(allocPoint).div(
-    new BigNumber(totalAllocPoint),
-  );
+  // const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
+  // const farmWeight = new BigNumber(allocPoint).div(
+  //   new BigNumber(totalAllocPoint),
+  // );
   const decimal = getDecimals(decimals, chainId);
 
-  const apr = getFarmApr(
-    farmWeight,
-    tEXOPrice,
-    lpTotalInQuoteToken,
-    normalizeTokenDecimal(tEXOPerBlock),
-    chainId
-  );
+  // const apr = getFarmApr(
+  //   farmWeight,
+  //   tEXOPrice,
+  //   lpTotalInQuoteToken,
+  //   normalizeTokenDecimal(tEXOPerBlock),
+  //   chainId,
+  // );
+  const apr = null;
 
-  const onAppove = useCallback(()=>{
-
-  },[])
+  const onAppove = useCallback(() => {
+    onPoolStateChange();
+  }, [onPoolStateChange]);
 
   const dataButton = {
     id: vaultId,
     stakingToken: {
-      address : underlyingAddress,
-      decimals,
+      address: underlying.address,
+      decimals: underlying.decimals,
     },
     requestingContract: vaultContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: balance,
-    maxAmountWithdraw: stakedBalance,
+    maxAmountWithdraw: inVaultBalance,
     onPoolStateChange,
     refStake: true,
     account: selectedAccount,
@@ -146,7 +145,7 @@ function YieldFarm(props: any) {
             <TableCell style={{ padding: '24px 16px' }}>
               <Typography variant="caption">My Stake</Typography>
               <Typography variant="h6" className={classes.label}>
-                {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(4)}{' '}
+                {normalizeTokenDecimal(inVaultBalance, +decimal).toFixed(4)}{' '}
                 {symbol}
               </Typography>
             </TableCell>
@@ -160,8 +159,8 @@ function YieldFarm(props: any) {
                 {numberWithCommas(
                   normalizeTokenDecimal(
                     underlyingVaultBalance,
-                    +getDecimals(underlying.decimals, chainId)
-                  ).toFixed(2)
+                    +getDecimals(underlying.decimals, chainId),
+                  ).toFixed(2),
                 )}
               </Typography>
             </TableCell>
@@ -189,16 +188,15 @@ function YieldFarm(props: any) {
               flexDirection={isTablet ? 'column' : 'row'}
               paddingY="16px"
             >
-              <Box
-                paddingRight='10px'
-              >
+              <Box paddingRight="10px">
                 <Box>
                   <a
                     className={classes.linkDetail}
                     href={`${blockExplorerUrl}/address/${vaultAddress}`}
                     target="_blank"
                   >
-                    View Vault on {blockExplorerName} <Launch fontSize="small" />
+                    View Vault on {blockExplorerName}{' '}
+                    <Launch fontSize="small" />
                   </a>
                 </Box>
                 <Box>
@@ -213,37 +211,33 @@ function YieldFarm(props: any) {
               </Box>
               <Box
                 flex={1}
-                display='flex'
+                display="flex"
                 justifyContent="center"
-                flexDirection='column'
+                flexDirection="column"
                 marginLeft={isTablet ? '0' : '20px'}
               >
                 <Box className={classes.rowDetail} flex={1}>
                   <Typography>Your unstaked</Typography>
-                  <Typography
-                    className={'text-right'}
-                  >
+                  <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
                     {vaultSymbol}
                   </Typography>
                 </Box>
                 <Box className={classes.rowDetail} flex={1}>
                   <Typography>Your reward</Typography>
-                  <Typography
-                    className={'text-right'}
-                  >
-                    {normalizeTokenDecimal(0).toFixed(4)}{' tEXO'}
+                  <Typography className={'text-right'}>
+                    {normalizeTokenDecimal(0).toFixed(4)}
+                    {' tEXO'}
                   </Typography>
                 </Box>
-
               </Box>
               {!!selectedAccount && (
                 <>
                   <Box
                     flex={1}
-                    display='flex'
+                    display="flex"
                     justifyContent="center"
-                    flexDirection='column'
+                    flexDirection="column"
                     marginLeft={isTablet ? '0' : '20px'}
                     marginBottom={isTablet ? '8px' : '0'}
                   >
@@ -253,33 +247,43 @@ function YieldFarm(props: any) {
                       </Box>
                     : null}
 
-                    {Number(pendingReward) > 0 ?
+                    {/* {Number(pendingReward) > 0 ?
                       <Box className={classes.buttonBoxItem} flex={1}>
-                        <ClaimRewardsAction
+                        <StakeAction
                           data={dataButton}
-                          disabled
+                          disabled={!isAlreadyApproved}
                         />
                       </Box>
-                    : null}
+                     : null} */}
+
+                    {/* {Number(pendingReward) > 0 ? ( */}
+                    {/* <Box className={classes.buttonBoxItem} flex={1}>
+                      <ClaimRewardsAction data={dataButton} disabled />
+                    </Box> */}
+                    {/* ) : null} */}
                   </Box>
                   <Box
                     flex={1}
-                    display='flex'
+                    display="flex"
                     justifyContent="center"
-                    flexDirection='column'
+                    flexDirection="column"
                     marginLeft={isTablet ? '0' : '20px'}
                     marginTop={isTablet ? '8px' : '0'}
                   >
-                    {!isAlreadyApproved ?
+                    {!isAlreadyApproved ? (
                       <Box className={classes.buttonBoxItem} flex={1}>
-                        <ApproveAction data={dataButton} disabled={isAlreadyApproved} />
-                      </Box> : null}
+                        <ApproveAction
+                          data={dataButton}
+                          disabled={isAlreadyApproved}
+                        />
+                      </Box>
+                    ) : null}
 
-                    {canWithdraw ?
+                    {canWithdraw ? (
                       <Box className={classes.buttonBoxItem} flex={1}>
                         <WithdrawAction data={dataButton} disabled />
                       </Box>
-                    : null}
+                    ) : null}
                   </Box>
                 </>
               )}
@@ -288,12 +292,16 @@ function YieldFarm(props: any) {
                   <Box flex={1} />
                   <Box
                     flex={1}
-                    display='flex'
-                    alignItems='center'
+                    display="flex"
+                    alignItems="center"
                     marginLeft={isTablet ? '0' : '20px'}
                   >
                     <Box className={classes.buttonBoxItem} flex={1}>
-                      <ApproveAction data={dataButton} disabled={isAlreadyApproved} onAppove={onAppove}/>
+                      <ApproveAction
+                        data={dataButton}
+                        disabled={isAlreadyApproved}
+                        onAppove={onAppove}
+                      />
                     </Box>
                   </Box>
                 </>
