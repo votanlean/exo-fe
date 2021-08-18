@@ -20,7 +20,6 @@ function StakeVaultAction(props: any) {
     maxAmountStake,
     stakingToken,
   } = data || {};
-  console.log("vault: ",requestingContract);
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
 
   const { onVaultStake, isLoading } = useVaultStake(requestingContract);

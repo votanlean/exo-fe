@@ -22,7 +22,7 @@ export default function Yield() {
   const { id: chainId } = useNetwork();
   const yieldFarms = useYieldFarms();
   const allTokenPrices = useAppPrices();
-  const tEXOPrice = useTexoTokenPrice();
+  // const tEXOPrice = useTexoTokenPrice();
   const dispatch = useDispatch();
 
   const refreshAppGlobalData = useCallback(() => {
@@ -84,7 +84,7 @@ export default function Yield() {
                     selectedAccount={account}
                     onPoolStateChange={refreshAppGlobalData}
                     stakingTokenPrice={stakingTokenPrice}
-                    tEXOPrice={tEXOPrice}
+                    // tEXOPrice={tEXOPrice}
                     onApprove={onApprove}
                   />
                 );
