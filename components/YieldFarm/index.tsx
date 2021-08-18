@@ -30,6 +30,7 @@ import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
 import { useVaultContract } from 'hooks/useContract';
 import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
+import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
 
 interface IYieldFarmProps {
   farm: any;
@@ -281,7 +282,7 @@ function YieldFarm(props: any) {
 
                     {canWithdraw ? (
                       <Box className={classes.buttonBoxItem} flex={1}>
-                        <WithdrawAction data={dataButton} disabled />
+                        <WithdrawVaultAction data={dataButton} />
                       </Box>
                     ) : null}
                   </Box>
