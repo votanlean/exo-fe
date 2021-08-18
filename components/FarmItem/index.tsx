@@ -58,10 +58,9 @@ function FarmItem(props: any) {
   const {
     allowance,
     earnings: pendingReward,
-    // stakedBalance,
+    stakedBalance,
     tokenBalance,
   } = userData;
-  const stakedBalance = 10 ** 18;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
