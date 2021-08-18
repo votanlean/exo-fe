@@ -41,6 +41,10 @@ export default function Yield() {
     refreshAppGlobalData()
   }, [account, chainId]);
 
+  const onApprove = useCallback(()=>{
+    dispatch(fetchYieldUserData(account, chainId));
+  },[dispatch, account, chainId]);
+
   return (
     <>
       <Head>
@@ -81,6 +85,7 @@ export default function Yield() {
                     onPoolStateChange={refreshAppGlobalData}
                     stakingTokenPrice={stakingTokenPrice}
                     tEXOPrice={tEXOPrice}
+                    onApprove={onApprove}
                   />
                 );
               })}
