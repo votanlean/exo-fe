@@ -52,11 +52,8 @@ function FarmItem(props: any) {
     displayAllocPoint,
     userData = {},
     lpTotalInQuoteToken = BIG_ZERO,
-    liquidityLink,
-    lpTotalSupply,
-    quoteTokenAmountTotal
+    liquidityLink
   } = farmData;
-
   const {
     allowance,
     earnings: pendingReward,
@@ -94,10 +91,12 @@ function FarmItem(props: any) {
   const totalLiquidity = new BigNumber(lpTotalInQuoteToken).times(
     stakingTokenPrice
   );
-  const lpTotalSupplyBigNumber = normalizeTokenDecimal(new BigNumber(lpTotalSupply));
-  const quoteTokenAmountTotalBigNumber = new BigNumber(quoteTokenAmountTotal);
-  const liquidityStakedUser = normalizeTokenDecimal(new BigNumber(stakedBalance)).div(lpTotalSupplyBigNumber).times(quoteTokenAmountTotalBigNumber).times(stakingTokenPrice).times(2);
 
+  const liquidityStakedUser = normalizeTokenDecimal(new BigNumber(stakedBalance))
+                              .times(totalLiquidity)
+                              .div(normalizeTokenDecimal(new BigNumber(totalStaked)));
+
+  const lpPrice = totalLiquidity.div(normalizeTokenDecimal(new BigNumber(totalStaked)));
   const apr = getFarmApr(
     farmWeight,
     tEXOPrice,
@@ -194,9 +193,9 @@ function FarmItem(props: any) {
                     </p>
                     <Typography variant="caption">
                       $
-                      {numberWithCommas(
+                      {Number(liquidityStakedUser) > 0 ? numberWithCommas(
                         Number(liquidityStakedUser).toFixed(2),
-                      )}
+                      ): "0.00"}
                     </Typography>
                   </div>
                 </RowPoolItem>
@@ -250,7 +249,7 @@ function FarmItem(props: any) {
                 {isAlreadyApproved ? (
                   <StakeAction
                     data={dataButton}
-                    stakingTokenPrice={stakingTokenPrice}
+                    stakingTokenPrice={lpPrice}
                   />
                 ) : null}
 
