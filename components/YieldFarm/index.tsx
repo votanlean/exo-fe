@@ -274,17 +274,13 @@ function YieldFarm(props: any) {
                   >
                     {!isAlreadyApproved ? (
                       <Box className={classes.buttonBoxItem} flex={1}>
-<<<<<<< HEAD
-                        <ApproveAction data={dataButton} disabled={isAlreadyApproved} onApprove={onApprove}/>
-                      </Box> : null}
-=======
                         <ApproveAction
                           data={dataButton}
                           disabled={isAlreadyApproved}
+                          onApprove={onApprove}
                         />
                       </Box>
                     ) : null}
->>>>>>> yield-optimizer
 
                     {canWithdraw ? (
                       <Box className={classes.buttonBoxItem} flex={1}>
@@ -304,15 +300,12 @@ function YieldFarm(props: any) {
                     marginLeft={isTablet ? '0' : '20px'}
                   >
                     <Box className={classes.buttonBoxItem} flex={1}>
-<<<<<<< HEAD
-                      <ApproveAction data={dataButton} disabled={isAlreadyApproved} onApprove={onApprove}/>
-=======
                       <ApproveAction
                         data={dataButton}
                         disabled={isAlreadyApproved}
                         onAppove={onAppove}
+                        onApprove={onApprove}
                       />
->>>>>>> yield-optimizer
                     </Box>
                   </Box>
                 </>
