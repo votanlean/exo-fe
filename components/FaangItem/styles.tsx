@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => {
       flexWrap: 'wrap',
       [theme.breakpoints.down('xs')]: {
         flexDirection: 'column',
-      }
+      },
     },
     header: {
       display: 'flex',
@@ -36,13 +36,13 @@ const useStyles = makeStyles(() => {
       marginBottom: '20px',
       [theme.breakpoints.down('xs')]: {
         justifyContent: 'space-between',
-      }
+      },
     },
     rowItem: {
       width: '45%',
       [theme.breakpoints.down('xs')]: {
         width: '100%',
-      }
+      },
     },
     img: {
       height: '40px',
@@ -59,7 +59,6 @@ const useStyles = makeStyles(() => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      
     },
     button: {
       width: '100%',
@@ -68,7 +67,6 @@ const useStyles = makeStyles(() => {
     pTitle: {
       fontWeight: 'bold',
       fontSize: '16px',
-      lineHeight: 2,
     },
     iconButton: {
       padding: '9px',
@@ -81,7 +79,7 @@ const useStyles = makeStyles(() => {
       marginTop: '10px',
       marginBottom: 0,
     },
-    doubleBtn:{
+    doubleBtn: {
       display: 'flex',
       justifyContent: 'space-between',
       marginTop: '10px',
@@ -90,12 +88,12 @@ const useStyles = makeStyles(() => {
       [theme.breakpoints.down('xs')]: {
         flexDirection: 'column',
         marginTop: '0px',
-      }
+      },
     },
     btnItem: {
       flex: '1',
       margin: '0 5px',
-    }
+    },
   };
 });
 

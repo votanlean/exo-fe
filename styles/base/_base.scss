@@ -111,6 +111,10 @@ body {
   margin-bottom: 0.25rem;
 }
 
+.mb-2\.5 {
+  margin-bottom: 0.625rem;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -131,7 +135,7 @@ body {
   position: relative;
   border: 1px solid transparent;
   transition: all .2s ease-in-out;
-  
+
   &:hover {
     color: $white;
     background: transparent;

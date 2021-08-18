@@ -1,6 +1,7 @@
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import BigNumber from 'bignumber.js';
+import { Typography } from '@material-ui/core';
 import {
   ApproveAction,
   ClaimRewardsAction,
@@ -57,9 +58,10 @@ function FarmItem(props: any) {
   const {
     allowance,
     earnings: pendingReward,
-    stakedBalance,
+    // stakedBalance,
     tokenBalance,
   } = userData;
+  const stakedBalance = 10 ** 18;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
@@ -92,6 +94,9 @@ function FarmItem(props: any) {
   const totalLiquidity = new BigNumber(lpTotalInQuoteToken).times(
     stakingTokenPrice,
   );
+
+  const stakingTokenPriceConvert =
+    normalizeTokenDecimal(stakedBalance).times(stakingTokenPrice);
 
   const apr = getFarmApr(
     farmWeight,
@@ -183,9 +188,17 @@ function FarmItem(props: any) {
                   title="My Stake"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>
-                    {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
-                  </p>
+                  <div className="text-right">
+                    <p>
+                      {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
+                    </p>
+                    <Typography variant="caption">
+                      $
+                      {numberWithCommas(
+                        Number(stakingTokenPriceConvert).toFixed(2),
+                      )}
+                    </Typography>
+                  </div>
                 </RowPoolItem>
                 <RowPoolItem
                   title="Deposit Fee"
@@ -234,7 +247,12 @@ function FarmItem(props: any) {
 
                 {canWithdraw ? <WithdrawAction data={dataButton} /> : null}
 
-                {isAlreadyApproved ? <StakeAction data={dataButton} /> : null}
+                {isAlreadyApproved ? (
+                  <StakeAction
+                    data={dataButton}
+                    stakingTokenPrice={stakingTokenPrice}
+                  />
+                ) : null}
 
                 {!isAlreadyApproved ? (
                   <ApproveAction data={dataButton} />
@@ -261,7 +279,7 @@ const RowPoolItem = React.memo(function RowPoolItem(props: any) {
   const { containerStyle, title, children } = props || {};
   return (
     <div
-      className={`d-flex items-center justify-between font-bold ${containerStyle}`}
+      className={`d-flex justify-between font-bold mb-2.5 ${containerStyle}`}
     >
       <p className={styles.pTitle}>{title}</p>
       {children}
