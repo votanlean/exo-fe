@@ -54,7 +54,6 @@ export const useVaultStake = (vault: Contract) => {
     async (amount: string, decimals: string) => {
       try {
         setLoading(true);
-        console.log("here")
         const txHash = await vaultStake(
           vault,
           amount,
