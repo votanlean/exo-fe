@@ -12,7 +12,7 @@ import { Box } from '@material-ui/core';
 
 function StakeVaultAction(props: any) {
   const classes = useStyles();
-  const { disabled, data } = props || {};
+  const { disabled, data, onAction } = props || {};
   const {
     requestingContract,
     symbol,
@@ -28,6 +28,7 @@ function StakeVaultAction(props: any) {
   const handleConfirmStake = async (amount) => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
     await onVaultStake(amount,decimals);
+    onAction();
   };
 
   const handleToggleStake = () => {

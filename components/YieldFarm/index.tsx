@@ -43,7 +43,8 @@ function YieldFarm(props: any) {
     // tEXOPrice,
     onPoolStateChange,
     selectedAccount,
-    onApprove
+    onApprove,
+    onAction
   } = props || {};
 
   const {
@@ -245,7 +246,7 @@ function YieldFarm(props: any) {
                   >
                     {isAlreadyApproved ?
                       <Box className={classes.buttonBoxItem} flex={1}>
-                        <StakeVaultAction data={dataButton} disabled={!isAlreadyApproved} />
+                        <StakeVaultAction data={dataButton} disabled={!isAlreadyApproved} onAction={onAction} />
                       </Box>
                     : null}
 
@@ -284,7 +285,7 @@ function YieldFarm(props: any) {
 
                     {canWithdraw ? (
                       <Box className={classes.buttonBoxItem} flex={1}>
-                        <WithdrawVaultAction data={dataButton} />
+                        <WithdrawVaultAction data={dataButton} onAction={onAction}/>
                       </Box>
                     ) : null}
                   </Box>
