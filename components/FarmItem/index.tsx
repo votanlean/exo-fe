@@ -53,6 +53,8 @@ function FarmItem(props: any) {
     userData = {},
     lpTotalInQuoteToken = BIG_ZERO,
     liquidityLink,
+    lpTotalSupply,
+    quoteTokenAmountTotal
   } = farmData;
 
   const {
@@ -64,7 +66,6 @@ function FarmItem(props: any) {
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
-
   const dataButton = {
     id: farmId,
     stakingToken: {
@@ -91,11 +92,11 @@ function FarmItem(props: any) {
   );
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
   const totalLiquidity = new BigNumber(lpTotalInQuoteToken).times(
-    stakingTokenPrice,
+    stakingTokenPrice
   );
-
-  const stakingTokenPriceConvert =
-    normalizeTokenDecimal(stakedBalance).times(stakingTokenPrice);
+  const lpTotalSupplyBigNumber = normalizeTokenDecimal(new BigNumber(lpTotalSupply));
+  const quoteTokenAmountTotalBigNumber = new BigNumber(quoteTokenAmountTotal);
+  const liquidityStakedUser = normalizeTokenDecimal(new BigNumber(stakedBalance)).div(lpTotalSupplyBigNumber).times(quoteTokenAmountTotalBigNumber).times(stakingTokenPrice).times(2);
 
   const apr = getFarmApr(
     farmWeight,
@@ -194,7 +195,7 @@ function FarmItem(props: any) {
                     <Typography variant="caption">
                       $
                       {numberWithCommas(
-                        Number(stakingTokenPriceConvert).toFixed(2),
+                        Number(liquidityStakedUser).toFixed(2),
                       )}
                     </Typography>
                   </div>
