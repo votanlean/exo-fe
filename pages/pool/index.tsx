@@ -385,18 +385,20 @@ function Pool() {
           >
             Stake tEXO for FAANG
           </Typography>
-          <Typography
-            variant="h5"
-            align="center"
-            paragraph
-            style={{ marginBottom: '10px', lineHeight: '40px' }}
-          >
-            FAANG pool concludes in
-          </Typography>
           {currentBlock < fAANGFinishBlock && (
-            <Typography variant="h3" color="primary" align="center">
-              {countDownStringToConcludeFAANG}
-            </Typography>
+            <>
+              <Typography
+                variant="h5"
+                align="center"
+                paragraph
+                style={{ marginBottom: '10px', lineHeight: '40px' }}
+              >
+                FAANG pool concludes in
+              </Typography>
+              <Typography variant="h3" color="primary" align="center">
+                {countDownStringToConcludeFAANG}
+              </Typography>
+            </>
           )}
         </div>
 
