@@ -47,6 +47,9 @@ export default function Yield() {
 
   const onAction = useCallback(()=>{
     dispatch(fetchYieldFarmPublicData(chainId));
+    if (account) {
+      dispatch(fetchYieldUserData(account, chainId));
+    }
   },[dispatch, account, chainId]);
 
   return (

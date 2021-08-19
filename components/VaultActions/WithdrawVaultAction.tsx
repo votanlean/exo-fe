@@ -10,17 +10,17 @@ import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
 
 function WithdrawAction(props: any) {
-    const classes = useStyles();
-    const { disabled, data, onAction } = props || {};
-    const {
-      requestingContract,
-      symbol,
-      maxAmountWithdraw,
-      stakingToken,
-    } = data || {};
+  const classes = useStyles();
+  const { disabled, data, onAction } = props || {};
+  const {
+    requestingContract: vaultContract,
+    symbol,
+    maxAmountWithdraw,
+    stakingToken,
+  } = data || {};
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
 
-  const { onVaultUnstake, isLoading } = useVaultUnstake(requestingContract);
+  const { onVaultUnstake, isLoading } = useVaultUnstake(vaultContract);
   const { id: chainId } = useNetwork();
 
   const handleConfirmWithdraw = async (amount) => {
