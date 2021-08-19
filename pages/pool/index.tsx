@@ -140,8 +140,8 @@ function Pool() {
       blockExplorerUrl + '/block/countdown/' + seedingFinishBlock;
   }
 
-  const blockExplorerToCountDownFarming =
-    blockExplorerUrl + '/block/countdown/' + farmStartBlock;
+  const blockExplorerToCountDownFAANG =
+    blockExplorerUrl + '/block/countdown/' + fAANGFinishBlock;
 
   const refreshAppGlobalData = () => {
     dispatch(replaceFarmWithoutUserDataAsync(chainId));
@@ -397,6 +397,16 @@ function Pool() {
               </Typography>
               <Typography variant="h3" color="primary" align="center">
                 {countDownStringToConcludeFAANG}
+              </Typography>
+              <Typography align="center" variant="h6">
+                <a
+                  target="_blank"
+                  style={{ color: '#007EF3' }}
+                  href={blockExplorerToCountDownFAANG}
+                >
+                  Check explorer for the most accurate countdown
+                </a>
+                <br />
               </Typography>
             </>
           )}
