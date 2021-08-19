@@ -98,8 +98,9 @@ function Pool() {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [countDownString, setCountDownString] = useState('');
-  const [countDownStringToStartSeeding, setCountDownStringToStartSeeding] =
+  const [countDownStringToConcludeFAANG, setCountDownStringToConcludeFAANG] =
     useState('');
+  const [fAANGFinishBlock, setFAANGFinishBlock] = useState(null);
   const [countDownStringFarm, setCountDownStringFarm] = useState('');
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
@@ -163,8 +164,18 @@ function Pool() {
 
   useEffect(refreshAppGlobalData, [account, dispatch, chainId]);
 
+  useEffect(() => {
+    if (chainId === 56) {
+      setFAANGFinishBlock(10770888);
+    }
+    
+    if (chainId === 137) {
+      setFAANGFinishBlock(19089090);
+    }
+  }, [chainId])
+
   const countDownInterval = useRef(null);
-  const countDownIntervalSeedingStart = useRef(null);
+  const countDownIntervalFAANGConclude= useRef(null);
   const countDownIntervalFarm = useRef(null);
 
   useEffect(() => {
@@ -218,6 +229,28 @@ function Pool() {
       network.secondsPerBlock,
     ).toDate();
 
+    const fAANGConcludeDate = getClaimRewardsDate(
+      currentBlock,
+      fAANGFinishBlock,
+      dayjs(),
+      network.secondsPerBlock,
+    ).toDate();
+
+    const intervalFAANG = setInterval(() => {
+      const hasPassedFAANGConcludeDate = dayjs().isAfter(dayjs(fAANGConcludeDate));
+      if (hasPassedFAANGConcludeDate) {
+        countDownIntervalFAANGConclude.current = null;
+        clearInterval(intervalFAANG);
+        setCountDownStringToConcludeFAANG('0 seconds');
+
+        return;
+      }
+
+      const countDownString = Countdown(new Date(), fAANGConcludeDate).toString();
+
+      setCountDownStringToConcludeFAANG(countDownString);
+    }, 1000);
+
     const interval = setInterval(() => {
       const hasPassedRewardLockDate = dayjs().isAfter(dayjs(claimRewardDate));
       if (hasPassedRewardLockDate) {
@@ -254,6 +287,7 @@ function Pool() {
 
     countDownIntervalFarm.current = intervalFarm;
     countDownInterval.current = interval;
+    countDownIntervalFAANGConclude.current = intervalFAANG;
 
     return () => {
       if (countDownInterval.current) {
@@ -263,6 +297,10 @@ function Pool() {
       if (countDownIntervalFarm.current) {
         clearInterval(countDownIntervalFarm.current);
         countDownIntervalFarm.current = null;
+      }
+      if (countDownIntervalFAANGConclude.current) {
+        clearInterval(countDownIntervalFAANGConclude.current);
+        countDownIntervalFAANGConclude.current = null;
       }
     };
   }, [
@@ -312,15 +350,6 @@ function Pool() {
               {poolPageReady ? countDownStringFarm : 'Coming Soon'}
             </Typography>
           ) : null}
-          <Typography variant="h6" align="center">
-            <a
-              target="_blank"
-              style={{ color: '#007EF3' }}
-              href={blockExplorerToCountDownFarming}
-            >
-              Check explorer for the most accurate countdown
-            </a>
-          </Typography>
         </div>
 
         <div className={styles.lpPoolGrid}>
@@ -356,6 +385,19 @@ function Pool() {
           >
             Stake tEXO for FAANG
           </Typography>
+          <Typography
+            variant="h5"
+            align="center"
+            paragraph
+            style={{ marginBottom: '10px', lineHeight: '40px' }}
+          >
+            FAANG pool concludes in
+          </Typography>
+          {currentBlock < fAANGFinishBlock && (
+            <Typography variant="h3" color="primary" align="center">
+              {countDownStringToConcludeFAANG}
+            </Typography>
+          )}
         </div>
 
         <div className={styles.lpPoolGrid}>
