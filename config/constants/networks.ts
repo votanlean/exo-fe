@@ -44,7 +44,6 @@ export const networks = [
     iconDisable: '/static/images/wallets/polygon-disabled.svg',
     rpcUrlsList: [
       'https://rpc-mumbai.maticvigil.com/v1/e5cf98dd4b3c2e17a1e632cf66d5eb98d3a9b6dd',
-      'https://rpc-mumbai.maticvigil.com/',
     ],
     symbol: 'MATIC',
     blockExplorerName: 'Polygonscan',
@@ -62,9 +61,6 @@ export const networks = [
     iconDisable: '/static/images/wallets/polygon-disabled.svg',
     rpcUrlsList: [
       'https://rpc-mainnet.maticvigil.com/v1/e5cf98dd4b3c2e17a1e632cf66d5eb98d3a9b6dd',
-      'https://rpc-mainnet.matic.network',
-      'https://matic-mainnet.chainstacklabs.com',
-      'https://rpc-mainnet.maticvigil.co',
     ],
     symbol: 'MATIC',
     blockExplorerName: 'Polygonscan',
