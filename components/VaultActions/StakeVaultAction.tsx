@@ -4,7 +4,6 @@ import { StakeDialog } from 'components/Dialogs';
 import { useVaultStake } from 'hooks/useStake';
 import Button from 'components/Button';
 
-
 import { useStyles } from './styles';
 import { getDecimals } from 'utils/decimalsHelper';
 import { useNetwork } from 'state/hooks';
@@ -14,7 +13,7 @@ function StakeVaultAction(props: any) {
   const classes = useStyles();
   const { disabled, data, onAction } = props || {};
   const {
-    requestingContract,
+    requestingContract: vaultContract,
     symbol,
     depositFee,
     maxAmountStake,
@@ -22,12 +21,12 @@ function StakeVaultAction(props: any) {
   } = data || {};
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
 
-  const { onVaultStake, isLoading } = useVaultStake(requestingContract);
+  const { onVaultStake, isLoading } = useVaultStake(vaultContract);
   const { id: chainId } = useNetwork();
 
   const handleConfirmStake = async (amount) => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
-    await onVaultStake(amount,decimals);
+    await onVaultStake(amount, decimals);
     onAction();
   };
 

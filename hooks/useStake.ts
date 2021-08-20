@@ -54,15 +54,9 @@ export const useVaultStake = (vault: Contract) => {
     async (amount: string, decimals: string) => {
       try {
         setLoading(true);
-        const txHash = await vaultStake(
-          vault,
-          amount,
-          account,
-          decimals,
-        ); // will ignore ref if null
-        console.log("txHash: ",txHash)
+        const txHash = await vaultStake(vault, amount, account, decimals); // will ignore ref if null
+        console.log('txHash: ', txHash);
         setLoading(false);
-        dispatch(fetchYieldUserData(account,chainId))
         console.info(txHash);
       } catch (error) {
         setLoading(false);
@@ -71,4 +65,4 @@ export const useVaultStake = (vault: Contract) => {
     [account, dispatch, vault, chainId],
   );
   return { onVaultStake: handleStake, isLoading };
-}
+};

@@ -90,14 +90,8 @@ export const useVaultUnstake = (vault: Contract) => {
     async (amount: string, decimals: string) => {
       try {
         setLoading(true);
-        const txHash = await vaultUnStake(
-          vault,
-          amount,
-          account,
-          decimals,
-        );
+        const txHash = await vaultUnStake(vault, amount, account, decimals);
         setLoading(false);
-        dispatch(fetchYieldUserData(account,chainId))
         console.info(txHash);
       } catch (error) {
         setLoading(false);
