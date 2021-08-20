@@ -14,7 +14,7 @@ import { useNetwork } from 'state/hooks';
 
 function StakeAction(props: any) {
   const classes = useStyles();
-  const { disabled, data } = props || {};
+  const { disabled, data, stakingTokenPrice } = props || {};
   const {
     id,
     orchestratorContract,
@@ -69,6 +69,7 @@ function StakeAction(props: any) {
         maxAmount={maxAmountStake}
         isLoading={isLoading}
         decimals={stakingToken.decimals}
+        stakingTokenPrice={stakingTokenPrice}
       />
     </Box>
   );

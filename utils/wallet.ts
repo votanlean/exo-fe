@@ -3,39 +3,55 @@
 interface WindowChain {
   ethereum?: {
     isMetaMask?: true
-    request?: (...args: any[]) => void
+    request?: (...args: any[]) => Promise<void>
   }
 }
 /**
  * Prompt the user to add BSC as a network on Metamask, or switch to BSC if the wallet is on a different network
  * @returns {boolean} true if the setup succeeded, false otherwise
  */
-export const setupNetwork = async (rpcUrl) => {
+export const setupNetwork = async (appNetwork) => {
   const provider = (window as WindowChain).ethereum
   if (provider) {
-    const chainId = parseInt(process.env.CHAIN_ID, 10)
-    try {
-      await provider.request({
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId: `0x${chainId.toString(16)}`,
-            chainName: 'Binance Smart Chain Mainnet',
+    let isSuccessful = true;
+    await provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{
+        chainId: `0x${appNetwork.id.toString(16)}`
+      }]
+    }).catch(async (switchError) => {
+      if (switchError.code === 4902) {
+        // wallet dont have the network id, try adding it
+        await provider.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: `0x${appNetwork.id.toString(16)}`,
+            chainName: appNetwork.name,
             nativeCurrency: {
-              name: 'BNB',
-              symbol: 'bnb',
+              name: appNetwork.symbol,
+              symbol: appNetwork.symbol,
               decimals: 18,
-            },
-            rpcUrls: [rpcUrl],
-            blockExplorerUrls: ['https://bscscan.com/'],
-          },
-        ],
-      })
-      return true
-    } catch (error) {
-      console.error(error)
-      return false
-    }
+              },
+            rpcUrls: [appNetwork.rpcUrl],
+            blockExplorerUrls: [appNetwork.blockExplorerUrl],
+          }]
+        }).then(async() => {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{
+              chainId: `0x${appNetwork.id.toString(16)}`
+            }]
+          })
+        })
+      } 
+      throw switchError
+    }).catch((error) => {
+      console.log('RPC Error: ', error)
+      if (error.code !== 4902) {
+        isSuccessful = false
+      }
+    })
+    return isSuccessful;
   } else {
     console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
     return false

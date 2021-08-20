@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -14,6 +14,8 @@ import { normalizeTokenDecimal } from 'utils/bigNumber';
 import Button from 'components/Button';
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
+import { numberWithCommas } from 'utils/numberWithComma';
+import BigNumber from 'bignumber.js';
 
 function calculateDepositFee(amount, depositFeeBP, decimals = 4) {
   return (amount * depositFeeBP) / Math.pow(10, decimals);
@@ -102,6 +104,7 @@ export const StakeDialog = (props: any) => {
     depositFee,
     isLoading,
     decimals,
+    stakingTokenPrice,
   } = props || {};
   const classes: any = useStyles();
   const [amount, setAmount] = useState(0);
@@ -145,6 +148,18 @@ export const StakeDialog = (props: any) => {
     setDisbaleButton(false);
   };
 
+  const helpText = useMemo(() => {
+    const tokenConvert = new BigNumber(amount).times(stakingTokenPrice);
+
+    return `Balance: ${unit} ${normalizeTokenDecimal(
+      maxAmount,
+      +decimal,
+    )}. \n Deposit fee: ${calculateDepositFee(
+      amount,
+      depositFee,
+    )} ${unit} $${numberWithCommas(Number(tokenConvert).toFixed(2))}`;
+  }, [maxAmount, decimal, amount, depositFee, unit, stakingTokenPrice]);
+
   return (
     <Dialog
       onClose={onCloseDialog}
@@ -165,12 +180,7 @@ export const StakeDialog = (props: any) => {
             label={title}
             value={amount}
             onChange={onChangeAmount}
-            helperText={`Balance: ${unit} ${normalizeTokenDecimal(
-              maxAmount, +decimal
-            )}. \n Deposit fee: ${calculateDepositFee(
-              amount,
-              depositFee,
-            )} ${unit}`}
+            helperText={helpText}
             fullWidth
             placeholder={unit}
             FormHelperTextProps={{
