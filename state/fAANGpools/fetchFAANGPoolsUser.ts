@@ -1,6 +1,6 @@
 import fAANGOrchestratorABI from '../../config/abi/FAANGOrchestrator.json';
 import erc20ABI from 'config/abi/erc20.json';
-import multicall from 'utils/multicall';
+import { multicallRetry } from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import BigNumber from 'bignumber.js';
 import contracts from 'config/constants/contracts';
@@ -17,7 +17,7 @@ export const fetchFAANGPoolsAllowance = async (
     params: [userAddress, getAddress(contracts.fAANGOrchestrator, chainId)],
   }));
 
-  const allowances = await multicall(erc20ABI, calls, chainId);
+  const allowances = await multicallRetry(erc20ABI, calls, chainId);
 
   return fAANGPools.reduce(
     (acc, pool, index) => ({
@@ -36,7 +36,7 @@ export const fetchFAANGUserBalances = async (userAddress, chainId: number) => {
     params: [userAddress],
   }));
 
-  const tokenBalancesRaw = await multicall(erc20ABI, calls, chainId);
+  const tokenBalancesRaw = await multicallRetry(erc20ABI, calls, chainId);
 
   const tokenBalances = fAANGPools.reduce(
     (acc, pool, index) => ({
@@ -60,7 +60,7 @@ export const fetchFAANGUserStakeBalances = async (
     params: [p.id, userAddress],
   }));
 
-  const userInfo = await multicall(fAANGOrchestratorABI, calls, chainId);
+  const userInfo = await multicallRetry(fAANGOrchestratorABI, calls, chainId);
 
   const stakedBalances = fAANGPools.reduce(
     (acc, pool, index) => ({
@@ -84,7 +84,7 @@ export const fetchFAANGUserPendingRewards = async (
     params: [p.id, userAddress],
   }));
 
-  const res = await multicall(fAANGOrchestratorABI, calls, chainId);
+  const res = await multicallRetry(fAANGOrchestratorABI, calls, chainId);
 
   const pendingRewards = fAANGPools.reduce(
     (acc, pool, index) => ({

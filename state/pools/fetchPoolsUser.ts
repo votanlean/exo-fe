@@ -1,6 +1,6 @@
 import orchestratorABI from '../../config/abi/TEXOOrchestrator.json';
 import erc20ABI from 'config/abi/erc20.json';
-import multicall from 'utils/multicall';
+import { multicallRetry } from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import BigNumber from 'bignumber.js';
 import contracts from 'config/constants/contracts';
@@ -13,7 +13,7 @@ export const fetchPoolsAllowance = async (userAddress, chainId) => {
     name: 'allowance',
     params: [userAddress, getAddress(contracts.orchestrator, chainId)],
   }));
-  const allowances = await multicall(erc20ABI, calls, chainId);
+  const allowances = await multicallRetry(erc20ABI, calls, chainId);
 
   return seedingPools.reduce(
     (acc, pool, index) => ({
@@ -32,7 +32,7 @@ export const fetchUserBalances = async (userAddress, chainId) => {
     params: [userAddress],
   }));
 
-  const tokenBalancesRaw = await multicall(erc20ABI, calls, chainId);
+  const tokenBalancesRaw = await multicallRetry(erc20ABI, calls, chainId);
 
   const tokenBalances = seedingPools.reduce(
     (acc, pool, index) => ({
@@ -53,7 +53,7 @@ export const fetchUserStakeBalances = async (userAddress, chainId) => {
     params: [p.id, userAddress],
   }));
 
-  const userInfo = await multicall(orchestratorABI, calls, chainId);
+  const userInfo = await multicallRetry(orchestratorABI, calls, chainId);
 
   const stakedBalances = seedingPools.reduce(
     (acc, pool, index) => ({
@@ -74,7 +74,7 @@ export const fetchUserPendingRewards = async (userAddress, chainId) => {
     params: [p.id, userAddress],
   }));
 
-  const res = await multicall(orchestratorABI, calls, chainId);
+  const res = await multicallRetry(orchestratorABI, calls, chainId);
 
   const pendingRewards = seedingPools.reduce(
     (acc, pool, index) => ({

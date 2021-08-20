@@ -1,14 +1,18 @@
 import { Network } from 'state/types';
-import { networks as networkFromWallet } from 'config/constants/walletData';
+import { networks as networkFromWallet } from 'config/constants/networks';
+import sample from './sample';
 
-const getNetworks = (): Array<Network> => {
-  const networkIdsFromENV = JSON.parse(process.env.NETWORK_IDS);
+const networkIdsFromENV = JSON.parse(process.env.NETWORK_IDS);
 
-  const networks = networkFromWallet.filter((network) =>
-    networkIdsFromENV.includes(network.id),
-  );
+const networks = networkFromWallet.filter((network) =>
+  networkIdsFromENV.includes(network.id),
+).map(({ rpcUrlsList, ...network }) => ({
+  ...network,
+  rpcUrl: sample(rpcUrlsList)
+}));
 
+export const getNetworks = (): Array<Network> => {
   return networks;
 };
 
-export { getNetworks };
+export const getNetworkById = (chainId: number) => networks.find(network => network.id === chainId);
