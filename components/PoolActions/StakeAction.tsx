@@ -17,7 +17,7 @@ function StakeAction(props: any) {
   const { disabled, data, stakingTokenPrice } = props || {};
   const {
     id,
-    orchestratorContract,
+    requestingContract,
     symbol,
     depositFee,
     maxAmountStake,
@@ -26,7 +26,7 @@ function StakeAction(props: any) {
   } = data || {};
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
 
-  const { onStake, isLoading } = useStake(orchestratorContract, id);
+  const { onStake, isLoading } = useStake(requestingContract, id);
   const { id: chainId } = useNetwork();
 
   const handleConfirmStake = async (amount) => {

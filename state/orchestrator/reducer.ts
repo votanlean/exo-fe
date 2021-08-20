@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { BIG_ZERO } from 'config';
 import contracts from 'config/constants/contracts';
 import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
-import multicall from 'utils/multicall';
+import { multicallRetry } from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import BN from 'bn.js';
 import { Network } from 'state/types';
@@ -44,7 +44,7 @@ export const fetchOrchestratorDataThunk =
       }
     ];
 
-    const orchestratorMultiData = await multicall(
+    const orchestratorMultiData = await multicallRetry(
       orchestratorABI,
       calls,
       chainId,

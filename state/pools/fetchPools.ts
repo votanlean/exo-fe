@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js';
 import tEXOABI from 'config/abi/TEXOToken.json';
 import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
-import multicall from 'utils/multicall';
+import { multicallRetry } from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import contracts from 'config/constants/contracts';
 import { getSeedingPools } from 'utils/poolHelpers';
-import { useNetwork } from 'state/hooks';
 
 export const fetchPoolsTotalStaking = async (chainId) => {
   const seedingPools = getSeedingPools(chainId);
@@ -17,7 +16,7 @@ export const fetchPoolsTotalStaking = async (chainId) => {
     };
   });
 
-  const seedingPoolsTotalStaked = await multicall(
+  const seedingPoolsTotalStaked = await multicallRetry(
     tEXOABI,
     seedingPoolCalls,
     chainId,
@@ -36,7 +35,7 @@ export const fetchPoolsVolatileInfo = async (chainId) => {
     name: 'poolInfo',
     params: [seedingPool.id],
   }));
-  const seedingPoolsVolatileInfo = await multicall(
+  const seedingPoolsVolatileInfo = await multicallRetry(
     orchestratorABI,
     seedingPoolCalls,
     chainId,

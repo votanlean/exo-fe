@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import fAANGABI from 'config/abi/FAANGToken.json';
 import orchestratorABI from 'config/abi/FAANGOrchestrator.json';
-import multicall from 'utils/multicall';
+import { multicallRetry } from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import contracts from 'config/constants/contracts';
 import { getFAANGPools } from 'utils/poolHelpers';
@@ -16,7 +16,7 @@ export const fetchFAANGPoolsTotalStaking = async (chainId: number) => {
     };
   });
 
-  const fAANGPoolsTotalStaked = await multicall(
+  const fAANGPoolsTotalStaked = await multicallRetry(
     fAANGABI,
     fAANGPoolCalls,
     chainId,
@@ -36,7 +36,7 @@ export const fetchFAANGPoolsVolatileInfo = async (chainId: number) => {
     params: [pool.id],
   }));
 
-  const fAANGPoolsVolatileInfo = await multicall(
+  const fAANGPoolsVolatileInfo = await multicallRetry(
     orchestratorABI,
     fAANGPoolCalls,
     chainId,

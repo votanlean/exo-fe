@@ -9,9 +9,9 @@ import { useStyles } from './styles';
 function ClaimRewardsAction(props: any) {
   const classes = useStyles();
   const { disabled, data } = props || {};
-  const { orchestratorContract, id } = data || {};
+  const { requestingContract, id } = data || {};
 
-  const { onReward, isLoading } = useHarvest(orchestratorContract, id);
+  const { onReward, isLoading } = useHarvest(requestingContract, id);
 
   return (
     <Box>

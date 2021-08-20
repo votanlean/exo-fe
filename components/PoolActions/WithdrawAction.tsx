@@ -14,7 +14,7 @@ function WithdrawAction(props: any) {
   const { disabled, data } = props || {};
   const {
     id,
-    orchestratorContract,
+    requestingContract,
     symbol,
     maxAmountWithdraw,
     onPoolStateChange,
@@ -22,7 +22,7 @@ function WithdrawAction(props: any) {
   } = data || {};
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
 
-  const { onUnstake, isLoading } = useUnstake(orchestratorContract, id);
+  const { onUnstake, isLoading } = useUnstake(requestingContract, id);
   const { id: chainId } = useNetwork();
 
   const handleConfirmWithdraw = async (amount) => {

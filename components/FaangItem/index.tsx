@@ -228,7 +228,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish, onApprove }) {
               data={dataButton}
               disabled={FAANGFinish}
               buttonClasses={classes.approveButton}
-                            onApprove={onApprove}
+              onApprove={onApprove}
             />
           ) : null}
 

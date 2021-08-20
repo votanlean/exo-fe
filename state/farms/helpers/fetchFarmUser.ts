@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import erc20ABI from 'config/abi/erc20.json';
 import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
-import multicall from 'utils/multicall';
+import { multicallRetry } from 'utils/multicall';
 import { getAddress } from 'utils/addressHelpers';
 import contracts from 'config/constants/contracts';
 
@@ -18,7 +18,7 @@ export const fetchFarmUserAllowances = async (
     params: [account, masterChefAddress],
   }));
 
-  const rawLpAllowances = await multicall(erc20ABI, calls, chainId);
+  const rawLpAllowances = await multicallRetry(erc20ABI, calls, chainId);
   const parsedLpAllowances = rawLpAllowances.map((lpBalance) => {
     return new BigNumber(lpBalance).toJSON();
   });
@@ -37,7 +37,7 @@ export const fetchFarmUserTokenBalances = async (
     params: [account],
   }));
 
-  const rawTokenBalances = await multicall(erc20ABI, calls, chainId);
+  const rawTokenBalances = await multicallRetry(erc20ABI, calls, chainId);
   const parsedTokenBalances = rawTokenBalances.map((tokenBalance) => {
     return new BigNumber(tokenBalance).toJSON();
   });
@@ -60,7 +60,7 @@ export const fetchFarmUserStakedBalances = async (
     };
   });
 
-  const rawStakedBalances = await multicall(orchestratorABI, calls, chainId);
+  const rawStakedBalances = await multicallRetry(orchestratorABI, calls, chainId);
   const parsedStakedBalances = rawStakedBalances.map((stakedBalance) => {
     return new BigNumber(stakedBalance[0]._hex).toJSON();
   });
@@ -80,7 +80,7 @@ export const fetchFarmUserEarnings = async (
     };
   });
 
-  const rawEarnings = await multicall(orchestratorABI, calls, chainId);
+  const rawEarnings = await multicallRetry(orchestratorABI, calls, chainId);
 
   const parsedEarnings = rawEarnings.map((earnings) => {
     return new BigNumber(earnings).toJSON();
