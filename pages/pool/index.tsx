@@ -168,14 +168,14 @@ function Pool() {
     if (chainId === 56) {
       setFAANGFinishBlock(10770888);
     }
-    
+
     if (chainId === 137) {
       setFAANGFinishBlock(19089090);
     }
   }, [chainId])
 
   const countDownInterval = useRef(null);
-  const countDownIntervalFAANGConclude= useRef(null);
+  const countDownIntervalFAANGConclude = useRef(null);
   const countDownIntervalFarm = useRef(null);
 
   useEffect(() => {
@@ -191,7 +191,7 @@ function Pool() {
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
         dispatch(fetchUserInfoDataThunk(account, chainId));
       }
-    }, 30000);
+    }, 60 * 1000);
 
     return () => {
       clearInterval(updateAppDataInterval);
@@ -359,7 +359,7 @@ function Pool() {
             if (allTokenPrices.data) {
               stakingTokenPrice =
                 allTokenPrices.data[
-                  getAddress(farm.quoteToken.address, chainId).toLowerCase()
+                getAddress(farm.quoteToken.address, chainId).toLowerCase()
                 ];
             }
 
@@ -450,7 +450,7 @@ function Pool() {
               {currentBlock < canClaimRewardsBlock &&
                 'Users can harvest tEXO in'}
               {currentBlock >= canClaimRewardsBlock &&
-              currentBlock < seedingFinishBlock ? (
+                currentBlock < seedingFinishBlock ? (
                 <>
                   <span>
                     Users may now harvest tEXO and provide liquidity for LP
@@ -535,10 +535,10 @@ function Pool() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                      getAddress(
-                        pool.stakingToken.address,
-                        chainId,
-                      )?.toLowerCase()
+                    getAddress(
+                      pool.stakingToken.address,
+                      chainId,
+                    )?.toLowerCase()
                     ];
                 }
                 return (
