@@ -18,16 +18,22 @@ export const orchestratorSlice = createSlice({
       seedingFinishBlock: BIG_ZERO.toString(10),
       farmStartBlock: BIG_ZERO.toString(10),
     },
+    loading: false,
   },
   reducers: {
     setOrchestratorData: (state, action) => {
       state.data = action.payload;
+      state.loading = true;
     },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    }
   },
 });
 
 export const fetchOrchestratorDataThunk =
   (chainId, network: Network) => async (dispatch) => {
+    dispatch(setLoading(true));
     const calls = [
       {
         address: getAddress(contracts.orchestrator, chainId),
@@ -44,25 +50,30 @@ export const fetchOrchestratorDataThunk =
       }
     ];
 
-    const orchestratorMultiData = await multicallRetry(
-      orchestratorABI,
-      calls,
-      chainId,
-    );
-    const [tEXOPerBlock, totalAllocPoint, seedingBlock] = orchestratorMultiData;
-    dispatch(
-      setOrchestratorData({
-        tEXOPerBlock: tEXOPerBlock[0].toString(10),
-        totalAllocPoint: totalAllocPoint[0].toString(10),
-        seedingStartBlock: new BN(parseInt(network.startBlock)).toString(10), // startBlock
-        canClaimRewardsBlock: new BN(
-          seedingBlock['blockToReceiveReward'].toNumber(),
-        ).toString(), //after 5 days of startBlock - 1 hour
-        seedingFinishBlock: new BN(seedingBlock['inActiveBlock'].toNumber()
-        ).toString(), //after 5 days of startBlock
-        farmStartBlock: seedingBlock['inActiveBlock'].toNumber(),
-      }),
-    );
+    try {
+      const orchestratorMultiData = await multicallRetry(
+        orchestratorABI,
+        calls,
+        chainId,
+      );
+      const [tEXOPerBlock, totalAllocPoint, seedingBlock] = orchestratorMultiData;
+      dispatch(
+        setOrchestratorData({
+          tEXOPerBlock: tEXOPerBlock[0].toString(10),
+          totalAllocPoint: totalAllocPoint[0].toString(10),
+          seedingStartBlock: new BN(parseInt(network.startBlock)).toString(10), // startBlock
+          canClaimRewardsBlock: new BN(
+            seedingBlock['blockToReceiveReward'].toNumber(),
+          ).toString(), //after 5 days of startBlock - 1 hour
+          seedingFinishBlock: new BN(seedingBlock['inActiveBlock'].toNumber()
+          ).toString(), //after 5 days of startBlock
+          farmStartBlock: seedingBlock['inActiveBlock'].toNumber(),
+        }),
+      );
+    } catch (error) {
+      dispatch(setLoading(false));
+      throw error;
+    }
   };
 
-export const { setOrchestratorData } = orchestratorSlice.actions;
+export const { setOrchestratorData, setLoading } = orchestratorSlice.actions;

@@ -26,12 +26,14 @@ export interface TEXOOrchestratorState {
     seedingFinishBlock,
     farmStartBlock
   },
+  loading: boolean
 }
 
 export interface FAANGOrchestratorState {
   data: {
     FAANGFinishBlock: number,
   },
+  loading: boolean
 }
 
 export interface AppPrices {
