@@ -10,6 +10,7 @@ import {
   CardContent,
   CardHeader,
   makeStyles,
+  Paper,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -24,12 +25,20 @@ const useStyles = makeStyles((theme) => {
   return {
     root: {
       filter: 'drop-shadow(rgba(25, 19, 38, 0.15) 0px 1px 4px)',
-      marginTop: '2rem',
+      marginTop: '4rem',
       borderRadius: '32px',
+      background: theme.palette.themeBg.default,
+      marginBottom: '6rem',
+      [theme.breakpoints.down('sm')]: {
+        marginBottom: '4rem',
+      },
     },
     title: {
       textAlign: 'center',
       fontWeight: 600,
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1rem',
+      },
     },
     rootHeader: {
       borderBottom: '1px solid rgba(0, 0, 0, 0.38)',
@@ -42,6 +51,9 @@ const useStyles = makeStyles((theme) => {
       fontSize: '20px',
       fontWeight: 600,
       marginTop: '1rem',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1rem',
+      },
     },
     rootTextfield: {
       width: '100%',
@@ -80,9 +92,9 @@ function Referrals() {
   };
 
   return (
-    <>
+    <Paper className="paper-root">
       <Head>
-        <title>Referrals</title>
+        <title>Referrals | tExo</title>
       </Head>
 
       <div className={`container ${styles.referralsContainer}`}>
@@ -145,7 +157,7 @@ function Referrals() {
         </Box>
         <ConnectPopup onOpen={openPopup} onCloseDialog={handleConnectPopup} />
       </div>
-    </>
+    </Paper>
   );
 }
 

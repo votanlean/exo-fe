@@ -17,6 +17,7 @@ const useStyles = makeStyles(() => {
   return {
     tassetContainer: {
       paddingTop: '10rem',
+      paddingBottom: '6rem',
       [theme.breakpoints.down('sm')]: {
         paddingTop: '7rem',
       },

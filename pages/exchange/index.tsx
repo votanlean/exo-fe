@@ -10,56 +10,60 @@ import {
   CardHeader,
   IconButton,
   Avatar,
+  Paper,
 } from '@material-ui/core';
 import { Tune, History, ExpandMore } from '@material-ui/icons';
 
 import SelectTokenDialog from '../../components/Exchange/SelectTokenDialog';
 import HistoryDialog from '../../components/Exchange/HistoryDialog';
 import SettingsDialog from '../../components/Exchange/SettingsDialog';
-import theme from 'components/theme/theme';
 import { usePools } from '../../state/pools/selectors';
 
-const useStyles = makeStyles({
-  root: {
-    borderRadius: 20,
-    maxWidth: 436,
-    width: '100%',
-    margin: '0 auto',
-  },
-  header: {
-    borderBottom: '1px solid rgb(233 234 235)',
-  },
-  box: {
-    padding: 16,
-    borderRadius: 12,
-  },
-  iconDown: {
-    width: 32,
-    height: 32,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto',
-    backgroundColor: 'rgb(239, 244, 245)',
-    borderRadius: 16,
-    padding: 0,
-    minWidth: 32,
-  },
-  iconAva: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-  },
-  comingSoonLogo: {
-    [theme.breakpoints.down('sm')]: {
-      width: '80px',
+const useStyles = makeStyles((theme) => {
+  return {
+    root: {
+      borderRadius: 20,
+      maxWidth: 436,
+      width: '100%',
+      margin: '0 auto',
+      background: theme.palette.themeBg.default,
     },
-  },
-  comingSoonText: {
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '2.5rem',
+    header: {
+      borderBottom: '1px solid rgb(233 234 235)',
     },
-  },
+    box: {
+      padding: 16,
+      borderRadius: 12,
+      background: theme.palette.tableRowBg.default,
+    },
+    iconDown: {
+      width: 32,
+      height: 32,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: '0 auto',
+      backgroundColor: 'rgb(239, 244, 245)',
+      borderRadius: 16,
+      padding: 0,
+      minWidth: 32,
+    },
+    iconAva: {
+      width: 24,
+      height: 24,
+      marginRight: 8,
+    },
+    comingSoonLogo: {
+      [theme.breakpoints.down('sm')]: {
+        width: '80px',
+      },
+    },
+    comingSoonText: {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '2.5rem',
+      },
+    },
+  };
 });
 
 function Pool() {
@@ -100,9 +104,9 @@ function Pool() {
   };
 
   return (
-    <>
+    <Paper className="paper-root">
       <Head>
-        <title>Exchange</title>
+        <title>Exchange | tExo</title>
       </Head>
 
       <div className="container pool-container">
@@ -112,7 +116,6 @@ function Pool() {
           flexDirection="row"
           justifyContent="center"
           textAlign="center"
-          marginBottom={theme.spacing(1)}
         >
           <img
             className={classes.comingSoonLogo}
@@ -129,7 +132,7 @@ function Pool() {
           </Box>
         </Box>
 
-        <div className="exchange-grid">
+        <div className="exchange-grid" style={{ paddingTop: 40 }}>
           <Card className={classes.root}>
             <CardHeader
               className={classes.header}
@@ -227,7 +230,7 @@ function Pool() {
         open={isOpenSettingsDialog}
         onClose={toggleSettingsDialog}
       />
-    </>
+    </Paper>
   );
 }
 

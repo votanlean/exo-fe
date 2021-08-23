@@ -58,13 +58,13 @@ function Statistic(props) {
     <Grid container className={classes.root}>
       <Grid item xs={12} sm={6} md={4} lg={4}>
         <Box
-          bgcolor="white"
           borderRadius="20px"
           border="1px solid rgb(161, 169, 214)"
           m={1.5}
           p={2}
+          className={classes.box}
         >
-          <Typography variant="h4" className={'font-bold'}>
+          <Typography variant="h4" className={`font-bold ${classes.title}`}>
             tEXO Balance
           </Typography>
           <Avatar
@@ -106,27 +106,27 @@ function Statistic(props) {
           <Typography
             variant="h4"
             color="textPrimary"
-            className={'font-bold'}
+            className={`font-bold ${classes.title}`}
             gutterBottom
           >
             tEXO Stats
           </Typography>
 
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" justifyContent="space-between" marginY="4px">
             <Typography className={'font-bold'}>Total tEXO Supply</Typography>
             <Typography className={'font-bold'}>
               {numberWithCommas(Number(normalizedTotalSupply).toFixed(2))} tEXO
             </Typography>
           </Box>
 
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" justifyContent="space-between" marginY="4px">
             <Typography className={'font-bold'}>tEXO Price</Typography>
             <Typography className={'font-bold'}>
               ${numberWithCommas(Number(normalizeTexoPrice).toFixed(2))}
             </Typography>
           </Box>
 
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" justifyContent="space-between" marginY="4px">
             <Typography className={'font-bold'}>Market Cap</Typography>
             <Typography className={'font-bold'}>
               $
@@ -136,14 +136,14 @@ function Statistic(props) {
             </Typography>
           </Box>
 
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" justifyContent="space-between" marginY="4px">
             <Typography className={'font-bold'}>Total tEXO Burned</Typography>
             <Typography className={'font-bold'}>
               {numberWithCommas(normalizedBurnAmount)} tEXO
             </Typography>
           </Box>
 
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" justifyContent="space-between" marginY="4px">
             <Typography className={'font-bold'}>New tEXO/block</Typography>
             <Typography className={'font-bold'}>
               {numberWithCommas(normalizedEmissionRate)} tEXO / block
@@ -160,11 +160,11 @@ function Statistic(props) {
       </Grid>
 
       <Grid item xs={12} sm={6} md={4} lg={4}>
-        <Box className={classes.box}>
+        <Box className={classes.box} style={{ marginBottom: 0 }}>
           <Typography
-            variant="h5"
+            variant="h4"
             color="textPrimary"
-            className={'font-bold'}
+            className={`font-bold ${classes.title}`}
             gutterBottom
           >
             Total Value Locked (TVL)

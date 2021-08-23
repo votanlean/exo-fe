@@ -20,6 +20,7 @@ import { useOrchestratorContract } from '../../hooks/useContract';
 import { getAddress, getTEXOAddress } from '../../utils/addressHelpers';
 import styles from './farmItem.module.scss';
 import { numberWithCommas } from 'utils/numberWithComma';
+import { useStyles } from './styles';
 
 function formatDepositFee(depositFee, decimals = 4) {
   if (!depositFee) {
@@ -32,6 +33,8 @@ function formatDepositFee(depositFee, decimals = 4) {
 }
 
 function FarmItem(props: any) {
+  const classes = useStyles();
+
   const {
     farmData = {},
     onPoolStateChange,
@@ -147,7 +150,7 @@ function FarmItem(props: any) {
     <>
       <div className={styles.poolItem}>
         <div className={styles.poolItemGrid}>
-          <div className={styles.item}>
+          <div className={`${styles.item} ${classes.root}`}>
             <div className={styles.liquidityPoolEffect} />
 
             <div className={`${styles.spacing} d-flex items-center column`}>

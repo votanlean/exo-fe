@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import dayjs from 'dayjs';
 import {
   makeStyles,
+  Paper,
   Table,
   TableBody,
   TableContainer,
@@ -62,9 +63,8 @@ const useStyles = makeStyles((theme) => {
     tableContainer: {
       filter: 'drop-shadow(rgba(25, 19, 38, 0.15) 0px 1px 4px)',
       width: '100%',
-      background: 'rgb(255, 255, 255)',
       borderRadius: '16px',
-      margin: '16px 0px',
+      background: theme.palette.themeBg.default,
     },
   };
 });
@@ -202,9 +202,9 @@ function Pool() {
   }, [dispatch, account, chainId]);
 
   return (
-    <>
+    <Paper className="paper-root">
       <Head>
-        <title>Pool</title>
+        <title>Pools | tExo</title>
       </Head>
 
       <div className="container pool-container">
@@ -319,7 +319,7 @@ function Pool() {
 
         {currentBlock >= seedingFinishBlock && (
           <div className={styles.countdownContainer}>
-            <Typography variant="h5" color="primary">
+            <Typography variant="h5" color="primary" align="center">
               Seed phase already completed. Deposit paused. Users may withdraw
               their deposits and harvest tEXO for farming.
             </Typography>
@@ -421,7 +421,7 @@ function Pool() {
           </div>
         )}
 
-        <TableContainer className={classes.tableContainer && styles.lpPoolGrid}>
+        <TableContainer className={classes.tableContainer}>
           <Table aria-label="collapsible table">
             <TableBody>
               {poolsData.map((pool) => {
@@ -459,7 +459,7 @@ function Pool() {
           </Table>
         </TableContainer>
       </div>
-    </>
+    </Paper>
   );
 }
 

@@ -1,50 +1,62 @@
 import React from 'react';
+import { Box, makeStyles } from '@material-ui/core';
+import { Twitter, Telegram, Facebook, LinkedIn } from '@material-ui/icons';
+
+import { useAppTheme } from 'state/hooks';
 import styles from './footer.module.scss';
 
-const Footer = () => (
-  <footer className={styles.footer}>
-    <div className="container">
-      <div className="d-flex justify-between">
-        <div className={styles.info}>
-          <img src="/static/images/logo-dark.svg" alt="logo" />
-          <ul>
-            <li>
-              <a href="https://twitter.com/ExoniumDex">
-                <img
-                  src="/static/images/social-icon/twitter.png"
-                  alt="twitter"
-                />
-              </a>
-            </li>
-            <li>
-              <a href="https://t.me/exoniumofficial">
-                <img
-                  src="/static/images/social-icon/telegram.png"
-                  alt="telegram"
-                />
-              </a>
-            </li>
-            <li>
-              <a href="https://www.facebook.com/Exoniumdex">
-                <img
-                  src="/static/images/social-icon/facebook.png"
-                  alt="facebook"
-                />
-              </a>
-            </li>
-            <li>
-              <a href="https://www.linkedin.com/company/exoniumdex">
-                <img
-                  src="/static/images/social-icon/linkedin.png"
-                  alt="linkedin"
-                />
-              </a>
-            </li>
-          </ul>
+const useStyles = makeStyles((theme) => {
+  return {
+    root: {
+      background: theme.palette.themeBg.default,
+    },
+  };
+});
+
+const Footer = () => {
+  const { darkMode } = useAppTheme();
+  const classes = useStyles();
+
+  return (
+    <Box className={classes.root}>
+      <footer className={styles.footer}>
+        <div className="container">
+          <div className="d-flex justify-between">
+            <div className={styles.info}>
+              {darkMode ? (
+                <img src="/static/images/logo-white.svg" alt="logo" />
+              ) : (
+                <img src="/static/images/logo-dark.svg" alt="logo" />
+              )}
+
+              <ul>
+                <li>
+                  <a href="https://twitter.com/ExoniumDex">
+                    <Twitter style={{ color: darkMode ? 'white' : 'black' }} />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://t.me/exoniumofficial">
+                    <Telegram style={{ color: darkMode ? 'white' : 'black' }} />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.facebook.com/Exoniumdex">
+                    <Facebook style={{ color: darkMode ? 'white' : 'black' }} />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.linkedin.com/company/exoniumdex">
+                    <LinkedIn style={{ color: darkMode ? 'white' : 'black' }} />
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </footer>
-);
+      </footer>
+    </Box>
+  );
+};
 
 export default Footer;

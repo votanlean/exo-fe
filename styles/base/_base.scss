@@ -51,7 +51,11 @@ body {
 @media (min-width: 1441px) {
 }
 
-@media (max-width: 544px) {
+@media (max-width: 480px) {
+  .container {
+    padding-left: 4vw;
+    padding-right: 4vw;
+  }
 }
 
 .mx-auto {
@@ -238,4 +242,9 @@ body {
 }
 
 @media (max-width: 544px) {
+}
+
+.paper-root {
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }

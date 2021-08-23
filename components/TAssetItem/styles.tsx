@@ -1,21 +1,9 @@
 import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => {
-  const theme = createMuiTheme({
-    breakpoints: {
-      values: {
-        xs: 600,
-        sm: 769,
-        md: 960,
-        lg: 1280,
-        xl: 1920,
-      },
-    },
-  });
-
+const useStyles = makeStyles((theme) => {
   return {
     root: {
-      background: 'rgb(250, 249, 250)',
+      background: theme.palette.tableRowBg.default,
       height: '240px',
       maxWidth: '340px',
       margin: '0 auto',
@@ -41,7 +29,7 @@ const useStyles = makeStyles(() => {
     },
     symbol: {
       fontWeight: 700,
-      color: '#000000',
+      color: theme.palette.textColor.default,
     },
     priceLabel: {
       fontWeight: 600,
@@ -49,11 +37,11 @@ const useStyles = makeStyles(() => {
     },
     price: {
       fontWeight: 600,
-      color: '#000000',
+      color: theme.palette.textColor.default,
     },
     fee: {
       fontWeight: 600,
-      color: '#000000',
+      color: theme.palette.textColor.default,
     },
     status: {
       fontWeight: 600,
@@ -68,7 +56,7 @@ const useStyles = makeStyles(() => {
       display: 'block',
     },
     desc: {
-      color: '#000000',
+      color: theme.palette.textColor.default,
     },
   };
 });

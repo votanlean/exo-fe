@@ -7,16 +7,22 @@ const useStyles = makeStyles((theme) => {
     },
     box: {
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'space-between',
       flexDirection: 'column',
 
-      height: '200px',
+      minHeight: '234px',
       margin: theme.spacing(1.5),
       padding: theme.spacing(2),
 
       color: '#6A98C9',
       borderRadius: '20px',
       border: '1px solid rgb(161, 169, 214)',
+      background: theme.palette.themeBg.default,
+      [theme.breakpoints.down('xs')]: {
+        minHeight: 'auto',
+        margin: 0,
+        marginBottom: 24,
+      },
     },
     avatar: {
       margin: theme.spacing(1.5, 0),
@@ -35,6 +41,12 @@ const useStyles = makeStyles((theme) => {
       background: '#007EF3',
       '&:hover': {
         background: 'rgb(0, 88, 170)',
+      },
+    },
+    title: {
+      fontSize: '1.825rem',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1.375rem',
       },
     },
   };

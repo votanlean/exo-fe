@@ -14,7 +14,6 @@ import {
   ClaimRewardsAction,
 } from 'components/PoolActions';
 import { useNetwork } from 'state/hooks';
-import { getDecimals } from 'utils/decimalsHelper';
 import { numberWithCommas } from 'utils/numberWithComma';
 import { useCallback } from 'react';
 
@@ -200,28 +199,24 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish, onApprove }) {
                 )}
               </Typography>
             </Box>
-            <Link
-              href={`${blockExplorerUrl}/address/${FAANGAddress}`}
-              target="_blank"
-            >
-              <Typography
-                component="p"
-                style={{ fontSize: '19px', color: '#007EF3' }}
+            <Typography component="p" style={{ fontSize: '19px' }}>
+              <Link
+                href={`${blockExplorerUrl}/address/${FAANGAddress}`}
+                target="_blank"
+                style={{ color: '#007EF3' }}
               >
                 View FAANG on {blockExplorerName}
-              </Typography>
-            </Link>
-            <Link
-              href={`${blockExplorerUrl}/address/${tokenAddress}`}
-              target="_blank"
-            >
-              <Typography
-                component="p"
-                style={{ fontSize: '19px', color: '#007EF3' }}
+              </Link>
+            </Typography>
+            <Typography component="p" style={{ fontSize: '19px' }}>
+              <Link
+                href={`${blockExplorerUrl}/address/${tokenAddress}`}
+                target="_blank"
+                style={{ color: '#007EF3' }}
               >
                 View tEXO on {blockExplorerName}
-              </Typography>
-            </Link>
+              </Link>
+            </Typography>
           </Box>
           {!isAlreadyApproved ? (
             <ApproveAction

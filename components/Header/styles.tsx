@@ -9,8 +9,8 @@ const useStyles = makeStyles((theme) => {
       background: 'linear-gradient(-90deg, #0f0f0f 0%, #103c5b 100%)',
       marginRight: 20,
       [theme.breakpoints.down('sm')]: {
-        paddingRight: 5,
-        marginRight: 0,
+        paddingRight: 2,
+        marginRight: 5,
         minWidth: 0,
       },
     },
@@ -27,19 +27,33 @@ const useStyles = makeStyles((theme) => {
       },
     },
     connectBtn: {
-      height: '34px',
+      height: 38,
       borderRadius: 20,
-      padding: '8px ​12px',
       background: 'linear-gradient(-90deg, #0f0f0f 0%, #103c5b 100%)',
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: 12,
+        paddingRight: 2,
+        marginRight: 5,
+        minWidth: 0,
+      },
     },
-    accAddress:{
+    accAddress: {
       [theme.breakpoints.down('xs')]: {
         display: 'none',
       },
     },
-    active:{
-      opacity: '0.4'
-    }
+    active: {
+      opacity: '0.4',
+    },
+    toggleDarkModeBtn: {
+      color: '#fff',
+      [theme.breakpoints.down('sm')]: {
+        padding: 7,
+      },
+    },
+    headerBg: {
+      background: theme.palette.headerBg.default,
+    },
   };
 });
 

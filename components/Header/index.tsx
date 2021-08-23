@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import Link from 'next/link';
-import { Button, Avatar, Typography } from '@material-ui/core';
-import { AccountBalanceWalletOutlined } from '@material-ui/icons';
+import { Button, Avatar, Typography, IconButton, useMediaQuery } from '@material-ui/core';
+import { AccountBalanceWalletOutlined, WbSunny, Brightness2 } from '@material-ui/icons';
 import { getNetworks } from 'utils/networkHelpers';
 
 import ConnectPopup from '../ConnectPopup';
@@ -17,6 +17,8 @@ import SwitchNetworkPopup from 'components/SwitchNetworkPopup';
 import NetworkNotify from 'components/NetworkNotify';
 import { changeNetwork } from 'state/network';
 import { useAppDispatch } from 'state';
+import { setDarkMode } from 'state/appTheme';
+import { useAppTheme } from 'state/hooks';
 
 const Header = () => {
   const classes = useStyles();
@@ -36,7 +38,8 @@ const Header = () => {
     });
   }, [library?.networkVersion]);
   const network = useNetwork();
-  const { icon: networkIcon, name: networkName } = network || {};
+  const { darkMode } = useAppTheme();
+  const isTablet = useMediaQuery('(max-width: 1024px)');
 
   // handle logic to recognize the connector currently being activated
   const [activatingConnector, setActivatingConnector] = React.useState<any>()
@@ -70,13 +73,24 @@ const Header = () => {
     dispatch(changeNetwork(item));
   }
 
+  const onToggleThemePreferred = () => {
+    const preferred = window.localStorage.getItem("preferred-theme");
+    if (preferred === 'dark') {
+      window.localStorage.setItem('preferred-theme', 'light');
+      dispatch(setDarkMode(false));
+    } else {
+      window.localStorage.setItem('preferred-theme', 'dark');
+      dispatch(setDarkMode(true));
+    }
+  }
+
   return (
     <>
       <header
-        className={`${styles.header} ${active ? styles.smallHeader : ''}`}
+        className={`${styles.header} ${classes.headerBg} ${active ? styles.smallHeader : ''}`}
       >
         <div className="container">
-          <div className="d-flex items-center justify-between">
+          <div className={`d-flex items-center justify-between ${styles.groupItems}`}>
             <div className={styles.item1}>
               <Link href="/" >
                 <a className={styles.logo}>
@@ -92,17 +106,17 @@ const Header = () => {
             <div className={styles.item3}>
               {networks.map((item, index) => (
                 <Button
-                key={index}
-                variant="contained"
-                color="primary"
-                size="small"
-                classes={{ root: classes.networkBtn }}
-                onClick={() => handleNetWorkChange(item)}
-                className={(network.id === item.id ? '' : classes.active)}
+                  key={index}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  classes={{ root: classes.networkBtn }}
+                  onClick={() => handleNetWorkChange(item)}
+                  className={(network.id === item.id ? '' : classes.active)}
                 >
-                <Avatar src={item.icon} className={classes.networkIcon} />
-                <Typography className={classes.networkName}>{item.name}</Typography>
-              </Button>
+                  <Avatar src={item.icon} className={classes.networkIcon} />
+                  <Typography className={classes.networkName}>{item.name}</Typography>
+                </Button>
               ))}
               <Button
                 variant="contained"
@@ -114,11 +128,16 @@ const Header = () => {
               >
                 <p className={classes.accAddress}>{account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : 'Connect'}</p>
               </Button>
+              {!isTablet ? (
+                <IconButton className={classes.toggleDarkModeBtn} onClick={onToggleThemePreferred}>
+                  {darkMode ? <WbSunny /> : <Brightness2 />}
+                </IconButton>
+              ) : null}
             </div>
           </div>
         </div>
       </header>
-      <NetworkNotify clickHandle={handleSwitchNetworkPopupPopup}/>
+      <NetworkNotify clickHandle={handleSwitchNetworkPopupPopup} />
 
       {/* Connect Popup */}
       <ConnectPopup

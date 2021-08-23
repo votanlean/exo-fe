@@ -6,3 +6,9 @@ export const useNetwork = () => {
 
   return network;
 };
+
+export const useAppTheme = () => {
+  const theme = useSelector((state: State) => state.theme);
+
+  return theme;
+};
