@@ -67,3 +67,32 @@ export const harvest = async (orchestrator, poolId, account) => {
       return tx.transactionHash;
     });
 };
+
+export const vaultStake = async (vault,amount,account,decimals) => {
+  try {
+    return vault.methods.deposit(
+      new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10)
+      )
+    .send({ from: account, gas: 500000 })
+    .on('transactionHash', (tx) => {
+      return tx.transactionHash;
+    });
+  } catch (error) {
+    console.log(error)
+  }
+
+}
+
+export const vaultUnStake = async (vault, amount, account, decimals) => {
+  try {
+    return vault.methods.withdraw(
+      new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10)
+    )
+    .send({from: account, gas: 500000 })
+    .on('transactionHash', (tx) => {
+      return tx.transactionHash;
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}

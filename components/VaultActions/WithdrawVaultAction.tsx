@@ -3,7 +3,7 @@ import { Box } from '@material-ui/core';
 
 import Button from 'components/Button';
 import { WithdrawDialog } from 'components/Dialogs';
-import { useUnstake } from 'hooks/useUnstake';
+import { useVaultUnstake } from 'hooks/useUnstake';
 
 import { useStyles } from './styles';
 import { useNetwork } from 'state/hooks';
@@ -11,24 +11,22 @@ import { getDecimals } from 'utils/decimalsHelper';
 
 function WithdrawAction(props: any) {
   const classes = useStyles();
-  const { disabled, data } = props || {};
+  const { disabled, data, onAction } = props || {};
   const {
-    id,
-    requestingContract,
+    requestingContract: vaultContract,
     symbol,
     maxAmountWithdraw,
-    onPoolStateChange,
     stakingToken,
   } = data || {};
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
 
-  const { onUnstake, isLoading } = useUnstake(requestingContract, id);
+  const { onVaultUnstake, isLoading } = useVaultUnstake(vaultContract);
   const { id: chainId } = useNetwork();
 
   const handleConfirmWithdraw = async (amount) => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
-    await onUnstake(amount, decimals);
-    onPoolStateChange && onPoolStateChange();
+    await onVaultUnstake(amount, decimals);
+    onAction();
   };
 
   const handleToggleWithdraw = () => {

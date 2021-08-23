@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useWeb3React } from '@web3-react/core';
 import dayjs from 'dayjs';
@@ -195,6 +195,12 @@ function Pool() {
     };
   }, [chainId, account]);
 
+  const onApprove = useCallback(() => {
+    dispatch(fetchPoolsUserDataAsync(account, chainId));
+    dispatch(fetchFarmUserDataAsync(account, chainId));
+    dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+  }, [dispatch, account, chainId]);
+
   return (
     <>
       <Head>
@@ -220,7 +226,7 @@ function Pool() {
             align="center"
             style={{ marginBottom: '30px', lineHeight: '40px' }}
           >
-            {chainId === 56 || chainId === 97
+            {chainId === 56 || chainId === 97 || chainId === 5600
               ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
               : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
             <br />
@@ -255,6 +261,7 @@ function Pool() {
                 farmData={farmsData[index]}
                 key={farm.pid}
                 countDownString={countDownString}
+                onApprove={onApprove}
               />
             );
           })}
@@ -305,6 +312,7 @@ function Pool() {
               tEXOPrice={tEXOPrice}
               account={account}
               FAANGFinish={currentBlock >= fAANGFinishBlock}
+              onApprove={onApprove}
             />
           ))}
         </div>
@@ -326,7 +334,7 @@ function Pool() {
               paragraph
               style={{ marginBottom: '10px', lineHeight: '40px' }}
             >
-              {chainId === 56 || chainId === 97
+              {chainId === 56 || chainId === 97 || chainId === 5600
                 ? 'Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO.'
                 : 'Equitable Distribution of tEXO in seed pools. Stake ERC-20 tokens for tEXO.'}
               <br />
@@ -443,6 +451,7 @@ function Pool() {
                     stakingTokenPrice={stakingTokenPrice}
                     tEXOPrice={tEXOPrice}
                     countDownString={countDownString}
+                    onApprove={onApprove}
                   />
                 );
               })}

@@ -38,6 +38,7 @@ function FarmItem(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     selectedAccount,
+    onApprove
   } = props;
   const {
     icon,
@@ -69,7 +70,7 @@ function FarmItem(props: any) {
       address,
       decimals,
     },
-    orchestratorContract: tEXOOrchestratorContract,
+    requestingContract: tEXOOrchestratorContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: tokenBalance,
@@ -100,9 +101,9 @@ function FarmItem(props: any) {
   const apr = getFarmApr(
     farmWeight,
     tEXOPrice,
-    totalLiquidity,
+    lpTotalInQuoteToken,
     normalizeTokenDecimal(tEXOPerBlock),
-    chainId,
+    chainId
   );
 
   const toggleDisplayDetails = () => {
@@ -123,7 +124,7 @@ function FarmItem(props: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>${numberWithCommas(Number(totalLiquidity).toFixed(2))}</h3>
+        <h3>${Number(totalLiquidity).toFixed(2)}</h3>
       </div>
       <a
         style={{ fontSize: '19px', marginBottom: '10px', color: '#007EF3' }}
@@ -209,19 +210,11 @@ function FarmItem(props: any) {
                   title="My Rewards"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>
-                    {numberWithCommas(
-                      normalizeTokenDecimal(pendingReward).toFixed(4),
-                    )}{' '}
-                    tEXO
-                  </p>
+                  <p>{numberWithCommas(normalizeTokenDecimal(pendingReward).toFixed(4))} tEXO</p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {numberWithCommas(
-                      normalizeTokenDecimal(totalStaked).toFixed(4),
-                    )}{' '}
-                    {symbol}
+                    {numberWithCommas(normalizeTokenDecimal(totalStaked).toFixed(4))} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -229,10 +222,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {numberWithCommas(
-                      normalizeTokenDecimal(tokenBalance).toFixed(4),
-                    )}{' '}
-                    {symbol}
+                    {numberWithCommas(normalizeTokenDecimal(tokenBalance).toFixed(4))} {symbol}
                   </p>
                 </RowPoolItem>
               </div>
@@ -254,7 +244,7 @@ function FarmItem(props: any) {
                 ) : null}
 
                 {!isAlreadyApproved ? (
-                  <ApproveAction data={dataButton} />
+                  <ApproveAction data={dataButton} onApprove={onApprove} />
                 ) : null}
               </div>
 

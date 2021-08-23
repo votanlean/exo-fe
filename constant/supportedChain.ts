@@ -10,4 +10,8 @@ export const supportedChains = [{
 }, {
   chainId: 80001,
   rpc: 'https://rpc-mumbai.maticvigil.com/v1/e5cf98dd4b3c2e17a1e632cf66d5eb98d3a9b6dd'
+},
+{
+  chainId: 5600,
+  rpc: 'http://188.166.228.206:3001',
 }]

@@ -72,4 +72,21 @@ export const networks = [
     secondsPerBlock: 2.3,
     swapLink: 'https://quickswap.exchange/#/swap?outputCurrency='
   },
+  {
+    id: 5600,
+    name: 'Binance',
+    icon: '/static/images/wallets/binance.svg',
+    type: 'binance',
+    iconDisable: '/static/images/wallets/binance-disabled.svg',
+    rpcUrlsList: [
+      'http://188.166.228.206:3001'
+    ],
+    symbol: 'BNB',
+    blockExplorerName: 'Bscscan',
+    blockExplorerUrl: 'https://bscscan.com',
+    decimals: 18,
+    startBlock: '9794888',
+    secondsPerBlock: 3,
+    swapLink: 'https://exchange.pancakeswap.finance/#/swap?outputCurrency=',
+  },
 ];

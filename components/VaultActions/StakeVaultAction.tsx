@@ -1,49 +1,33 @@
-import React, { useState } from 'react';
-import { Box } from '@material-ui/core';
-import Cookies from 'universal-cookie';
+import { useState } from 'react';
 
-import Button from 'components/Button';
 import { StakeDialog } from 'components/Dialogs';
-import { useStake } from 'hooks/useStake';
-import { isAddress } from 'utils/web3';
-import rot13 from 'utils/encode';
+import { useVaultStake } from 'hooks/useStake';
+import Button from 'components/Button';
 
 import { useStyles } from './styles';
 import { getDecimals } from 'utils/decimalsHelper';
 import { useNetwork } from 'state/hooks';
+import { Box } from '@material-ui/core';
 
-function StakeAction(props: any) {
+function StakeVaultAction(props: any) {
   const classes = useStyles();
-  const { disabled, data, stakingTokenPrice } = props || {};
+  const { disabled, data, onAction } = props || {};
   const {
-    id,
-    requestingContract,
+    requestingContract: vaultContract,
     symbol,
     depositFee,
     maxAmountStake,
-    refStake,
     stakingToken,
   } = data || {};
   const [openStakeDialog, setOpenStakeDialog] = useState(false);
 
-  const { onStake, isLoading } = useStake(requestingContract, id);
+  const { onVaultStake, isLoading } = useVaultStake(vaultContract);
   const { id: chainId } = useNetwork();
 
   const handleConfirmStake = async (amount) => {
-    let ref;
-
-    if (refStake) {
-      const cookies = new Cookies();
-      if (cookies.get('ref')) {
-        if (isAddress(rot13(cookies.get('ref')))) {
-          ref = rot13(cookies.get('ref'));
-        }
-      } else {
-        ref = '0x0000000000000000000000000000000000000000';
-      }
-    }
     const decimals = getDecimals(stakingToken.decimals, chainId);
-    await onStake(amount, ref, decimals);
+    await onVaultStake(amount, decimals);
+    onAction();
   };
 
   const handleToggleStake = () => {
@@ -69,10 +53,9 @@ function StakeAction(props: any) {
         maxAmount={maxAmountStake}
         isLoading={isLoading}
         decimals={stakingToken.decimals}
-        stakingTokenPrice={stakingTokenPrice}
       />
     </Box>
   );
 }
 
-export default StakeAction;
+export default StakeVaultAction;

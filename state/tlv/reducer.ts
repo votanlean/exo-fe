@@ -42,6 +42,7 @@ export const fetchTLV = async (dispatch) => {
                 allTokenPrices = await fetchPolygonPrices();
                 break;
             case 56:
+            case 5600:
             case 97:
                 allTokenPrices = await fetchPrices();
                 break;
@@ -72,6 +73,7 @@ export const fetchTLV = async (dispatch) => {
 
         switch (chainId) {
             case 56:
+            case 5600:
             case 97:
                 stableTokenFarmId = BSC_FARM_ID.TEXO_BUSD;
                 quoteTokenfarmId = BSC_FARM_ID.TEXO_BNB;

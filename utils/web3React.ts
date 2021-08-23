@@ -35,7 +35,7 @@ export const injected = new InjectedConnector({
 });
 
 export const bscConnector = new BscConnector({
-  supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
+    supportedChainIds: [56, 5600, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
 });
 
 const walletconnect = new WalletConnectConnector({

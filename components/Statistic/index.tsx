@@ -33,13 +33,13 @@ function Statistic(props) {
     burnAmount,
     tvl,
     tEXOReward,
-        allChainTvl = new BigNumber(0)
+    allChainTvl = new BigNumber(0),
   } = props;
 
   const normalizedTotalSupply = normalizeTokenDecimal(totalSupply).toNumber();
   const normalizedEmissionRate =
     normalizeTokenDecimal(currentTEXOPerBlock).toNumber();
-    const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
+  const normalizeTexoPrice = isNaN(tEXOPrice) ? 0 : tEXOPrice;
   const normalizedBurnAmount = normalizeTokenDecimal(burnAmount).toNumber();
   const { id: chainId, swapLink } = useNetwork();
   const tEXOBalance = getBalanceNumber(
@@ -129,7 +129,10 @@ function Statistic(props) {
           <Box display="flex" justifyContent="space-between">
             <Typography className={'font-bold'}>Market Cap</Typography>
             <Typography className={'font-bold'}>
-              ${numberWithCommas(calculateMarketCap(normalizeTexoPrice, totalSupply))}
+              $
+              {numberWithCommas(
+                calculateMarketCap(normalizeTexoPrice, totalSupply),
+              )}
             </Typography>
           </Box>
 
@@ -147,7 +150,7 @@ function Statistic(props) {
             </Typography>
           </Box>
           <a
-            style={{ fontSize: '1rem', marginTop:'10px', color: '#007EF3' }}
+            style={{ fontSize: '1rem', marginTop: '10px', color: '#007EF3' }}
             href={swapLink + texoAddress}
             target="_blank"
           >
@@ -167,12 +170,17 @@ function Statistic(props) {
             Total Value Locked (TVL)
           </Typography>
 
-                    <Typography variant="h4" className={'font-bold'}>
+          <Typography variant="h4" className={'font-bold'}>
             ${numberWithCommas(allChainTvl.toFixed(2))}
           </Typography>
 
           <Typography variant="h4" className={'font-bold'}>
-            ${`${numberWithCommas(tvl.toFixed(2))} (${chainId === 56 || chainId === 97 ? 'BSC' : 'Polygon'})`}
+            $
+            {`${numberWithCommas(tvl.toFixed(2))} (${
+              chainId === 56 || chainId === 97 || chainId === 5600
+                ? 'BSC'
+                : 'Polygon'
+            })`}
           </Typography>
 
           <Typography color="textPrimary" className={'font-bold'}>

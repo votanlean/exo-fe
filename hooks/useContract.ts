@@ -5,6 +5,7 @@ import {
   getFAANGOrchestratorContract,
   getOrchestratorContract,
   getTEXOContract,
+  getVaultContract
 } from 'utils/contractHelpers';
 import { useNetwork } from 'state/hooks';
 
@@ -39,6 +40,12 @@ export const useERC20 = (address: string) => {
 
   return useMemo(() => getBep20Contract(address, web3, chainId), [address, web3, chainId]);
 };
+
+export const useVaultContract = (address: string) => {
+    const {id: chainId} = useNetwork()
+    const web3 = useWeb3()
+    return useMemo(() => getVaultContract(address, web3,chainId), [address, web3,chainId])
+}
 //
 // /**
 //  * @see https://docs.openzeppelin.com/contracts/3.x/api/token/erc721
