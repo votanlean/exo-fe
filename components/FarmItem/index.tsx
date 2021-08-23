@@ -104,7 +104,7 @@ function FarmItem(props: any) {
   const apr = getFarmApr(
     farmWeight,
     tEXOPrice,
-    lpTotalInQuoteToken,
+    totalLiquidity,
     normalizeTokenDecimal(tEXOPerBlock),
     chainId
   );
