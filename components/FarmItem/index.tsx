@@ -127,7 +127,7 @@ function FarmItem(props: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>${Number(totalLiquidity).toFixed(2)}</h3>
+        <h3>${numberWithCommas(Number(totalLiquidity).toFixed(2))}</h3>
       </div>
       <a
         style={{ fontSize: '19px', marginBottom: '10px', color: '#007EF3' }}
