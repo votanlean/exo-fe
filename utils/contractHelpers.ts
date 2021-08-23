@@ -10,6 +10,7 @@ import orchestratorAbi from '../config/abi/TEXOOrchestrator.json';
 import fAANGOrchestratorAbi from '../config/abi/FAANGOrchestrator.json';
 import compiledTEXO from '../config/abi/TEXOToken.json';
 import bep20Abi from '../config/abi/erc20.json';
+import vaultAbi from '../config/abi/Vault.json';
 
 const getContract = (abi: any, address: string, web3?: Web3, chainId?: number) => {
     const _web3 = web3 || getWeb3NoAccount(chainId);
@@ -31,4 +32,8 @@ export const getFAANGOrchestratorContract = (web3?: Web3, chainId?: number) => {
 
 export const getBep20Contract = (address: string, web3?: Web3, chainId?: number) => {
     return getContract(bep20Abi, address, web3, chainId)
+}
+
+export const getVaultContract = (address: string, web3?: Web3 ,chainId?: number) =>{
+    return getContract(vaultAbi, address, web3, chainId)
 }

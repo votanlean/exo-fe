@@ -15,15 +15,15 @@ import {
 } from 'components/PoolActions';
 import { useNetwork } from 'state/hooks';
 import { numberWithCommas } from 'utils/numberWithComma';
+import { useCallback } from 'react';
 
-function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
+function FaangItem({ pool, account, tEXOPrice, FAANGFinish, onApprove }) {
   const {
     symbol,
     totalStaked,
     userData = {},
     depositFeeBP,
     stakingToken,
-    canClaimReward,
   } = pool;
   const classes = useStyles();
   const { allowance, pendingReward, stakedBalance, stakingTokenBalance } =
@@ -40,7 +40,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
   const dataButton = {
     id: 0,
     stakingToken,
-    orchestratorContract,
+    requestingContract: orchestratorContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: stakingTokenBalance,
@@ -71,7 +71,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
           />
         </Box>
         <Box className={classes.rowItem}>
-          <Box className={classes.flexRow}>
+          <Box className={classes.flexRow} marginBottom={1.25}>
             <Typography
               component="p"
               className={classes.pTitle}
@@ -79,15 +79,26 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
             >
               My Stake
             </Typography>
-            <Typography
-              component="p"
-              className={classes.pTitle}
-              style={{ color: '#6A98C9' }}
-            >
-              {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
-            </Typography>
+            <div className="text-right">
+              <Typography
+                component="p"
+                className={classes.pTitle}
+                style={{ color: '#6A98C9' }}
+              >
+                {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
+              </Typography>
+              <Typography variant="caption">
+                $
+                {numberWithCommas(
+                  (
+                    Number(normalizeTexoPrice) *
+                    Number(normalizeTokenDecimal(stakedBalance))
+                  ).toFixed(2),
+                )}
+              </Typography>
+            </div>
           </Box>
-          <Box className={classes.flexRow}>
+          <Box className={classes.flexRow} marginBottom={1.25}>
             <Typography
               component="p"
               className={classes.pTitle}
@@ -103,7 +114,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               0%
             </Typography>
           </Box>
-          <Box className={classes.flexRow}>
+          <Box className={classes.flexRow} marginBottom={1.25}>
             <Typography
               component="p"
               className={classes.pTitle}
@@ -122,7 +133,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               FAANG
             </Typography>
           </Box>
-          <Box className={classes.flexRow}>
+          <Box className={classes.flexRow} marginBottom={1.25}>
             <Typography component="p" className={classes.pTitle}>
               Total Staked
             </Typography>
@@ -131,7 +142,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               {symbol}
             </Typography>
           </Box>
-          <Box className={classes.flexRow}>
+          <Box className={classes.flexRow} marginBottom={1.25}>
             <Typography component="p" className={classes.pTitle}>
               Wallet Balance
             </Typography>
@@ -150,7 +161,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
           justifyContent="space-between"
         >
           <Box>
-            <Box className={classes.flexRow}>
+            <Box className={classes.flexRow} marginBottom={1.25}>
               <Typography
                 component="p"
                 className={classes.pTitle}
@@ -166,7 +177,7 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
                 tEXO
               </Typography>
             </Box>
-            <Box className={classes.flexRow}>
+            <Box className={classes.flexRow} marginBottom={1.25}>
               <Typography
                 component="p"
                 className={classes.pTitle}
@@ -212,11 +223,16 @@ function FaangItem({ pool, account, tEXOPrice, FAANGFinish }) {
               data={dataButton}
               disabled={FAANGFinish}
               buttonClasses={classes.approveButton}
+              onApprove={onApprove}
             />
           ) : null}
 
           {isAlreadyApproved ? (
-            <StakeAction disabled={FAANGFinish} data={dataButton} />
+            <StakeAction
+              disabled={FAANGFinish}
+              data={dataButton}
+              stakingTokenPrice={normalizeTexoPrice}
+            />
           ) : null}
 
           <Box className={classes.doubleBtn}>

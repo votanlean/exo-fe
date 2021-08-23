@@ -12,8 +12,8 @@ import { useNetwork } from 'state/hooks';
 
 function ApproveAction(props: any) {
   const classes = useStyles();
-  const { disabled, data, buttonClasses } = props || {};
-  const { stakingToken, orchestratorContract, id, account } = data || {};
+  const { disabled, data, buttonClasses, onApprove } = props || {};
+  const { stakingToken, requestingContract, account } = data || {};
   const [openPopup, setOpenPopup] = useState(false);
   const { id: chainId } = useNetwork();
   const handleConnectPopup = () => {
@@ -24,11 +24,11 @@ function ApproveAction(props: any) {
     stakingToken.address ? getAddress(stakingToken.address, chainId) : '',
   );
 
-  const { onApprove, isLoading } = useApprove(
+  const { approve, isLoading } = useApprove({
     tokenContract,
-    orchestratorContract,
-    id,
-  );
+    requestingContract,
+    onApprove
+  });
 
   if (!account) {
     return (
@@ -49,7 +49,7 @@ function ApproveAction(props: any) {
     <Box>
       <Button
         className={`${classes.button} ${buttonClasses}`}
-        onClick={onApprove}
+        onClick={approve}
         disabled={isLoading || disabled}
       >
         Approve

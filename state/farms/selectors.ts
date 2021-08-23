@@ -35,6 +35,7 @@ export const useTotalValue = (): BigNumber => {
 
     switch (chainId) {
         case 56:
+        case 5600:
         case 97:
             farmId = BSC_FARM_ID.TEXO_BNB;
             break;

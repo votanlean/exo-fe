@@ -1,6 +1,7 @@
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import BigNumber from 'bignumber.js';
+import { Typography } from '@material-ui/core';
 import {
   ApproveAction,
   ClaimRewardsAction,
@@ -40,6 +41,7 @@ function FarmItem(props: any) {
     stakingTokenPrice,
     tEXOPrice,
     selectedAccount,
+    onApprove
   } = props;
   const {
     icon,
@@ -54,9 +56,8 @@ function FarmItem(props: any) {
     displayAllocPoint,
     userData = {},
     lpTotalInQuoteToken = BIG_ZERO,
-    liquidityLink,
+    liquidityLink
   } = farmData;
-
   const {
     allowance,
     earnings: pendingReward,
@@ -66,14 +67,13 @@ function FarmItem(props: any) {
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const tokenAddress = getAddress(address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
-
   const dataButton = {
     id: farmId,
     stakingToken: {
       address,
       decimals,
     },
-    orchestratorContract: tEXOOrchestratorContract,
+    requestingContract: tEXOOrchestratorContract,
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: tokenBalance,
@@ -93,15 +93,20 @@ function FarmItem(props: any) {
   );
   const [isDisplayDetails, setIsDisplayDetails] = useState(false);
   const totalLiquidity = new BigNumber(lpTotalInQuoteToken).times(
-    stakingTokenPrice,
+    stakingTokenPrice
   );
 
+  const liquidityStakedUser = normalizeTokenDecimal(new BigNumber(stakedBalance))
+                              .times(totalLiquidity)
+                              .div(normalizeTokenDecimal(new BigNumber(totalStaked)));
+
+  const lpPrice = totalLiquidity.div(normalizeTokenDecimal(new BigNumber(totalStaked)));
   const apr = getFarmApr(
     farmWeight,
     tEXOPrice,
-    totalLiquidity,
+    lpTotalInQuoteToken,
     normalizeTokenDecimal(tEXOPerBlock),
-    chainId,
+    chainId
   );
 
   const toggleDisplayDetails = () => {
@@ -122,7 +127,7 @@ function FarmItem(props: any) {
         className={styles.detailsContainer__row}
       >
         <h3>Total liquidity:</h3>
-        <h3>${numberWithCommas(Number(totalLiquidity).toFixed(2))}</h3>
+        <h3>${Number(totalLiquidity).toFixed(2)}</h3>
       </div>
       <a
         style={{ fontSize: '19px', marginBottom: '10px', color: '#007EF3' }}
@@ -186,9 +191,17 @@ function FarmItem(props: any) {
                   title="My Stake"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>
-                    {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
-                  </p>
+                  <div className="text-right">
+                    <p>
+                      {normalizeTokenDecimal(stakedBalance).toFixed(4)} {symbol}
+                    </p>
+                    <Typography variant="caption">
+                      $
+                      {Number(liquidityStakedUser) > 0 ? numberWithCommas(
+                        Number(liquidityStakedUser).toFixed(2),
+                      ): "0.00"}
+                    </Typography>
+                  </div>
                 </RowPoolItem>
                 <RowPoolItem
                   title="Deposit Fee"
@@ -200,19 +213,11 @@ function FarmItem(props: any) {
                   title="My Rewards"
                   containerStyle={`${styles.colorLight}`}
                 >
-                  <p>
-                    {numberWithCommas(
-                      normalizeTokenDecimal(pendingReward).toFixed(4),
-                    )}{' '}
-                    tEXO
-                  </p>
+                  <p>{numberWithCommas(normalizeTokenDecimal(pendingReward).toFixed(4))} tEXO</p>
                 </RowPoolItem>
                 <RowPoolItem title="Total Staked">
                   <p>
-                    {numberWithCommas(
-                      normalizeTokenDecimal(totalStaked).toFixed(4),
-                    )}{' '}
-                    {symbol}
+                    {numberWithCommas(normalizeTokenDecimal(totalStaked).toFixed(4))} {symbol}
                   </p>
                 </RowPoolItem>
                 <RowPoolItem
@@ -220,10 +225,7 @@ function FarmItem(props: any) {
                   containerStyle={`${styles.wallet}`}
                 >
                   <p>
-                    {numberWithCommas(
-                      normalizeTokenDecimal(tokenBalance).toFixed(4),
-                    )}{' '}
-                    {symbol}
+                    {numberWithCommas(normalizeTokenDecimal(tokenBalance).toFixed(4))} {symbol}
                   </p>
                 </RowPoolItem>
               </div>
@@ -237,10 +239,15 @@ function FarmItem(props: any) {
 
                 {canWithdraw ? <WithdrawAction data={dataButton} /> : null}
 
-                {isAlreadyApproved ? <StakeAction data={dataButton} /> : null}
+                {isAlreadyApproved ? (
+                  <StakeAction
+                    data={dataButton}
+                    stakingTokenPrice={lpPrice}
+                  />
+                ) : null}
 
                 {!isAlreadyApproved ? (
-                  <ApproveAction data={dataButton} />
+                  <ApproveAction data={dataButton} onApprove={onApprove} />
                 ) : null}
               </div>
 
@@ -264,7 +271,7 @@ const RowPoolItem = React.memo(function RowPoolItem(props: any) {
   const { containerStyle, title, children } = props || {};
   return (
     <div
-      className={`d-flex items-center justify-between font-bold ${containerStyle}`}
+      className={`d-flex justify-between font-bold mb-2.5 ${containerStyle}`}
     >
       <p className={styles.pTitle}>{title}</p>
       {children}

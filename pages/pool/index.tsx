@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Head from 'next/head';
-import Countdown from 'countdown';
 import { useWeb3React } from '@web3-react/core';
 import dayjs from 'dayjs';
 import {
@@ -18,7 +17,7 @@ import Statistic from 'components/Statistic';
 import PoolRow from 'components/PoolRow';
 
 import styles from './pool.module.scss';
-import { useBlockData } from 'state/block/selectors';
+import { useBlockData, useBlockDataLoading } from 'state/block/selectors';
 import { useTexoTokenData, useTexoTokenPrice } from 'state/texo/selectors';
 import { useAppDispatch } from 'state';
 import {
@@ -29,7 +28,7 @@ import {
 import { getAddress } from 'utils/addressHelpers';
 import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
 import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
-import { useOrchestratorData } from 'state/orchestrator/selectors';
+import { useOrchestratorData, useOrchestratorLoading } from 'state/orchestrator/selectors';
 import { fetchBlockDataThunk } from 'state/block/reducer';
 import { usePools } from 'state/pools/selectors';
 import { fetchAppPrices } from 'state/prices/reducer';
@@ -57,6 +56,7 @@ import { fetchFAANGOrchestratorDataThunk } from 'state/FAANGOrchestrator/reducer
 import { useAllChainTotalValue } from 'state/tlv/selectors';
 import { fetchTLV } from 'state/tlv/reducer';
 import BannerCoinTelegraph from 'components/BannerCoinTelegraph';
+import useCountdownString from 'hooks/useCountdownString';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -97,10 +97,7 @@ function Pool() {
   const classes: any = useStyles();
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
-  const [countDownString, setCountDownString] = useState('');
-  const [countDownStringToStartSeeding, setCountDownStringToStartSeeding] =
-    useState('');
-  const [countDownStringFarm, setCountDownStringFarm] = useState('');
+  const [fAANGFinishBlock, setFAANGFinishBlock] = useState(null);
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
   const poolsData = usePools();
@@ -109,9 +106,9 @@ function Pool() {
   const farmsData = useFarms();
   const tvl = useTotalValue();
   const totalTvl = useAllChainTotalValue();
-  const { FAANGFinishBlock } = useFAANGOrchestratorData();
 
   const { currentBlock } = useBlockData();
+  const isCurrentBlockLoading = useBlockDataLoading();
 
   const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
     useTexoTokenData();
@@ -122,6 +119,11 @@ function Pool() {
     seedingFinishBlock,
     farmStartBlock,
   } = useOrchestratorData();
+  const isOrchestratorLoading = useOrchestratorLoading();
+
+  const countDownStringFarm = useCountdownString(farmStartBlock, isOrchestratorLoading);
+  const countDownString = useCountdownString(canClaimRewardsBlock, isOrchestratorLoading);
+  const countDownStringToConcludeFAANG = useCountdownString(fAANGFinishBlock);
 
   const { tEXOReward } = useUserInfoData();
   const network = useNetwork();
@@ -139,8 +141,8 @@ function Pool() {
       blockExplorerUrl + '/block/countdown/' + seedingFinishBlock;
   }
 
-  const blockExplorerToCountDownFarming =
-    blockExplorerUrl + '/block/countdown/' + farmStartBlock;
+  const blockExplorerToCountDownFAANG =
+    blockExplorerUrl + '/block/countdown/' + fAANGFinishBlock;
 
   const refreshAppGlobalData = () => {
     dispatch(replaceFarmWithoutUserDataAsync(chainId));
@@ -163,9 +165,15 @@ function Pool() {
 
   useEffect(refreshAppGlobalData, [account, dispatch, chainId]);
 
-  const countDownInterval = useRef(null);
-  const countDownIntervalSeedingStart = useRef(null);
-  const countDownIntervalFarm = useRef(null);
+  useEffect(() => {
+    if (chainId === 56) {
+      setFAANGFinishBlock(10770888);
+    }
+
+    if (chainId === 137) {
+      setFAANGFinishBlock(19089090);
+    }
+  }, [chainId])
 
   useEffect(() => {
     const updateAppDataInterval = setInterval(() => {
@@ -180,99 +188,18 @@ function Pool() {
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
         dispatch(fetchUserInfoDataThunk(account, chainId));
       }
-    }, 30000);
+    }, 60 * 1000);
 
     return () => {
       clearInterval(updateAppDataInterval);
     };
   }, [chainId, account]);
 
-  useEffect(() => {
-    if (
-      !farmStartBlock ||
-      !canClaimRewardsBlock ||
-      !seedingFinishBlock ||
-      !currentBlock ||
-      countDownInterval.current
-    ) {
-      return;
-    }
-    const claimRewardDate = getClaimRewardsDate(
-      currentBlock,
-      canClaimRewardsBlock,
-      dayjs(),
-      network.secondsPerBlock,
-    ).toDate();
-
-    const seedingStartDate = getClaimRewardsDate(
-      currentBlock,
-      seedingStartBlock,
-      dayjs(),
-      network.secondsPerBlock,
-    ).toDate();
-
-    const claimFarmRewardDate = getClaimRewardsDate(
-      currentBlock,
-      farmStartBlock,
-      dayjs(),
-      network.secondsPerBlock,
-    ).toDate();
-
-    const interval = setInterval(() => {
-      const hasPassedRewardLockDate = dayjs().isAfter(dayjs(claimRewardDate));
-      if (hasPassedRewardLockDate) {
-        countDownInterval.current = null;
-        clearInterval(interval);
-        setCountDownString('0 seconds');
-
-        return;
-      }
-
-      const countDownString = Countdown(new Date(), claimRewardDate).toString();
-
-      setCountDownString(countDownString);
-    }, 1000);
-
-    const intervalFarm = setInterval(() => {
-      const hasPassedRewardLockDate = dayjs().isAfter(
-        dayjs(claimFarmRewardDate),
-      );
-      if (hasPassedRewardLockDate) {
-        countDownIntervalFarm.current = null;
-        clearInterval(intervalFarm);
-        setCountDownStringFarm('0 seconds');
-        return;
-      }
-
-      const countDownString = Countdown(
-        new Date(),
-        claimFarmRewardDate,
-      ).toString();
-
-      setCountDownStringFarm(countDownString);
-    }, 1000);
-
-    countDownIntervalFarm.current = intervalFarm;
-    countDownInterval.current = interval;
-
-    return () => {
-      if (countDownInterval.current) {
-        clearInterval(countDownInterval.current);
-        countDownInterval.current = null;
-      }
-      if (countDownIntervalFarm.current) {
-        clearInterval(countDownIntervalFarm.current);
-        countDownIntervalFarm.current = null;
-      }
-    };
-  }, [
-    currentBlock,
-    canClaimRewardsBlock,
-    seedingStartBlock,
-    seedingFinishBlock,
-    farmStartBlock,
-    network?.secondsPerBlock,
-  ]);
+  const onApprove = useCallback(() => {
+    dispatch(fetchPoolsUserDataAsync(account, chainId));
+    dispatch(fetchFarmUserDataAsync(account, chainId));
+    dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+  }, [dispatch, account, chainId]);
 
   return (
     <Paper className="paper-root">
@@ -299,28 +226,19 @@ function Pool() {
             align="center"
             style={{ marginBottom: '30px', lineHeight: '40px' }}
           >
-            {chainId === 56 || chainId === 97
+            {chainId === 56 || chainId === 97 || chainId === 5600
               ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
               : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
             <br />
-            {currentBlock && currentBlock < farmStartBlock
+            {currentBlock && currentBlock < farmStartBlock && !isCurrentBlockLoading && !isOrchestratorLoading
               ? 'Farming reward will be generated in'
               : null}
           </Typography>
-          {currentBlock && currentBlock < farmStartBlock ? (
+          {currentBlock && currentBlock < farmStartBlock && !isCurrentBlockLoading && !isOrchestratorLoading ? (
             <Typography variant="h3" color="primary" align="center">
               {poolPageReady ? countDownStringFarm : 'Coming Soon'}
             </Typography>
           ) : null}
-          <Typography variant="h6" align="center">
-            <a
-              target="_blank"
-              style={{ color: '#007EF3' }}
-              href={blockExplorerToCountDownFarming}
-            >
-              Check explorer for the most accurate countdown
-            </a>
-          </Typography>
         </div>
 
         <div className={styles.lpPoolGrid}>
@@ -330,7 +248,7 @@ function Pool() {
             if (allTokenPrices.data) {
               stakingTokenPrice =
                 allTokenPrices.data[
-                  getAddress(farm.quoteToken.address, chainId).toLowerCase()
+                getAddress(farm.quoteToken.address, chainId).toLowerCase()
                 ];
             }
 
@@ -343,6 +261,7 @@ function Pool() {
                 farmData={farmsData[index]}
                 key={farm.pid}
                 countDownString={countDownString}
+                onApprove={onApprove}
               />
             );
           })}
@@ -356,6 +275,33 @@ function Pool() {
           >
             Stake tEXO for FAANG
           </Typography>
+          {currentBlock < fAANGFinishBlock && (
+            <>
+              <Typography
+                variant="h5"
+                align="center"
+                paragraph
+                style={{ marginBottom: '10px', lineHeight: '40px' }}
+              >
+                FAANG pool concludes in
+              </Typography>
+              {!isCurrentBlockLoading && (
+                <Typography variant="h3" color="primary" align="center">
+                  {countDownStringToConcludeFAANG}
+                </Typography>
+              )}
+              <Typography align="center" variant="h6">
+                <a
+                  target="_blank"
+                  style={{ color: '#007EF3' }}
+                  href={blockExplorerToCountDownFAANG}
+                >
+                  Check explorer for the most accurate countdown
+                </a>
+                <br />
+              </Typography>
+            </>
+          )}
         </div>
 
         <div className={styles.lpPoolGrid}>
@@ -365,7 +311,8 @@ function Pool() {
               pool={pool}
               tEXOPrice={tEXOPrice}
               account={account}
-              FAANGFinish={currentBlock >= FAANGFinishBlock}
+              FAANGFinish={currentBlock >= fAANGFinishBlock}
+              onApprove={onApprove}
             />
           ))}
         </div>
@@ -387,7 +334,7 @@ function Pool() {
               paragraph
               style={{ marginBottom: '10px', lineHeight: '40px' }}
             >
-              {chainId === 56 || chainId === 97
+              {chainId === 56 || chainId === 97 || chainId === 5600
                 ? 'Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO.'
                 : 'Equitable Distribution of tEXO in seed pools. Stake ERC-20 tokens for tEXO.'}
               <br />
@@ -396,7 +343,7 @@ function Pool() {
               {currentBlock < canClaimRewardsBlock &&
                 'Users can harvest tEXO in'}
               {currentBlock >= canClaimRewardsBlock &&
-              currentBlock < seedingFinishBlock ? (
+                currentBlock < seedingFinishBlock ? (
                 <>
                   <span>
                     Users may now harvest tEXO and provide liquidity for LP
@@ -415,7 +362,9 @@ function Pool() {
             )}
 
             {currentBlock >= canClaimRewardsBlock &&
-              currentBlock < seedingFinishBlock && (
+              currentBlock < seedingFinishBlock &&
+              !isCurrentBlockLoading &&
+              !isOrchestratorLoading && (
                 <Typography variant="h3" color="primary" align="center">
                   {countDownStringFarm}
                 </Typography>
@@ -481,10 +430,10 @@ function Pool() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                      getAddress(
-                        pool.stakingToken.address,
-                        chainId,
-                      )?.toLowerCase()
+                    getAddress(
+                      pool.stakingToken.address,
+                      chainId,
+                    )?.toLowerCase()
                     ];
                 }
                 return (
@@ -502,6 +451,7 @@ function Pool() {
                     stakingTokenPrice={stakingTokenPrice}
                     tEXOPrice={tEXOPrice}
                     countDownString={countDownString}
+                    onApprove={onApprove}
                   />
                 );
               })}

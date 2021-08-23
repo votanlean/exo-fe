@@ -12,7 +12,8 @@ import userInfoReducer from './userInfo';
 import networkReducer from './network';
 import FAANGOrchestratorReducer from './FAANGOrchestrator';
 import tlvReducer from './tlv';
-import appTheme from './appTheme'
+import appTheme from './appTheme';
+import yieldReducer from './yield';
 
 export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
@@ -28,7 +29,8 @@ export const store = configureStore({
     network: networkReducer,
     FAANGOrchestrator: FAANGOrchestratorReducer,
 		tlv: tlvReducer,
-    theme: appTheme
+    theme: appTheme,
+		yield: yieldReducer,
   },
 });
 

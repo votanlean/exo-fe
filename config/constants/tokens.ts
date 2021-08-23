@@ -6,12 +6,14 @@ const tokens = {
     symbol: 'TEXO',
     address: {
       56: '0xF1afb5674Bf946458BD1163163F62dE683B07D65',
+      5600: '0xF1afb5674Bf946458BD1163163F62dE683B07D65',
       97: '0x18271771249Fa3355A28D56ae43B284BB4D26ed7',
       137: '0xF1afb5674Bf946458BD1163163F62dE683B07D65',
       80001: '0x73a739D0c54f5A24406b6f0F674424eCAdD64Acc',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
       137: 18,
       80001: 18,
@@ -21,12 +23,14 @@ const tokens = {
     symbol: 'FAANG',
     address: {
       56: '0xe2fab6c603c70aae2ccdef140dcd8b7d6ccdff35',
+      5600: '0xe2fab6c603c70aae2ccdef140dcd8b7d6ccdff35',
       97: '0xdC7FD2A64e78197a1754063fE90DdCb8eCeCafCB',
       137: '0xAa40849abB7Ba1689cC1272f0D00Ccc04c9bAA04',
       80001: '0x29E35F2d89d9Ee3FA9ebfc48DCef6e798aaC11F4',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
       137: 18,
       80001: 18,
@@ -36,12 +40,14 @@ const tokens = {
     symbol: 'USDT',
     address: {
       56: '0x55d398326f99059ff775485246999027b3197955',
+      5600: '0x55d398326f99059ff775485246999027b3197955',
       97: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
       137: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
       80001: '0x4aAeB0c6523e7aa5Adc77EAD9b031ccdEA9cB1c3',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
       137: 6,
       80001: 6,
@@ -51,10 +57,12 @@ const tokens = {
     symbol: 'wBNB',
     address: {
       56: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
+      5600: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
       97: '0xae13d989dac2f0debff460ac112a837c89baa7cd',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
     },
   },
@@ -62,10 +70,12 @@ const tokens = {
     symbol: 'BUSD',
     address: {
       56: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+      5600: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
       97: '0xfF9F29E2dd5f3c76ec0C3214e5bb758E7F67F462', //custom
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
     },
   },
@@ -73,10 +83,12 @@ const tokens = {
     symbol: 'CAKE',
     address: {
       56: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+      5600: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
       97: '0xa35062141Fa33BCA92Ce69FeD37D0E8908868AAe',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
     },
   },
@@ -84,10 +96,12 @@ const tokens = {
     symbol: 'BTCB',
     address: {
       56: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
+      5600: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
       97: '0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
     },
   },
@@ -95,10 +109,12 @@ const tokens = {
     symbol: 'ETH',
     address: {
       56: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+      5600: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
       97: '0x838961136197260c11b5f5Fb39f10eef9d588630', //custom
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
     },
   },
@@ -106,10 +122,12 @@ const tokens = {
     symbol: 'BUNNY',
     address: {
       56: '0xc9849e6fdb743d08faee3e34dd2d1bc69ea11a51',
+      5600: '0xc9849e6fdb743d08faee3e34dd2d1bc69ea11a51',
       97: '0x4B915Ec8D58B62edC98E556B0f37E0520D257aD2', //custom
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
     },
   },
@@ -117,10 +135,12 @@ const tokens = {
     symbol: 'XVS',
     address: {
       56: '0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63',
+      5600: '0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63',
       97: '0x71336AAeD37b25dEFA5b48a1280CD9ED4b45080a', //custom
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
     },
   },
@@ -128,12 +148,14 @@ const tokens = {
     symbol: 'USDC',
     address: {
       56: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+      5600: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
       97: '0xa5c92c6B4da1e42BCED5683AF284f8B9B828B9F0', //custom
       137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
       80001: '0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
       137: 6,
       80001: 6,
@@ -143,12 +165,14 @@ const tokens = {
     symbol: 'DAI',
     address: {
       56: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
+      5600: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
       97: '0x2DB37EDd9F20298De90Cc9F1029734F07c2cD529', //custom
       137: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
       80001: '0x27a44456bEDb94DbD59D0f0A14fE977c777fC5C3',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
       137: 18,
       80001: 18,
@@ -158,10 +182,12 @@ const tokens = {
     symbol: 'DOT',
     address: {
       56: '0x7083609fce4d1d8dc0c979aab8c869ea2c873402',
+      5600: '0x7083609fce4d1d8dc0c979aab8c869ea2c873402',
       97: '0xce8085f0191d28C85EEEe1E61Ec9D466E2959A59',
     },
     decimals: {
       56: 18,
+      5600: 18,
       97: 18,
     },
   },

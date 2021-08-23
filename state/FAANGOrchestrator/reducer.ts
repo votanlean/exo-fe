@@ -10,22 +10,29 @@ import contracts from '../../config/constants/contracts';
 
 
 export const FAANGOrchestratorSlice = createSlice({
-    name: 'FAANGorchestrator',
-    initialState: {
-      data: {
-        FAANGFinishBlock: BIG_ZERO.toString(10),
-      },
+  name: 'FAANGorchestrator',
+  initialState: {
+    data: {
+      FAANGFinishBlock: BIG_ZERO.toString(10),
     },
-    reducers: {
-      setOrchestratorData: (state, action) => {
-        state.data = action.payload;
-      },
+    loading: false
+  },
+  reducers: {
+    setOrchestratorData: (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
     },
+    setLoading: (state, action) => {
+      state.loading = action.payload
+    }
+  },
 });
 
 
 export const fetchFAANGOrchestratorDataThunk =
   (chainId, network: Network) => async (dispatch) => {
+    dispatch(setLoading(true));
+
     const calls = [
       {
         address: getAddress(contracts.fAANGOrchestrator, chainId),
@@ -34,18 +41,23 @@ export const fetchFAANGOrchestratorDataThunk =
       },
     ];
 
-    const FAANGorchestratorMultiData = await multicall(
+    try {
+      const FAANGorchestratorMultiData = await multicall(
         FAANGOrchestratorABI,
-      calls,
-      chainId,
-    );
-    const [finishBlock] = FAANGorchestratorMultiData;
-    dispatch(
-      setOrchestratorData({
-        FAANGFinishBlock: finishBlock['inActiveBlock'] ? finishBlock['inActiveBlock'].toNumber() : 0,
-      }),
-    );
+        calls,
+        chainId,
+      );
+      const [finishBlock] = FAANGorchestratorMultiData;
+      dispatch(
+        setOrchestratorData({
+          FAANGFinishBlock: finishBlock['inActiveBlock'] ? finishBlock['inActiveBlock'].toNumber() : 0,
+        }),
+      );
+    } catch (error) {
+      dispatch(setLoading(false));
+      throw error;
+    }
   };
 
-export const { setOrchestratorData } = FAANGOrchestratorSlice.actions;
+export const { setOrchestratorData, setLoading } = FAANGOrchestratorSlice.actions;
 

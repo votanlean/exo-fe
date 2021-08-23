@@ -67,7 +67,6 @@ const useStyles = makeStyles((theme) => {
     pTitle: {
       fontWeight: 'bold',
       fontSize: '16px',
-      lineHeight: 2,
     },
     iconButton: {
       padding: '9px',

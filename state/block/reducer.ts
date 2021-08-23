@@ -6,6 +6,7 @@ const initialState = {
   data: {
     currentBlock: 0,
   },
+  loading: false
 };
 
 export const blockSlice = createSlice({
@@ -14,16 +15,25 @@ export const blockSlice = createSlice({
   reducers: {
     setBlockData: (state, action) => {
       state.data = action.payload;
+      state.loading = false;
     },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    }
   },
 });
 
 export const fetchBlockDataThunk = (chainId) => async (dispatch) => {
   const web3 = getWeb3NoAccount(chainId);
-
-  const currentBlock = await web3.eth.getBlockNumber();
-  dispatch(setBlockData({ currentBlock }));
+  dispatch(setLoading(true));
+  try {
+    const currentBlock = await web3.eth.getBlockNumber();
+    dispatch(setBlockData({ currentBlock }));
+  } catch (error) {
+    dispatch(setLoading(false));
+    throw error;
+  }
 };
 
 // Actions
-export const { setBlockData } = blockSlice.actions;
+export const { setBlockData, setLoading } = blockSlice.actions;

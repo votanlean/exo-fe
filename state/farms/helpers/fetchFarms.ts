@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import erc20 from 'config/abi/erc20.json';
 import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
-import multicall from 'utils/multicall';
+import { multicallRetry } from 'utils/multicall';
 import { BIG_TEN } from 'utils/bigNumber';
 import { getAddress } from 'utils/addressHelpers';
 import contracts from 'config/constants/contracts';
@@ -53,7 +53,7 @@ const fetchFarms = async (farmsToFetch: any[], chainId?: number) => {
         lpTotalSupply,
         tokenDecimals,
         quoteTokenDecimals,
-      ] = await multicall(erc20, calls, chainId);
+      ] = await multicallRetry(erc20, calls, chainId);
 
       // Ratio in % of LP tokens that are staked in the MC, vs the total number in circulation
       const lpTokenRatio = new BigNumber(lpTokenBalanceMC).div(
@@ -75,7 +75,7 @@ const fetchFarms = async (farmsToFetch: any[], chainId?: number) => {
       // Total staked in LP, in quote token value
       const lpTotalInQuoteToken = quoteTokenAmountMc.times(new BigNumber(2));
 
-      const [info, totalAllocPoint] = await multicall(
+      const [info, totalAllocPoint] = await multicallRetry(
         orchestratorABI,
         [
           {

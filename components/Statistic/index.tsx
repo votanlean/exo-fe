@@ -177,7 +177,9 @@ function Statistic(props) {
           <Typography variant="h4" className={'font-bold'}>
             $
             {`${numberWithCommas(tvl.toFixed(2))} (${
-              chainId === 56 || chainId === 97 ? 'BSC' : 'Polygon'
+              chainId === 56 || chainId === 97 || chainId === 5600
+                ? 'BSC'
+                : 'Polygon'
             })`}
           </Typography>
 
