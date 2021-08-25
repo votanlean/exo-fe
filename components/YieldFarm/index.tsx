@@ -146,9 +146,9 @@ function YieldFarm(props: any) {
         {!isTablet && (
           <>
             <TableCell style={{ padding: '24px 16px' }}>
-              <Typography variant="caption">My Stake</Typography>
+              <Typography variant="caption">Your Balance</Typography>
               <Typography variant="h6" className={classes.label}>
-                {normalizeTokenDecimal(inVaultBalance, +decimal).toFixed(4)}{' '}
+                {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(15)}{' '}
                 {symbol}
               </Typography>
             </TableCell>
