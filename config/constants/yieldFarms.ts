@@ -8,7 +8,7 @@ export const bnbVaults: any[] = [
     vaultSymbol: 'bfLINK/BNB',
     title: 'LINK/BNB LP',
     address: {
-      5600: '0x530B50A60d7B5F1295b86f28962558eFB2F722e4',
+      5600: '0x82e6968af748978541B41491246cad444ec2f026',
     },
     underlying: {
       decimals: {

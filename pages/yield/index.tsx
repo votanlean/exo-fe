@@ -41,6 +41,18 @@ export default function Yield() {
     refreshAppGlobalData()
   }, [account, chainId]);
 
+  useEffect(() => {
+    const updateUserData = setInterval(() => {
+      if (account) {
+        dispatch(fetchYieldUserData(account, chainId));
+      }
+    },60000);
+
+    return () => {
+      clearInterval(updateUserData);
+    }
+  }, [account, chainId]);
+
   const onApprove = useCallback(()=>{
     dispatch(fetchYieldUserData(account, chainId));
   },[dispatch, account, chainId]);
