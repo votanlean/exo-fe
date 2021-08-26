@@ -15,12 +15,14 @@ import { HelpOutline } from '@material-ui/icons';
 import { usePools } from '../../state/pools/selectors';
 
 const useStyles = makeStyles((theme) => {
-  const augmentBlue = theme.palette.augmentColor({ main: '#007EF3' });
   return {
     paper: {
       width: '100%',
       maxWidth: '420px',
       borderRadius: '8px',
+      background: theme.palette.themeBg.default,
+      maxHeight: '80vh',
+      zIndex: 999999999,
     },
     inputSearch: {
       width: '100%',
@@ -78,6 +80,7 @@ const SelectTokenDialog = ({ title, open, onClose, onConfirm, fromTo }) => {
       open={open}
       classes={{ paper: classes.paper }}
       disableScrollLock
+      scroll="paper"
     >
       <DialogTitle className={classes.title}>
         <Box display="flex" alignItems="center">

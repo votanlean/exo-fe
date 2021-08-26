@@ -6,7 +6,6 @@ const useStyles = makeStyles((theme) => {
   return {
     drawer: {
       [theme.breakpoints.up('sm')]: {
-        width: drawerWidth,
         flexShrink: 0,
       },
     },
