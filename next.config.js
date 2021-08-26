@@ -16,14 +16,14 @@ const configureWebpack = (config, { dev }) => {
             systemvars: true
         })
   );
-    
-    
+
+
     if (config.resolve.plugins) {
         config.resolve.plugins.push(new TsconfigPathsPlugin());
     } else {
         config.resolve.plugins = [new TsconfigPathsPlugin()];
     }
-    
+
     config.module.rules.push({
         test: /\.(eot|woff|woff2|ttf|svg|png|jpg|gif)$/,
         use: {
@@ -39,4 +39,4 @@ const configureWebpack = (config, { dev }) => {
 };
 
 
-module.exports = withImages({ webpack: configureWebpack    })
+module.exports = withImages({ webpack: configureWebpack});
