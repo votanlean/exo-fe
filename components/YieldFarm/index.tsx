@@ -36,6 +36,7 @@ import { useVaultContract } from 'hooks/useContract';
 import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
 import NumberFormatCustom from 'components/NumberFormatCustom/index';
+import PopOver from 'components/PopOver';
 
 interface IYieldFarmProps {
   farm: any;
@@ -287,19 +288,19 @@ function YieldFarm(props: any) {
                   <Typography>Your unstaked <span style={{fontWeight:"bold"}}>ecCAKE-LP</span></Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
-                    {vaultSymbol}
+                    ecCAKE-LP
                   </Typography>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
-                  <StakeAction data={dataButton} disabled={!isAlreadyApproved}/>
+                  <StakeAction data={dataButton} disabled={!(inVaultBalance > 0)}/>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
                   <Typography>Total Staked</Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
-                    {vaultSymbol}
+                    ecCAKE-LP
                   </Typography>
                 </Box>
               </Box>
@@ -319,7 +320,7 @@ function YieldFarm(props: any) {
                   width="25%"
                 >
                   <Typography align="left">Vault Details</Typography>
-                  <WarningRounded fontSize="large" color="primary"/>
+                  <PopOver unit={symbol}/>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box
