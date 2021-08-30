@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import React from 'react';
 
-import { StakeDialog } from 'components/Dialogs';
 import { useVaultStake } from 'hooks/useStake';
 import Button from 'components/Button';
 
@@ -11,49 +10,36 @@ import { Box } from '@material-ui/core';
 
 function StakeVaultAction(props: any) {
   const classes = useStyles();
-  const { disabled, data, onAction } = props || {};
+  const { data, onAction, onStakeComplete } = props || {};
   const {
     requestingContract: vaultContract,
-    symbol,
-    depositFee,
     maxAmountStake,
     stakingToken,
+    amountStakeNumber,
   } = data || {};
-  const [openStakeDialog, setOpenStakeDialog] = useState(false);
 
+  const isDisabled = (!amountStakeNumber|| amountStakeNumber > maxAmountStake);
+  
   const { onVaultStake, isLoading } = useVaultStake(vaultContract);
   const { id: chainId } = useNetwork();
-
-  const handleConfirmStake = async (amount) => {
+  
+  const handleConfirmStake = async () => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
-    await onVaultStake(amount, decimals);
+    await onVaultStake(amountStakeNumber, decimals);
+    console.log(amountStakeNumber)
+    onStakeComplete();
     onAction();
-  };
-
-  const handleToggleStake = () => {
-    setOpenStakeDialog(!openStakeDialog);
   };
 
   return (
     <Box>
       <Button
         className={classes.button}
-        onClick={handleToggleStake}
-        disabled={disabled}
+        onClick={handleConfirmStake}
+        disabled={isDisabled || isLoading}
       >
-        Stake
+        Deposit
       </Button>
-      <StakeDialog
-        open={openStakeDialog}
-        title="Stake"
-        onClose={handleToggleStake}
-        onConfirm={handleConfirmStake}
-        unit={symbol}
-        depositFee={depositFee}
-        maxAmount={maxAmountStake}
-        isLoading={isLoading}
-        decimals={stakingToken.decimals}
-      />
     </Box>
   );
 }
