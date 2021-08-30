@@ -99,6 +99,9 @@ const useStyles = makeStyles(() => {
         marginLeft: '0',
       },
     },
+    helperText: {
+      textAlign: 'right',
+    },
   };
 });
 

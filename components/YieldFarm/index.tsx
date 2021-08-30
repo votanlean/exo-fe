@@ -1,13 +1,19 @@
 import React, { Fragment, useCallback, useState } from 'react';
 import {
   Box,
+  Button,
   Collapse,
+  Divider,
+  InputAdornment,
   TableCell,
   TableRow,
+  TextField,
   Typography,
   useMediaQuery,
+  Checkbox
 } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp, Launch } from '@material-ui/icons';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import BigNumber from 'bignumber.js';
 
 import {
@@ -18,12 +24,9 @@ import {
 } from 'components/PoolActions';
 
 import { useNetwork } from 'state/hooks';
-import { useOrchestratorData } from 'state/orchestrator/selectors';
-
-import { getFarmApr } from 'hookApi/apr';
 
 import { getAddress } from 'utils/addressHelpers';
-import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
+import { normalizeTokenDecimal } from 'utils/bigNumber';
 import { getDecimals } from 'utils/decimalsHelper';
 
 import { useStyles } from './styles';
@@ -31,6 +34,7 @@ import { numberWithCommas } from 'utils/numberWithComma';
 import { useVaultContract } from 'hooks/useContract';
 import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
+import NumberFormatCustom from 'components/NumberFormatCustom/index';
 
 interface IYieldFarmProps {
   farm: any;
@@ -133,7 +137,7 @@ function YieldFarm(props: any) {
         <TableCell
           style={{ padding: '24px 16px', paddingLeft: isTablet ? '0' : '16px' }}
         >
-          <Typography variant="caption">APR</Typography>
+          <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
               {apr ? `${apr}%` : 'N/A'}
@@ -157,7 +161,7 @@ function YieldFarm(props: any) {
         {!isTablet && (
           <>
             <TableCell style={{ padding: '24px 16px' }}>
-              <Typography variant="caption">Total Deposited</Typography>
+              <Typography variant="caption">Deposits($)</Typography>
               <Typography variant="h6" className={classes.label}>
                 {numberWithCommas(
                   normalizeTokenDecimal(
@@ -187,10 +191,62 @@ function YieldFarm(props: any) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box
               margin={1}
-              display="flex"
-              flexDirection={isTablet ? 'column' : 'row'}
               paddingY="16px"
             >
+              <Box
+                display="flex"
+                flexDirection={isTablet ? "column" : "row"}
+                marginBottom="10px"
+                alignItems="center"
+              >
+                <Box>
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    width="550px"
+                  >
+                    <Typography>
+                      Balance <span style={{fontWeight:"bold"}}>pancake_{title}</span>
+                    </Typography>
+                    <Typography>
+                      {normalizeTokenDecimal(balance).toFixed(4)}
+                    </Typography>
+                  </Box>
+                  <TextField
+                    variant="outlined"
+                    placeholder="0"
+                    fullWidth
+                    InputProps={{
+                      inputComponent: NumberFormatCustom,
+                      startAdornment: <InputAdornment position="start">{symbol}</InputAdornment>,
+                      endAdornment: <Button color="primary">Max</Button>
+                    }}
+                  />
+                </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                {isAlreadyApproved ?
+                  <>
+                    <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
+                      <FormControlLabel
+                        control={<Checkbox/>}
+                        label="Stake for reward"
+                      />
+                      <StakeVaultAction data={dataButton} disabled={!isAlreadyApproved} onAction={onAction} />
+                    </Box>
+                  </>
+                  : null}
+                {!isAlreadyApproved ? (
+                  <Box className={classes.buttonBoxItem} flex={1}>
+                    <ApproveAction
+                      data={dataButton}
+                      disabled={isAlreadyApproved}
+                      onApprove={onApprove}
+                    />
+                  </Box>
+                ) : null}
+              </Box>
+              <Divider orientation="horizontal" variant="fullWidth"/>
               <Box paddingRight="10px">
                 <Box>
                   <a
@@ -244,11 +300,6 @@ function YieldFarm(props: any) {
                     marginLeft={isTablet ? '0' : '20px'}
                     marginBottom={isTablet ? '8px' : '0'}
                   >
-                    {isAlreadyApproved ?
-                      <Box className={classes.buttonBoxItem} flex={1}>
-                        <StakeVaultAction data={dataButton} disabled={!isAlreadyApproved} onAction={onAction} />
-                      </Box>
-                    : null}
 
                     {/* {Number(pendingReward) > 0 ?
                       <Box className={classes.buttonBoxItem} flex={1}>
