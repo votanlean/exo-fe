@@ -4,18 +4,18 @@ export const bnbVaults: any[] = [
   {
     pid: 0,
     icon: '/static/images/Swap_tEXO-BNB.png',
-    symbol: 'LINK/BNB LP',
-    vaultSymbol: 'bfLINK/BNB',
-    title: 'LINK/BNB LP',
+    symbol: 'WBNB/BUSD LP',
+    vaultSymbol: 'bfWBNB/BUSD',
+    title: 'WBNB/BUSD LP',
     address: {
-      5600: '0x82e6968af748978541B41491246cad444ec2f026',
+      5600: '0x81b904772BDb4502791d494686dCE2FF55864902',
     },
     underlying: {
       decimals: {
         5600: 18
       },
       address: {
-        5600: '0x824eb9faDFb377394430d2744fa7C42916DE3eCe'
+        5600: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16'
       },
     },
     depositFeeBP: 0,
@@ -24,27 +24,27 @@ export const bnbVaults: any[] = [
     },
     liquidityLink: 'https://exchange.pancakeswap.finance/#/add/BNB/',
   },
-  // {
-  //   pid: 1,
-  //   icon: '/static/images/Swap_tEXO-BNB.png',
-  //   symbol: 'LINK/BNB LP',
-  //   vaultSymbol: 'bfLINK/BNB',
-  //   title: 'LINK/BNB LP',
-  //   address: {
-  //     5600: '0x530B50A60d7B5F1295b86f28962558eFB2F722e4',
-  //   },
-  //   underlying: {
-  //     decimals: {
-  //       5600: 18
-  //     },
-  //     address: {
-  //       5600: '0x824eb9faDFb377394430d2744fa7C42916DE3eCe'
-  //     },
-  //   },
-  //   depositFeeBP: 0,
-  //   decimals: {
-  //     5600: 18,
-  //   },
-  //   liquidityLink: 'https://exchange.pancakeswap.finance/#/add/BNB/',
-  // },
+  {
+    pid: 1,
+    icon: '/static/images/Swap_tEXO-BNB.png',
+    symbol: 'USDT/BUSD LP',
+    vaultSymbol: 'bfUSDT/BUSD',
+    title: 'USDT/BUSD LP',
+    address: {
+      5600: '0x07ca0cE3328380F42D03371444eb25a9f49A6257',
+    },
+    underlying: {
+      decimals: {
+        5600: 18
+      },
+      address: {
+        5600: '0x7EFaEf62fDdCCa950418312c6C91Aef321375A00'
+      },
+    },
+    depositFeeBP: 0,
+    decimals: {
+      5600: 18,
+    },
+    liquidityLink: 'https://exchange.pancakeswap.finance/#/add/BNB/',
+  },
 ];

@@ -46,7 +46,7 @@ export default function Yield() {
       if (account) {
         dispatch(fetchYieldUserData(account, chainId));
       }
-    },60000);
+    },30000);
 
     return () => {
       clearInterval(updateUserData);
