@@ -8,7 +8,7 @@ export const bnbVaults: any[] = [
     vaultSymbol: 'bfWBNB/BUSD',
     title: 'WBNB/BUSD LP',
     address: {
-      5600: '0x81b904772BDb4502791d494686dCE2FF55864902',
+      5600: '0xCa41f235b4Fd06c7E8306e3a323b9423aBE793b5',
     },
     underlying: {
       decimals: {
@@ -31,7 +31,7 @@ export const bnbVaults: any[] = [
     vaultSymbol: 'bfUSDT/BUSD',
     title: 'USDT/BUSD LP',
     address: {
-      5600: '0x07ca0cE3328380F42D03371444eb25a9f49A6257',
+      5600: '0xCA232292f5Ca34ECdBb7828F90C340a082DdC7A2',
     },
     underlying: {
       decimals: {

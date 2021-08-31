@@ -73,16 +73,6 @@ export default function Yield() {
         <Typography variant='h4' className='font-bold'>
           VAULT LIST
         </Typography>
-        <div className={classes.header}>
-          <div>
-            Deposited only <Switch />
-          </div>
-          <TextField
-            placeholder='Search vault'
-            variant='outlined'
-            onChange={debounceFunc}
-          />
-        </div>
 
         <TableContainer className={classes.tableContainer}>
           <Table aria-label="collapsible table">

@@ -1,29 +1,33 @@
 import React, { Fragment, useCallback, useState } from 'react';
 import {
   Box,
+  Button,
   Collapse,
+  Divider,
+  InputAdornment,
   TableCell,
   TableRow,
+  TextField,
   Typography,
   useMediaQuery,
+  Checkbox
 } from '@material-ui/core';
-import { KeyboardArrowDown, KeyboardArrowUp, Launch } from '@material-ui/icons';
+import { KeyboardArrowDown, KeyboardArrowUp, Launch, WarningRounded } from '@material-ui/icons';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import BigNumber from 'bignumber.js';
 
 import {
   ApproveAction,
   ClaimRewardsAction,
   RoiAction,
+  StakeAction,
   WithdrawAction,
 } from 'components/PoolActions';
 
 import { useNetwork } from 'state/hooks';
-import { useOrchestratorData } from 'state/orchestrator/selectors';
-
-import { getFarmApr } from 'hookApi/apr';
 
 import { getAddress } from 'utils/addressHelpers';
-import { BIG_ZERO, normalizeTokenDecimal } from 'utils/bigNumber';
+import { normalizeTokenDecimal } from 'utils/bigNumber';
 import { getDecimals } from 'utils/decimalsHelper';
 
 import { useStyles } from './styles';
@@ -31,6 +35,8 @@ import { numberWithCommas } from 'utils/numberWithComma';
 import { useVaultContract } from 'hooks/useContract';
 import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
+import NumberFormatCustom from 'components/NumberFormatCustom/index';
+import PopOver from 'components/PopOver';
 
 interface IYieldFarmProps {
   farm: any;
@@ -68,6 +74,7 @@ function YieldFarm(props: any) {
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [amountStakeNumber, setAmountStakeNumber] = useState(null);
 
   const isTablet = useMediaQuery('(max-width: 768px)');
   const isMobile = useMediaQuery('(max-width: 600px)');
@@ -77,7 +84,7 @@ function YieldFarm(props: any) {
     stakedBalance,
     balance,
     inVaultBalance,
-    // earnings: pendingReward,
+    earnings: pendingReward,
   } = userData;
 
   const canWithdraw = new BigNumber(inVaultBalance).toNumber() > 0;
@@ -105,6 +112,27 @@ function YieldFarm(props: any) {
     onPoolStateChange();
   }, [onPoolStateChange]);
 
+  const onChangeAmountStakeNumber = (e) => {
+    const val = e.target.value;
+    if (val >= 0) {
+      if (val > balance) {
+        setAmountStakeNumber(balance);
+      } else {
+        setAmountStakeNumber(val);
+      }
+    } else {
+      setAmountStakeNumber(0);
+    }
+  }
+
+  const onClickMax = () => {
+    setAmountStakeNumber(balance);
+  }
+
+  const onStakeComplete = () => {
+    setAmountStakeNumber('');
+  }
+
   const dataButton = {
     id: vaultId,
     stakingToken: {
@@ -119,6 +147,7 @@ function YieldFarm(props: any) {
     onPoolStateChange,
     refStake: true,
     account: selectedAccount,
+    amountStakeNumber
   };
 
   return (
@@ -133,7 +162,7 @@ function YieldFarm(props: any) {
         <TableCell
           style={{ padding: '24px 16px', paddingLeft: isTablet ? '0' : '16px' }}
         >
-          <Typography variant="caption">APR</Typography>
+          <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
               {apr ? `${apr}%` : 'N/A'}
@@ -148,7 +177,7 @@ function YieldFarm(props: any) {
             <TableCell style={{ padding: '24px 16px' }}>
               <Typography variant="caption">Your Balance</Typography>
               <Typography variant="h6" className={classes.label}>
-                {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(15)}{' '}
+                {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(8)}{' '}
                 {symbol}
               </Typography>
             </TableCell>
@@ -157,7 +186,7 @@ function YieldFarm(props: any) {
         {!isTablet && (
           <>
             <TableCell style={{ padding: '24px 16px' }}>
-              <Typography variant="caption">Total Deposited</Typography>
+              <Typography variant="caption">Deposits($)</Typography>
               <Typography variant="h6" className={classes.label}>
                 {numberWithCommas(
                   normalizeTokenDecimal(
@@ -187,10 +216,136 @@ function YieldFarm(props: any) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box
               margin={1}
-              display="flex"
-              flexDirection={isTablet ? 'column' : 'row'}
               paddingY="16px"
             >
+              <Box
+                display="flex"
+                flexDirection={isTablet ? "column" : "row"}
+                marginBottom="10px"
+                alignItems="center"
+              >
+                <Box
+                    width="47%"
+                >
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="space-between"
+                  >
+                    <Typography>
+                      Balance <span style={{fontWeight:"bold"}}>pancake_{title}</span>
+                    </Typography>
+                    <Typography>
+                      {normalizeTokenDecimal(balance, +decimal).toFixed(4)}
+                    </Typography>
+                  </Box>
+                  <TextField
+                    value={amountStakeNumber || ''}
+                    variant="outlined"
+                    placeholder="0"
+                    fullWidth
+                    InputProps={{
+                      inputComponent: NumberFormatCustom,
+                      startAdornment: <InputAdornment position="start">{symbol}</InputAdornment>,
+                      endAdornment: <Button color="primary" onClick={onClickMax}>Max</Button>
+                    }}
+                    onChange={onChangeAmountStakeNumber}
+                  />
+                </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                {isAlreadyApproved ?
+                  <>
+                    <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
+                      <FormControlLabel
+                        control={<Checkbox checked={true}/>}
+                        label="Stake for reward"
+                      />
+                      <StakeVaultAction data={dataButton} onStakeComplete={onStakeComplete} onAction={onAction} />
+                    </Box>
+                  </>
+                  : null}
+                {!isAlreadyApproved ? (
+                  <Box className={classes.buttonBoxItem} flex={1}>
+                    <ApproveAction
+                      data={dataButton}
+                      disabled={isAlreadyApproved}
+                      onApprove={onApprove}
+                    />
+                  </Box>
+                ) : null}
+              </Box>
+              <Divider orientation="horizontal" variant="fullWidth"/>
+              <Box
+                flex={1}
+                display="flex"
+                justifyContent="center"
+                flexDirection={isTablet ? "column" : "row"}
+                marginLeft={isTablet ? '0' : '20px'}
+                marginTop="10px"
+                marginBottom="10px"
+              >
+                <Box className={classes.rowDetail} width="33%" flexDirection="column">
+                  <Typography>Your unstaked <span style={{fontWeight:"bold"}}>ecCAKE-LP</span></Typography>
+                  <Typography className={'text-right'}>
+                    {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
+                    ecCAKE-LP
+                  </Typography>
+                </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
+                  <StakeAction data={dataButton} disabled={!(inVaultBalance > 0)}/>
+                </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Box className={classes.rowDetail} width="33%" flexDirection="column">
+                  <Typography>Total Staked</Typography>
+                  <Typography className={'text-right'}>
+                    {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
+                    ecCAKE-LP
+                  </Typography>
+                </Box>
+              </Box>
+              <Divider orientation="horizontal" variant="fullWidth"/>
+              <Box
+                flex={1}
+                display="flex"
+                justifyContent="center"
+                flexDirection={isTablet ? "column" : "row"}
+                marginTop="10px"
+                marginBottom="10px"
+              >
+                <Box
+                  className={classes.rowDetail}
+                  flex={1}
+                  flexDirection="column"
+                  width="25%"
+                >
+                  <Typography align="left">Vault Details</Typography>
+                  <PopOver unit={symbol}/>
+                </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Box
+                  className={classes.rowDetail}
+                  flex={1}
+                  flexDirection="column"
+                  width="25%"
+                >
+                  <Typography>Total <span style={{fontWeight:"bold"}}>tEXO</span> Earned</Typography>
+                  <Typography className={'text-right'}>
+                    {normalizeTokenDecimal(0).toFixed(4)}
+                    {' tEXO'}
+                  </Typography>
+                </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                  <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
+                    <Typography align="center">Reward</Typography>
+                    <ClaimRewardsAction data={dataButton} disabled />
+                  </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                  <Box className={classes.buttonBoxItem} flex={1}>
+                    <Typography align="center">Withdraw</Typography>
+                    <WithdrawVaultAction data={dataButton} disabled={!canWithdraw} onAction={onAction} />
+                  </Box>
+              </Box>
               <Box paddingRight="10px">
                 <Box>
                   <a
@@ -202,115 +357,7 @@ function YieldFarm(props: any) {
                     <Launch fontSize="small" />
                   </a>
                 </Box>
-                <Box>
-                  <a
-                    className={classes.linkDetail}
-                    href={`${blockExplorerUrl}/address/${strategyAddress}`}
-                    target="_blank"
-                  >
-                    View Pool on {blockExplorerName} <Launch fontSize="small" />
-                  </a>
-                </Box>
               </Box>
-              <Box
-                flex={1}
-                display="flex"
-                justifyContent="center"
-                flexDirection="column"
-                marginLeft={isTablet ? '0' : '20px'}
-              >
-                <Box className={classes.rowDetail} flex={1}>
-                  <Typography>Your unstaked</Typography>
-                  <Typography className={'text-right'}>
-                    {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
-                    {vaultSymbol}
-                  </Typography>
-                </Box>
-                <Box className={classes.rowDetail} flex={1}>
-                  <Typography>Your reward</Typography>
-                  <Typography className={'text-right'}>
-                    {normalizeTokenDecimal(0).toFixed(4)}
-                    {' tEXO'}
-                  </Typography>
-                </Box>
-              </Box>
-              {!!selectedAccount && (
-                <>
-                  <Box
-                    flex={1}
-                    display="flex"
-                    justifyContent="center"
-                    flexDirection="column"
-                    marginLeft={isTablet ? '0' : '20px'}
-                    marginBottom={isTablet ? '8px' : '0'}
-                  >
-                    {isAlreadyApproved ?
-                      <Box className={classes.buttonBoxItem} flex={1}>
-                        <StakeVaultAction data={dataButton} disabled={!isAlreadyApproved} onAction={onAction} />
-                      </Box>
-                    : null}
-
-                    {/* {Number(pendingReward) > 0 ?
-                      <Box className={classes.buttonBoxItem} flex={1}>
-                        <StakeAction
-                          data={dataButton}
-                          disabled={!isAlreadyApproved}
-                        />
-                      </Box>
-                     : null} */}
-
-                    {/* {Number(pendingReward) > 0 ? ( */}
-                    {/* <Box className={classes.buttonBoxItem} flex={1}>
-                      <ClaimRewardsAction data={dataButton} disabled />
-                    </Box> */}
-                    {/* ) : null} */}
-                  </Box>
-                  <Box
-                    flex={1}
-                    display="flex"
-                    justifyContent="center"
-                    flexDirection="column"
-                    marginLeft={isTablet ? '0' : '20px'}
-                    marginTop={isTablet ? '8px' : '0'}
-                  >
-                    {!isAlreadyApproved ? (
-                      <Box className={classes.buttonBoxItem} flex={1}>
-                        <ApproveAction
-                          data={dataButton}
-                          disabled={isAlreadyApproved}
-                          onApprove={onApprove}
-                        />
-                      </Box>
-                    ) : null}
-
-                    {canWithdraw ? (
-                      <Box className={classes.buttonBoxItem} flex={1}>
-                        <WithdrawVaultAction data={dataButton} onAction={onAction}/>
-                      </Box>
-                    ) : null}
-                  </Box>
-                </>
-              )}
-              {!selectedAccount && (
-                <>
-                  <Box flex={1} />
-                  <Box
-                    flex={1}
-                    display="flex"
-                    alignItems="center"
-                    marginLeft={isTablet ? '0' : '20px'}
-                  >
-                    <Box className={classes.buttonBoxItem} flex={1}>
-                      <ApproveAction
-                        data={dataButton}
-                        disabled={isAlreadyApproved}
-                        onAppove={onAppove}
-                        onApprove={onApprove}
-                      />
-                    </Box>
-                  </Box>
-                </>
-              )}
             </Box>
           </Collapse>
         </TableCell>
