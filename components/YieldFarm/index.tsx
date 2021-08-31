@@ -30,7 +30,7 @@ import { getDecimals } from 'utils/decimalsHelper';
 
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
-import { useVaultContract } from 'hooks/useContract';
+import { useOrchestratorContract, useVaultContract } from 'hooks/useContract';
 import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
 import NumberFormatCustom from 'components/NumberFormatCustom/index';
@@ -67,6 +67,7 @@ function YieldFarm(props: any) {
     underlying,
     underlyingVaultBalance,
     strategy = {},
+    ecAssetPool,
   } = yieldFarmData;
 
   const { address: strategyAddress } = strategy;
@@ -84,6 +85,7 @@ function YieldFarm(props: any) {
     balance,
     inVaultBalance,
     earnings: pendingReward,
+    ecAssetStakedBalance,
   } = userData;
 
   const canWithdraw = new BigNumber(inVaultBalance).toNumber() > 0;
@@ -92,6 +94,7 @@ function YieldFarm(props: any) {
   const underlyingAddress = underlying.address;
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
+  const tEXOOrchestratorContract = useOrchestratorContract();
   // const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   // const farmWeight = new BigNumber(allocPoint).div(
   //   new BigNumber(totalAllocPoint),
@@ -147,6 +150,22 @@ function YieldFarm(props: any) {
     refStake: true,
     account: selectedAccount,
     amountStakeNumber
+  };
+
+  const dataStakeAllButton = {
+    id: ecAssetPool.pid,
+    stakingToken: {
+      address: ecAssetPool.address,
+      decimals: ecAssetPool.decimals,
+    },
+    requestingContract: tEXOOrchestratorContract,
+    symbol,
+    depositFee: depositFeeBP,
+    amountStake: inVaultBalance,
+    maxAmountWithdraw: inVaultBalance,
+    onPoolStateChange,
+    refStake: true,
+    sender: vaultAddress
   };
 
   return (
@@ -255,7 +274,7 @@ function YieldFarm(props: any) {
                     <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
                       <FormControlLabel
                         control={<Checkbox checked={true}/>}
-                        label="Stake for reward"
+                        label="Stake For tEXO Reward"
                       />
                       <StakeVaultAction data={dataButton} onStakeComplete={onStakeComplete} onAction={onAction} />
                     </Box>
@@ -290,13 +309,13 @@ function YieldFarm(props: any) {
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
-                  <StakeAllAction data={dataButton} disabled={!(inVaultBalance > 0)}/>
+                  <StakeAllAction data={dataStakeAllButton} disabled={!(inVaultBalance > 0)}/>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
                   <Typography>Initial Deposit</Typography>
                   <Typography className={'text-right'}>
-                    {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
+                    {normalizeTokenDecimal(ecAssetStakedBalance).toFixed(4)}{' '}
                     ecAsset
                   </Typography>
                 </Box>

@@ -8,6 +8,7 @@ import { fetchFarmUserDataAsync } from '../state/farms/reducer';
 import { fetchFAANGPoolsUserDataAsync } from '../state/fAANGpools/reducer';
 import { useNetwork } from 'state/hooks';
 import { fetchYieldUserData } from 'state/yield/reducer';
+import { Address } from 'config/constants/types';
 
 export const useStake = (orchestrator: Contract, poolId: number) => {
   const dispatch = useAppDispatch();
@@ -38,6 +39,39 @@ export const useStake = (orchestrator: Contract, poolId: number) => {
       }
     },
     [account, dispatch, orchestrator, poolId, chainId],
+  );
+
+  return { onStake: handleStake, isLoading };
+};
+
+//sender must a account,
+//so, i whether that depositing token from vault to account first, then stake from account to contract
+//currently, sender is vault
+export const useStakeAllECAsset = (orchestrator: Contract, poolId: number, sender: Address) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setLoading] = useState(false);
+  const currentNetwork = useNetwork();
+  const { id: chainId } = currentNetwork || {};
+
+  const handleStake = useCallback(
+    async (amount: string, ref: string | null = null, decimals: string) => {
+      try {
+        setLoading(true);
+        const txHash = await stake(
+          orchestrator,
+          poolId,
+          amount,
+          sender,
+          ref,
+          decimals,
+        ); // will ignore ref if null
+        setLoading(false);
+        console.info(txHash);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [sender, dispatch, orchestrator, poolId, chainId],
   );
 
   return { onStake: handleStake, isLoading };

@@ -3,8 +3,7 @@ import { Box } from '@material-ui/core';
 import Cookies from 'universal-cookie';
 
 import Button from 'components/Button';
-import { StakeDialog } from 'components/Dialogs';
-import { useStake } from 'hooks/useStake';
+import { useStakeAllECAsset } from 'hooks/useStake';
 import { isAddress } from 'utils/web3';
 import rot13 from 'utils/encode';
 
@@ -14,22 +13,20 @@ import { useNetwork } from 'state/hooks';
 
 function StakeAllAction(props: any) {
   const classes = useStyles();
-  const { disabled, data, stakingTokenPrice } = props || {};
+  const { disabled, data } = props || {};
   const {
     id,
     requestingContract,
-    symbol,
-    depositFee,
-    maxAmountStake,
+    amountStake,
     refStake,
     stakingToken,
+    sender
   } = data || {};
-  const [openStakeDialog, setOpenStakeDialog] = useState(false);
 
-  const { onStake, isLoading } = useStake(requestingContract, id);
+  const { onStake, isLoading } = useStakeAllECAsset(requestingContract, id, sender);
   const { id: chainId } = useNetwork();
 
-  const handleConfirmStake = async (amount) => {
+  const handleConfirmStake = async () => {
     let ref;
 
     if (refStake) {
@@ -43,34 +40,18 @@ function StakeAllAction(props: any) {
       }
     }
     const decimals = getDecimals(stakingToken.decimals, chainId);
-    await onStake(amount, ref, decimals);
-  };
-
-  const handleToggleStake = () => {
-    setOpenStakeDialog(!openStakeDialog);
+    await onStake(amountStake, ref, decimals);
   };
 
   return (
     <Box>
       <Button
         className={classes.button}
-        onClick={handleToggleStake}
-        disabled={disabled}
+        onClick={handleConfirmStake}
+        disabled={disabled || isLoading}
       >
-        Stake For tEXO Reward
+        Stake All
       </Button>
-      <StakeDialog
-        open={openStakeDialog}
-        title="Stake"
-        onClose={handleToggleStake}
-        onConfirm={handleConfirmStake}
-        unit={symbol}
-        depositFee={depositFee}
-        maxAmount={maxAmountStake}
-        isLoading={isLoading}
-        decimals={stakingToken.decimals}
-        stakingTokenPrice={stakingTokenPrice}
-      />
     </Box>
   );
 }

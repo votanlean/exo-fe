@@ -26,7 +26,6 @@ function StakeVaultAction(props: any) {
   const handleConfirmStake = async () => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
     await onVaultStake(amountStakeNumber, decimals);
-    console.log(amountStakeNumber)
     onStakeComplete();
     onAction();
   };

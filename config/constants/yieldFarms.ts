@@ -1,3 +1,4 @@
+import { bnbEcAssetPools } from "./ecAssetPools";
 
 
 export const bnbVaults: any[] = [
@@ -18,6 +19,7 @@ export const bnbVaults: any[] = [
         5600: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16'
       },
     },
+    ecAssetPool: bnbEcAssetPools[0], //pid: 13
     depositFeeBP: 0,
     decimals: {
       5600: 18,
@@ -41,6 +43,7 @@ export const bnbVaults: any[] = [
         5600: '0x7EFaEf62fDdCCa950418312c6C91Aef321375A00'
       },
     },
+    ecAssetPool: bnbEcAssetPools[1], //pid: 14
     depositFeeBP: 0,
     decimals: {
       5600: 18,
