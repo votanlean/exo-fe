@@ -54,15 +54,15 @@ export default function PopOver(props:any) {
         disableRestoreFocus
       >
         <Typography>Asset: <span style={{fontWeight:"bold"}}>{props.unit}</span></Typography>
-        <Typography>fToken: <span style={{fontWeight:"bold"}}>fpancake_{props.unit}</span></Typography>
+        <Typography>ecAsset: <span style={{fontWeight:"bold"}}>tpancake_{props.unit}</span></Typography>
         <Typography>APY <span style={{fontWeight:"bold"}}>{props.apy || 'NaN'}:</span></Typography>
         <Typography>
             <span style={{fontWeight:"bold"}}>{props.apy || '0%'}: </span>
             Liquidity Provider APY
         </Typography>
         <Typography>
-            <span style={{fontWeight:"bold"}}>{props.autoHarvestedEcCakeLP || '0%'}: </span>
-            Auto harvested ecCAKE_LP
+            <span style={{fontWeight:"bold"}}>{props.autoHarvestedCake || '0%'}: </span>
+            Auto harvested CAKE
         </Typography>
         <Typography>
             <span style={{fontWeight:"bold"}}>{props.tEXOReward || '0%'}: </span>

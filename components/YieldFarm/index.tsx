@@ -20,8 +20,6 @@ import {
   ApproveAction,
   ClaimRewardsAction,
   RoiAction,
-  StakeAction,
-  WithdrawAction,
 } from 'components/PoolActions';
 
 import { useNetwork } from 'state/hooks';
@@ -37,6 +35,7 @@ import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
 import NumberFormatCustom from 'components/NumberFormatCustom/index';
 import PopOver from 'components/PopOver';
+import StakeAllAction from 'components/VaultActions/StakeAllAction';
 
 interface IYieldFarmProps {
   farm: any;
@@ -175,7 +174,7 @@ function YieldFarm(props: any) {
         {!isTablet && (
           <>
             <TableCell style={{ padding: '24px 16px' }}>
-              <Typography variant="caption">Your Balance</Typography>
+              <Typography variant="caption">Compounded Balance</Typography>
               <Typography variant="h6" className={classes.label}>
                 {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(8)}{' '}
                 {symbol}
@@ -232,9 +231,7 @@ function YieldFarm(props: any) {
                     flexDirection="row"
                     justifyContent="space-between"
                   >
-                    <Typography>
-                      Balance <span style={{fontWeight:"bold"}}>pancake_{title}</span>
-                    </Typography>
+                    <Typography>Wallet Balance</Typography>
                     <Typography>
                       {normalizeTokenDecimal(balance, +decimal).toFixed(4)}
                     </Typography>
@@ -285,22 +282,22 @@ function YieldFarm(props: any) {
                 marginBottom="10px"
               >
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
-                  <Typography>Your unstaked <span style={{fontWeight:"bold"}}>ecCAKE-LP</span></Typography>
+                  <Typography>Your ecAsset in vault <span style={{fontWeight:"bold"}}>tCake-LP</span></Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
-                    ecCAKE-LP
+                    ecAsset
                   </Typography>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
-                  <StakeAction data={dataButton} disabled={!(inVaultBalance > 0)}/>
+                  <StakeAllAction data={dataButton} disabled={!(inVaultBalance > 0)}/>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
-                  <Typography>Total Staked</Typography>
+                  <Typography>Initial Deposit</Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
-                    ecCAKE-LP
+                    ecAsset
                   </Typography>
                 </Box>
               </Box>
@@ -337,7 +334,7 @@ function YieldFarm(props: any) {
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                   <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
-                    <Typography align="center">Reward</Typography>
+                    <Typography align="center">tEXO Reward</Typography>
                     <ClaimRewardsAction data={dataButton} disabled />
                   </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
