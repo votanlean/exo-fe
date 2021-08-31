@@ -11,10 +11,9 @@ import fAANGOrchestratorAbi from '../config/abi/FAANGOrchestrator.json';
 import compiledTEXO from '../config/abi/TEXOToken.json';
 import bep20Abi from '../config/abi/erc20.json';
 import vaultAbi from '../config/abi/Vault.json';
-import factoryAbi from '../config/abi/factory.json';
+import factoryAbi from '../config/abi/Factory.json';
 import pairAbi from '../config/abi/Pair.json';
-import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json';
-
+import routerAbi from '../config/abi/Router.json';
 
 
 const getContract = (abi: any, address: string, web3?: Web3, chainId?: number) => {
@@ -44,7 +43,7 @@ export const getVaultContract = (address: string, web3?: Web3 ,chainId?: number)
 }
 
 export const getRouterContract = (address: string, web3?: Web3 ,chainId?: number) =>{
-    return getContract(IUniswapV2Router02ABI, address, web3, chainId)
+    return getContract(routerAbi, address, web3, chainId)
 }
 
 export const getFactoryContract = (address: string, web3?: Web3 ,chainId?: number) =>{

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useWeb3React } from '@web3-react/core';
-
 function index(props) {
     const {router, inputFrom, inputTo, token1, token2} = props;
     const { account } = useWeb3React();

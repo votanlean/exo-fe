@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core';
 import Head from 'next/head';
 import {
   Card,
@@ -19,7 +20,6 @@ import SelectTokenDialog from '../../components/Exchange/SelectTokenDialog';
 import HistoryDialog from '../../components/Exchange/HistoryDialog';
 import SettingsDialog from '../../components/Exchange/SettingsDialog';
 import { usePools } from '../../state/pools/selectors';
-import useStyles from './styles';
 import { useERC20, useFactoryContract, usePairContract, useRouterContract } from 'hooks/useContract';
 import ApproveToken from 'components/ApproveToken';
 import SupplyAction from 'components/SupplyAction';
@@ -28,6 +28,55 @@ import BigNumber from 'bignumber.js';
 import { BIG_TEN } from 'utils/bigNumber';
 
 function Liquidity() {
+  const useStyles = makeStyles((theme) => {
+    return {
+      root: {
+        borderRadius: 20,
+        maxWidth: 436,
+        width: '100%',
+        margin: '0 auto',
+        background: theme.palette.themeBg.default,
+      },
+      header: {
+        borderBottom: '1px solid rgb(233 234 235)',
+      },
+      box: {
+        padding: 16,
+        borderRadius: 12,
+        background: theme.palette.tableRowBg.default,
+      },
+      iconAva: {
+        width: 24,
+        height: 24,
+        marginRight: 8,
+      },
+      textInputRoot: {
+        border: 'none',
+        outline: 'none',
+      },
+      priceShareTitle: {
+        padding: '1rem',
+      },
+      priceShareBox: {
+        border:
+          theme.palette.type === 'dark'
+            ? '1px solid rgb(8, 6, 11)'
+            : '1px solid rgb(250, 249, 250)',
+        borderRadius: 20,
+      },
+      selectCurrencyText: {
+        fontSize: 12,
+        textTransform: 'initial',
+      },
+      disable: {
+        display: 'none'
+      },
+      display: {
+        display: 'block'
+      }
+    };
+  });
+  
   const classes = useStyles();
   const { account } = useWeb3React();
   const [isOpenTokenDialog, setOpenTokenDialog] = useState(false);
@@ -314,7 +363,7 @@ useEffect(() => {
                       >
                         <Box>
                           <Typography align="center">
-                            {price.toFixed(5)}
+                            {price ? price.toFixed(5) : 0}
                           </Typography>
                           <Typography align="center">
                             {fromValue.symbol} per {toValue.symbol}
@@ -322,14 +371,14 @@ useEffect(() => {
                         </Box>
                         <Box>
                           <Typography align="center">
-                            {(1/price).toFixed(5)}
+                            {price ? (1/price).toFixed(5) : 0}
                           </Typography>
                           <Typography align="center">
                             {toValue.symbol} per {fromValue.symbol}
                           </Typography>
                         </Box>
                         <Box>
-                          <Typography align="center">{share.toFixed(2)}%</Typography>
+                          <Typography align="center">{share ? share.toFixed(2) : 0}%</Typography>
                           <Typography align="center">Share of Pool</Typography>
                         </Box>
                       </Box>
