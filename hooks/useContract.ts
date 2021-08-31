@@ -3,7 +3,10 @@ import useWeb3 from './useWeb3';
 import {
   getBep20Contract,
   getFAANGOrchestratorContract,
+  getFactoryContract,
   getOrchestratorContract,
+  getPairContract,
+  getRouterContract,
   getTEXOContract,
   getVaultContract
 } from 'utils/contractHelpers';
@@ -46,6 +49,30 @@ export const useVaultContract = (address: string) => {
     const web3 = useWeb3()
     return useMemo(() => getVaultContract(address, web3,chainId), [address, web3,chainId])
 }
+
+export const useRouterContract = (address: string) => {
+  const {id: chainId} = useNetwork()
+  const web3 = useWeb3()
+  return useMemo(() => getRouterContract(address, web3,chainId), [address, web3,chainId])
+}
+
+export const useFactoryContract = (address: string) => {
+  const {id: chainId} = useNetwork()
+  const web3 = useWeb3()
+  return useMemo(() => getFactoryContract(address, web3,chainId), [address, web3,chainId])
+}
+
+export const usePairContract = (address: string) => {
+  const {id: chainId} = useNetwork()
+  const web3 = useWeb3()
+  const pairContract = useMemo(() => getPairContract(address, web3,chainId), [address, web3,chainId])
+  
+  return pairContract;
+}
+
+
+
+
 //
 // /**
 //  * @see https://docs.openzeppelin.com/contracts/3.x/api/token/erc721
