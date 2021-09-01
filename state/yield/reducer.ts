@@ -11,7 +11,9 @@ const initialState = getYieldFarms().map((yieldFarm) => {
             allowance: '0',
             balance: '0',
             stakedBalance: '0',
-            inVaultBalance: '0'
+            inVaultBalance: '0',
+            ecAssetStakedBalance: '0',
+            ecAssetAllowance: '0',
         }
     }
 })

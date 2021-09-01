@@ -20,8 +20,6 @@ import {
   ApproveAction,
   ClaimRewardsAction,
   RoiAction,
-  StakeAction,
-  WithdrawAction,
 } from 'components/PoolActions';
 
 import { useNetwork } from 'state/hooks';
@@ -32,11 +30,12 @@ import { getDecimals } from 'utils/decimalsHelper';
 
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
-import { useVaultContract } from 'hooks/useContract';
+import { useOrchestratorContract, useVaultContract } from 'hooks/useContract';
 import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
 import NumberFormatCustom from 'components/NumberFormatCustom/index';
 import PopOver from 'components/PopOver';
+import StakeAllAction from 'components/VaultActions/StakeAllAction';
 
 interface IYieldFarmProps {
   farm: any;
@@ -68,6 +67,7 @@ function YieldFarm(props: any) {
     underlying,
     underlyingVaultBalance,
     strategy = {},
+    ecAssetPool,
   } = yieldFarmData;
 
   const { address: strategyAddress } = strategy;
@@ -85,6 +85,8 @@ function YieldFarm(props: any) {
     balance,
     inVaultBalance,
     earnings: pendingReward,
+    ecAssetStakedBalance,
+    ecAssetAllowance,
   } = userData;
 
   const canWithdraw = new BigNumber(inVaultBalance).toNumber() > 0;
@@ -93,6 +95,7 @@ function YieldFarm(props: any) {
   const underlyingAddress = underlying.address;
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
+  const tEXOOrchestratorContract = useOrchestratorContract();
   // const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   // const farmWeight = new BigNumber(allocPoint).div(
   //   new BigNumber(totalAllocPoint),
@@ -115,7 +118,7 @@ function YieldFarm(props: any) {
   const onChangeAmountStakeNumber = (e) => {
     const val = e.target.value;
     if (val >= 0) {
-      if (val > balance) {
+      if (+val > +balance) {
         setAmountStakeNumber(balance);
       } else {
         setAmountStakeNumber(val);
@@ -150,6 +153,22 @@ function YieldFarm(props: any) {
     amountStakeNumber
   };
 
+  const dataStakeAllButton = {
+    id: ecAssetPool.pid,
+    stakingToken: {
+      address: vaultAddress,
+      decimals: decimals,
+    },
+    requestingContract: tEXOOrchestratorContract,
+    symbol,
+    depositFee: depositFeeBP,
+    amountStake: inVaultBalance,
+    maxAmountWithdraw: inVaultBalance,
+    onPoolStateChange,
+    refStake: true,
+    ecAssetAllowance
+  };
+
   return (
     <Fragment>
       <TableRow className={classes.root} onClick={() => setOpen(!open)}>
@@ -175,7 +194,7 @@ function YieldFarm(props: any) {
         {!isTablet && (
           <>
             <TableCell style={{ padding: '24px 16px' }}>
-              <Typography variant="caption">Your Balance</Typography>
+              <Typography variant="caption">Compounded Balance</Typography>
               <Typography variant="h6" className={classes.label}>
                 {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(8)}{' '}
                 {symbol}
@@ -232,9 +251,7 @@ function YieldFarm(props: any) {
                     flexDirection="row"
                     justifyContent="space-between"
                   >
-                    <Typography>
-                      Balance <span style={{fontWeight:"bold"}}>pancake_{title}</span>
-                    </Typography>
+                    <Typography>Wallet Balance</Typography>
                     <Typography>
                       {normalizeTokenDecimal(balance, +decimal).toFixed(4)}
                     </Typography>
@@ -257,8 +274,8 @@ function YieldFarm(props: any) {
                   <>
                     <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
                       <FormControlLabel
-                        control={<Checkbox checked={true}/>}
-                        label="Stake for reward"
+                        control={<Checkbox checked={false}/>}
+                        label="Stake For tEXO Reward"
                       />
                       <StakeVaultAction data={dataButton} onStakeComplete={onStakeComplete} onAction={onAction} />
                     </Box>
@@ -285,22 +302,27 @@ function YieldFarm(props: any) {
                 marginBottom="10px"
               >
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
-                  <Typography>Your unstaked <span style={{fontWeight:"bold"}}>ecCAKE-LP</span></Typography>
+                  <Typography>Your ecAsset in vault <span style={{fontWeight:"bold"}}>tCake-LP</span></Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
-                    ecCAKE-LP
+                    ecAsset
                   </Typography>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
-                  <StakeAction data={dataButton} disabled={!(inVaultBalance > 0)}/>
+                  <StakeAllAction
+                    onAction={onAction}
+                    onApprove={onApprove}
+                    data={dataStakeAllButton}
+                    disabled={!(inVaultBalance > 0)}
+                  />
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
-                  <Typography>Total Staked</Typography>
+                  <Typography>Initial Deposit</Typography>
                   <Typography className={'text-right'}>
-                    {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
-                    ecCAKE-LP
+                    {normalizeTokenDecimal(ecAssetStakedBalance).toFixed(4)}{' '}
+                    ecAsset
                   </Typography>
                 </Box>
               </Box>
@@ -337,7 +359,7 @@ function YieldFarm(props: any) {
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                   <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
-                    <Typography align="center">Reward</Typography>
+                    <Typography align="center">tEXO Reward</Typography>
                     <ClaimRewardsAction data={dataButton} disabled />
                   </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>

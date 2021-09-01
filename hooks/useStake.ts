@@ -7,7 +7,6 @@ import { fetchPoolsUserDataAsync } from '../state/pools/reducer';
 import { fetchFarmUserDataAsync } from '../state/farms/reducer';
 import { fetchFAANGPoolsUserDataAsync } from '../state/fAANGpools/reducer';
 import { useNetwork } from 'state/hooks';
-import { fetchYieldUserData } from 'state/yield/reducer';
 
 export const useStake = (orchestrator: Contract, poolId: number) => {
   const dispatch = useAppDispatch();
@@ -32,6 +31,37 @@ export const useStake = (orchestrator: Contract, poolId: number) => {
         dispatch(fetchPoolsUserDataAsync(account, chainId));
         dispatch(fetchFarmUserDataAsync(account, chainId));
         dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+        console.info(txHash);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [account, dispatch, orchestrator, poolId, chainId],
+  );
+
+  return { onStake: handleStake, isLoading };
+};
+
+export const useStakeAllECAsset = (orchestrator: Contract, poolId: number) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setLoading] = useState(false);
+  const currentNetwork = useNetwork();
+  const { id: chainId } = currentNetwork || {};
+  const { account } = useWeb3React();
+
+  const handleStake = useCallback(
+    async (amount: string, ref: string | null = null, decimals: string) => {
+      try {
+        setLoading(true);
+        const txHash = await stake(
+          orchestrator,
+          poolId,
+          amount,
+          account,
+          ref,
+          decimals,
+        ); // will ignore ref if null
+        setLoading(false);
         console.info(txHash);
       } catch (error) {
         setLoading(false);

@@ -2,7 +2,9 @@ import { getAddress } from 'utils/addressHelpers';
 import multicall from 'utils/multicall';
 import erc20 from 'config/abi/erc20.json';
 import vault from 'config/abi/Vault.json';
+import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 import BigNumber from 'bignumber.js';
+import contracts from 'config/constants/contracts';
 
 export default async function fetchUserData(
   yieldFarms: any[],
@@ -40,6 +42,22 @@ export default async function fetchUserData(
         },
       ];
 
+      const ecAssetCall = [
+        {
+          address: getAddress(contracts.orchestrator, chainId),
+          name: 'userInfo',
+          params: [yieldFarm.ecAssetPool.pid, account],
+        },
+      ];
+
+      const ecAssetAllowanceCall = [
+        {
+          address: getAddress(yieldFarm.address, chainId),
+          name: 'allowance',
+          params: [account, getAddress(contracts.orchestrator, chainId)],
+        }
+      ];
+
       const [userUnderlyingBalance, userVaultBalance] = await multicall(
         erc20,
         ercCalls,
@@ -54,6 +72,14 @@ export default async function fetchUserData(
 
       const allowance = await multicall(erc20, allowanceCall, chainId);
 
+      const userInfo = await multicall(
+        orchestratorABI,
+        ecAssetCall,
+        chainId,
+      );
+
+      const ecAssetAllowance = await multicall(erc20, ecAssetAllowanceCall, chainId);
+
       return {
         ...yieldFarm,
         userData: {
@@ -61,6 +87,8 @@ export default async function fetchUserData(
           balance: new BigNumber(userUnderlyingBalance).toJSON(),
           inVaultBalance: new BigNumber(userVaultBalance).toJSON(),
           stakedBalance: new BigNumber(userUnderlyingInVaultBalance).toJSON(),
+          ecAssetStakedBalance: new BigNumber(userInfo[0]['amount']._hex).toJSON(),
+          ecAssetAllowance: new BigNumber(ecAssetAllowance[0]).toJSON(),
         },
       };
     }),
