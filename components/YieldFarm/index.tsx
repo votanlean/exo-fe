@@ -86,6 +86,7 @@ function YieldFarm(props: any) {
     inVaultBalance,
     earnings: pendingReward,
     ecAssetStakedBalance,
+    ecAssetAllowance,
   } = userData;
 
   const canWithdraw = new BigNumber(inVaultBalance).toNumber() > 0;
@@ -117,7 +118,7 @@ function YieldFarm(props: any) {
   const onChangeAmountStakeNumber = (e) => {
     const val = e.target.value;
     if (val >= 0) {
-      if (val > balance) {
+      if (+val > +balance) {
         setAmountStakeNumber(balance);
       } else {
         setAmountStakeNumber(val);
@@ -155,8 +156,8 @@ function YieldFarm(props: any) {
   const dataStakeAllButton = {
     id: ecAssetPool.pid,
     stakingToken: {
-      address: ecAssetPool.address,
-      decimals: ecAssetPool.decimals,
+      address: vaultAddress,
+      decimals: decimals,
     },
     requestingContract: tEXOOrchestratorContract,
     symbol,
@@ -165,7 +166,7 @@ function YieldFarm(props: any) {
     maxAmountWithdraw: inVaultBalance,
     onPoolStateChange,
     refStake: true,
-    sender: vaultAddress
+    ecAssetAllowance
   };
 
   return (
@@ -309,7 +310,12 @@ function YieldFarm(props: any) {
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
-                  <StakeAllAction data={dataStakeAllButton} disabled={!(inVaultBalance > 0)}/>
+                  <StakeAllAction
+                    onAction={onAction}
+                    onApprove={onApprove}
+                    data={dataStakeAllButton}
+                    disabled={!(inVaultBalance > 0)}
+                  />
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">

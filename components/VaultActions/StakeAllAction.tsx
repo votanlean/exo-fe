@@ -10,50 +10,68 @@ import rot13 from 'utils/encode';
 import { useStyles } from './styles';
 import { getDecimals } from 'utils/decimalsHelper';
 import { useNetwork } from 'state/hooks';
+import { useApprove } from 'hooks/useApprove';
+import { useERC20 } from 'hooks/useContract';
+import { normalizeTokenDecimal } from 'utils/bigNumber';
 
 function StakeAllAction(props: any) {
-  const classes = useStyles();
-  const { disabled, data } = props || {};
-  const {
-    id,
-    requestingContract,
-    amountStake,
-    refStake,
-    stakingToken,
-    sender
-  } = data || {};
+    const classes = useStyles();
+    const { disabled, data, onApprove, onAction } = props || {};
+    const {
+        id,
+        requestingContract,
+        amountStake,
+        refStake,
+        stakingToken,
+        ecAssetAllowance
+    } = data || {};
+    const { onStake, isLoading } = useStakeAllECAsset(requestingContract, id);
+    const { id: chainId } = useNetwork();
 
-  const { onStake, isLoading } = useStakeAllECAsset(requestingContract, id, sender);
-  const { id: chainId } = useNetwork();
+    const tokenContract = useERC20(
+        stakingToken.address ? stakingToken.address : '',
+    );
 
-  const handleConfirmStake = async () => {
-    let ref;
+    const { approve } = useApprove({
+        tokenContract,
+        requestingContract,
+        onApprove
+    });
 
-    if (refStake) {
-      const cookies = new Cookies();
-      if (cookies.get('ref')) {
-        if (isAddress(rot13(cookies.get('ref')))) {
-          ref = rot13(cookies.get('ref'));
+    const handleConfirmStake = async () => {
+        if (+ecAssetAllowance === 0) { //parse to Number
+            approve();
+        } else {
+            let ref;
+
+            if (refStake) {
+                const cookies = new Cookies();
+                if (cookies.get('ref')) {
+                    if (isAddress(rot13(cookies.get('ref')))) {
+                        ref = rot13(cookies.get('ref'));
+                    }
+                } else {
+                    ref = '0x0000000000000000000000000000000000000000';
+                }
+            }
+            const decimals = getDecimals(stakingToken.decimals, chainId);
+            const amount = normalizeTokenDecimal(amountStake, +decimals);
+            await onStake(amount, ref, decimals);
+            onAction()
         }
-      } else {
-        ref = '0x0000000000000000000000000000000000000000';
-      }
-    }
-    const decimals = getDecimals(stakingToken.decimals, chainId);
-    await onStake(amountStake, ref, decimals);
-  };
+    };
 
-  return (
-    <Box>
-      <Button
-        className={classes.button}
-        onClick={handleConfirmStake}
-        disabled={disabled || isLoading}
-      >
-        Stake All
-      </Button>
-    </Box>
-  );
+    return (
+        <Box>
+            <Button
+                className={classes.button}
+                onClick={handleConfirmStake}
+                disabled={disabled || isLoading}
+            >
+                Stake All
+            </Button>
+        </Box>
+    );
 }
 
 export default StakeAllAction;

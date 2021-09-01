@@ -50,6 +50,14 @@ export default async function fetchUserData(
         },
       ];
 
+      const ecAssetAllowanceCall = [
+        {
+          address: getAddress(yieldFarm.address, chainId),
+          name: 'allowance',
+          params: [account, getAddress(contracts.orchestrator, chainId)],
+        }
+      ];
+
       const [userUnderlyingBalance, userVaultBalance] = await multicall(
         erc20,
         ercCalls,
@@ -70,6 +78,8 @@ export default async function fetchUserData(
         chainId,
       );
 
+      const ecAssetAllowance = await multicall(erc20, ecAssetAllowanceCall, chainId);
+
       return {
         ...yieldFarm,
         userData: {
@@ -78,6 +88,7 @@ export default async function fetchUserData(
           inVaultBalance: new BigNumber(userVaultBalance).toJSON(),
           stakedBalance: new BigNumber(userUnderlyingInVaultBalance).toJSON(),
           ecAssetStakedBalance: new BigNumber(userInfo[0]['amount']._hex).toJSON(),
+          ecAssetAllowance: new BigNumber(ecAssetAllowance[0]).toJSON(),
         },
       };
     }),
