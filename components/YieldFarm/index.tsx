@@ -274,7 +274,7 @@ function YieldFarm(props: any) {
                   <>
                     <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
                       <FormControlLabel
-                        control={<Checkbox checked={true}/>}
+                        control={<Checkbox checked={false}/>}
                         label="Stake For tEXO Reward"
                       />
                       <StakeVaultAction data={dataButton} onStakeComplete={onStakeComplete} onAction={onAction} />
