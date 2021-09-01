@@ -59,6 +59,21 @@ export const unstake = async (
     });
 };
 
+export const emergencyWithdraw = async (
+  orchestrator,
+  poolId,
+  account,
+) => {
+  return orchestrator.methods
+    .emergencyWithdraw(
+      poolId,
+    )
+    .send({ from: account, gas: 500000 })
+    .on('transactionHash', (tx) => {
+      return tx.transactionHash;
+    });
+};
+
 export const harvest = async (orchestrator, poolId, account) => {
   return orchestrator.methods
     .withdraw(poolId, '0')

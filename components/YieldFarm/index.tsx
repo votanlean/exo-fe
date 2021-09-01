@@ -146,11 +146,13 @@ function YieldFarm(props: any) {
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: balance,
-    maxAmountWithdraw: inVaultBalance,
+    maxAmountWithdraw: ecAssetStakedBalance, //currently, i use this for demo, i will refactor later
     onPoolStateChange,
     refStake: true,
     account: selectedAccount,
-    amountStakeNumber
+    amountStakeNumber,
+    texoOrchestrator: tEXOOrchestratorContract, //currently, i use this for demo, i will refactor later
+    ecAsserPoolId: ecAssetPool.pid //currently, i use this for demo, i will refactor later
   };
 
   const dataStakeAllButton = {
@@ -365,7 +367,12 @@ function YieldFarm(props: any) {
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                   <Box className={classes.buttonBoxItem} flex={1}>
                     <Typography align="center">Withdraw</Typography>
-                    <WithdrawVaultAction data={dataButton} disabled={!canWithdraw} onAction={onAction} />
+                    {/* currently, i use ecAssetStakedBalance for demo (i'll refactor later) */}
+                    <WithdrawVaultAction 
+                      data={dataButton} 
+                      disabled={!canWithdraw && ecAssetStakedBalance <= 0} 
+                      onAction={onAction} 
+                    />
                   </Box>
               </Box>
               <Box paddingRight="10px">

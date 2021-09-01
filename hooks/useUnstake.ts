@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useAppDispatch } from 'state';
-import { unstake, vaultUnStake } from 'utils/callHelpers';
+import { emergencyWithdraw, unstake, vaultUnStake } from 'utils/callHelpers';
 import {
   useOrchestratorContract,
   useFAANGOrchestratorContract,
@@ -101,4 +101,28 @@ export const useVaultUnstake = (vault: Contract) => {
   );
 
   return { onVaultUnstake: handleUnstake, isLoading };
+};
+
+export const useEmergencyWithdraw = (orchestrator: Contract, poolId: Number) => {
+  const dispatch = useAppDispatch();
+  const { account } = useWeb3React();
+  const [isLoading, setLoading] = useState(false);
+  const currentNetwork = useNetwork();
+  const { id: chainId } = currentNetwork || {};
+
+  const handleUnstake = useCallback(
+    async () => {
+      try {
+        setLoading(true);
+        const txHash = await emergencyWithdraw(orchestrator, poolId, account);
+        setLoading(false);
+        console.info(txHash);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [account, dispatch, orchestrator, chainId],
+  );
+
+  return { onEmergencyWithdraw: handleUnstake, isLoading };
 };
