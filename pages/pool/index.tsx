@@ -167,11 +167,11 @@ function Pool() {
 
   useEffect(() => {
     if (chainId === 56) {
-      setFAANGFinishBlock(10770888);
+      setFAANGFinishBlock(10611291);
     }
 
     if (chainId === 137) {
-      setFAANGFinishBlock(19089090);
+      setFAANGFinishBlock(18829657);
     }
   }, [chainId])
 
