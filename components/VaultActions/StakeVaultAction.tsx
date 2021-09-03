@@ -10,12 +10,11 @@ import { Box } from '@material-ui/core';
 
 function StakeVaultAction(props: any) {
   const classes = useStyles();
-  const { data, onAction, onStakeComplete } = props || {};
+  const { data, amountStakeNumber, onAction, onStakeComplete } = props || {};
   const {
     requestingContract: vaultContract,
     maxAmountStake,
     stakingToken,
-    amountStakeNumber,
   } = data || {};
 
   const isDisabled = (!amountStakeNumber|| amountStakeNumber > maxAmountStake);
