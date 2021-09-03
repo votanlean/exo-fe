@@ -29,6 +29,7 @@ import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
 import PopOver from 'components/PopOver';
 import StakeAllAction from 'components/VaultActions/StakeAllAction';
 import DepositRegion from 'components/DepositRegion';
+import WithdrawRegion from 'components/WithdrawRegion';
 
 interface IYieldFarmProps {
   farm: any;
@@ -110,7 +111,8 @@ function YieldFarm(props: any) {
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: balance,
-    maxAmountWithdraw: ecAssetStakedBalance, //currently, i use this for demo, i will refactor later
+    inVaultBalance,
+    ecAssetStakedBalance,
     onPoolStateChange,
     refStake: true,
     account: selectedAccount,
@@ -208,6 +210,11 @@ function YieldFarm(props: any) {
                 onAction={onAction}
                 onApprove={onApprove}
               />
+              <WithdrawRegion
+                yieldFarmData={yieldFarmData}
+                data={dataButton}
+                onAction={onAction}
+              />
               <Divider orientation="horizontal" variant="fullWidth"/>
               <Box
                 flex={1}
@@ -286,7 +293,7 @@ function YieldFarm(props: any) {
                     <WithdrawVaultAction 
                       data={dataButton} 
                       disabled={!canWithdraw && ecAssetStakedBalance <= 0} 
-                      onAction={onAction} 
+                      onAction={onAction}
                     />
                   </Box>
               </Box>

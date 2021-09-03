@@ -12,13 +12,13 @@ import { normalizeTokenDecimal } from 'utils/bigNumber';
 
 function WithdrawVaultAction(props: any) {
   const classes = useStyles();
-  const { disabled, data, onAction } = props || {};
+  const { disabled, data, onAction, amountWithdrawNumber } = props || {};
   const {
     ecAsserPoolId, //currently, i use this for demo, i will refactor later
     requestingContract: vaultContract,
     texoOrchestrator, //currently, i use this for demo, i will refactor later
     symbol,
-    maxAmountWithdraw,
+    ecAssetStakedBalance,
     stakingToken,
   } = data || {};
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
@@ -29,10 +29,14 @@ function WithdrawVaultAction(props: any) {
 
   const handleConfirmWithdraw = async () => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
-    await onEmergencyWithdraw();
-    //must replace amount here to right value, just use maxAmountWithdraw for demostration
-    const amount = normalizeTokenDecimal(maxAmountWithdraw, +decimals);
-    await onVaultUnstake(amount, decimals);
+    // await onEmergencyWithdraw();
+    // //must replace amount here to right value, just use maxAmountWithdraw for demostration
+    // const amount = normalizeTokenDecimal(ecAssetStakedBalance, +decimals);
+    // await onVaultUnstake(amount, decimals);
+  
+    const amount = normalizeTokenDecimal(amountWithdrawNumber, +decimals);
+    console.log('amount', amountWithdrawNumber.toString());
+    await onVaultUnstake(amountWithdrawNumber, decimals);
 
     onAction();
   };
