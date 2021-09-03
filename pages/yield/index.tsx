@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ChangeEvent, useCallback } from 'react';
 import Head from 'next/head';
-import { TextField, Typography, Switch, TableContainer, Table, TableBody } from '@material-ui/core';
+import { Typography, TableContainer, Table, TableBody } from '@material-ui/core';
 import { useDebounceCallback } from '@react-hook/debounce'
 import { useWeb3React } from '@web3-react/core';
 import { useDispatch } from 'react-redux';
@@ -12,21 +12,31 @@ import { getAddress } from 'utils/addressHelpers';
 import { useNetwork } from 'state/hooks';
 import { useTexoTokenPrice } from 'state/texo/selectors';
 import { useYieldFarms } from 'state/yield/selector';
+import { useOrchestratorData } from 'state/orchestrator/selectors';
 
 import { fetchYieldFarmPublicData, fetchYieldUserData } from 'state/yield/reducer';
+import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
+import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
+import { fetchAppPrices } from 'state/prices/reducer';
 
 export default function Yield() {
   const [searchText, setSearchText] = useState<undefined | null | string>();
 
   const { account } = useWeb3React();
-  const { id: chainId } = useNetwork();
+  const network = useNetwork();
+  const { id: chainId } = network;
+
   const yieldFarms = useYieldFarms();
   const allTokenPrices = useAppPrices();
-  // const tEXOPrice = useTexoTokenPrice();
+  const tEXOPrice = useTexoTokenPrice();
+  const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
   const dispatch = useDispatch();
 
   const refreshAppGlobalData = useCallback(() => {
     dispatch(fetchYieldFarmPublicData(chainId));
+    dispatch(fetchTexoTokenDataThunk(chainId));
+    dispatch(fetchOrchestratorDataThunk(chainId, network));
+    dispatch(fetchAppPrices(chainId));
 
     if (account) {
       dispatch(fetchYieldUserData(account, chainId));
@@ -46,23 +56,23 @@ export default function Yield() {
       if (account) {
         dispatch(fetchYieldUserData(account, chainId));
       }
-    },30000);
+    }, 30000);
 
     return () => {
       clearInterval(updateUserData);
     }
   }, [account, chainId]);
 
-  const onApprove = useCallback(()=>{
+  const onApprove = useCallback(() => {
     dispatch(fetchYieldUserData(account, chainId));
-  },[dispatch, account, chainId]);
+  }, [dispatch, account, chainId]);
 
-  const onAction = useCallback(()=>{
+  const onAction = useCallback(() => {
     dispatch(fetchYieldFarmPublicData(chainId));
     if (account) {
       dispatch(fetchYieldUserData(account, chainId));
     }
-  },[dispatch, account, chainId]);
+  }, [dispatch, account, chainId]);
 
   return (
     <>
@@ -93,9 +103,12 @@ export default function Yield() {
                     selectedAccount={account}
                     onPoolStateChange={refreshAppGlobalData}
                     stakingTokenPrice={stakingTokenPrice}
-                    // tEXOPrice={tEXOPrice}
+                    tEXOPrice={tEXOPrice}
+                    tEXOPerBlock={tEXOPerBlock}
                     onApprove={onApprove}
                     onAction={onAction}
+                    allTokenPrices={allTokenPrices.data || []}
+                    totalAllocPoint={totalAllocPoint}
                   />
                 );
               })}

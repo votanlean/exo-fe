@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKS_PER_YEAR, POLYGON_BLOCKS_PER_YEAR } from '../config';
+import { getBlockPerYear } from 'utils/getBlockPerYear';
 
 /**
  * Get the APR value in %
@@ -17,20 +17,7 @@ export const getPoolApr = (
   tokenPerBlock: number,
   chainId: number,
 ): number => {
-  let blockPerYear: BigNumber;
-
-  switch (chainId) {
-    case 137:
-    case 80001:
-      blockPerYear = POLYGON_BLOCKS_PER_YEAR;
-      break;
-    case 56:
-    case 5600:
-    case 97:
-    default:
-      blockPerYear = BLOCKS_PER_YEAR;
-      break;
-  }
+  const blockPerYear = getBlockPerYear(chainId);
 
   const totalRewardPricePerYear = new BigNumber(rewardTokenPrice)
     .times(tokenPerBlock)
@@ -58,20 +45,7 @@ export const getFarmApr = (
   tEXOPerBlock: BigNumber,
   chainId: number,
 ): number => {
-  let blockPerYear: BigNumber;
-
-  switch (chainId) {
-    case 137:
-    case 80001:
-      blockPerYear = POLYGON_BLOCKS_PER_YEAR;
-      break;
-    case 56:
-    case 5600:
-    case 97:
-    default:
-      blockPerYear = BLOCKS_PER_YEAR;
-      break;
-  }
+  const blockPerYear = getBlockPerYear(chainId);
 
   const yearlyCakeRewardAllocation = tEXOPerBlock
     .times(blockPerYear)
@@ -82,5 +56,7 @@ export const getFarmApr = (
     .times(100);
   return apr.isNaN() || !apr.isFinite() ? null : apr.toNumber();
 };
+
+export { getYieldFarmAprHelper } from './yieldFarmApr';
 
 export default null;

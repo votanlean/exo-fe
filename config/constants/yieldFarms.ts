@@ -1,5 +1,8 @@
 import { bnbEcAssetPools } from "./ecAssetPools";
 
+export enum STRATEGY_TYPES {
+  PANCAKESWAP = "pancakeswap"
+}
 
 export const bnbVaults: any[] = [
   {
@@ -25,6 +28,19 @@ export const bnbVaults: any[] = [
       5600: 18,
     },
     liquidityLink: 'https://exchange.pancakeswap.finance/#/add/BNB/',
+    strategy: {
+      rewardPool: {
+        address: {
+          5600: '0x73feaa1eE314F8c655E354234017bE2193C9E24E'
+        }
+      },
+      pool: {
+        id: {
+          5600: 252
+        }
+      },
+      type: STRATEGY_TYPES.PANCAKESWAP
+    }
   },
   {
     pid: 1,
@@ -49,5 +65,18 @@ export const bnbVaults: any[] = [
       5600: 18,
     },
     liquidityLink: 'https://exchange.pancakeswap.finance/#/add/BNB/',
+    strategy: {
+      rewardPool: {
+        address: {
+          5600: '0x73feaa1eE314F8c655E354234017bE2193C9E24E'
+        }
+      },
+      pool: {
+        id: {
+          5600: 258
+        }
+      },
+      type: STRATEGY_TYPES.PANCAKESWAP
+    }
   },
 ];

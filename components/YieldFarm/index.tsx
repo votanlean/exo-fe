@@ -35,6 +35,9 @@ import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
 import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
 import NumberFormatCustom from 'components/NumberFormatCustom/index';
 import PopOver from 'components/PopOver';
+import { getYieldFarmAprHelper } from 'hookApi/apr';
+import { useAppPrices } from 'state/prices/selectors';
+import { useOrchestratorData } from 'state/orchestrator/selectors';
 import StakeAllAction from 'components/VaultActions/StakeAllAction';
 
 interface IYieldFarmProps {
@@ -45,11 +48,14 @@ function YieldFarm(props: any) {
   const {
     yieldFarmData = {},
     stakingTokenPrice,
-    // tEXOPrice,
+    tEXOPrice,
     onPoolStateChange,
     selectedAccount,
     onApprove,
-    onAction
+    onAction,
+    tEXOPerBlock,
+    allTokenPrices,
+    totalAllocPoint,
   } = props || {};
 
   const {
@@ -61,16 +67,11 @@ function YieldFarm(props: any) {
     decimals,
     depositFeeBP,
     userData = {},
-    // lpTotalInQuoteToken = BIG_ZERO,
-    // allocPoint,
     vaultSymbol,
     underlying,
     underlyingVaultBalance,
-    strategy = {},
     ecAssetPool,
   } = yieldFarmData;
-
-  const { address: strategyAddress } = strategy;
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -92,24 +93,22 @@ function YieldFarm(props: any) {
   const canWithdraw = new BigNumber(inVaultBalance).toNumber() > 0;
   const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
-  const underlyingAddress = underlying.address;
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
   const tEXOOrchestratorContract = useOrchestratorContract();
-  // const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
-  // const farmWeight = new BigNumber(allocPoint).div(
-  //   new BigNumber(totalAllocPoint),
-  // );
+
   const decimal = getDecimals(decimals, chainId);
 
-  // const apr = getFarmApr(
-  //   farmWeight,
-  //   tEXOPrice,
-  //   lpTotalInQuoteToken,
-  //   normalizeTokenDecimal(tEXOPerBlock),
-  //   chainId,
-  // );
-  const apr = null;
+  const { apr } = getYieldFarmAprHelper(
+    {
+      yieldFarm: yieldFarmData,
+      allTokenPrices,
+      tEXOPrice,
+      tEXOPerBlock,
+      totalAllocPoint,
+    },
+    chainId
+  );
 
   const onAppove = useCallback(() => {
     onPoolStateChange();
@@ -246,7 +245,7 @@ function YieldFarm(props: any) {
                 alignItems="center"
               >
                 <Box
-                    width="47%"
+                  width="47%"
                 >
                   <Box
                     display="flex"
@@ -271,12 +270,12 @@ function YieldFarm(props: any) {
                     onChange={onChangeAmountStakeNumber}
                   />
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
                 {isAlreadyApproved ?
                   <>
                     <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
                       <FormControlLabel
-                        control={<Checkbox checked={false}/>}
+                        control={<Checkbox checked={false} />}
                         label="Stake For tEXO Reward"
                       />
                       <StakeVaultAction data={dataButton} onStakeComplete={onStakeComplete} onAction={onAction} />
@@ -293,7 +292,7 @@ function YieldFarm(props: any) {
                   </Box>
                 ) : null}
               </Box>
-              <Divider orientation="horizontal" variant="fullWidth"/>
+              <Divider orientation="horizontal" variant="fullWidth" />
               <Box
                 flex={1}
                 display="flex"
@@ -304,13 +303,13 @@ function YieldFarm(props: any) {
                 marginBottom="10px"
               >
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
-                  <Typography>Your ecAsset in vault <span style={{fontWeight:"bold"}}>tCake-LP</span></Typography>
+                  <Typography>Your ecAsset in vault <span style={{ fontWeight: "bold" }}>tCake-LP</span></Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
                     ecAsset
                   </Typography>
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
                   <StakeAllAction
                     onAction={onAction}
@@ -319,7 +318,7 @@ function YieldFarm(props: any) {
                     disabled={!(inVaultBalance > 0)}
                   />
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
                   <Typography>Initial Deposit</Typography>
                   <Typography className={'text-right'}>
@@ -328,7 +327,7 @@ function YieldFarm(props: any) {
                   </Typography>
                 </Box>
               </Box>
-              <Divider orientation="horizontal" variant="fullWidth"/>
+              <Divider orientation="horizontal" variant="fullWidth" />
               <Box
                 flex={1}
                 display="flex"
@@ -344,36 +343,36 @@ function YieldFarm(props: any) {
                   width="25%"
                 >
                   <Typography align="left">Vault Details</Typography>
-                  <PopOver unit={symbol}/>
+                  <PopOver unit={symbol} />
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box
                   className={classes.rowDetail}
                   flex={1}
                   flexDirection="column"
                   width="25%"
                 >
-                  <Typography>Total <span style={{fontWeight:"bold"}}>tEXO</span> Earned</Typography>
+                  <Typography>Total <span style={{ fontWeight: "bold" }}>tEXO</span> Earned</Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(0).toFixed(4)}
                     {' tEXO'}
                   </Typography>
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
-                  <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
-                    <Typography align="center">tEXO Reward</Typography>
-                    <ClaimRewardsAction data={dataButton} disabled />
-                  </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
-                  <Box className={classes.buttonBoxItem} flex={1}>
-                    <Typography align="center">Withdraw</Typography>
-                    {/* currently, i use ecAssetStakedBalance for demo (i'll refactor later) */}
-                    <WithdrawVaultAction 
-                      data={dataButton} 
-                      disabled={!canWithdraw && ecAssetStakedBalance <= 0} 
-                      onAction={onAction} 
-                    />
-                  </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
+                <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
+                  <Typography align="center">tEXO Reward</Typography>
+                  <ClaimRewardsAction data={dataButton} disabled />
+                </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
+                <Box className={classes.buttonBoxItem} flex={1}>
+                  <Typography align="center">Withdraw</Typography>
+                  {/* currently, i use ecAssetStakedBalance for demo (i'll refactor later) */}
+                  <WithdrawVaultAction
+                    data={dataButton}
+                    disabled={!canWithdraw && ecAssetStakedBalance <= 0}
+                    onAction={onAction}
+                  />
+                </Box>
               </Box>
               <Box paddingRight="10px">
                 <Box>
