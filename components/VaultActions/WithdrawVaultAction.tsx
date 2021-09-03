@@ -3,17 +3,20 @@ import { Box } from '@material-ui/core';
 
 import Button from 'components/Button';
 import { WithdrawDialog } from 'components/Dialogs';
-import { useVaultUnstake } from 'hooks/useUnstake';
+import { useVaultUnstake, useEmergencyWithdraw } from 'hooks/useUnstake';
 
 import { useStyles } from './styles';
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
+import { normalizeTokenDecimal } from 'utils/bigNumber';
 
-function WithdrawAction(props: any) {
+function WithdrawVaultAction(props: any) {
   const classes = useStyles();
   const { disabled, data, onAction } = props || {};
   const {
+    ecAsserPoolId, //currently, i use this for demo, i will refactor later
     requestingContract: vaultContract,
+    texoOrchestrator, //currently, i use this for demo, i will refactor later
     symbol,
     maxAmountWithdraw,
     stakingToken,
@@ -21,11 +24,16 @@ function WithdrawAction(props: any) {
   const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
 
   const { onVaultUnstake, isLoading } = useVaultUnstake(vaultContract);
+  const { onEmergencyWithdraw } = useEmergencyWithdraw(texoOrchestrator, ecAsserPoolId);
   const { id: chainId } = useNetwork();
 
-  const handleConfirmWithdraw = async (amount) => {
+  const handleConfirmWithdraw = async () => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
+    await onEmergencyWithdraw();
+    //must replace amount here to right value, just use maxAmountWithdraw for demostration
+    const amount = normalizeTokenDecimal(maxAmountWithdraw, +decimals);
     await onVaultUnstake(amount, decimals);
+
     onAction();
   };
 
@@ -37,23 +45,13 @@ function WithdrawAction(props: any) {
     <Box>
       <Button
         className={classes.button}
-        onClick={handleToggleWithdraw}
-        disabled={disabled}
+        onClick={handleConfirmWithdraw}
+        disabled={disabled || isLoading}
       >
         Withdraw
       </Button>
-      <WithdrawDialog
-        open={openWithdrawDialog}
-        title="Withdraw"
-        onClose={handleToggleWithdraw}
-        onConfirm={handleConfirmWithdraw}
-        unit={symbol}
-        maxAmount={maxAmountWithdraw}
-        isLoading={isLoading}
-        decimals={stakingToken.decimals}
-      />
     </Box>
   );
 }
 
-export default WithdrawAction;
+export default WithdrawVaultAction;
