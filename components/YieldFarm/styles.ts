@@ -102,6 +102,10 @@ const useStyles = makeStyles(() => {
     helperText: {
       textAlign: 'right',
     },
+    buttonToggle : {
+      width: '100%',
+      marginTop: '21px',
+    }
   };
 });
 

@@ -12,10 +12,6 @@ import {
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import BigNumber from 'bignumber.js';
 
-import {
-    ApproveAction,
-} from 'components/PoolActions';
-
 import { useNetwork } from 'state/hooks';
 
 import { normalizeTokenDecimal } from 'utils/bigNumber';
@@ -61,7 +57,6 @@ function WithdrawRegion(props: any) {
 
     const {
         allowance,
-        balance,
         earnings: pendingReward,
     } = userData;
 
@@ -71,7 +66,7 @@ function WithdrawRegion(props: any) {
         const val = e.target.value;
         if (val >= 0) {
             if (+val > balanceToWithdraw.toPrecision()) {
-                setAmountWithdrawNumber(balanceToWithdraw.toString());
+                setAmountWithdrawNumber(balanceToWithdraw.toPrecision(7));
             } else {
                 setAmountWithdrawNumber(val);
             }
@@ -81,7 +76,7 @@ function WithdrawRegion(props: any) {
     }
 
     const onClickMax = () => {
-        setAmountWithdrawNumber(balanceToWithdraw.toPrecision());
+        setAmountWithdrawNumber(balanceToWithdraw.toPrecision(7));
     }
 
     const onWithdrawComplete = () => {
@@ -134,6 +129,7 @@ function WithdrawRegion(props: any) {
                             label="Unstake if needed"
                         />
                         <WithdrawVaultAction
+                            unstakeIfNeeded={unstakeIfNeeded}
                             amountWithdrawNumber={amountWithdrawNumber}
                             data={data}
                             disabled={isDisabled}

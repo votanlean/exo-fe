@@ -9,7 +9,6 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp, Launch } from '@material-ui/icons';
-import BigNumber from 'bignumber.js';
 
 import {
   ClaimRewardsAction,
@@ -25,11 +24,11 @@ import { getDecimals } from 'utils/decimalsHelper';
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
 import { useOrchestratorContract, useVaultContract } from 'hooks/useContract';
-import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
 import PopOver from 'components/PopOver';
 import StakeAllAction from 'components/VaultActions/StakeAllAction';
 import DepositRegion from 'components/DepositRegion';
 import WithdrawRegion from 'components/WithdrawRegion';
+import Button from 'components/Button';
 
 interface IYieldFarmProps {
   farm: any;
@@ -66,6 +65,7 @@ function YieldFarm(props: any) {
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [isToggleView, setIsToggleView] = useState(false);
 
   const isTablet = useMediaQuery('(max-width: 768px)');
 
@@ -79,10 +79,7 @@ function YieldFarm(props: any) {
     ecAssetAllowance,
   } = userData;
 
-  const canWithdraw = new BigNumber(inVaultBalance).toNumber() > 0;
-  const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
-  const underlyingAddress = underlying.address;
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
   const tEXOOrchestratorContract = useOrchestratorContract();
@@ -116,8 +113,8 @@ function YieldFarm(props: any) {
     onPoolStateChange,
     refStake: true,
     account: selectedAccount,
-    texoOrchestrator: tEXOOrchestratorContract, //currently, i use this for demo, i will refactor later
-    ecAsserPoolId: ecAssetPool.pid //currently, i use this for demo, i will refactor later
+    texoOrchestrator: tEXOOrchestratorContract,
+    ecAssetPoolId: ecAssetPool.pid
   };
 
   const dataStakeAllButton = {
@@ -135,6 +132,10 @@ function YieldFarm(props: any) {
     refStake: true,
     ecAssetAllowance
   };
+
+  const onToggleView = () => {
+    setIsToggleView(!isToggleView);
+  }
 
   return (
     <Fragment>
@@ -204,17 +205,20 @@ function YieldFarm(props: any) {
               margin={1}
               paddingY="16px"
             >
-              <DepositRegion
-                yieldFarmData={yieldFarmData}
-                data={dataButton}
-                onAction={onAction}
-                onApprove={onApprove}
-              />
-              <WithdrawRegion
-                yieldFarmData={yieldFarmData}
-                data={dataButton}
-                onAction={onAction}
-              />
+              {isToggleView ?
+                <WithdrawRegion
+                  yieldFarmData={yieldFarmData}
+                  data={dataButton}
+                  onAction={onAction}
+                />
+                :
+                <DepositRegion
+                  yieldFarmData={yieldFarmData}
+                  data={dataButton}
+                  onAction={onAction}
+                  onApprove={onApprove}
+                />
+              }
               <Divider orientation="horizontal" variant="fullWidth"/>
               <Box
                 flex={1}
@@ -288,13 +292,9 @@ function YieldFarm(props: any) {
                   </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle"/>
                   <Box className={classes.buttonBoxItem} flex={1}>
-                    <Typography align="center">Withdraw</Typography>
-                    {/* currently, i use ecAssetStakedBalance for demo (i'll refactor later) */}
-                    <WithdrawVaultAction 
-                      data={dataButton} 
-                      disabled={!canWithdraw && ecAssetStakedBalance <= 0} 
-                      onAction={onAction}
-                    />
+                    <Button className={classes.buttonToggle} onClick={onToggleView}>
+                      {isToggleView ? 'Deposit' : 'Withdraw'}
+                    </Button>
                   </Box>
               </Box>
               <Box paddingRight="10px">

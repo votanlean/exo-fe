@@ -2,47 +2,44 @@ import React, { useState } from 'react';
 import { Box } from '@material-ui/core';
 
 import Button from 'components/Button';
-import { WithdrawDialog } from 'components/Dialogs';
-import { useVaultUnstake, useEmergencyWithdraw } from 'hooks/useUnstake';
+import { useVaultUnstake, useUnstake } from 'hooks/useUnstake';
 
 import { useStyles } from './styles';
 import { useNetwork } from 'state/hooks';
 import { getDecimals } from 'utils/decimalsHelper';
 import { normalizeTokenDecimal } from 'utils/bigNumber';
+import BigNumber from 'bignumber.js';
 
 function WithdrawVaultAction(props: any) {
   const classes = useStyles();
-  const { disabled, data, onAction, amountWithdrawNumber } = props || {};
+  const { disabled, data, onAction, onWithdrawComplete, amountWithdrawNumber, unstakeIfNeeded } = props || {};
   const {
-    ecAsserPoolId, //currently, i use this for demo, i will refactor later
+    ecAssetPoolId,
     requestingContract: vaultContract,
-    texoOrchestrator, //currently, i use this for demo, i will refactor later
-    symbol,
-    ecAssetStakedBalance,
+    texoOrchestrator,
+    inVaultBalance,
     stakingToken,
   } = data || {};
-  const [openWithdrawDialog, setOpenWithdrawDialog] = useState(false);
 
   const { onVaultUnstake, isLoading } = useVaultUnstake(vaultContract);
-  const { onEmergencyWithdraw } = useEmergencyWithdraw(texoOrchestrator, ecAsserPoolId);
+  const { onUnstake } = useUnstake(texoOrchestrator, ecAssetPoolId);
   const { id: chainId } = useNetwork();
 
+  const decimals = getDecimals(stakingToken.decimals, chainId);
+  const amount = new BigNumber(amountWithdrawNumber);
+
+  const ecAssetInVaultBalance = normalizeTokenDecimal(inVaultBalance, +decimals);
+
   const handleConfirmWithdraw = async () => {
-    const decimals = getDecimals(stakingToken.decimals, chainId);
-    // await onEmergencyWithdraw();
-    // //must replace amount here to right value, just use maxAmountWithdraw for demostration
-    // const amount = normalizeTokenDecimal(ecAssetStakedBalance, +decimals);
-    // await onVaultUnstake(amount, decimals);
-  
-    const amount = normalizeTokenDecimal(amountWithdrawNumber, +decimals);
-    console.log('amount', amountWithdrawNumber.toString());
-    await onVaultUnstake(amountWithdrawNumber, decimals);
-
+    if (unstakeIfNeeded && amount.gt(ecAssetInVaultBalance)) {
+      const missingPart = amount.minus(ecAssetInVaultBalance);
+      await onUnstake(missingPart.toString(), decimals);
+      await onVaultUnstake(amount.toString(), decimals);
+    } else {
+      await onVaultUnstake(amount.toString(), decimals);
+    }
     onAction();
-  };
-
-  const handleToggleWithdraw = () => {
-    setOpenWithdrawDialog(!openWithdrawDialog);
+    onWithdrawComplete();
   };
 
   return (
