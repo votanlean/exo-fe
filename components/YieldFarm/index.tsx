@@ -25,6 +25,9 @@ import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
 import { useOrchestratorContract, useVaultContract } from 'hooks/useContract';
 import PopOver from 'components/PopOver';
+import { getYieldFarmAprHelper } from 'hookApi/apr';
+import { useAppPrices } from 'state/prices/selectors';
+import { useOrchestratorData } from 'state/orchestrator/selectors';
 import StakeAllAction from 'components/VaultActions/StakeAllAction';
 import DepositRegion from 'components/DepositRegion';
 import WithdrawRegion from 'components/WithdrawRegion';
@@ -38,11 +41,14 @@ function YieldFarm(props: any) {
   const {
     yieldFarmData = {},
     stakingTokenPrice,
-    // tEXOPrice,
+    tEXOPrice,
     onPoolStateChange,
     selectedAccount,
     onApprove,
-    onAction
+    onAction,
+    tEXOPerBlock,
+    allTokenPrices,
+    totalAllocPoint,
   } = props || {};
 
   const {
@@ -54,12 +60,9 @@ function YieldFarm(props: any) {
     decimals,
     depositFeeBP,
     userData = {},
-    // lpTotalInQuoteToken = BIG_ZERO,
-    // allocPoint,
     vaultSymbol,
     underlying,
     underlyingVaultBalance,
-    strategy = {},
     ecAssetPool,
   } = yieldFarmData;
 
@@ -83,20 +86,19 @@ function YieldFarm(props: any) {
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
   const tEXOOrchestratorContract = useOrchestratorContract();
-  // const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
-  // const farmWeight = new BigNumber(allocPoint).div(
-  //   new BigNumber(totalAllocPoint),
-  // );
+
   const decimal = getDecimals(decimals, chainId);
 
-  // const apr = getFarmApr(
-  //   farmWeight,
-  //   tEXOPrice,
-  //   lpTotalInQuoteToken,
-  //   normalizeTokenDecimal(tEXOPerBlock),
-  //   chainId,
-  // );
-  const apr = null;
+  const { apr } = getYieldFarmAprHelper(
+    {
+      yieldFarm: yieldFarmData,
+      allTokenPrices,
+      tEXOPrice,
+      tEXOPerBlock,
+      totalAllocPoint,
+    },
+    chainId
+  );
 
   const dataButton = {
     id: vaultId,
@@ -219,7 +221,7 @@ function YieldFarm(props: any) {
                   onApprove={onApprove}
                 />
               }
-              <Divider orientation="horizontal" variant="fullWidth"/>
+              <Divider orientation="horizontal" variant="fullWidth" />
               <Box
                 flex={1}
                 display="flex"
@@ -230,13 +232,13 @@ function YieldFarm(props: any) {
                 marginBottom="10px"
               >
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
-                  <Typography>Your ecAsset in vault <span style={{fontWeight:"bold"}}>tCake-LP</span></Typography>
+                  <Typography>Your ecAsset in vault <span style={{ fontWeight: "bold" }}>tCake-LP</span></Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
                     ecAsset
                   </Typography>
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
                   <StakeAllAction
                     onAction={onAction}
@@ -245,7 +247,7 @@ function YieldFarm(props: any) {
                     disabled={!(inVaultBalance > 0)}
                   />
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
                   <Typography>Initial Deposit</Typography>
                   <Typography className={'text-right'}>
@@ -254,7 +256,7 @@ function YieldFarm(props: any) {
                   </Typography>
                 </Box>
               </Box>
-              <Divider orientation="horizontal" variant="fullWidth"/>
+              <Divider orientation="horizontal" variant="fullWidth" />
               <Box
                 flex={1}
                 display="flex"
@@ -270,32 +272,32 @@ function YieldFarm(props: any) {
                   width="25%"
                 >
                   <Typography align="left">Vault Details</Typography>
-                  <PopOver unit={symbol}/>
+                  <PopOver unit={symbol} />
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box
                   className={classes.rowDetail}
                   flex={1}
                   flexDirection="column"
                   width="25%"
                 >
-                  <Typography>Total <span style={{fontWeight:"bold"}}>tEXO</span> Earned</Typography>
+                  <Typography>Total <span style={{ fontWeight: "bold" }}>tEXO</span> Earned</Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(0).toFixed(4)}
                     {' tEXO'}
                   </Typography>
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
-                  <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
-                    <Typography align="center">tEXO Reward</Typography>
-                    <ClaimRewardsAction data={dataButton} disabled />
-                  </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle"/>
-                  <Box className={classes.buttonBoxItem} flex={1}>
-                    <Button className={classes.buttonToggle} onClick={onToggleView}>
-                      {isToggleView ? 'Deposit' : 'Withdraw'}
-                    </Button>
-                  </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
+                <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
+                  <Typography align="center">tEXO Reward</Typography>
+                  <ClaimRewardsAction data={dataButton} disabled />
+                </Box>
+                <Divider orientation="vertical" flexItem={true} variant="middle" />
+                <Box className={classes.buttonBoxItem} flex={1}>
+                  <Button className={classes.buttonToggle} onClick={onToggleView}>
+                    {isToggleView ? 'Deposit' : 'Withdraw'}
+                  </Button>
+                </Box>
               </Box>
               <Box paddingRight="10px">
                 <Box>
