@@ -66,7 +66,7 @@ function WithdrawRegion(props: any) {
         const val = e.target.value;
         if (val >= 0) {
             if (+val > balanceToWithdraw.toPrecision()) {
-                setAmountWithdrawNumber(balanceToWithdraw.toPrecision(7));
+                setAmountWithdrawNumber(balanceToWithdraw.toString());
             } else {
                 setAmountWithdrawNumber(val);
             }
@@ -76,7 +76,7 @@ function WithdrawRegion(props: any) {
     }
 
     const onClickMax = () => {
-        setAmountWithdrawNumber(balanceToWithdraw.toPrecision(7));
+        setAmountWithdrawNumber(balanceToWithdraw.toString());
     }
 
     const onWithdrawComplete = () => {

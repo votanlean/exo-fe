@@ -30,7 +30,7 @@ function DepositRegion(props: any) {
         yieldFarmData = {},
         data,
         onApprove,
-        onAction
+        onAction,
     } = props || {};
 
     const {

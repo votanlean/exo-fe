@@ -57,7 +57,7 @@ function StakeAllAction(props: any) {
             const decimals = getDecimals(stakingToken.decimals, chainId);
             const amount = normalizeTokenDecimal(amountStake, +decimals);
             await onStake(amount, ref, decimals);
-            onAction()
+            onAction();
         }
     };
 
