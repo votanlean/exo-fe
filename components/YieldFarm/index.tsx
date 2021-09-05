@@ -1,23 +1,16 @@
 import React, { Fragment, useCallback, useState } from 'react';
 import {
   Box,
-  Button,
   Collapse,
   Divider,
-  InputAdornment,
   TableCell,
   TableRow,
-  TextField,
   Typography,
   useMediaQuery,
-  Checkbox
 } from '@material-ui/core';
-import { KeyboardArrowDown, KeyboardArrowUp, Launch, WarningRounded } from '@material-ui/icons';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import BigNumber from 'bignumber.js';
+import { KeyboardArrowDown, KeyboardArrowUp, Launch } from '@material-ui/icons';
 
 import {
-  ApproveAction,
   ClaimRewardsAction,
   RoiAction,
 } from 'components/PoolActions';
@@ -31,14 +24,14 @@ import { getDecimals } from 'utils/decimalsHelper';
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
 import { useOrchestratorContract, useVaultContract } from 'hooks/useContract';
-import StakeVaultAction from 'components/VaultActions/StakeVaultAction';
-import WithdrawVaultAction from 'components/VaultActions/WithdrawVaultAction';
-import NumberFormatCustom from 'components/NumberFormatCustom/index';
 import PopOver from 'components/PopOver';
 import { getYieldFarmAprHelper } from 'hookApi/apr';
 import { useAppPrices } from 'state/prices/selectors';
 import { useOrchestratorData } from 'state/orchestrator/selectors';
 import StakeAllAction from 'components/VaultActions/StakeAllAction';
+import DepositRegion from 'components/DepositRegion';
+import WithdrawRegion from 'components/WithdrawRegion';
+import Button from 'components/Button';
 
 interface IYieldFarmProps {
   farm: any;
@@ -75,10 +68,9 @@ function YieldFarm(props: any) {
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [amountStakeNumber, setAmountStakeNumber] = useState(null);
+  const [isToggleView, setIsToggleView] = useState(false);
 
   const isTablet = useMediaQuery('(max-width: 768px)');
-  const isMobile = useMediaQuery('(max-width: 600px)');
 
   const {
     allowance,
@@ -90,8 +82,6 @@ function YieldFarm(props: any) {
     ecAssetAllowance,
   } = userData;
 
-  const canWithdraw = new BigNumber(inVaultBalance).toNumber() > 0;
-  const isAlreadyApproved = new BigNumber(allowance).toNumber() > 0;
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
@@ -110,31 +100,6 @@ function YieldFarm(props: any) {
     chainId
   );
 
-  const onAppove = useCallback(() => {
-    onPoolStateChange();
-  }, [onPoolStateChange]);
-
-  const onChangeAmountStakeNumber = (e) => {
-    const val = e.target.value;
-    if (val >= 0) {
-      if (+val > +balance) {
-        setAmountStakeNumber(balance);
-      } else {
-        setAmountStakeNumber(val);
-      }
-    } else {
-      setAmountStakeNumber(0);
-    }
-  }
-
-  const onClickMax = () => {
-    setAmountStakeNumber(balance);
-  }
-
-  const onStakeComplete = () => {
-    setAmountStakeNumber('');
-  }
-
   const dataButton = {
     id: vaultId,
     stakingToken: {
@@ -145,13 +110,13 @@ function YieldFarm(props: any) {
     symbol,
     depositFee: depositFeeBP,
     maxAmountStake: balance,
-    maxAmountWithdraw: ecAssetStakedBalance, //currently, i use this for demo, i will refactor later
+    inVaultBalance,
+    ecAssetStakedBalance,
     onPoolStateChange,
     refStake: true,
     account: selectedAccount,
-    amountStakeNumber,
-    texoOrchestrator: tEXOOrchestratorContract, //currently, i use this for demo, i will refactor later
-    ecAsserPoolId: ecAssetPool.pid //currently, i use this for demo, i will refactor later
+    texoOrchestrator: tEXOOrchestratorContract,
+    ecAssetPoolId: ecAssetPool.pid
   };
 
   const dataStakeAllButton = {
@@ -169,6 +134,10 @@ function YieldFarm(props: any) {
     refStake: true,
     ecAssetAllowance
   };
+
+  const onToggleView = () => {
+    setIsToggleView(!isToggleView);
+  }
 
   return (
     <Fragment>
@@ -238,60 +207,20 @@ function YieldFarm(props: any) {
               margin={1}
               paddingY="16px"
             >
-              <Box
-                display="flex"
-                flexDirection={isTablet ? "column" : "row"}
-                marginBottom="10px"
-                alignItems="center"
-              >
-                <Box
-                  width="47%"
-                >
-                  <Box
-                    display="flex"
-                    flexDirection="row"
-                    justifyContent="space-between"
-                  >
-                    <Typography>Wallet Balance</Typography>
-                    <Typography>
-                      {normalizeTokenDecimal(balance, +decimal).toFixed(4)}
-                    </Typography>
-                  </Box>
-                  <TextField
-                    value={amountStakeNumber || ''}
-                    variant="outlined"
-                    placeholder="0"
-                    fullWidth
-                    InputProps={{
-                      inputComponent: NumberFormatCustom,
-                      startAdornment: <InputAdornment position="start">{symbol}</InputAdornment>,
-                      endAdornment: <Button color="primary" onClick={onClickMax}>Max</Button>
-                    }}
-                    onChange={onChangeAmountStakeNumber}
-                  />
-                </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle" />
-                {isAlreadyApproved ?
-                  <>
-                    <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
-                      <FormControlLabel
-                        control={<Checkbox checked={false} />}
-                        label="Stake For tEXO Reward"
-                      />
-                      <StakeVaultAction data={dataButton} onStakeComplete={onStakeComplete} onAction={onAction} />
-                    </Box>
-                  </>
-                  : null}
-                {!isAlreadyApproved ? (
-                  <Box className={classes.buttonBoxItem} flex={1}>
-                    <ApproveAction
-                      data={dataButton}
-                      disabled={isAlreadyApproved}
-                      onApprove={onApprove}
-                    />
-                  </Box>
-                ) : null}
-              </Box>
+              {isToggleView ?
+                <WithdrawRegion
+                  yieldFarmData={yieldFarmData}
+                  data={dataButton}
+                  onAction={onAction}
+                />
+                :
+                <DepositRegion
+                  yieldFarmData={yieldFarmData}
+                  data={dataButton}
+                  onAction={onAction}
+                  onApprove={onApprove}
+                />
+              }
               <Divider orientation="horizontal" variant="fullWidth" />
               <Box
                 flex={1}
@@ -365,13 +294,9 @@ function YieldFarm(props: any) {
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.buttonBoxItem} flex={1}>
-                  <Typography align="center">Withdraw</Typography>
-                  {/* currently, i use ecAssetStakedBalance for demo (i'll refactor later) */}
-                  <WithdrawVaultAction
-                    data={dataButton}
-                    disabled={!canWithdraw && ecAssetStakedBalance <= 0}
-                    onAction={onAction}
-                  />
+                  <Button className={classes.buttonToggle} onClick={onToggleView}>
+                    {isToggleView ? 'Deposit' : 'Withdraw'}
+                  </Button>
                 </Box>
               </Box>
               <Box paddingRight="10px">
