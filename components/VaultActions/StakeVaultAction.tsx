@@ -7,7 +7,6 @@ import { useStyles } from './styles';
 import { getDecimals } from 'utils/decimalsHelper';
 import { useNetwork } from 'state/hooks';
 import { Box } from '@material-ui/core';
-import { normalizeTokenDecimal } from 'utils/bigNumber';
 
 function StakeVaultAction(props: any) {
   const classes = useStyles();
@@ -30,8 +29,8 @@ function StakeVaultAction(props: any) {
     // const amount = normalizeTokenDecimal(amountStakeNumber,+decimals);
     // console.log('amount converted: ', amount.toString())
     await onVaultStake(amountStakeNumber, decimals);
-    onStakeComplete();
     onAction();
+    onStakeComplete();
   };
 
   return (

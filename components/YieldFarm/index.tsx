@@ -23,15 +23,19 @@ import { getDecimals } from 'utils/decimalsHelper';
 
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
-import { useOrchestratorContract, useVaultContract } from 'hooks/useContract';
+import { useERC20, useOrchestratorContract, useVaultContract } from 'hooks/useContract';
 import PopOver from 'components/PopOver';
 import { getYieldFarmAprHelper } from 'hookApi/apr';
-import { useAppPrices } from 'state/prices/selectors';
-import { useOrchestratorData } from 'state/orchestrator/selectors';
 import StakeAllAction from 'components/VaultActions/StakeAllAction';
 import DepositRegion from 'components/DepositRegion';
 import WithdrawRegion from 'components/WithdrawRegion';
 import Button from 'components/Button';
+import { useStakeAllECAsset } from 'hooks/useStake';
+import { useApprove } from 'hooks/useApprove';
+import { isAddress } from 'utils/web3';
+import rot13 from 'utils/encode';
+import Cookies from 'universal-cookie';
+import BigNumber from 'bignumber.js';
 
 interface IYieldFarmProps {
   farm: any;
@@ -139,6 +143,47 @@ function YieldFarm(props: any) {
     setIsToggleView(!isToggleView);
   }
 
+  //TODO: Need refactor
+  const { onStake } = useStakeAllECAsset(tEXOOrchestratorContract, ecAssetPool.pid);
+
+  const tokenContract = useERC20(
+    vaultAddress ? vaultAddress : '',
+  );
+
+  const { approve } = useApprove({
+    tokenContract,
+    requestingContract: tEXOOrchestratorContract,
+    onApprove
+  });
+
+  const onHandleAutoStake = async (isAutoStake: boolean, amountStakeNumber: BigNumber) => {
+    if (isAutoStake) {
+      const { stakingToken, ecAssetAllowance, refStake } = dataStakeAllButton;
+
+      if (+ecAssetAllowance === 0) { //parse to Number
+        approve();
+      } else {
+        let ref;
+
+        if (refStake) {
+          const cookies = new Cookies();
+          if (cookies.get('ref')) {
+            if (isAddress(rot13(cookies.get('ref')))) {
+              ref = rot13(cookies.get('ref'));
+            }
+          } else {
+            ref = '0x0000000000000000000000000000000000000000';
+          }
+        }
+
+        
+        const decimals = getDecimals(stakingToken.decimals, chainId);
+        await onStake(amountStakeNumber.toString(), ref, decimals);
+        onAction();
+      }
+    }
+  }
+
   return (
     <Fragment>
       <TableRow className={classes.root} onClick={() => setOpen(!open)}>
@@ -219,6 +264,7 @@ function YieldFarm(props: any) {
                   data={dataButton}
                   onAction={onAction}
                   onApprove={onApprove}
+                  onHandleAutoStake={onHandleAutoStake}
                 />
               }
               <Divider orientation="horizontal" variant="fullWidth" />
