@@ -9,7 +9,8 @@ export const bnbVaults: any[] = [
   //Native vaults
   {
     pid: 0,
-    icon: '/static/images/Swap_tEXO-BNB.png',
+    icon1: '/static/images/tEXO-Icon.png',
+    icon2: '/static/images/pool/wBNB.png',
     symbol: 'TEXO_wBNB',
     vaultSymbol: 'bfTEXO/wBNB',
     title: 'TEXO-wBNB',
@@ -46,7 +47,8 @@ export const bnbVaults: any[] = [
   },
   {
     pid: 1,
-    icon: '/static/images/Swap_tEXO-BUSD.png',
+    icon1: '/static/images/tEXO-Icon.png',
+    icon2: '/static/images/pool/BUSD.png',
     symbol: 'TEXO_BUSD',
     vaultSymbol: 'bfTEXO/BUSD',
     title: 'TEXO-BUSD',
@@ -82,10 +84,11 @@ export const bnbVaults: any[] = [
     }
   },
 
-  //Bluechips vaults
+  // //Bluechips vaults
   {
     pid: 2,
-    icon: '/static/images/Swap_wBNB-BUSD.png',
+    icon1: '/static/images/pool/wBNB.png',
+    icon2: '/static/images/pool/BUSD.png',
     symbol: 'wBNB_BUSD',
     vaultSymbol: 'bfwBNB/BUSD',
     title: 'wBNB-BUSD',
@@ -122,7 +125,8 @@ export const bnbVaults: any[] = [
   },
   {
     pid: 3,
-    icon: '/static/images/Swap_CAKE-wBNB.png',
+    icon1: '/static/images/pool/CAKE.jpeg',
+    icon2: '/static/images/pool/wBNB.png',
     symbol: 'CAKE_wBNB',
     vaultSymbol: 'bfCAKE/wBNB',
     title: 'CAKE-wBNB',
@@ -159,7 +163,8 @@ export const bnbVaults: any[] = [
   },
   {
     pid: 4,
-    icon: '/static/images/Swap_CAKE-BUSD.png',
+    icon1: '/static/images/pool/CAKE.jpeg',
+    icon2: '/static/images/pool/BUSD.png',
     symbol: 'CAKE_BUSD',
     vaultSymbol: 'bfCAKE/BUSD',
     title: 'CAKE-BUSD',
@@ -196,7 +201,8 @@ export const bnbVaults: any[] = [
   },
   {
     pid: 5,
-    icon: '/static/images/Swap_BTCB-wBNB.png',
+    icon1: '/static/images/pool/BTCB.jpeg',
+    icon2: '/static/images/pool/wBNB.png',
     symbol: 'BTCB_wBNB',
     vaultSymbol: 'bfBTCB/wBNB',
     title: 'BTCB-wBNB',
@@ -233,7 +239,8 @@ export const bnbVaults: any[] = [
   },
   {
     pid: 6,
-    icon: '/static/images/Swap_ETH-wBNB.png',
+    icon1: '/static/images/pool/ETH.png',
+    icon2: '/static/images/pool/wBNB.png',
     symbol: 'ETH_wBNB',
     vaultSymbol: 'bfETH/wBNB',
     title: 'ETH-wBNB',
@@ -268,10 +275,11 @@ export const bnbVaults: any[] = [
       type: STRATEGY_TYPES.PANCAKESWAP
     }
   },
-  //Stable vaults
+  // //Stable vaults
   {
     pid: 7,
-    icon: '/static/images/Swap_USDT-BUSD.png',
+    icon1: '/static/images/pool/USDT.png',
+    icon2: '/static/images/pool/BUSD.png',
     symbol: 'USDT_BUSD',
     vaultSymbol: 'bfUSDT/BUSD',
     title: 'USDT-BUSD',
@@ -308,7 +316,8 @@ export const bnbVaults: any[] = [
   },
   {
     pid: 8,
-    icon: '/static/images/Swap_USDC-BUSD.png',
+    icon1: '/static/images/pool/USDC.png',
+    icon2: '/static/images/pool/BUSD.png',
     symbol: 'USDC_BUSD',
     vaultSymbol: 'bfUSDC/BUSD',
     title: 'USDC-BUSD',
@@ -345,7 +354,8 @@ export const bnbVaults: any[] = [
   },
   {
     pid: 9,
-    icon: '/static/images/Swap_USDT-USDC.png',
+    icon1: '/static/images/pool/USDT.png',
+    icon2: '/static/images/pool/USDC.png',
     symbol: 'USDT_USDC',
     vaultSymbol: 'bfUSDT/USDC',
     title: 'USDT-USDC',

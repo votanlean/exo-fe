@@ -20,11 +20,27 @@ const useStyles = makeStyles(() => {
         // borderBottom: 'unset',
       },
     },
-    poolImg: {
+    poolImg1: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      marginRight: -15,
+      position: "relative",
+      zIndex: 1,
+      [theme.breakpoints.down('sm')]: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        marginRight: 5,
+      },
+    },
+    poolImg2: {
       width: 40,
       height: 40,
       borderRadius: 20,
       marginRight: 10,
+      zIndex: 0,
+      position: "relative",
       [theme.breakpoints.down('sm')]: {
         width: 24,
         height: 24,

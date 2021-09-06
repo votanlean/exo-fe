@@ -52,7 +52,8 @@ function YieldFarm(props: any) {
   } = props || {};
 
   const {
-    icon,
+    icon1,
+    icon2,
     title,
     symbol,
     pid: vaultId,
@@ -144,7 +145,8 @@ function YieldFarm(props: any) {
       <TableRow className={classes.root} onClick={() => setOpen(!open)}>
         <TableCell style={{ padding: '24px 16px' }} component="th" scope="row">
           <Box display="flex" alignItems="center">
-            <img src={icon} alt={title} className={classes.poolImg} />
+              <img src={icon1} alt={title} className={classes.poolImg1} />
+              <img src={icon2} alt={title} className={classes.poolImg2} />
             <Typography className={classes.poolTitle}>{title}</Typography>
           </Box>
         </TableCell>
