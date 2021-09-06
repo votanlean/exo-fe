@@ -45,10 +45,10 @@ function WithdrawRegion(props: any) {
     const { id: chainId } = useNetwork();
     const decimal = getDecimals(decimals, chainId);
 
-    const ecAssetInVaultBalance = normalizeTokenDecimal(inVaultBalance, +decimal);
-    const ecAssetStaked = normalizeTokenDecimal(ecAssetStakedBalance, +decimal);
+    const ecAssetInVaultBalance = new BigNumber(inVaultBalance);
+    const ecAssetStaked = new BigNumber(ecAssetStakedBalance);
 
-    const balanceToWithdraw = unstakeIfNeeded ? (ecAssetInVaultBalance.plus(ecAssetStaked)) : (ecAssetInVaultBalance);
+    const balanceToWithdraw = unstakeIfNeeded ? normalizeTokenDecimal(ecAssetInVaultBalance.plus(ecAssetStaked), +decimal) : normalizeTokenDecimal(ecAssetInVaultBalance, +decimal);
     const isDisabled = !((amountWithdrawNumber > 0) && (balanceToWithdraw > 0));
 
     const classes = useStyles();
@@ -76,7 +76,7 @@ function WithdrawRegion(props: any) {
     }
 
     const onClickMax = () => {
-        setAmountWithdrawNumber(balanceToWithdraw.toString());
+        setAmountWithdrawNumber(balanceToWithdraw.toString(10));
     }
 
     const onWithdrawComplete = () => {

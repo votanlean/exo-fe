@@ -69,7 +69,8 @@ function DepositRegion(props: any) {
     }
 
     const onClickMax = () => {
-        setAmountStakeNumber(balance);
+        const amount = normalizeTokenDecimal(new BigNumber(balance), +decimal);
+        setAmountStakeNumber(amount.toString(10));
     }
 
     const onStakeComplete = () => {

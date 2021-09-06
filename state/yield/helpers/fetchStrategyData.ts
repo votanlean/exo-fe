@@ -188,7 +188,6 @@ export default async function fetchStrategyData(
     try {
       // const strategyData = await getPancakeswapStrategyData(strategy, chainId);
       const strategyData = strategyIndex[type] ? await strategyIndex[type](strategy, chainId) : {};
-      console.log("strategyData: ", strategyData);
 
       return {
         ...yieldFarm,
