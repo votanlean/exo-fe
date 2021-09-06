@@ -18,7 +18,7 @@ function StakeVaultAction(props: any) {
     stakingToken,
   } = data || {};
 
-  const isDisabled = (!amountStakeNumber|| amountStakeNumber > maxAmountStake || +amountStakeNumber === 0);
+  const isDisabled = (!amountStakeNumber|| (+amountStakeNumber > +maxAmountStake) || (+amountStakeNumber === 0));
 
   const { onVaultStake, isLoading } = useVaultStake(vaultContract);
   const { id: chainId } = useNetwork();
@@ -26,9 +26,6 @@ function StakeVaultAction(props: any) {
   const handleConfirmStake = async () => {
     const decimals = getDecimals(stakingToken.decimals, chainId);
 
-    //TODO: Please check these lines (With these, if we stake all, it's ok else it converts to wrong value)
-    // const amount = normalizeTokenDecimal(amountStakeNumber,+decimals);
-    // console.log('amount converted: ', amount.toString())
     await onVaultStake(amountStakeNumber, decimals);
     onStakeComplete();
     onAction();
