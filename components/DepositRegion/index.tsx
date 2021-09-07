@@ -31,6 +31,7 @@ function DepositRegion(props: any) {
         data,
         onApprove,
         onAction,
+        onHandleAutoStake,
     } = props || {};
 
     const {
@@ -42,6 +43,7 @@ function DepositRegion(props: any) {
 
     const classes = useStyles();
     const [amountStakeNumber, setAmountStakeNumber] = useState(null);
+    const [isAutoStake, setIsAutoStake] = useState(false);
 
     const isTablet = useMediaQuery('(max-width: 768px)');
 
@@ -75,6 +77,13 @@ function DepositRegion(props: any) {
 
     const onStakeComplete = () => {
         setAmountStakeNumber('');
+        if (isAutoStake) {
+            onHandleAutoStake(isAutoStake, amountStakeNumber);
+        }
+    }
+
+    const onClickAutoStake = () => {
+        setIsAutoStake(!isAutoStake);
     }
 
     return (
@@ -115,7 +124,7 @@ function DepositRegion(props: any) {
                 <>
                     <Box className={classes.buttonBoxItem} marginTop="-3px" flex={1}>
                         <FormControlLabel
-                            control={<Checkbox checked={false} />}
+                            control={<Checkbox checked={isAutoStake} onChange={onClickAutoStake}/>}
                             label="Stake For tEXO Reward"
                         />
                         <StakeVaultAction
@@ -123,6 +132,7 @@ function DepositRegion(props: any) {
                             data={data}
                             onStakeComplete={onStakeComplete}
                             onAction={onAction}
+                            isAutoStake={isAutoStake}
                         />
                     </Box>
                 </>
