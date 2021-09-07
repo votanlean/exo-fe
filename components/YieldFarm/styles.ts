@@ -121,6 +121,8 @@ const useStyles = makeStyles(() => {
     buttonToggle : {
       width: '100%',
       marginTop: '21px',
+      display: 'flex',
+      justifyContent: 'space-between'
     }
   };
 });
