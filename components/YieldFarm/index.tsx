@@ -320,7 +320,7 @@ function YieldFarm(props: any) {
                   width="25%"
                 >
                   <Typography align="left">Vault Details</Typography>
-                  <PopOver unit={symbol} />
+                  <PopOver unit={symbol} pid={vaultId} />
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box

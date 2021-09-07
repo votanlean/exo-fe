@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function PopOver(props:any) {
+  const { unit, apy, autoHarvestedCake, tEXOReward, pid } = props;
+
+
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
@@ -53,19 +56,19 @@ export default function PopOver(props:any) {
         onClose={handlePopoverClose}
         disableRestoreFocus
       >
-        <Typography>Asset: <span style={{fontWeight:"bold"}}>{props.unit}</span></Typography>
-        <Typography>ecAsset: <span style={{fontWeight:"bold"}}>tpancake_{props.unit}</span></Typography>
-        <Typography>APY <span style={{fontWeight:"bold"}}>{props.apy || 'NaN'}:</span></Typography>
+        <Typography>Asset: <span style={{fontWeight:"bold"}}>{unit}</span></Typography>
+        <Typography>ecAsset: <span style={{fontWeight:"bold"}}>tpancake_{unit}</span></Typography>
+        <Typography>APY <span style={{fontWeight:"bold"}}>{apy || 'NaN'}:</span></Typography>
         <Typography>
-            <span style={{fontWeight:"bold"}}>{props.apy || '0%'}: </span>
+            <span style={{fontWeight:"bold"}}>{apy || '0%'}: </span>
             Liquidity Provider APY
         </Typography>
         <Typography>
-            <span style={{fontWeight:"bold"}}>{props.autoHarvestedCake || '0%'}: </span>
-            Auto harvested CAKE
+            <span style={{fontWeight:"bold"}}>{autoHarvestedCake || '0%'}: </span>
+            { (pid === 0 || pid === 1) ? "Auto harvested tEXO" : "Auto harvested CAKE" }
         </Typography>
         <Typography>
-            <span style={{fontWeight:"bold"}}>{props.tEXOReward || '0%'}: </span>
+            <span style={{fontWeight:"bold"}}>{tEXOReward || '0%'}: </span>
             tEXO rewards
         </Typography>
       </Popover>
