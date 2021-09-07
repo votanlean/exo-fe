@@ -8,7 +8,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import { KeyboardArrowDown, KeyboardArrowUp, Launch } from '@material-ui/icons';
+import { KeyboardArrowDown, KeyboardArrowUp, Launch, ArrowForward } from '@material-ui/icons';
 
 import {
   ClaimRewardsAction,
@@ -92,6 +92,7 @@ function YieldFarm(props: any) {
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
   const vaultAddress = getAddress(address, chainId);
   const vaultContract = useVaultContract(vaultAddress);
+  const underlyingAddress = getAddress(underlying.address, chainId);
   const tEXOOrchestratorContract = useOrchestratorContract();
 
   const decimal = getDecimals(decimals, chainId);
@@ -296,7 +297,7 @@ function YieldFarm(props: any) {
                 marginBottom="10px"
               >
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
-                  <Typography>Your ecAsset in vault <span style={{ fontWeight: "bold" }}>tCake-LP</span></Typography>
+                  <Typography>Initial Deposit W/O tEXO Reward</Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
                     ecAsset
@@ -313,7 +314,7 @@ function YieldFarm(props: any) {
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
-                  <Typography>Initial Deposit</Typography>
+                  <Typography>Staked For tEXO</Typography>
                   <Typography className={'text-right'}>
                     {normalizeTokenDecimal(ecAssetStakedBalance).toFixed(4)}{' '}
                     ecAsset
@@ -336,7 +337,23 @@ function YieldFarm(props: any) {
                   width="25%"
                 >
                   <Typography align="left">Vault Details</Typography>
-                  <PopOver unit={symbol} pid={vaultId} />
+                  {/* 0% will be changed after finish APY */}
+                  <Box
+                    alignItems="left"
+                  >
+                    <Typography>
+                      <span style={{ fontWeight: "bold" }}>0%: </span>
+                      Liquidity Provider APY
+                    </Typography>
+                    <Typography>
+                      <span style={{ fontWeight: "bold" }}>0%: </span>
+                      {(vaultId === 0 || vaultId === 1) ? "Auto harvested tEXO" : "Auto harvested CAKE"}
+                    </Typography>
+                    <Typography>
+                      <span style={{ fontWeight: "bold" }}>0%: </span>
+                      tEXO rewards
+                    </Typography>
+                  </Box>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box
@@ -359,18 +376,31 @@ function YieldFarm(props: any) {
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.buttonBoxItem} flex={1}>
                   <Button className={classes.buttonToggle} onClick={onToggleView}>
-                    {isToggleView ? 'Deposit' : 'Withdraw'}
+                    <Typography>
+                      {isToggleView ? 'Deposit' : 'Withdraw'}
+                    </Typography>
+                    <ArrowForward style={{marginLeft: "15px"}} fontSize="large" color="inherit" />
                   </Button>
                 </Box>
               </Box>
-              <Box paddingRight="10px">
-                <Box>
+              <Box paddingRight="10px" display="flex" flexDirection="row">
+                <Box marginRight="10px">
                   <a
                     className={classes.linkDetail}
                     href={`${blockExplorerUrl}/address/${vaultAddress}`}
                     target="_blank"
                   >
                     View Vault on {blockExplorerName}{' '}
+                    <Launch fontSize="small" />
+                  </a>
+                </Box>
+                <Box>
+                  <a
+                    className={classes.linkDetail}
+                    href={`${blockExplorerUrl}/address/${underlyingAddress}`}
+                    target="_blank"
+                  >
+                    View LP Token on {blockExplorerName}{' '}
                     <Launch fontSize="small" />
                   </a>
                 </Box>

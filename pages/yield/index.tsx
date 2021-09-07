@@ -91,7 +91,7 @@ export default function Yield() {
       </Head>
       <div className={`container ${classes.yieldContainer}`}>
         <Typography variant='h4' className='font-bold'>
-          VAULT LIST
+          EXO-Compound
         </Typography>
 
         <TableContainer className={classes.tableContainer}>
