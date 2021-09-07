@@ -7,12 +7,13 @@ import { useDispatch } from 'react-redux';
 
 import classes from './yield.module.scss';
 import YieldFarm from 'components/YieldFarm';
-import { useAppPrices } from 'state/prices/selectors';
+import { useAppPrices, useAppPricesLoading } from 'state/prices/selectors';
 import { getAddress } from 'utils/addressHelpers';
 import { useNetwork } from 'state/hooks';
-import { useTexoTokenPrice } from 'state/texo/selectors';
-import { useYieldFarms } from 'state/yield/selector';
-import { useOrchestratorData } from 'state/orchestrator/selectors';
+import { useTexoTokenPrice, useTexoTokenLoading } from 'state/texo/selectors';
+import { useYieldFarmsData, useYieldFarmsLoading } from 'state/yield/selector';
+import { useOrchestratorData, useOrchestratorLoading } from 'state/orchestrator/selectors';
+import { useFarmsLoading } from 'state/farms/selectors';
 
 import { fetchYieldFarmPublicData, fetchYieldUserData } from 'state/yield/reducer';
 import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
@@ -22,11 +23,24 @@ import { fetchAppPrices } from 'state/prices/reducer';
 export default function Yield() {
   const [searchText, setSearchText] = useState<undefined | null | string>();
 
+  const appPriceLoading = useAppPricesLoading();
+  const texoTokenLoading = useTexoTokenLoading();
+  const yieldFarmLoading = useYieldFarmsLoading();
+  const orchestratorLoading = useOrchestratorLoading();
+  const farmLoading = useFarmsLoading();
+
+  const isDataLoading =
+    appPriceLoading ||
+    texoTokenLoading ||
+    yieldFarmLoading ||
+    orchestratorLoading ||
+    farmLoading;
+
   const { account } = useWeb3React();
   const network = useNetwork();
   const { id: chainId } = network;
 
-  const yieldFarms = useYieldFarms();
+  const yieldFarms = useYieldFarmsData();
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
   const { tEXOPerBlock, totalAllocPoint } = useOrchestratorData();
@@ -49,14 +63,10 @@ export default function Yield() {
 
   useEffect(() => {
     refreshAppGlobalData()
-  }, [account, chainId]);
 
-  useEffect(() => {
     const updateUserData = setInterval(() => {
-      if (account) {
-        dispatch(fetchYieldUserData(account, chainId));
-      }
-    }, 30000);
+      refreshAppGlobalData()
+    }, 60000);
 
     return () => {
       clearInterval(updateUserData);
@@ -98,6 +108,7 @@ export default function Yield() {
                 }
                 return (
                   <YieldFarm
+                    isLoading={isDataLoading}
                     key={yieldFarm.pid}
                     yieldFarmData={yieldFarm}
                     selectedAccount={account}

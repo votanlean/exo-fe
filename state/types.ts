@@ -41,6 +41,7 @@ export interface AppPrices {
     data: [],
     updatedAt: string
   },
+  loading: boolean;
 }
 
 export interface TexoToken {
@@ -48,6 +49,7 @@ export interface TexoToken {
     totalSupply: string,
     tEXOBurned: string,
   },
+  loading: boolean
 }
 
 export interface PoolsState {
@@ -97,7 +99,7 @@ export interface UserInfoState {
 }
 
 export interface Theme {
-   darkMode: boolean
+  darkMode: boolean
 }
 
 // Global state

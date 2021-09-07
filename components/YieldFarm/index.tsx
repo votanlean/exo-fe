@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Collapse,
@@ -43,6 +43,7 @@ interface IYieldFarmProps {
 
 function YieldFarm(props: any) {
   const {
+    isLoading,
     yieldFarmData = {},
     stakingTokenPrice,
     tEXOPrice,
@@ -74,6 +75,7 @@ function YieldFarm(props: any) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [isToggleView, setIsToggleView] = useState(false);
+  const [apr, setApr] = useState(0);
 
   const isTablet = useMediaQuery('(max-width: 768px)');
 
@@ -94,16 +96,30 @@ function YieldFarm(props: any) {
 
   const decimal = getDecimals(decimals, chainId);
 
-  const { apr } = getYieldFarmAprHelper(
-    {
-      yieldFarm: yieldFarmData,
-      allTokenPrices,
-      tEXOPrice,
-      tEXOPerBlock,
-      totalAllocPoint,
-    },
+  useEffect(() => {
+    if (!isLoading) {
+      const aprData = getYieldFarmAprHelper(
+        {
+          yieldFarm: yieldFarmData,
+          allTokenPrices,
+          tEXOPrice,
+          tEXOPerBlock,
+          totalAllocPoint,
+        },
+        chainId
+      );
+
+      setApr(aprData.apr);
+    }
+  }, [
+    isLoading,
+    yieldFarmData,
+    allTokenPrices,
+    tEXOPrice,
+    tEXOPerBlock,
+    totalAllocPoint,
     chainId
-  );
+  ]);
 
   const dataButton = {
     id: vaultId,

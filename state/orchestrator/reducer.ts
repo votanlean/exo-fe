@@ -70,6 +70,7 @@ export const fetchOrchestratorDataThunk =
           farmStartBlock: seedingBlock['inActiveBlock'].toNumber(),
         }),
       );
+      dispatch(setLoading(false));
     } catch (error) {
       dispatch(setLoading(false));
       throw error;

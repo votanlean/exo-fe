@@ -9,6 +9,10 @@ export const useTexoTokenData = () => {
   return useSelector((state: State) => state.texoToken.data);
 };
 
+export const useTexoTokenLoading = () => {
+  return useSelector((state: State) => state.texoToken.loading);
+};
+
 export const useTexoTokenPrice = () => {
   const { id: chainId } = useNetwork();
   let farmId: number;

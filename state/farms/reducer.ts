@@ -21,12 +21,16 @@ const initialState = {
       earnings: '0',
     },
   })),
+  loading: false,
 };
 
 export const farmsSlice = createSlice({
   name: 'Farms',
   initialState,
   reducers: {
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
     setFarmsPublicData: (state, action) => {
       // state.data = action.payload;
       const publicDataArray = action.payload;
@@ -57,15 +61,25 @@ export const farmsSlice = createSlice({
 });
 
 // Actions
-export const { setFarmsPublicData, setFarmUserData, setFarms } =
+export const { setFarmsPublicData, setFarmUserData, setFarms, setLoading } =
   farmsSlice.actions;
 
 // Thunks
 export const fetchFarmsPublicDataAsync = (chainId) => async (dispatch) => {
-  const farmsData = getFarms(chainId);
-  const farms = await fetchFarms(farmsData, chainId);
+  dispatch(setLoading(true));
 
-  dispatch(setFarmsPublicData(farms));
+  try {
+    const farmsData = getFarms(chainId);
+    const farms = await fetchFarms(farmsData, chainId);
+
+    dispatch(setFarmsPublicData(farms));
+
+    dispatch(setLoading(false));
+  } catch (error) {
+    dispatch(setLoading(false));
+
+    throw error;
+  }
 };
 
 export const fetchFarmUserDataAsync =
