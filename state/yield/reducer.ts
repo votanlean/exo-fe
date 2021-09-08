@@ -96,7 +96,6 @@ export const fetchYieldUserData = (account: string, chainId: number) => async (d
   try {
     const yieldFarms = getYieldFarms(chainId);
     const yieldFarmUserData = await fetchUserData(yieldFarms, account, chainId);
-    console.log('yieldFarmUserData: ', yieldFarmUserData);
 
     dispatch(setYieldFarmUserData(yieldFarmUserData));
     dispatch(setLoading(false));
