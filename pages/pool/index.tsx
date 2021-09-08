@@ -1,80 +1,86 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Head from 'next/head';
-import { useWeb3React } from '@web3-react/core';
-import dayjs from 'dayjs';
+import React, { useCallback, useEffect, useState } from "react";
+import Head from "next/head";
+import { useWeb3React } from "@web3-react/core";
+import dayjs from "dayjs";
 import {
+  Box,
   makeStyles,
   Paper,
   Table,
   TableBody,
   TableContainer,
   Typography,
-} from '@material-ui/core';
-import BigNumber from 'bignumber.js';
+} from "@material-ui/core";
+import BigNumber from "bignumber.js";
 
-import ApolloClient from 'components/ApolloClient';
-import Statistic from 'components/Statistic';
-import PoolRow from 'components/PoolRow';
+import ApolloClient from "components/ApolloClient";
+import Statistic from "components/Statistic";
+import PoolRow from "components/PoolRow";
 
-import styles from './pool.module.scss';
-import { useBlockData, useBlockDataLoading } from 'state/block/selectors';
-import { useTexoTokenData, useTexoTokenPrice } from 'state/texo/selectors';
-import { useAppDispatch } from 'state';
+import styles from "./pool.module.scss";
+import { useBlockData, useBlockDataLoading } from "state/block/selectors";
+import { useTexoTokenData, useTexoTokenPrice } from "state/texo/selectors";
+import { useAppDispatch } from "state";
 import {
   fetchFarmsPublicDataAsync,
   fetchFarmUserDataAsync,
   replaceFarmWithoutUserDataAsync,
-} from 'state/farms/reducer';
-import { getAddress } from 'utils/addressHelpers';
-import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
-import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
-import { useOrchestratorData, useOrchestratorLoading } from 'state/orchestrator/selectors';
-import { fetchBlockDataThunk } from 'state/block/reducer';
-import { usePools } from 'state/pools/selectors';
-import { fetchAppPrices } from 'state/prices/reducer';
-import { useAppPrices } from 'state/prices/selectors';
-import { useFarms, useTotalValue } from 'state/farms/selectors';
-import FarmItem from 'components/FarmItem';
-import { fetchUserInfoDataThunk } from '../../state/userInfo/reducer';
-import { useUserInfoData } from '../../state/userInfo/selectors';
-import FaangItem from 'components/FaangItem';
-import { useFAANGPools } from '../../state/fAANGpools/selectors';
+} from "state/farms/reducer";
+import { getAddress } from "utils/addressHelpers";
+import { fetchTexoTokenDataThunk } from "state/texo/reducer";
+import { fetchOrchestratorDataThunk } from "state/orchestrator/reducer";
+import { useOrchestratorData, useOrchestratorLoading } from "state/orchestrator/selectors";
+import { fetchBlockDataThunk } from "state/block/reducer";
+import { usePools } from "state/pools/selectors";
+import { fetchAppPrices } from "state/prices/reducer";
+import { useAppPrices } from "state/prices/selectors";
+import { useFarms, useTotalValue } from "state/farms/selectors";
+import FarmItem from "components/FarmItem";
+import { fetchUserInfoDataThunk } from "../../state/userInfo/reducer";
+import { useUserInfoData } from "../../state/userInfo/selectors";
+import FaangItem from "components/FaangItem";
+import { useFAANGPools } from "../../state/fAANGpools/selectors";
 import {
   fetchFAANGPoolsPublicDataAsync,
   fetchFAANGPoolsUserDataAsync,
   replaceFAANGPoolsWithoutUserData,
-} from '../../state/fAANGpools/reducer';
+} from "../../state/fAANGpools/reducer";
 import {
   fetchPoolsPublicDataAsync,
   fetchPoolsUserDataAsync,
   replacePoolWithoutUserDataAsync,
-} from '../../state/pools/reducer';
-import { useNetwork } from 'state/hooks';
-import { getFarms } from 'utils/farmsHelpers';
-import { useFAANGOrchestratorData } from '../../state/FAANGOrchestrator/selectors';
-import { fetchFAANGOrchestratorDataThunk } from 'state/FAANGOrchestrator/reducer';
-import { useAllChainTotalValue } from 'state/tlv/selectors';
-import { fetchTLV } from 'state/tlv/reducer';
-import BannerCoinTelegraph from 'components/BannerCoinTelegraph';
-import useCountdownString from 'hooks/useCountdownString';
+} from "../../state/pools/reducer";
+import { useNetwork } from "state/hooks";
+import { getFarms } from "utils/farmsHelpers";
+import { useFAANGOrchestratorData } from "../../state/FAANGOrchestrator/selectors";
+import { fetchFAANGOrchestratorDataThunk } from "state/FAANGOrchestrator/reducer";
+import { useAllChainTotalValue } from "state/tlv/selectors";
+import { fetchTLV } from "state/tlv/reducer";
+import BannerCoinTelegraph from "components/BannerCoinTelegraph";
+import useCountdownString from "hooks/useCountdownString";
 
 const useStyles = makeStyles((theme) => {
   return {
     tableContainer: {
-      filter: 'drop-shadow(rgba(25, 19, 38, 0.15) 0px 1px 4px)',
-      width: '100%',
-      borderRadius: '16px',
+      filter: "drop-shadow(rgba(25, 19, 38, 0.15) 0px 1px 4px)",
+      width: "100%",
+      borderRadius: "16px",
       background: theme.palette.themeBg.default,
+    },
+    comingSoonLogo: {
+      [theme.breakpoints.down("sm")]: {
+        width: "80px",
+      },
+    },
+    comingSoonText: {
+      [theme.breakpoints.down("sm")]: {
+        fontSize: "2rem",
+      },
     },
   };
 });
 
-function getClaimRewardsDate(
-  currentBlock,
-  canClaimRewardsBlock,
-  startDate,
-  secondPerBlock,
-) {
+function getClaimRewardsDate(currentBlock, canClaimRewardsBlock, startDate, secondPerBlock) {
   if (!currentBlock || !canClaimRewardsBlock) {
     return dayjs();
   }
@@ -85,15 +91,14 @@ function getClaimRewardsDate(
   }
 
   const secondsDiff = Math.ceil(blockDiff * secondPerBlock);
-  const claimRewardDate = startDate.add(secondsDiff, 'seconds');
+  const claimRewardDate = startDate.add(secondsDiff, "seconds");
   return claimRewardDate;
 }
 
 function Pool() {
   const poolPageReady =
     // @ts-ignore
-    process.env.POOL_PAGE_READY == true ||
-    process.env.POOL_PAGE_READY == 'true';
+    process.env.POOL_PAGE_READY == true || process.env.POOL_PAGE_READY == "true";
   const classes: any = useStyles();
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
@@ -110,8 +115,7 @@ function Pool() {
   const { currentBlock } = useBlockData();
   const isCurrentBlockLoading = useBlockDataLoading();
 
-  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } =
-    useTexoTokenData();
+  const { totalSupply: tEXOTotalSupply, tEXOBurned: burnAmount } = useTexoTokenData();
   const {
     tEXOPerBlock,
     canClaimRewardsBlock,
@@ -131,18 +135,14 @@ function Pool() {
   let blockExplorerToCountDownSeeding;
 
   if (currentBlock < seedingStartBlock) {
-    blockExplorerToCountDownSeeding =
-      blockExplorerUrl + '/block/countdown/' + seedingStartBlock;
+    blockExplorerToCountDownSeeding = blockExplorerUrl + "/block/countdown/" + seedingStartBlock;
   } else if (currentBlock < canClaimRewardsBlock) {
-    blockExplorerToCountDownSeeding =
-      blockExplorerUrl + '/block/countdown/' + canClaimRewardsBlock;
+    blockExplorerToCountDownSeeding = blockExplorerUrl + "/block/countdown/" + canClaimRewardsBlock;
   } else {
-    blockExplorerToCountDownSeeding =
-      blockExplorerUrl + '/block/countdown/' + seedingFinishBlock;
+    blockExplorerToCountDownSeeding = blockExplorerUrl + "/block/countdown/" + seedingFinishBlock;
   }
 
-  const blockExplorerToCountDownFAANG =
-    blockExplorerUrl + '/block/countdown/' + fAANGFinishBlock;
+  const blockExplorerToCountDownFAANG = blockExplorerUrl + "/block/countdown/" + fAANGFinishBlock;
 
   const refreshAppGlobalData = () => {
     dispatch(replaceFarmWithoutUserDataAsync(chainId));
@@ -173,7 +173,7 @@ function Pool() {
     if (chainId === 137) {
       setFAANGFinishBlock(18829657);
     }
-  }, [chainId])
+  }, [chainId]);
 
   useEffect(() => {
     const updateAppDataInterval = setInterval(() => {
@@ -224,19 +224,25 @@ function Pool() {
           <Typography
             variant="h5"
             align="center"
-            style={{ marginBottom: '30px', lineHeight: '40px' }}
+            style={{ marginBottom: "30px", lineHeight: "40px" }}
           >
             {chainId === 56 || chainId === 97 || chainId === 5600
-              ? 'Stake tEXO LPs (PCS V2) for tEXO reward.'
-              : 'Stake tEXO LPs (Quickswap) for tEXO reward.'}
+              ? "Stake tEXO LPs (PCS V2) for tEXO reward."
+              : "Stake tEXO LPs (Quickswap) for tEXO reward."}
             <br />
-            {currentBlock && currentBlock < farmStartBlock && !isCurrentBlockLoading && !isOrchestratorLoading
-              ? 'Farming reward will be generated in'
+            {currentBlock &&
+            currentBlock < farmStartBlock &&
+            !isCurrentBlockLoading &&
+            !isOrchestratorLoading
+              ? "Farming reward will be generated in"
               : null}
           </Typography>
-          {currentBlock && currentBlock < farmStartBlock && !isCurrentBlockLoading && !isOrchestratorLoading ? (
+          {currentBlock &&
+          currentBlock < farmStartBlock &&
+          !isCurrentBlockLoading &&
+          !isOrchestratorLoading ? (
             <Typography variant="h3" color="primary" align="center">
-              {poolPageReady ? countDownStringFarm : 'Coming Soon'}
+              {poolPageReady ? countDownStringFarm : "Coming Soon"}
             </Typography>
           ) : null}
         </div>
@@ -247,9 +253,7 @@ function Pool() {
 
             if (allTokenPrices.data) {
               stakingTokenPrice =
-                allTokenPrices.data[
-                getAddress(farm.quoteToken.address, chainId).toLowerCase()
-                ];
+                allTokenPrices.data[getAddress(farm.quoteToken.address, chainId).toLowerCase()];
             }
 
             return (
@@ -266,14 +270,33 @@ function Pool() {
             );
           })}
         </div>
+        <div className={styles.ecCompoundSection}>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            textAlign="center"
+            marginTop="4rem"
+          >
+            <img
+              className={classes.comingSoonLogo}
+              src="/static/images/icon-white.svg"
+              alt="logo title"
+            />
+            <Box>
+              <Typography className={classes.comingSoonText} variant="h1">
+                EC-Compound
+              </Typography>
+              <Typography className={classes.comingSoonText} variant="h2">
+                is coming soon
+              </Typography>
+            </Box>
+          </Box>
+        </div>
 
         <div className={styles.titleSection}>
-          <Typography
-            variant="h5"
-            align="center"
-            style={{ lineHeight: '40px' }}
-          >
-            Stake tEXO for FAANG
+          <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
+            FAANG distribution phase has concluded
           </Typography>
           {currentBlock < fAANGFinishBlock && (
             <>
@@ -281,7 +304,7 @@ function Pool() {
                 variant="h5"
                 align="center"
                 paragraph
-                style={{ marginBottom: '10px', lineHeight: '40px' }}
+                style={{ marginBottom: "10px", lineHeight: "40px" }}
               >
                 FAANG pool concludes in
               </Typography>
@@ -293,7 +316,7 @@ function Pool() {
               <Typography align="center" variant="h6">
                 <a
                   target="_blank"
-                  style={{ color: '#007EF3' }}
+                  style={{ color: "#007EF3" }}
                   href={blockExplorerToCountDownFAANG}
                 >
                   Check explorer for the most accurate countdown
@@ -320,8 +343,8 @@ function Pool() {
         {currentBlock >= seedingFinishBlock && (
           <div className={styles.countdownContainer}>
             <Typography variant="h5" color="primary" align="center">
-              Seed phase already completed. Deposit paused. Users may withdraw
-              their deposits and harvest tEXO for farming.
+              Seed phase already completed. Deposit paused. Users may withdraw their deposits and
+              harvest tEXO for farming.
             </Typography>
           </div>
         )}
@@ -332,23 +355,18 @@ function Pool() {
               variant="h5"
               align="center"
               paragraph
-              style={{ marginBottom: '10px', lineHeight: '40px' }}
+              style={{ marginBottom: "10px", lineHeight: "40px" }}
             >
               {chainId === 56 || chainId === 97 || chainId === 5600
-                ? 'Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO.'
-                : 'Equitable Distribution of tEXO in seed pools. Stake ERC-20 tokens for tEXO.'}
+                ? "Equitable Distribution of tEXO in seed pools. Stake BEP-20 tokens for tEXO."
+                : "Equitable Distribution of tEXO in seed pools. Stake ERC-20 tokens for tEXO."}
               <br />
               (4% Deposit Fee applies for tEXO liquidity)
               <br />
-              {currentBlock < canClaimRewardsBlock &&
-                'Users can harvest tEXO in'}
-              {currentBlock >= canClaimRewardsBlock &&
-                currentBlock < seedingFinishBlock ? (
+              {currentBlock < canClaimRewardsBlock && "Users can harvest tEXO in"}
+              {currentBlock >= canClaimRewardsBlock && currentBlock < seedingFinishBlock ? (
                 <>
-                  <span>
-                    Users may now harvest tEXO and provide liquidity for LP
-                    farming
-                  </span>
+                  <span>Users may now harvest tEXO and provide liquidity for LP farming</span>
                   <br />
                   <span>tEXO rewards in seed pool will stop in</span>
                 </>
@@ -375,7 +393,7 @@ function Pool() {
                 <Typography align="center" variant="h6">
                   <a
                     target="_blank"
-                    style={{ color: '#007EF3' }}
+                    style={{ color: "#007EF3" }}
                     href={blockExplorerToCountDownSeeding}
                   >
                     Check explorer for the most accurate countdown
@@ -390,32 +408,32 @@ function Pool() {
               variant="h5"
               align="center"
               paragraph
-              style={{ marginBottom: '10px', lineHeight: '40px' }}
+              style={{ marginBottom: "10px", lineHeight: "40px" }}
             >
-              Click{' '}
+              Click{" "}
               <a
                 target="_blank"
-                style={{ color: '#007EF3' }}
+                style={{ color: "#007EF3" }}
                 href="https://texo.gitbook.io/exoniumdex/launch"
               >
                 here
-              </a>{' '}
-              for more information about tEXO seed pools. Always verify{' '}
+              </a>{" "}
+              for more information about tEXO seed pools. Always verify{" "}
               <a
-                style={{ color: '#007EF3' }}
+                style={{ color: "#007EF3" }}
                 target="_blank"
                 href="https://texo.gitbook.io/exoniumdex/smart-contracts-and-audits/smart-contracts"
               >
                 contracts
-              </a>{' '}
-              before depositing. Click{' '}
+              </a>{" "}
+              before depositing. Click{" "}
               <a
-                style={{ color: '#007EF3' }}
+                style={{ color: "#007EF3" }}
                 target="_blank"
                 href="https://texo.gitbook.io/exoniumdex/smart-contracts-and-audits/audits"
               >
                 here
-              </a>{' '}
+              </a>{" "}
               for audit reports.
             </Typography>
           </div>
@@ -430,10 +448,7 @@ function Pool() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                    getAddress(
-                      pool.stakingToken.address,
-                      chainId,
-                    )?.toLowerCase()
+                      getAddress(pool.stakingToken.address, chainId)?.toLowerCase()
                     ];
                 }
                 return (
@@ -442,12 +457,8 @@ function Pool() {
                     pool={pool}
                     account={account}
                     onPoolStateChange={refreshAppGlobalData}
-                    canClaimReward={
-                      currentBlock && currentBlock >= canClaimRewardsBlock
-                    }
-                    seedingFinish={
-                      currentBlock && currentBlock > seedingFinishBlock
-                    }
+                    canClaimReward={currentBlock && currentBlock >= canClaimRewardsBlock}
+                    seedingFinish={currentBlock && currentBlock > seedingFinishBlock}
                     stakingTokenPrice={stakingTokenPrice}
                     tEXOPrice={tEXOPrice}
                     countDownString={countDownString}
