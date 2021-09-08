@@ -32,6 +32,10 @@ export default async function fetchUserData(
           name: 'underlyingBalanceWithInvestmentForHolder',
           params: [account],
         },
+        {
+          address: getAddress(yieldFarm.address, chainId),
+          name: 'getPricePerFullShare',
+        }
       ];
 
       const allowanceCall = [
@@ -64,7 +68,7 @@ export default async function fetchUserData(
         chainId,
       );
 
-      const [userUnderlyingInVaultBalance] = await multicall(
+      const [userUnderlyingInVaultBalance, pricePerFullShare] = await multicall(
         vault,
         vaultCalls,
         chainId,
@@ -89,6 +93,7 @@ export default async function fetchUserData(
           stakedBalance: new BigNumber(userUnderlyingInVaultBalance).toJSON(),
           ecAssetStakedBalance: new BigNumber(userInfo[0]['amount']._hex).toJSON(),
           ecAssetAllowance: new BigNumber(ecAssetAllowance[0]).toJSON(),
+          pricePerFullShare: new BigNumber(pricePerFullShare).toJSON()
         },
       };
     }),
