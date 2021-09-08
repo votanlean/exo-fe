@@ -87,6 +87,7 @@ function YieldFarm(props: any) {
     earnings: pendingReward,
     ecAssetStakedBalance,
     ecAssetAllowance,
+    pricePerFullShare
   } = userData;
 
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
@@ -96,6 +97,11 @@ function YieldFarm(props: any) {
   const tEXOOrchestratorContract = useOrchestratorContract();
 
   const decimal = getDecimals(decimals, chainId);
+
+  const userVaultTokenBalance = new BigNumber(inVaultBalance);
+  const userECAssetStakedBalance = new BigNumber(ecAssetStakedBalance);
+  const priceUnderlyingPerFullShare = new BigNumber(pricePerFullShare);
+  const userCompoundBalance = normalizeTokenDecimal(priceUnderlyingPerFullShare.times(userVaultTokenBalance.plus(userECAssetStakedBalance)),+decimal);
 
   useEffect(() => {
     if (!isLoading) {
@@ -194,7 +200,7 @@ function YieldFarm(props: any) {
           }
         }
 
-        
+
         const decimals = getDecimals(stakingToken.decimals, chainId);
         await onStake(amountStakeNumber.toString(), ref, decimals);
         onAction();
@@ -230,7 +236,7 @@ function YieldFarm(props: any) {
             <TableCell style={{ padding: '24px 16px' }}>
               <Typography variant="caption">Compounded Balance</Typography>
               <Typography variant="h6" className={classes.label}>
-                {normalizeTokenDecimal(stakedBalance, +decimal).toFixed(8)}{' '}
+                {normalizeTokenDecimal(userCompoundBalance, +decimal).toFixed(8)}{' '}
                 {symbol}
               </Typography>
             </TableCell>
