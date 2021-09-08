@@ -270,13 +270,13 @@ function Pool() {
             );
           })}
         </div>
-        <div>
+        <div className={styles.ecCompoundSection}>
           <Box
             display="flex"
             flexDirection="row"
             justifyContent="center"
             textAlign="center"
-            marginTop="20px"
+            marginTop="4rem"
           >
             <img
               className={classes.comingSoonLogo}
