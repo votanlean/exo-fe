@@ -66,7 +66,7 @@ export default function Yield() {
 
     const updateUserData = setInterval(() => {
       refreshAppGlobalData()
-    }, 60000);
+    }, 30000);
 
     return () => {
       clearInterval(updateUserData);

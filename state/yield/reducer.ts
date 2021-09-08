@@ -16,6 +16,7 @@ const initialState = {
         inVaultBalance: '0',
         ecAssetStakedBalance: '0',
         ecAssetAllowance: '0',
+        tEXOEarned: '0'
       }
     }
   })
@@ -95,6 +96,7 @@ export const fetchYieldUserData = (account: string, chainId: number) => async (d
   try {
     const yieldFarms = getYieldFarms(chainId);
     const yieldFarmUserData = await fetchUserData(yieldFarms, account, chainId);
+    console.log('yieldFarmUserData: ', yieldFarmUserData);
 
     dispatch(setYieldFarmUserData(yieldFarmUserData));
     dispatch(setLoading(false));

@@ -42,10 +42,15 @@ export default async function fetchUserData(
         },
       ];
 
-      const ecAssetCall = [
+      const tEXOOrchestrator = [
         {
           address: getAddress(contracts.orchestrator, chainId),
           name: 'userInfo',
+          params: [yieldFarm.ecAssetPool.pid, account],
+        },
+        {
+          address: getAddress(contracts.orchestrator, chainId),
+          name: 'pendingTEXO',
           params: [yieldFarm.ecAssetPool.pid, account],
         },
       ];
@@ -74,7 +79,7 @@ export default async function fetchUserData(
 
       const userInfo = await multicall(
         orchestratorABI,
-        ecAssetCall,
+        tEXOOrchestrator,
         chainId,
       );
 
@@ -89,6 +94,7 @@ export default async function fetchUserData(
           stakedBalance: new BigNumber(userUnderlyingInVaultBalance).toJSON(),
           ecAssetStakedBalance: new BigNumber(userInfo[0]['amount']._hex).toJSON(),
           ecAssetAllowance: new BigNumber(ecAssetAllowance[0]).toJSON(),
+          tEXOEarned: new BigNumber(userInfo[1]).toJSON()
         },
       };
     }),

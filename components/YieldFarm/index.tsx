@@ -84,9 +84,9 @@ function YieldFarm(props: any) {
     stakedBalance,
     balance,
     inVaultBalance,
-    earnings: pendingReward,
     ecAssetStakedBalance,
     ecAssetAllowance,
+    tEXOEarned,
   } = userData;
 
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
@@ -364,14 +364,14 @@ function YieldFarm(props: any) {
                 >
                   <Typography>Total <span style={{ fontWeight: "bold" }}>tEXO</span> Earned</Typography>
                   <Typography className={'text-right'}>
-                    {normalizeTokenDecimal(0).toFixed(4)}
+                    {normalizeTokenDecimal(tEXOEarned).toFixed(4)}
                     {' tEXO'}
                   </Typography>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
                   <Typography align="center">tEXO Reward</Typography>
-                  <ClaimRewardsAction data={dataButton} disabled />
+                  <ClaimRewardsAction data={{id: ecAssetPool.pid, requestingContract: tEXOOrchestratorContract}} disabled={tEXOEarned <= 0} />
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.buttonBoxItem} flex={1}>
