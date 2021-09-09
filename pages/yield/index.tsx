@@ -1,24 +1,24 @@
-import React, { useEffect, useState, ChangeEvent, useCallback } from 'react';
-import Head from 'next/head';
-import { Typography, TableContainer, Table, TableBody } from '@material-ui/core';
-import { useDebounceCallback } from '@react-hook/debounce'
-import { useWeb3React } from '@web3-react/core';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState, ChangeEvent, useCallback } from "react";
+import Head from "next/head";
+import { Typography, TableContainer, Table, TableBody } from "@material-ui/core";
+import { useDebounceCallback } from "@react-hook/debounce";
+import { useWeb3React } from "@web3-react/core";
+import { useDispatch } from "react-redux";
 
-import classes from './yield.module.scss';
-import YieldFarm from 'components/YieldFarm';
-import { useAppPrices, useAppPricesLoading } from 'state/prices/selectors';
-import { getAddress } from 'utils/addressHelpers';
-import { useNetwork } from 'state/hooks';
-import { useTexoTokenPrice, useTexoTokenLoading } from 'state/texo/selectors';
-import { useYieldFarmsData, useYieldFarmsLoading } from 'state/yield/selector';
-import { useOrchestratorData, useOrchestratorLoading } from 'state/orchestrator/selectors';
-import { useFarmsLoading } from 'state/farms/selectors';
+import classes from "./yield.module.scss";
+import YieldFarm from "components/YieldFarm";
+import { useAppPrices, useAppPricesLoading } from "state/prices/selectors";
+import { getAddress } from "utils/addressHelpers";
+import { useNetwork } from "state/hooks";
+import { useTexoTokenPrice, useTexoTokenLoading } from "state/texo/selectors";
+import { useYieldFarmsData, useYieldFarmsLoading } from "state/yield/selector";
+import { useOrchestratorData, useOrchestratorLoading } from "state/orchestrator/selectors";
+import { useFarmsLoading } from "state/farms/selectors";
 
-import { fetchYieldFarmPublicData, fetchYieldUserData } from 'state/yield/reducer';
-import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
-import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
-import { fetchAppPrices } from 'state/prices/reducer';
+import { fetchYieldFarmPublicData, fetchYieldUserData } from "state/yield/reducer";
+import { fetchTexoTokenDataThunk } from "state/texo/reducer";
+import { fetchOrchestratorDataThunk } from "state/orchestrator/reducer";
+import { fetchAppPrices } from "state/prices/reducer";
 
 export default function Yield() {
   const [searchText, setSearchText] = useState<undefined | null | string>();
@@ -30,11 +30,7 @@ export default function Yield() {
   const farmLoading = useFarmsLoading();
 
   const isDataLoading =
-    appPriceLoading ||
-    texoTokenLoading ||
-    yieldFarmLoading ||
-    orchestratorLoading ||
-    farmLoading;
+    appPriceLoading || texoTokenLoading || yieldFarmLoading || orchestratorLoading || farmLoading;
 
   const { account } = useWeb3React();
   const network = useNetwork();
@@ -58,19 +54,19 @@ export default function Yield() {
   }, [account, chainId]);
 
   const debounceFunc = useDebounceCallback<[ChangeEvent<HTMLInputElement>]>((e) => {
-    setSearchText(e.target.value)
+    setSearchText(e.target.value);
   }, 500);
 
   useEffect(() => {
-    refreshAppGlobalData()
+    refreshAppGlobalData();
 
     const updateUserData = setInterval(() => {
-      refreshAppGlobalData()
-    }, 30000);
+      refreshAppGlobalData();
+    }, 60000);
 
     return () => {
       clearInterval(updateUserData);
-    }
+    };
   }, [account, chainId]);
 
   const onApprove = useCallback(() => {
@@ -90,7 +86,7 @@ export default function Yield() {
         <title>Yield Farming</title>
       </Head>
       <div className={`container ${classes.yieldContainer}`}>
-        <Typography variant='h4' className='font-bold'>
+        <Typography variant="h4" className="font-bold">
           EXO-Compound
         </Typography>
 
@@ -103,7 +99,7 @@ export default function Yield() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                    getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
+                      getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
                     ];
                 }
                 return (
