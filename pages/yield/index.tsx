@@ -1,24 +1,25 @@
-import React, { useEffect, useState, ChangeEvent, useCallback } from "react";
-import Head from "next/head";
-import { Typography, TableContainer, Table, TableBody } from "@material-ui/core";
-import { useDebounceCallback } from "@react-hook/debounce";
-import { useWeb3React } from "@web3-react/core";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState, ChangeEvent, useCallback } from 'react';
+import Head from 'next/head';
+import { Typography, TableContainer, Table, TableBody } from '@material-ui/core';
+import { useDebounceCallback } from '@react-hook/debounce'
+import { useWeb3React } from '@web3-react/core';
+import { useDispatch } from 'react-redux';
 
-import classes from "./yield.module.scss";
-import YieldFarm from "components/YieldFarm";
-import { useAppPrices, useAppPricesLoading } from "state/prices/selectors";
-import { getAddress } from "utils/addressHelpers";
-import { useNetwork } from "state/hooks";
-import { useTexoTokenPrice, useTexoTokenLoading } from "state/texo/selectors";
-import { useYieldFarmsData, useYieldFarmsLoading } from "state/yield/selector";
-import { useOrchestratorData, useOrchestratorLoading } from "state/orchestrator/selectors";
-import { useFarmsLoading } from "state/farms/selectors";
+import classes from './yield.module.scss';
+import YieldFarm from 'components/YieldFarm';
+import { useAppPrices, useAppPricesLoading } from 'state/prices/selectors';
+import { getAddress } from 'utils/addressHelpers';
+import { useNetwork } from 'state/hooks';
+import { useTexoTokenPrice, useTexoTokenLoading } from 'state/texo/selectors';
+import { useYieldFarmsData, useYieldFarmsLoading } from 'state/yield/selector';
+import { useOrchestratorData, useOrchestratorLoading } from 'state/orchestrator/selectors';
+import { useFarmsLoading } from 'state/farms/selectors';
 
-import { fetchYieldFarmPublicData, fetchYieldUserData } from "state/yield/reducer";
-import { fetchTexoTokenDataThunk } from "state/texo/reducer";
-import { fetchOrchestratorDataThunk } from "state/orchestrator/reducer";
-import { fetchAppPrices } from "state/prices/reducer";
+import { fetchYieldFarmPublicData, fetchYieldUserData } from 'state/yield/reducer';
+import { fetchTexoTokenDataThunk } from 'state/texo/reducer';
+import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
+import { fetchAppPrices } from 'state/prices/reducer';
+import { fetchFarmsPublicDataAsync } from 'state/farms/reducer';
 
 export default function Yield() {
   const [searchText, setSearchText] = useState<undefined | null | string>();
@@ -47,6 +48,7 @@ export default function Yield() {
     dispatch(fetchTexoTokenDataThunk(chainId));
     dispatch(fetchOrchestratorDataThunk(chainId, network));
     dispatch(fetchAppPrices(chainId));
+    dispatch(fetchFarmsPublicDataAsync(chainId));
 
     if (account) {
       dispatch(fetchYieldUserData(account, chainId));

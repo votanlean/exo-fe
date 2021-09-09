@@ -3,7 +3,7 @@ import { IconButton } from '@material-ui/core';
 import { ROIDialog } from 'components/Dialogs';
 
 function RoiAction(props: any) {
-  const { apr, tokenPrice } = props || {};
+  const { apr, tokenPrice, autocompound, DialogComponent = ROIDialog } = props || {};
   const [openRoiDialog, setOpenRoiDialog] = useState(false);
 
   const onToggleRoiDialog = () => {
@@ -22,10 +22,10 @@ function RoiAction(props: any) {
           style={{ width: 20, height: 20 }}
         />
       </IconButton>
-      <ROIDialog
+      <DialogComponent
         open={openRoiDialog}
         onClose={onToggleRoiDialog}
-        poolData={{ apr, tokenPrice }}
+        poolData={{ apr, tokenPrice, autocompound }}
       />
     </>
   );

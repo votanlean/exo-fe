@@ -18,21 +18,22 @@ import { getAddress } from "utils/addressHelpers";
 import { normalizeTokenDecimal } from "utils/bigNumber";
 import { getDecimals } from "utils/decimalsHelper";
 
-import { useStyles } from "./styles";
-import { numberWithCommas } from "utils/numberWithComma";
-import { useERC20, useOrchestratorContract, useVaultContract } from "hooks/useContract";
-import PopOver from "components/PopOver";
-import { getYieldFarmAprHelper } from "hookApi/apr";
-import StakeAllAction from "components/VaultActions/StakeAllAction";
-import DepositRegion from "components/DepositRegion";
-import WithdrawRegion from "components/WithdrawRegion";
-import Button from "components/Button";
-import { useStakeAllECAsset } from "hooks/useStake";
-import { useApprove } from "hooks/useApprove";
-import { isAddress } from "utils/web3";
-import rot13 from "utils/encode";
-import Cookies from "universal-cookie";
-import BigNumber from "bignumber.js";
+import { useStyles } from './styles';
+import { numberWithCommas } from 'utils/numberWithComma';
+import { useERC20, useOrchestratorContract, useVaultContract } from 'hooks/useContract';
+import PopOver from 'components/PopOver';
+import { getYieldFarmAprHelper } from 'hookApi/apr';
+import StakeAllAction from 'components/VaultActions/StakeAllAction';
+import DepositRegion from 'components/DepositRegion';
+import WithdrawRegion from 'components/WithdrawRegion';
+import Button from 'components/Button';
+import { YieldFarmROIDialog } from 'components/Dialogs';
+import { useStakeAllECAsset } from 'hooks/useStake';
+import { useApprove } from 'hooks/useApprove';
+import { isAddress } from 'utils/web3';
+import rot13 from 'utils/encode';
+import Cookies from 'universal-cookie';
+import BigNumber from 'bignumber.js';
 
 interface IYieldFarmProps {
   farm: any;
@@ -73,6 +74,7 @@ function YieldFarm(props: any) {
   const [open, setOpen] = useState(false);
   const [isToggleView, setIsToggleView] = useState(false);
   const [apr, setApr] = useState(0);
+  const [allApr, setAllApr] = useState();
 
   const isTablet = useMediaQuery("(max-width: 768px)");
 
@@ -117,6 +119,7 @@ function YieldFarm(props: any) {
       );
 
       setApr(aprData.apr);
+      setAllApr(aprData);
     }
   }, [isLoading, yieldFarmData, allTokenPrices, tEXOPrice, tEXOPerBlock, totalAllocPoint, chainId]);
 
@@ -212,9 +215,18 @@ function YieldFarm(props: any) {
           <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
-              {apr ? `${apr}%` : "N/A"}
+              {typeof apr === 'number' ? `${apr}%` : 'N/A'}
             </Typography>
-            {!isTablet ? <RoiAction apr={apr} tokenPrice={stakingTokenPrice} /> : null}
+            {!isTablet ? (
+              <RoiAction
+                DialogComponent={YieldFarmROIDialog}
+                apr={allApr}
+                tokenPrice={1} // in dollar
+                autocompound
+                performanceFee={0.8}
+                compoundFrequency={2}
+              />
+            ) : null}
           </Box>
         </TableCell>
         {!isTablet && (

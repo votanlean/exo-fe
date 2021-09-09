@@ -65,35 +65,19 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export const ROIDialog = (props: any) => {
-  const { open, onClose, poolData = {} } = props || {};
+const CommonROIDialog = ({
+  open,
+  onClose,
+  poolData = {},
+  tokenEarnedPerThousand1D,
+  tokenEarnedPerThousand7D,
+  tokenEarnedPerThousand30D,
+  tokenEarnedPerThousand365D,
+  tokenSymbol = 'tEXO'
+}: any = {}) => {
   const classes: any = useStyles();
-  const { apr, tokenPrice } = poolData;
+  const { tokenPrice } = poolData;
   const oneThousandDollarsWorthOfToken = 1000 / tokenPrice;
-
-  const tokenEarnedPerThousand1D = tokenEarnedPerThousandDollars({
-    numberOfDays: 1,
-    farmApr: apr,
-    tokenPrice,
-  });
-
-  const tokenEarnedPerThousand7D = tokenEarnedPerThousandDollars({
-    numberOfDays: 7,
-    farmApr: apr,
-    tokenPrice,
-  });
-
-  const tokenEarnedPerThousand30D = tokenEarnedPerThousandDollars({
-    numberOfDays: 30,
-    farmApr: apr,
-    tokenPrice,
-  });
-
-  const tokenEarnedPerThousand365D = tokenEarnedPerThousandDollars({
-    numberOfDays: 365,
-    farmApr: apr,
-    tokenPrice,
-  });
 
   const onCloseDialog = () => {
     onClose();
@@ -137,7 +121,7 @@ export const ROIDialog = (props: any) => {
           </div>
           <div>
             <Typography variant="caption" className={classes.thead}>
-              tEXO per $1000
+              {tokenSymbol} per $1000
             </Typography>
           </div>
           <div>
@@ -227,3 +211,91 @@ export const ROIDialog = (props: any) => {
     </Dialog>
   );
 };
+
+const calculateAllTokenEarnedPerThousand = (data: any) => {
+  const D1 = tokenEarnedPerThousandDollars({
+    ...data,
+    numberOfDays: 1,
+  });
+
+  const D7 = tokenEarnedPerThousandDollars({
+    ...data,
+    numberOfDays: 7,
+  });
+
+  const D30 = tokenEarnedPerThousandDollars({
+    ...data,
+    numberOfDays: 30,
+  });
+
+  const D365 = tokenEarnedPerThousandDollars({
+    ...data,
+    numberOfDays: 365,
+  });
+
+  return {
+    tokenEarnedPerThousand1D: D1,
+    tokenEarnedPerThousand7D: D7,
+    tokenEarnedPerThousand30D: D30,
+    tokenEarnedPerThousand365D: D365,
+  }
+}
+
+export const ROIDialog = (props: any) => {
+  const { poolData = {} } = props || {};
+  const { apr, tokenPrice, autocompound, performanceFee, compoundFrequency } = poolData;
+
+  const calculatedTokenEarned = calculateAllTokenEarnedPerThousand({
+    farmApr: apr,
+    tokenPrice,
+    autocompound,
+    performanceFee,
+    compoundFrequency,
+  })
+
+  return (
+    <CommonROIDialog
+      {...props}
+      {...calculatedTokenEarned}
+    />
+  );
+}
+
+export const YieldFarmROIDialog = (props: any) => {
+  const { poolData = {} } = props || {};
+  const { apr, tokenPrice, performanceFee, compoundFrequency } = poolData;
+
+  const { tokenRewardsApr, lpRewardsApr, tEXOApr } = apr || {
+    tokenRewardsApr: 0,
+    lpRewardsApr: 0,
+    tEXOApr: 0,
+  };
+
+  const calculatedNonCompoundTokenEarned = calculateAllTokenEarnedPerThousand({
+    farmApr: (tokenRewardsApr || 0) + (tEXOApr || 0),
+    tokenPrice,
+  })
+
+  const calculatedCompoundTokenEarned = calculateAllTokenEarnedPerThousand({
+    farmApr: lpRewardsApr || 0,
+    tokenPrice,
+    autocompound: true,
+    performanceFee,
+    compoundFrequency,
+  });
+
+  const calculatedTokenEarned = {
+    tokenEarnedPerThousand1D: calculatedNonCompoundTokenEarned.tokenEarnedPerThousand1D + calculatedCompoundTokenEarned.tokenEarnedPerThousand1D,
+    tokenEarnedPerThousand7D: calculatedNonCompoundTokenEarned.tokenEarnedPerThousand7D + calculatedCompoundTokenEarned.tokenEarnedPerThousand7D,
+    tokenEarnedPerThousand30D: calculatedNonCompoundTokenEarned.tokenEarnedPerThousand30D + calculatedCompoundTokenEarned.tokenEarnedPerThousand30D,
+    tokenEarnedPerThousand365D: calculatedNonCompoundTokenEarned.tokenEarnedPerThousand365D + calculatedCompoundTokenEarned.tokenEarnedPerThousand365D,
+  }
+
+  return (
+    <CommonROIDialog
+      {...props}
+      {...calculatedTokenEarned}
+      tokenSymbol='USDT'
+    />
+  );
+}
