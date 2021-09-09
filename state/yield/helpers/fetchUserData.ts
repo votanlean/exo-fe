@@ -6,24 +6,20 @@ import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 import BigNumber from 'bignumber.js';
 import contracts from 'config/constants/contracts';
 
-export default async function fetchUserData(
-  yieldFarms: any[],
-  account: string,
-  chainId: number,
-) {
+export default async function fetchUserData(yieldFarms: any[], account: string, chainId: number) {
   const data = await Promise.all(
     yieldFarms.map(async (yieldFarm) => {
       const ercCalls = [
         {
           //Underlying token balance of the user
           address: getAddress(yieldFarm.underlying.address, chainId),
-          name: 'balanceOf',
+          name: "balanceOf",
           params: [account],
         },
         //ecASSET(vault) token balance of the user
         {
           address: getAddress(yieldFarm.address, chainId),
-          name: 'balanceOf',
+          name: "balanceOf",
           params: [account],
         },
         //Amount allowance of the vault contract with underlying token in the user.
@@ -44,21 +40,22 @@ export default async function fetchUserData(
         //Amount underlying token which user has staked into the vault
         {
           address: getAddress(yieldFarm.address, chainId),
-          name: 'underlyingBalanceWithInvestmentForHolder',
+          name: "underlyingBalanceWithInvestmentForHolder",
           params: [account],
         },
         //Price of 1 underlying per full share.
         {
           address: getAddress(yieldFarm.address, chainId),
-          name: 'getPricePerFullShare',
-        }
+          name: "getPricePerFullShare",
+        },
       ];
 
       const ecAssetCall = [
         //userInfo of the pool(vaults) in the orchestrator
+
         {
           address: getAddress(contracts.orchestrator, chainId),
-          name: 'userInfo',
+          name: "pendingTEXO",
           params: [yieldFarm.ecAssetPool.pid, account],
         },
       ];
@@ -72,7 +69,7 @@ export default async function fetchUserData(
       const [userUnderlyingInVaultBalance, pricePerFullShare] = await multicallRetry(
         vault,
         vaultCalls,
-        chainId,
+        chainId
       );
 
       const userInfo = await multicallRetry(
@@ -88,12 +85,13 @@ export default async function fetchUserData(
           balance: new BigNumber(userUnderlyingBalance).toJSON(),
           inVaultBalance: new BigNumber(userVaultBalance).toJSON(),
           stakedBalance: new BigNumber(userUnderlyingInVaultBalance).toJSON(),
-          ecAssetStakedBalance: new BigNumber(userInfo[0]['amount']._hex).toJSON(),
+          ecAssetStakedBalance: new BigNumber(userInfo[0]["amount"]._hex).toJSON(),
           ecAssetAllowance: new BigNumber(ecAssetAllowance[0]).toJSON(),
-          pricePerFullShare: new BigNumber(pricePerFullShare).toJSON()
+          tEXOEarned: new BigNumber(userInfo[1]).toJSON(),
+          pricePerFullShare: new BigNumber(pricePerFullShare).toJSON(),
         },
       };
-    }),
+    })
   );
 
   return data;

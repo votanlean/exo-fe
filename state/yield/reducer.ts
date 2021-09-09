@@ -16,6 +16,7 @@ const initialState = {
         inVaultBalance: '0',
         ecAssetStakedBalance: '0',
         ecAssetAllowance: '0',
+        tEXOEarned: '0'
       }
     }
   })
