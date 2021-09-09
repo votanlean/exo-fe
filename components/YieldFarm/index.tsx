@@ -30,6 +30,7 @@ import StakeAllAction from 'components/VaultActions/StakeAllAction';
 import DepositRegion from 'components/DepositRegion';
 import WithdrawRegion from 'components/WithdrawRegion';
 import Button from 'components/Button';
+import { YieldFarmROIDialog } from 'components/Dialogs';
 import { useStakeAllECAsset } from 'hooks/useStake';
 import { useApprove } from 'hooks/useApprove';
 import { isAddress } from 'utils/web3';
@@ -76,6 +77,7 @@ function YieldFarm(props: any) {
   const [open, setOpen] = useState(false);
   const [isToggleView, setIsToggleView] = useState(false);
   const [apr, setApr] = useState(0);
+  const [allApr, setAllApr] = useState();
 
   const isTablet = useMediaQuery('(max-width: 768px)');
 
@@ -117,6 +119,7 @@ function YieldFarm(props: any) {
       );
 
       setApr(aprData.apr);
+      setAllApr(aprData);
     }
   }, [
     isLoading,
@@ -213,8 +216,8 @@ function YieldFarm(props: any) {
       <TableRow className={classes.root} onClick={() => setOpen(!open)}>
         <TableCell style={{ padding: '24px 16px' }} component="th" scope="row">
           <Box display="flex" alignItems="center">
-              <img src={icon1} alt={title} className={classes.poolImg1} />
-              <img src={icon2} alt={title} className={classes.poolImg2} />
+            <img src={icon1} alt={title} className={classes.poolImg1} />
+            <img src={icon2} alt={title} className={classes.poolImg2} />
             <Typography className={classes.poolTitle}>{title}</Typography>
           </Box>
         </TableCell>
@@ -224,10 +227,17 @@ function YieldFarm(props: any) {
           <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
-              {apr ? `${apr}%` : 'N/A'}
+              {typeof apr === 'number' ? `${apr}%` : 'N/A'}
             </Typography>
             {!isTablet ? (
-              <RoiAction apr={apr} tokenPrice={stakingTokenPrice} />
+              <RoiAction
+                DialogComponent={YieldFarmROIDialog}
+                apr={allApr}
+                tokenPrice={1} // in dollar
+                autocompound
+                performanceFee={0.8}
+                compoundFrequency={2}
+              />
             ) : null}
           </Box>
         </TableCell>

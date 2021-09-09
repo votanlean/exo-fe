@@ -36,11 +36,15 @@ const getPancakeswapStrategyData = async (strategy: any, chainId: number) => {
   ] = await multicallRetry(masterchief, masterchiefCalls, chainId);
 
   const [
+    [tokenAddress],
     [quoteTokenAddress]
   ] = await multicallRetry(pair, [{
     address: poolInfo.lpToken,
+    name: "token0"
+  }, {
+    address: poolInfo.lpToken,
     name: "token1"
-  }], chainId)
+  }], chainId);
 
   const erc20Calls = [
     // Balance of quote token on LP contract
@@ -84,6 +88,8 @@ const getPancakeswapStrategyData = async (strategy: any, chainId: number) => {
       lpToken: poolInfo.lpToken,
       allocPoint: poolInfo.allocPoint.toNumber(),
       lpTotalInQuoteToken: lpTotalInQuoteToken.toJSON(),
+      totalStaked: new BigNumber(lpTokenBalanceMC).toNumber(),
+      tokenAddress,
       quoteTokenAddress,
     },
     totalAllocPoint: new BigNumber(totalAllocPoint[0]._hex).toNumber(),
@@ -91,7 +97,7 @@ const getPancakeswapStrategyData = async (strategy: any, chainId: number) => {
   }
 }
 
-const getOrchestratorStrategyData = async (strategy: any, chainId:number)=>{
+const getOrchestratorStrategyData = async (strategy: any, chainId: number) => {
   const { rewardPool, pool } = strategy;
   const rewardPoolAddress = getAddress(rewardPool.address, chainId);
   const poolId = getAddress(pool.id, chainId);
@@ -119,11 +125,15 @@ const getOrchestratorStrategyData = async (strategy: any, chainId:number)=>{
   ] = await multicallRetry(TEXOOrchestrator, masterchiefCalls, chainId);
 
   const [
+    [tokenAddress],
     [quoteTokenAddress]
   ] = await multicallRetry(pair, [{
     address: poolInfo.lpToken,
+    name: "token0"
+  }, {
+    address: poolInfo.lpToken,
     name: "token1"
-  }], chainId)
+  }], chainId);
 
   const erc20Calls = [
     // Balance of quote token on LP contract
@@ -151,7 +161,7 @@ const getOrchestratorStrategyData = async (strategy: any, chainId:number)=>{
   ];
 
   const [quoteTokenBalanceLP, lpTokenBalanceMC, lpTotalSupply, quoteTokenDecimals] =
-  await multicallRetry(erc20, erc20Calls, chainId);
+    await multicallRetry(erc20, erc20Calls, chainId);
 
   const lpTokenRatio = new BigNumber(lpTokenBalanceMC).div(new BigNumber(lpTotalSupply))
   const quoteTokenAmountTotal = new BigNumber(quoteTokenBalanceLP).div(BIG_TEN.pow(quoteTokenDecimals))
@@ -166,6 +176,8 @@ const getOrchestratorStrategyData = async (strategy: any, chainId:number)=>{
       lpToken: poolInfo.lpToken,
       allocPoint: poolInfo.allocPoint.toNumber(),
       lpTotalInQuoteToken: lpTotalInQuoteToken.toJSON(),
+      totalStaked: new BigNumber(lpTokenBalanceMC).toNumber(),
+      tokenAddress,
       quoteTokenAddress,
     },
     totalAllocPoint: new BigNumber(totalAllocPoint[0]._hex).toNumber(),
