@@ -31,11 +31,7 @@ export default function Yield() {
   const farmLoading = useFarmsLoading();
 
   const isDataLoading =
-    appPriceLoading ||
-    texoTokenLoading ||
-    yieldFarmLoading ||
-    orchestratorLoading ||
-    farmLoading;
+    appPriceLoading || texoTokenLoading || yieldFarmLoading || orchestratorLoading || farmLoading;
 
   const { account } = useWeb3React();
   const network = useNetwork();
@@ -60,19 +56,19 @@ export default function Yield() {
   }, [account, chainId]);
 
   const debounceFunc = useDebounceCallback<[ChangeEvent<HTMLInputElement>]>((e) => {
-    setSearchText(e.target.value)
+    setSearchText(e.target.value);
   }, 500);
 
   useEffect(() => {
-    refreshAppGlobalData()
+    refreshAppGlobalData();
 
     const updateUserData = setInterval(() => {
-      refreshAppGlobalData()
+      refreshAppGlobalData();
     }, 60000);
 
     return () => {
       clearInterval(updateUserData);
-    }
+    };
   }, [account, chainId]);
 
   const onApprove = useCallback(() => {
@@ -92,7 +88,7 @@ export default function Yield() {
         <title>Yield Farming</title>
       </Head>
       <div className={`container ${classes.yieldContainer}`}>
-        <Typography variant='h4' className='font-bold'>
+        <Typography variant="h4" className="font-bold">
           EXO-Compound
         </Typography>
 
@@ -105,7 +101,7 @@ export default function Yield() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                    getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
+                      getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
                     ];
                 }
                 return (

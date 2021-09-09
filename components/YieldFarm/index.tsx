@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import {
   Box,
   Collapse,
@@ -7,19 +7,16 @@ import {
   TableRow,
   Typography,
   useMediaQuery,
-} from '@material-ui/core';
-import { KeyboardArrowDown, KeyboardArrowUp, Launch, ArrowForward } from '@material-ui/icons';
+} from "@material-ui/core";
+import { KeyboardArrowDown, KeyboardArrowUp, Launch, ArrowForward } from "@material-ui/icons";
 
-import {
-  ClaimRewardsAction,
-  RoiAction,
-} from 'components/PoolActions';
+import { ClaimRewardsAction, RoiAction } from "components/PoolActions";
 
-import { useNetwork } from 'state/hooks';
+import { useNetwork } from "state/hooks";
 
-import { getAddress } from 'utils/addressHelpers';
-import { normalizeTokenDecimal } from 'utils/bigNumber';
-import { getDecimals } from 'utils/decimalsHelper';
+import { getAddress } from "utils/addressHelpers";
+import { normalizeTokenDecimal } from "utils/bigNumber";
+import { getDecimals } from "utils/decimalsHelper";
 
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
@@ -79,17 +76,17 @@ function YieldFarm(props: any) {
   const [apr, setApr] = useState(0);
   const [allApr, setAllApr] = useState();
 
-  const isTablet = useMediaQuery('(max-width: 768px)');
+  const isTablet = useMediaQuery("(max-width: 768px)");
 
   const {
     allowance,
     stakedBalance,
     balance,
     inVaultBalance,
-    earnings: pendingReward,
     ecAssetStakedBalance,
     ecAssetAllowance,
-    pricePerFullShare
+    tEXOEarned,
+    pricePerFullShare,
   } = userData;
 
   const { id: chainId, blockExplorerUrl, blockExplorerName } = useNetwork();
@@ -103,7 +100,10 @@ function YieldFarm(props: any) {
   const userVaultTokenBalance = new BigNumber(inVaultBalance);
   const userECAssetStakedBalance = new BigNumber(ecAssetStakedBalance);
   const priceUnderlyingPerFullShare = new BigNumber(pricePerFullShare);
-  const userCompoundBalance = normalizeTokenDecimal(priceUnderlyingPerFullShare.times(userVaultTokenBalance.plus(userECAssetStakedBalance)),+decimal);
+  const userCompoundBalance = normalizeTokenDecimal(
+    priceUnderlyingPerFullShare.times(userVaultTokenBalance.plus(userECAssetStakedBalance)),
+    +decimal
+  );
 
   useEffect(() => {
     if (!isLoading) {
@@ -121,15 +121,7 @@ function YieldFarm(props: any) {
       setApr(aprData.apr);
       setAllApr(aprData);
     }
-  }, [
-    isLoading,
-    yieldFarmData,
-    allTokenPrices,
-    tEXOPrice,
-    tEXOPerBlock,
-    totalAllocPoint,
-    chainId
-  ]);
+  }, [isLoading, yieldFarmData, allTokenPrices, tEXOPrice, tEXOPerBlock, totalAllocPoint, chainId]);
 
   const dataButton = {
     id: vaultId,
@@ -147,7 +139,7 @@ function YieldFarm(props: any) {
     refStake: true,
     account: selectedAccount,
     texoOrchestrator: tEXOOrchestratorContract,
-    ecAssetPoolId: ecAssetPool.pid
+    ecAssetPoolId: ecAssetPool.pid,
   };
 
   const dataStakeAllButton = {
@@ -163,67 +155,63 @@ function YieldFarm(props: any) {
     maxAmountWithdraw: inVaultBalance,
     onPoolStateChange,
     refStake: true,
-    ecAssetAllowance
+    ecAssetAllowance,
   };
 
   const onToggleView = () => {
     setIsToggleView(!isToggleView);
-  }
+  };
 
   //TODO: Need refactor
   const { onStake } = useStakeAllECAsset(tEXOOrchestratorContract, ecAssetPool.pid);
 
-  const tokenContract = useERC20(
-    vaultAddress ? vaultAddress : '',
-  );
+  const tokenContract = useERC20(vaultAddress ? vaultAddress : "");
 
   const { approve } = useApprove({
     tokenContract,
     requestingContract: tEXOOrchestratorContract,
-    onApprove
+    onApprove,
   });
 
   const onHandleAutoStake = async (isAutoStake: boolean, amountStakeNumber: BigNumber) => {
     if (isAutoStake) {
       const { stakingToken, ecAssetAllowance, refStake } = dataStakeAllButton;
 
-      if (+ecAssetAllowance === 0) { //parse to Number
+      if (+ecAssetAllowance === 0) {
+        //parse to Number
         approve();
       } else {
         let ref;
 
         if (refStake) {
           const cookies = new Cookies();
-          if (cookies.get('ref')) {
-            if (isAddress(rot13(cookies.get('ref')))) {
-              ref = rot13(cookies.get('ref'));
+          if (cookies.get("ref")) {
+            if (isAddress(rot13(cookies.get("ref")))) {
+              ref = rot13(cookies.get("ref"));
             }
           } else {
-            ref = '0x0000000000000000000000000000000000000000';
+            ref = "0x0000000000000000000000000000000000000000";
           }
         }
-
 
         const decimals = getDecimals(stakingToken.decimals, chainId);
         await onStake(amountStakeNumber.toString(), ref, decimals);
         onAction();
       }
     }
-  }
+  };
 
   return (
     <Fragment>
       <TableRow className={classes.root} onClick={() => setOpen(!open)}>
-        <TableCell style={{ padding: '24px 16px' }} component="th" scope="row">
+        <TableCell style={{ padding: "24px 16px" }} component="th" scope="row">
           <Box display="flex" alignItems="center">
             <img src={icon1} alt={title} className={classes.poolImg1} />
             <img src={icon2} alt={title} className={classes.poolImg2} />
             <Typography className={classes.poolTitle}>{title}</Typography>
           </Box>
         </TableCell>
-        <TableCell
-          style={{ padding: '24px 16px', paddingLeft: isTablet ? '0' : '16px' }}
-        >
+        <TableCell style={{ padding: "24px 16px", paddingLeft: isTablet ? "0" : "16px" }}>
           <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
@@ -243,57 +231,47 @@ function YieldFarm(props: any) {
         </TableCell>
         {!isTablet && (
           <>
-            <TableCell style={{ padding: '24px 16px' }}>
+            <TableCell style={{ padding: "24px 16px" }}>
               <Typography variant="caption">Compounded Balance</Typography>
               <Typography variant="h6" className={classes.label}>
-                {normalizeTokenDecimal(userCompoundBalance, +decimal).toFixed(8)}{' '}
-                {symbol}
+                {normalizeTokenDecimal(userCompoundBalance, +decimal).toFixed(8)} {symbol}
               </Typography>
             </TableCell>
           </>
         )}
         {!isTablet && (
           <>
-            <TableCell style={{ padding: '24px 16px' }}>
+            <TableCell style={{ padding: "24px 16px" }}>
               <Typography variant="caption">Deposits($)</Typography>
               <Typography variant="h6" className={classes.label}>
                 {numberWithCommas(
                   normalizeTokenDecimal(
                     underlyingVaultBalance,
-                    +getDecimals(underlying.decimals, chainId),
-                  ).toFixed(2),
+                    +getDecimals(underlying.decimals, chainId)
+                  ).toFixed(2)
                 )}
               </Typography>
             </TableCell>
           </>
         )}
-        <TableCell style={{ padding: '24px 16px' }}>
+        <TableCell style={{ padding: "24px 16px" }}>
           <Box display="flex" alignItems="center">
-            {!isTablet ? (
-              <Typography variant="caption">Details</Typography>
-            ) : null}
-            {open ? (
-              <KeyboardArrowUp fontSize="small" />
-            ) : (
-              <KeyboardArrowDown fontSize="small" />
-            )}
+            {!isTablet ? <Typography variant="caption">Details</Typography> : null}
+            {open ? <KeyboardArrowUp fontSize="small" /> : <KeyboardArrowDown fontSize="small" />}
           </Box>
         </TableCell>
       </TableRow>
       <TableRow>
         <TableCell className={classes.collapseRow} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box
-              margin={1}
-              paddingY="16px"
-            >
-              {isToggleView ?
+            <Box margin={1} paddingY="16px">
+              {isToggleView ? (
                 <WithdrawRegion
                   yieldFarmData={yieldFarmData}
                   data={dataButton}
                   onAction={onAction}
                 />
-                :
+              ) : (
                 <DepositRegion
                   yieldFarmData={yieldFarmData}
                   data={dataButton}
@@ -301,22 +279,21 @@ function YieldFarm(props: any) {
                   onApprove={onApprove}
                   onHandleAutoStake={onHandleAutoStake}
                 />
-              }
+              )}
               <Divider orientation="horizontal" variant="fullWidth" />
               <Box
                 flex={1}
                 display="flex"
                 justifyContent="center"
                 flexDirection={isTablet ? "column" : "row"}
-                marginLeft={isTablet ? '0' : '20px'}
+                marginLeft={isTablet ? "0" : "20px"}
                 marginTop="10px"
                 marginBottom="10px"
               >
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
                   <Typography>Initial Deposit W/O tEXO Reward</Typography>
-                  <Typography className={'text-right'}>
-                    {normalizeTokenDecimal(inVaultBalance).toFixed(4)}{' '}
-                    ecAsset
+                  <Typography className={"text-right"}>
+                    {normalizeTokenDecimal(inVaultBalance).toFixed(4)} ecAsset
                   </Typography>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
@@ -331,9 +308,8 @@ function YieldFarm(props: any) {
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
                   <Typography>Staked For tEXO</Typography>
-                  <Typography className={'text-right'}>
-                    {normalizeTokenDecimal(ecAssetStakedBalance).toFixed(4)}{' '}
-                    ecAsset
+                  <Typography className={"text-right"}>
+                    {normalizeTokenDecimal(ecAssetStakedBalance).toFixed(4)} ecAsset
                   </Typography>
                 </Box>
               </Box>
@@ -346,24 +322,19 @@ function YieldFarm(props: any) {
                 marginTop="10px"
                 marginBottom="10px"
               >
-                <Box
-                  className={classes.rowDetail}
-                  flex={1}
-                  flexDirection="column"
-                  width="25%"
-                >
+                <Box className={classes.rowDetail} flex={1} flexDirection="column" width="25%">
                   <Typography align="left">Vault Details</Typography>
                   {/* 0% will be changed after finish APY */}
-                  <Box
-                    alignItems="left"
-                  >
+                  <Box alignItems="left">
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>0%: </span>
                       Liquidity Provider APY
                     </Typography>
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>0%: </span>
-                      {(vaultId === 0 || vaultId === 1) ? "Auto harvested tEXO" : "Auto harvested CAKE"}
+                      {vaultId === 0 || vaultId === 1
+                        ? "Auto harvested tEXO"
+                        : "Auto harvested CAKE"}
                     </Typography>
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>0%: </span>
@@ -372,30 +343,29 @@ function YieldFarm(props: any) {
                   </Box>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
-                <Box
-                  className={classes.rowDetail}
-                  flex={1}
-                  flexDirection="column"
-                  width="25%"
-                >
-                  <Typography>Total <span style={{ fontWeight: "bold" }}>tEXO</span> Earned</Typography>
-                  <Typography className={'text-right'}>
-                    {normalizeTokenDecimal(0).toFixed(4)}
-                    {' tEXO'}
+                <Box className={classes.rowDetail} flex={1} flexDirection="column" width="25%">
+                  <Typography>
+                    Total <span style={{ fontWeight: "bold" }}>tEXO</span> Earned
+                  </Typography>
+                  <Typography className={"text-right"}>
+                    {normalizeTokenDecimal(tEXOEarned).toFixed(4)}
+                    {" tEXO"}
                   </Typography>
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
                   <Typography align="center">tEXO Reward</Typography>
-                  <ClaimRewardsAction data={dataButton} disabled />
+                  <ClaimRewardsAction
+                    data={{ id: ecAssetPool.pid, requestingContract: tEXOOrchestratorContract }}
+                    disabled={tEXOEarned <= 0}
+                    onAction={onAction}
+                  />
                 </Box>
                 <Divider orientation="vertical" flexItem={true} variant="middle" />
                 <Box className={classes.buttonBoxItem} flex={1}>
                   <Button className={classes.buttonToggle} onClick={onToggleView}>
-                    <Typography>
-                      {isToggleView ? 'Deposit' : 'Withdraw'}
-                    </Typography>
-                    <ArrowForward style={{marginLeft: "15px"}} fontSize="large" color="inherit" />
+                    <Typography>{isToggleView ? "Deposit" : "Withdraw"}</Typography>
+                    <ArrowForward style={{ marginLeft: "15px" }} fontSize="large" color="inherit" />
                   </Button>
                 </Box>
               </Box>
@@ -406,8 +376,7 @@ function YieldFarm(props: any) {
                     href={`${blockExplorerUrl}/address/${vaultAddress}`}
                     target="_blank"
                   >
-                    View Vault on {blockExplorerName}{' '}
-                    <Launch fontSize="small" />
+                    View Vault on {blockExplorerName} <Launch fontSize="small" />
                   </a>
                 </Box>
                 <Box>
@@ -416,8 +385,7 @@ function YieldFarm(props: any) {
                     href={`${blockExplorerUrl}/address/${underlyingAddress}`}
                     target="_blank"
                   >
-                    View LP Token on {blockExplorerName}{' '}
-                    <Launch fontSize="small" />
+                    View LP Token on {blockExplorerName} <Launch fontSize="small" />
                   </a>
                 </Box>
               </Box>
