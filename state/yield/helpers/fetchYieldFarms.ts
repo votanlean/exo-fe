@@ -1,5 +1,5 @@
 import { getAddress } from "utils/addressHelpers";
-import multicall from 'utils/multicall';
+import { multicallRetry } from 'utils/multicall';
 import vault from 'config/abi/Vault.json';
 import BigNumber from "bignumber.js";
 
@@ -25,7 +25,7 @@ export default async function fetchYieldFarms(yieldFarms: any[], chainId?: numbe
       vaultStrategyAddress,
       underlyingVaultBalance,
       totalSupply
-    ] = await multicall(vault, vaultCalls, chainId);
+    ] = await multicallRetry(vault, vaultCalls, chainId);
 
     return {
       ...yieldFarm,
