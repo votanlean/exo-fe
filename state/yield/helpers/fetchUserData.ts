@@ -51,8 +51,13 @@ export default async function fetchUserData(yieldFarms: any[], account: string, 
       ];
 
       const ecAssetCall = [
+         //User info
+         {
+          address: getAddress(contracts.orchestrator, chainId),
+          name: "userInfo",
+          params: [yieldFarm.ecAssetPool.pid, account],
+        },
         //userInfo of the pool(vaults) in the orchestrator
-
         {
           address: getAddress(contracts.orchestrator, chainId),
           name: "pendingTEXO",
@@ -72,7 +77,7 @@ export default async function fetchUserData(yieldFarms: any[], account: string, 
         chainId
       );
 
-      const userInfo = await multicallRetry(
+      const [userInfo,pendingTEXO] = await multicallRetry(
         orchestratorABI,
         ecAssetCall,
         chainId,
@@ -85,9 +90,9 @@ export default async function fetchUserData(yieldFarms: any[], account: string, 
           balance: new BigNumber(userUnderlyingBalance).toJSON(),
           inVaultBalance: new BigNumber(userVaultBalance).toJSON(),
           stakedBalance: new BigNumber(userUnderlyingInVaultBalance).toJSON(),
-          ecAssetStakedBalance: new BigNumber(userInfo[0]["amount"]._hex).toJSON(),
+          ecAssetStakedBalance: new BigNumber(userInfo["amount"]._hex).toJSON(),
           ecAssetAllowance: new BigNumber(ecAssetAllowance[0]).toJSON(),
-          tEXOEarned: new BigNumber(userInfo[1]).toJSON(),
+          tEXOEarned: new BigNumber(pendingTEXO).toJSON(),
           pricePerFullShare: new BigNumber(pricePerFullShare).toJSON(),
         },
       };
