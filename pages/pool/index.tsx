@@ -285,7 +285,7 @@ function Pool() {
             />
             <Box>
               <Typography className={classes.comingSoonText} variant="h1">
-                EC-Compound
+                Exo-Compound
               </Typography>
               <Typography className={classes.comingSoonText} variant="h2">
                 is coming soon
