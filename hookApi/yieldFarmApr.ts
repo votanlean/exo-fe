@@ -6,6 +6,7 @@ import tokens from 'config/constants/tokens';
 import { getAddress } from "utils/addressHelpers";
 import { BIG_ZERO, normalizeTokenDecimal } from "utils/bigNumber";
 import { getPoolApr } from "./apr";
+import { convertAprToApy } from "utils/compoundApyHelpers";
 
 const getPancakeswapYieldFarmAprHelper = (
   {
@@ -147,7 +148,7 @@ export const getYieldFarmApr = (
   ecAssetBalanceInMc: number, // totalStaked
   ecAssetTokenPerBlock: number, // tokenPerBlock,
   chainId: number,
-): { tokenRewardsApr: number; lpRewardsApr: number, tEXOApr: number, apr: number } => {
+): { tokenRewardsApr: number; lpRewardsApr: number, tEXOApr: number, apr: number, apy: number } => {
   const blockPerYear = getBlockPerYear(chainId);
 
   const yearlyTokenRewardAllocation = tokenPerBlock
@@ -169,10 +170,22 @@ export const getYieldFarmApr = (
     chainId
   );
 
+  const apyData = {
+    tokenPrice: 1,
+    performanceFee: 0.8,
+    lpRewardsApr,
+    tokenRewardsAprAsNumber,
+    tEXOApr,
+    numberOfDays: 365,
+  }
+
+  const apy = convertAprToApy(apyData);
+
   return {
     tokenRewardsApr: tokenRewardsAprAsNumber,
     lpRewardsApr,
     tEXOApr,
-    apr: (tokenRewardsAprAsNumber || 0) + lpRewardsApr + (tEXOApr || 0)
+    apr: (tokenRewardsAprAsNumber || 0) + lpRewardsApr + (tEXOApr || 0),
+    apy
   }
 }

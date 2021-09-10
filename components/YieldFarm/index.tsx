@@ -21,7 +21,6 @@ import { getDecimals } from "utils/decimalsHelper";
 import { useStyles } from './styles';
 import { numberWithCommas } from 'utils/numberWithComma';
 import { useERC20, useOrchestratorContract, useVaultContract } from 'hooks/useContract';
-import PopOver from 'components/PopOver';
 import { getYieldFarmAprHelper } from 'hookApi/apr';
 import StakeAllAction from 'components/VaultActions/StakeAllAction';
 import DepositRegion from 'components/DepositRegion';
@@ -74,13 +73,12 @@ function YieldFarm(props: any) {
   const [open, setOpen] = useState(false);
   const [isToggleView, setIsToggleView] = useState(false);
   const [apr, setApr] = useState(0);
-  const [allApr, setAllApr] = useState();
+  const [allApr, setAllApr] = useState(null);
+  const [apy, setApy] = useState(0);
 
   const isTablet = useMediaQuery("(max-width: 768px)");
 
   const {
-    allowance,
-    stakedBalance,
     balance,
     inVaultBalance,
     ecAssetStakedBalance,
@@ -119,6 +117,7 @@ function YieldFarm(props: any) {
       );
 
       setApr(aprData.apr);
+      setApy(aprData.apy);
       setAllApr(aprData);
     }
   }, [isLoading, yieldFarmData, allTokenPrices, tEXOPrice, tEXOPerBlock, totalAllocPoint, chainId]);
@@ -215,7 +214,7 @@ function YieldFarm(props: any) {
           <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
-              {typeof apr === 'number' ? `${apr}%` : 'N/A'}
+              {typeof apy === 'number' ? `${apy.toFixed(2)}%` : 'N/A'}
             </Typography>
             {!isTablet ? (
               <RoiAction
@@ -324,20 +323,25 @@ function YieldFarm(props: any) {
               >
                 <Box className={classes.rowDetail} flex={1} flexDirection="column" width="25%">
                   <Typography align="left">Vault Details</Typography>
-                  {/* 0% will be changed after finish APY */}
                   <Box alignItems="left">
                     <Typography>
-                      <span style={{ fontWeight: "bold" }}>0%: </span>
+                      <span style={{ fontWeight: "bold" }}>
+                        {(allApr?.lpRewardsApr && allApr?.lpRewardsApr !== 0) ? allApr?.lpRewardsApr?.toFixed(2) : 0}%:
+                      </span>
                       Liquidity Provider APY
                     </Typography>
                     <Typography>
-                      <span style={{ fontWeight: "bold" }}>0%: </span>
+                      <span style={{ fontWeight: "bold" }}>
+                        {(allApr?.tokenRewardsApr && allApr?.tokenRewardsApr !== 0) ? allApr?.tokenRewardsApr?.toFixed(2) : 0}%:
+                      </span>
                       {vaultId === 0 || vaultId === 1
                         ? "Auto harvested tEXO"
                         : "Auto harvested CAKE"}
                     </Typography>
                     <Typography>
-                      <span style={{ fontWeight: "bold" }}>0%: </span>
+                      <span style={{ fontWeight: "bold" }}>
+                        {(allApr?.tEXOApr && allApr?.tEXOApr !== 0) ? allApr?.tEXOApr?.toFixed(2) : 0}%:
+                      </span>
                       tEXO rewards
                     </Typography>
                   </Box>
