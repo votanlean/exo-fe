@@ -42,44 +42,40 @@ export const getRoi = ({ amountEarned, amountInvested }) => {
   return percentage
 }
 
-export const convertAprToApy = (data: any) => {
+export const convertAprToApyYO = (data: any) => {
   const {
-    tokenPrice,
-    performanceFee,
     lpRewardsApr,
-    tokenRewardsAprAsNumber,
+    tokenRewardsApr,
     tEXOApr,
-    numberOfDays,
   } = data || {
-    tokenPrice: 1,
-    performanceFee: 0.8,
     lpRewardsApr: 0,
-    tokenRewardsAprAsNumber: 0,
+    tokenRewardsApr: 0,
     tEXOApr: 0,
-    autocompound: true,
-    numberOfDays: 365,
   };
-
+  const tokenPrice = 1;
+  const performanceFee = 0.8;
+  const numberOfDays = 365;
   const oneThousandDollarsWorthOfToken = 1000 / tokenPrice;
 
-  const calculatedNonCompoundTokenEarned365D = tokenEarnedPerThousandDollars({
-    farmApr: (tokenRewardsAprAsNumber || 0) + (tEXOApr || 0),
-    tokenPrice,
-    numberOfDays
-  });
-
   const calculatedCompoundTokenEarned365D = tokenEarnedPerThousandDollars({
-    farmApr: lpRewardsApr || 0,
+    farmApr: tokenRewardsApr || 0,
     tokenPrice,
     autocompound: true,
     performanceFee,
     numberOfDays
   });
 
-  const tokenEarnedPerThousand365D = calculatedNonCompoundTokenEarned365D + calculatedCompoundTokenEarned365D;
-
-  return getRoi({
-    amountEarned: tokenEarnedPerThousand365D,
+  const tokenRewardApy = getRoi({
+    amountEarned: calculatedCompoundTokenEarned365D,
     amountInvested: oneThousandDollarsWorthOfToken,
   });
+
+  const apy = tokenRewardApy + lpRewardsApr + tEXOApr;
+
+  return {
+    apy,
+    tokenRewardApy,
+    lpRewardsApr,
+    tEXOApr
+  }
 }

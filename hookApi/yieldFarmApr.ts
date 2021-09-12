@@ -148,7 +148,7 @@ export const getYieldFarmApr = (
   ecAssetBalanceInMc: number, // totalStaked
   ecAssetTokenPerBlock: number, // tokenPerBlock,
   chainId: number,
-): { tokenRewardsApr: number; lpRewardsApr: number, tEXOApr: number, apr: number, apy: number } => {
+): { tokenRewardsApr: number; lpRewardsApr: number, tEXOApr: number, apr: number } => {
   const blockPerYear = getBlockPerYear(chainId);
 
   const yearlyTokenRewardAllocation = tokenPerBlock
@@ -170,22 +170,10 @@ export const getYieldFarmApr = (
     chainId
   );
 
-  const apyData = {
-    tokenPrice: 1,
-    performanceFee: 0.8,
-    lpRewardsApr,
-    tokenRewardsAprAsNumber,
-    tEXOApr,
-    numberOfDays: 365,
-  }
-
-  const apy = convertAprToApy(apyData);
-
   return {
     tokenRewardsApr: tokenRewardsAprAsNumber,
     lpRewardsApr,
     tEXOApr,
     apr: (tokenRewardsAprAsNumber || 0) + lpRewardsApr + (tEXOApr || 0),
-    apy
   }
 }

@@ -274,12 +274,12 @@ export const YieldFarmROIDialog = (props: any) => {
   };
 
   const calculatedNonCompoundTokenEarned = calculateAllTokenEarnedPerThousand({
-    farmApr: (tokenRewardsApr || 0) + (tEXOApr || 0),
+    farmApr: (lpRewardsApr || 0) + (tEXOApr || 0),
     tokenPrice,
   })
 
   const calculatedCompoundTokenEarned = calculateAllTokenEarnedPerThousand({
-    farmApr: lpRewardsApr || 0,
+    farmApr: tokenRewardsApr || 0,
     tokenPrice,
     autocompound: true,
     performanceFee,

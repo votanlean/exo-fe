@@ -33,6 +33,7 @@ import { isAddress } from 'utils/web3';
 import rot13 from 'utils/encode';
 import Cookies from 'universal-cookie';
 import BigNumber from 'bignumber.js';
+import { convertAprToApyYO } from "utils/compoundApyHelpers";
 
 interface IYieldFarmProps {
   farm: any;
@@ -72,9 +73,8 @@ function YieldFarm(props: any) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [isToggleView, setIsToggleView] = useState(false);
-  const [apr, setApr] = useState(0);
+  const [allApy, setAllApy] = useState(null);
   const [allApr, setAllApr] = useState(null);
-  const [apy, setApy] = useState(0);
 
   const isTablet = useMediaQuery("(max-width: 768px)");
 
@@ -116,8 +116,8 @@ function YieldFarm(props: any) {
         chainId
       );
 
-      setApr(aprData.apr);
-      setApy(aprData.apy);
+      const apyData = convertAprToApyYO(aprData);
+      setAllApy(apyData);
       setAllApr(aprData);
     }
   }, [isLoading, yieldFarmData, allTokenPrices, tEXOPrice, tEXOPerBlock, totalAllocPoint, chainId]);
@@ -214,7 +214,7 @@ function YieldFarm(props: any) {
           <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
-              {typeof apy === 'number' ? `${apy.toFixed(2)}%` : 'N/A'}
+              {typeof allApy?.apy === 'number' ? `${allApy?.apy.toFixed(2)}%` : 'N/A'}
             </Typography>
             {!isTablet ? (
               <RoiAction
@@ -326,13 +326,13 @@ function YieldFarm(props: any) {
                   <Box alignItems="left">
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(allApr?.lpRewardsApr && allApr?.lpRewardsApr !== 0) ? allApr?.lpRewardsApr?.toFixed(2) : 0}%:
+                        {(allApy?.lpRewardsApr && allApy?.lpRewardsApr !== 0) ? allApy?.lpRewardsApr?.toFixed(2) : 0}%:
                       </span>
                       Liquidity Provider APY
                     </Typography>
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(allApr?.tokenRewardsApr && allApr?.tokenRewardsApr !== 0) ? allApr?.tokenRewardsApr?.toFixed(2) : 0}%:
+                        {(allApy?.tokenRewardsApr && allApy?.tokenRewardsApr !== 0) ? allApy?.tokenRewardsApr?.toFixed(2) : 0}%:
                       </span>
                       {vaultId === 0 || vaultId === 1
                         ? "Auto harvested tEXO"
@@ -340,7 +340,7 @@ function YieldFarm(props: any) {
                     </Typography>
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(allApr?.tEXOApr && allApr?.tEXOApr !== 0) ? allApr?.tEXOApr?.toFixed(2) : 0}%:
+                        {(allApy?.tEXOApr && allApy?.tEXOApr !== 0) ? allApy?.tEXOApr?.toFixed(2) : 0}%:
                       </span>
                       tEXO rewards
                     </Typography>
