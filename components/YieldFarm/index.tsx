@@ -214,7 +214,7 @@ function YieldFarm(props: any) {
           <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
-              {typeof allApy?.apy === 'number' ? `${allApy?.apy.toFixed(2)}%` : 'N/A'}
+              {(!allApy?.apy.isNaN() && allApy?.apy.isFinite()) ? `${allApy?.apy.toFixed(2)}%` : 'N/A'}
             </Typography>
             {!isTablet ? (
               <RoiAction
@@ -326,13 +326,13 @@ function YieldFarm(props: any) {
                   <Box alignItems="left">
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(allApy?.lpRewardsApr && allApy?.lpRewardsApr !== 0) ? allApy?.lpRewardsApr?.toFixed(2) : 0}%:
+                        {(!allApy?.lpRewardsApr.isNaN() && allApy?.lpRewardsApr.isFinite() && allApy?.lpRewardsApr !== 0) ? allApy?.lpRewardsApr?.toFixed(2) : 0}%:
                       </span>
                       Liquidity Provider APY
                     </Typography>
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(allApy?.tokenRewardsApr && allApy?.tokenRewardsApr !== 0) ? allApy?.tokenRewardsApr?.toFixed(2) : 0}%:
+                        {(!allApy?.tokenRewardApy.isNaN() && allApy?.tokenRewardApy.isFinite() && allApy?.tokenRewardApy !== 0) ? allApy?.tokenRewardApy?.toFixed(2) : 0}%:
                       </span>
                       {vaultId === 0 || vaultId === 1
                         ? "Auto harvested tEXO"
@@ -340,7 +340,7 @@ function YieldFarm(props: any) {
                     </Typography>
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(allApy?.tEXOApr && allApy?.tEXOApr !== 0) ? allApy?.tEXOApr?.toFixed(2) : 0}%:
+                        {(!allApy?.tEXOApr.isNaN() && allApy?.tEXOApr.isFinite() && allApy?.tEXOApr !== 0) ? allApy?.tEXOApr?.toFixed(2) : 0}%:
                       </span>
                       tEXO rewards
                     </Typography>

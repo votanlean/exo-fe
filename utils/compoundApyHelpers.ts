@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js"
+
 export const tokenEarnedPerThousandDollars = ({
   numberOfDays,
   farmApr,
@@ -70,12 +72,13 @@ export const convertAprToApyYO = (data: any) => {
     amountInvested: oneThousandDollarsWorthOfToken,
   });
 
-  const apy = tokenRewardApy + lpRewardsApr + tEXOApr;
+  const apy = (tokenRewardApy || 0) + (lpRewardsApr || 0) + (tEXOApr || 0);
+
 
   return {
-    apy,
-    tokenRewardApy,
-    lpRewardsApr,
-    tEXOApr
+    apy: new BigNumber(apy),
+    tokenRewardApy: new BigNumber(tokenRewardApy),
+    lpRewardsApr: new BigNumber(lpRewardsApr),
+    tEXOApr: new BigNumber(tEXOApr),
   }
 }
