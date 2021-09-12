@@ -6,7 +6,6 @@ import tokens from 'config/constants/tokens';
 import { getAddress } from "utils/addressHelpers";
 import { BIG_ZERO, normalizeTokenDecimal } from "utils/bigNumber";
 import { getPoolApr } from "./apr";
-import { convertAprToApy } from "utils/compoundApyHelpers";
 
 const getPancakeswapYieldFarmAprHelper = (
   {
