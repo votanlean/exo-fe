@@ -214,7 +214,7 @@ function YieldFarm(props: any) {
           <Typography variant="caption">APY</Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="h6" className={classes.label}>
-              {(!allApy?.apy.isNaN() && allApy?.apy.isFinite()) ? `${allApy?.apy.toFixed(2)}%` : 'N/A'}
+              {(!allApy?.apy.isNaN() && allApy?.apy.isFinite()) ? `${allApy?.apy.toFixed(2)}%` : '0%'}
             </Typography>
             {!isTablet ? (
               <RoiAction
