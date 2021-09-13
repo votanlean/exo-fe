@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js"
+
 export const tokenEarnedPerThousandDollars = ({
   numberOfDays,
   farmApr,
@@ -40,4 +42,43 @@ export const tokenEarnedPerThousandDollars = ({
 export const getRoi = ({ amountEarned, amountInvested }) => {
   const percentage = (amountEarned / amountInvested) * 100
   return percentage
+}
+
+export const convertAprToApyYO = (data: any) => {
+  const {
+    lpRewardsApr,
+    tokenRewardsApr,
+    tEXOApr,
+  } = data || {
+    lpRewardsApr: 0,
+    tokenRewardsApr: 0,
+    tEXOApr: 0,
+  };
+  const tokenPrice = 1;
+  const performanceFee = 0.8;
+  const numberOfDays = 365;
+  const oneThousandDollarsWorthOfToken = 1000 / tokenPrice;
+
+  const calculatedCompoundTokenEarned365D = tokenEarnedPerThousandDollars({
+    farmApr: tokenRewardsApr || 0,
+    tokenPrice,
+    autocompound: true,
+    performanceFee,
+    numberOfDays
+  });
+
+  const tokenRewardApy = getRoi({
+    amountEarned: calculatedCompoundTokenEarned365D,
+    amountInvested: oneThousandDollarsWorthOfToken,
+  });
+
+  const apy = (tokenRewardApy || 0) + (lpRewardsApr || 0) + (tEXOApr || 0);
+
+
+  return {
+    apy: new BigNumber(apy),
+    tokenRewardApy: new BigNumber(tokenRewardApy),
+    lpRewardsApr: new BigNumber(lpRewardsApr),
+    tEXOApr: new BigNumber(tEXOApr),
+  }
 }

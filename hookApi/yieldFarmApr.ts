@@ -173,6 +173,6 @@ export const getYieldFarmApr = (
     tokenRewardsApr: tokenRewardsAprAsNumber,
     lpRewardsApr,
     tEXOApr,
-    apr: (tokenRewardsAprAsNumber || 0) + lpRewardsApr + (tEXOApr || 0)
+    apr: (tokenRewardsAprAsNumber || 0) + lpRewardsApr + (tEXOApr || 0),
   }
 }

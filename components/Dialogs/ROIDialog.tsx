@@ -73,7 +73,8 @@ const CommonROIDialog = ({
   tokenEarnedPerThousand7D,
   tokenEarnedPerThousand30D,
   tokenEarnedPerThousand365D,
-  tokenSymbol = 'tEXO'
+  tokenSymbol = 'tEXO',
+  isYieldROI
 }: any = {}) => {
   const classes: any = useStyles();
   const { tokenPrice } = poolData;
@@ -183,7 +184,7 @@ const CommonROIDialog = ({
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              365d(APR)
+              {isYieldROI ? '365d(APY)' : '365d(APR)'}
             </Typography>
           </div>
           <div>
@@ -257,6 +258,7 @@ export const ROIDialog = (props: any) => {
     <CommonROIDialog
       {...props}
       {...calculatedTokenEarned}
+      isYieldROI={false}
     />
   );
 }
@@ -272,12 +274,12 @@ export const YieldFarmROIDialog = (props: any) => {
   };
 
   const calculatedNonCompoundTokenEarned = calculateAllTokenEarnedPerThousand({
-    farmApr: (tokenRewardsApr || 0) + (tEXOApr || 0),
+    farmApr: (lpRewardsApr || 0) + (tEXOApr || 0),
     tokenPrice,
   })
 
   const calculatedCompoundTokenEarned = calculateAllTokenEarnedPerThousand({
-    farmApr: lpRewardsApr || 0,
+    farmApr: tokenRewardsApr || 0,
     tokenPrice,
     autocompound: true,
     performanceFee,
@@ -296,6 +298,7 @@ export const YieldFarmROIDialog = (props: any) => {
       {...props}
       {...calculatedTokenEarned}
       tokenSymbol='USDT'
+      isYieldROI={true}
     />
   );
 }
