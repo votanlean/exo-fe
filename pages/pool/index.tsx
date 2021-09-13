@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
 import {
+  Box,
   makeStyles,
   Paper,
   Table,
@@ -101,6 +102,9 @@ function Pool() {
   const poolPageReady =
     // @ts-ignore
     process.env.POOL_PAGE_READY == true || process.env.POOL_PAGE_READY == "true";
+  const yieldReady =
+    // @ts-ignore
+    process.env.YIELD == true || process.env.YIELD == "true";
   const classes: any = useStyles();
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
@@ -292,82 +296,87 @@ function Pool() {
             );
           })}
         </div>
-        {/* <div className={styles.ecCompoundSection}>
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            textAlign="center"
-            marginTop="4rem"
-          >
-            <img
-              className={classes.comingSoonLogo}
-              src="/static/images/icon-white.svg"
-              alt="logo title"
-            />
-            <Box>
-              <Typography className={classes.comingSoonText} variant="h1">
-                Exo-Compound
-              </Typography>
-              <Typography className={classes.comingSoonText} variant="h2">
-                is coming soon
-              </Typography>
+        {!yieldReady && (
+          <div className={styles.ecCompoundSection}>
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="center"
+              textAlign="center"
+              marginTop="4rem"
+            >
+              <img
+                className={classes.comingSoonLogo}
+                src="/static/images/icon-white.svg"
+                alt="logo title"
+              />
+              <Box>
+                <Typography className={classes.comingSoonText} variant="h1">
+                  Exo-Compound
+                </Typography>
+                <Typography className={classes.comingSoonText} variant="h2">
+                  is coming soon
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        </div> */}
+          </div>
+        )}
+        {yieldReady && (
+          <>
+            <div className={styles.countdownContainer}>
+              <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
+                Deposit LPs (PCS V2) for Auto-compounding and tEXO reward.
+                {currentBlock &&
+                  currentBlock < farmStartBlock &&
+                  !isCurrentBlockLoading &&
+                  !isOrchestratorLoading
+                  ? "tEXO reward will be generated in"
+                  : null}
+              </Typography>
+              {currentBlock &&
+                currentBlock < (yieldFarmStartBlock || 0) &&
+                !isCurrentBlockLoading &&
+                !isOrchestratorLoading ? (
+                <Typography variant="h3" color="primary" align="center">
+                  {countDownStringStartYieldFarm || "Coming Soon"}
+                </Typography>
+              ) : null}
+            </div>
 
-        <div className={styles.countdownContainer}>
-          <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
-            Deposit LPs (PCS V2) for Auto-compounding and tEXO reward.
-            {currentBlock &&
-              currentBlock < farmStartBlock &&
-              !isCurrentBlockLoading &&
-              !isOrchestratorLoading
-              ? "tEXO reward will be generated in"
-              : null}
-          </Typography>
-          {currentBlock &&
-            currentBlock < (yieldFarmStartBlock || 0) &&
-            !isCurrentBlockLoading &&
-            !isOrchestratorLoading ? (
-            <Typography variant="h3" color="primary" align="center">
-              {countDownStringStartYieldFarm || "Coming Soon"}
-            </Typography>
-          ) : null}
-        </div>
+            <TableContainer className={classes.tableContainer}>
+              <Table aria-label="collapsible table">
+                <TableBody>
+                  {yieldFarms.map((yieldFarm) => {
+                    let stakingTokenPrice = 0;
 
-        <TableContainer className={classes.tableContainer}>
-          <Table aria-label="collapsible table">
-            <TableBody>
-              {yieldFarms.map((yieldFarm) => {
-                let stakingTokenPrice = 0;
-
-                if (allTokenPrices.data) {
-                  stakingTokenPrice =
-                    allTokenPrices.data[
-                    getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
-                    ];
-                }
-                return (
-                  <YieldFarm
-                    isLoading={isDataLoading}
-                    key={yieldFarm.pid}
-                    yieldFarmData={yieldFarm}
-                    selectedAccount={account}
-                    onPoolStateChange={refreshAppGlobalData} // checking
-                    stakingTokenPrice={stakingTokenPrice}
-                    tEXOPrice={tEXOPrice}
-                    tEXOPerBlock={tEXOPerBlock}
-                    onApprove={onYieldApprove}
-                    onAction={onYieldApprove}
-                    allTokenPrices={allTokenPrices.data || []}
-                    totalAllocPoint={totalAllocPoint}
-                  />
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                    if (allTokenPrices.data) {
+                      stakingTokenPrice =
+                        allTokenPrices.data[
+                        getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
+                        ];
+                    }
+                    return (
+                      <YieldFarm
+                        isLoading={isDataLoading}
+                        key={yieldFarm.pid}
+                        yieldFarmData={yieldFarm}
+                        selectedAccount={account}
+                        onPoolStateChange={refreshAppGlobalData} // checking
+                        stakingTokenPrice={stakingTokenPrice}
+                        tEXOPrice={tEXOPrice}
+                        tEXOPerBlock={tEXOPerBlock}
+                        onApprove={onYieldApprove}
+                        onAction={onYieldApprove}
+                        allTokenPrices={allTokenPrices.data || []}
+                        totalAllocPoint={totalAllocPoint}
+                      />
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+        )}
 
         <div className={styles.titleSection}>
           <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
