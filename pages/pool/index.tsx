@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
 import {
-  Box,
   makeStyles,
   Paper,
   Table,
@@ -16,10 +15,11 @@ import BigNumber from "bignumber.js";
 import ApolloClient from "components/ApolloClient";
 import Statistic from "components/Statistic";
 import PoolRow from "components/PoolRow";
+import YieldFarm from 'components/YieldFarm';
 
 import styles from "./pool.module.scss";
 import { useBlockData, useBlockDataLoading } from "state/block/selectors";
-import { useTexoTokenData, useTexoTokenPrice } from "state/texo/selectors";
+import { useTexoTokenData, useTexoTokenLoading, useTexoTokenPrice } from "state/texo/selectors";
 import { useAppDispatch } from "state";
 import {
   fetchFarmsPublicDataAsync,
@@ -33,31 +33,33 @@ import { useOrchestratorData, useOrchestratorLoading } from "state/orchestrator/
 import { fetchBlockDataThunk } from "state/block/reducer";
 import { usePools } from "state/pools/selectors";
 import { fetchAppPrices } from "state/prices/reducer";
-import { useAppPrices } from "state/prices/selectors";
-import { useFarms, useTotalValue } from "state/farms/selectors";
+import { useAppPrices, useAppPricesLoading } from "state/prices/selectors";
+import { useFarms, useFarmsLoading, useTotalValue } from "state/farms/selectors";
 import FarmItem from "components/FarmItem";
-import { fetchUserInfoDataThunk } from "../../state/userInfo/reducer";
-import { useUserInfoData } from "../../state/userInfo/selectors";
+import { fetchUserInfoDataThunk } from "state/userInfo/reducer";
+import { useUserInfoData } from "state/userInfo/selectors";
 import FaangItem from "components/FaangItem";
-import { useFAANGPools } from "../../state/fAANGpools/selectors";
+import { useFAANGPools } from "state/fAANGpools/selectors";
 import {
   fetchFAANGPoolsPublicDataAsync,
   fetchFAANGPoolsUserDataAsync,
   replaceFAANGPoolsWithoutUserData,
-} from "../../state/fAANGpools/reducer";
+} from "state/fAANGpools/reducer";
 import {
   fetchPoolsPublicDataAsync,
   fetchPoolsUserDataAsync,
   replacePoolWithoutUserDataAsync,
-} from "../../state/pools/reducer";
+} from "state/pools/reducer";
 import { useNetwork } from "state/hooks";
 import { getFarms } from "utils/farmsHelpers";
-import { useFAANGOrchestratorData } from "../../state/FAANGOrchestrator/selectors";
+import { useFAANGOrchestratorData } from "state/FAANGOrchestrator/selectors";
 import { fetchFAANGOrchestratorDataThunk } from "state/FAANGOrchestrator/reducer";
 import { useAllChainTotalValue } from "state/tlv/selectors";
 import { fetchTLV } from "state/tlv/reducer";
 import BannerCoinTelegraph from "components/BannerCoinTelegraph";
 import useCountdownString from "hooks/useCountdownString";
+import { useYieldFarmsData, useYieldFarmsLoading } from "state/yield/selector";
+import { fetchYieldFarmPublicData, fetchYieldUserData } from "state/yield/reducer";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -103,6 +105,7 @@ function Pool() {
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
   const [fAANGFinishBlock, setFAANGFinishBlock] = useState(null);
+  const [yieldFarmStartBlock, setYieldFarmStartBlock] = useState(null);
   const allTokenPrices = useAppPrices();
   const tEXOPrice = useTexoTokenPrice();
   const poolsData = usePools();
@@ -111,6 +114,7 @@ function Pool() {
   const farmsData = useFarms();
   const tvl = useTotalValue();
   const totalTvl = useAllChainTotalValue();
+  const yieldFarms = useYieldFarmsData();
 
   const { currentBlock } = useBlockData();
   const isCurrentBlockLoading = useBlockDataLoading();
@@ -122,12 +126,22 @@ function Pool() {
     seedingStartBlock,
     seedingFinishBlock,
     farmStartBlock,
+    totalAllocPoint,
   } = useOrchestratorData();
+
   const isOrchestratorLoading = useOrchestratorLoading();
+  const appPriceLoading = useAppPricesLoading();
+  const texoTokenLoading = useTexoTokenLoading();
+  const yieldFarmLoading = useYieldFarmsLoading();
+  const farmLoading = useFarmsLoading();
+
+  const isDataLoading =
+    appPriceLoading || texoTokenLoading || yieldFarmLoading || isOrchestratorLoading || farmLoading;
 
   const countDownStringFarm = useCountdownString(farmStartBlock, isOrchestratorLoading);
   const countDownString = useCountdownString(canClaimRewardsBlock, isOrchestratorLoading);
   const countDownStringToConcludeFAANG = useCountdownString(fAANGFinishBlock);
+  const countDownStringStartYieldFarm = yieldFarmStartBlock ? useCountdownString(yieldFarmStartBlock) : null;
 
   const { tEXOReward } = useUserInfoData();
   const network = useNetwork();
@@ -160,6 +174,7 @@ function Pool() {
       dispatch(fetchPoolsUserDataAsync(account, chainId));
       dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
       dispatch(fetchUserInfoDataThunk(account, chainId));
+      dispatch(fetchYieldUserData(account, chainId));
     }
   };
 
@@ -168,6 +183,7 @@ function Pool() {
   useEffect(() => {
     if (chainId === 56) {
       setFAANGFinishBlock(10611291);
+      setYieldFarmStartBlock(null); //TODO: set yield farm start block
     }
 
     if (chainId === 137) {
@@ -181,13 +197,7 @@ function Pool() {
       dispatch(fetchTexoTokenDataThunk(chainId));
       dispatch(fetchPoolsPublicDataAsync(chainId));
       dispatch(fetchFAANGPoolsPublicDataAsync(chainId));
-
-      if (account) {
-        dispatch(fetchFarmUserDataAsync(account, chainId));
-        dispatch(fetchPoolsUserDataAsync(account, chainId));
-        dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
-        dispatch(fetchUserInfoDataThunk(account, chainId));
-      }
+      dispatch(fetchYieldFarmPublicData(chainId));
     }, 60 * 1000);
 
     return () => {
@@ -199,6 +209,18 @@ function Pool() {
     dispatch(fetchPoolsUserDataAsync(account, chainId));
     dispatch(fetchFarmUserDataAsync(account, chainId));
     dispatch(fetchFAANGPoolsUserDataAsync(account, chainId));
+    dispatch(fetchYieldUserData(account, chainId));
+  }, [dispatch, account, chainId]);
+
+  const onYieldApprove = useCallback(() => {
+    dispatch(fetchYieldUserData(account, chainId));
+  }, [dispatch, account, chainId]);
+
+  const onYieldAction = useCallback(() => {
+    dispatch(fetchYieldFarmPublicData(chainId));
+    if (account) {
+      dispatch(fetchYieldUserData(account, chainId));
+    }
   }, [dispatch, account, chainId]);
 
   return (
@@ -231,16 +253,16 @@ function Pool() {
               : "Stake tEXO LPs (Quickswap) for tEXO reward."}
             <br />
             {currentBlock &&
-            currentBlock < farmStartBlock &&
-            !isCurrentBlockLoading &&
-            !isOrchestratorLoading
+              currentBlock < farmStartBlock &&
+              !isCurrentBlockLoading &&
+              !isOrchestratorLoading
               ? "Farming reward will be generated in"
               : null}
           </Typography>
           {currentBlock &&
-          currentBlock < farmStartBlock &&
-          !isCurrentBlockLoading &&
-          !isOrchestratorLoading ? (
+            currentBlock < farmStartBlock &&
+            !isCurrentBlockLoading &&
+            !isOrchestratorLoading ? (
             <Typography variant="h3" color="primary" align="center">
               {poolPageReady ? countDownStringFarm : "Coming Soon"}
             </Typography>
@@ -270,7 +292,7 @@ function Pool() {
             );
           })}
         </div>
-        <div className={styles.ecCompoundSection}>
+        {/* <div className={styles.ecCompoundSection}>
           <Box
             display="flex"
             flexDirection="row"
@@ -292,7 +314,60 @@ function Pool() {
               </Typography>
             </Box>
           </Box>
+        </div> */}
+
+        <div className={styles.countdownContainer}>
+          <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
+            Deposit LPs (PCS V2) for Auto-compounding and tEXO reward.
+            {currentBlock &&
+              currentBlock < farmStartBlock &&
+              !isCurrentBlockLoading &&
+              !isOrchestratorLoading
+              ? "tEXO reward will be generated in"
+              : null}
+          </Typography>
+          {currentBlock &&
+            currentBlock < (yieldFarmStartBlock || 0) &&
+            !isCurrentBlockLoading &&
+            !isOrchestratorLoading ? (
+            <Typography variant="h3" color="primary" align="center">
+              {countDownStringStartYieldFarm || "Coming Soon"}
+            </Typography>
+          ) : null}
         </div>
+
+        <TableContainer className={classes.tableContainer}>
+          <Table aria-label="collapsible table">
+            <TableBody>
+              {yieldFarms.map((yieldFarm) => {
+                let stakingTokenPrice = 0;
+
+                if (allTokenPrices.data) {
+                  stakingTokenPrice =
+                    allTokenPrices.data[
+                    getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
+                    ];
+                }
+                return (
+                  <YieldFarm
+                    isLoading={isDataLoading}
+                    key={yieldFarm.pid}
+                    yieldFarmData={yieldFarm}
+                    selectedAccount={account}
+                    onPoolStateChange={refreshAppGlobalData} // checking
+                    stakingTokenPrice={stakingTokenPrice}
+                    tEXOPrice={tEXOPrice}
+                    tEXOPerBlock={tEXOPerBlock}
+                    onApprove={onYieldApprove}
+                    onAction={onYieldApprove}
+                    allTokenPrices={allTokenPrices.data || []}
+                    totalAllocPoint={totalAllocPoint}
+                  />
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         <div className={styles.titleSection}>
           <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
@@ -448,7 +523,7 @@ function Pool() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                      getAddress(pool.stakingToken.address, chainId)?.toLowerCase()
+                    getAddress(pool.stakingToken.address, chainId)?.toLowerCase()
                     ];
                 }
                 return (
