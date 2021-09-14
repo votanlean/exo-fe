@@ -16,7 +16,7 @@ import BigNumber from "bignumber.js";
 import ApolloClient from "components/ApolloClient";
 import Statistic from "components/Statistic";
 import PoolRow from "components/PoolRow";
-import YieldFarm from 'components/YieldFarm';
+import YieldFarm from "components/YieldFarm";
 
 import styles from "./pool.module.scss";
 import { useBlockData, useBlockDataLoading } from "state/block/selectors";
@@ -102,9 +102,6 @@ function Pool() {
   const poolPageReady =
     // @ts-ignore
     process.env.POOL_PAGE_READY == true || process.env.POOL_PAGE_READY == "true";
-  const yieldReady =
-    // @ts-ignore
-    process.env.YIELD == true || process.env.YIELD == "true";
   const classes: any = useStyles();
   const dispatch = useAppDispatch();
   const { account } = useWeb3React();
@@ -145,7 +142,7 @@ function Pool() {
   const countDownStringFarm = useCountdownString(farmStartBlock, isOrchestratorLoading);
   const countDownString = useCountdownString(canClaimRewardsBlock, isOrchestratorLoading);
   const countDownStringToConcludeFAANG = useCountdownString(fAANGFinishBlock);
-  const countDownStringStartYieldFarm = yieldFarmStartBlock ? useCountdownString(yieldFarmStartBlock) : null;
+  const countDownStringStartYieldFarm = useCountdownString(yieldFarmStartBlock);
 
   const { tEXOReward } = useUserInfoData();
   const network = useNetwork();
@@ -172,6 +169,7 @@ function Pool() {
     dispatch(fetchAppPrices(chainId));
     dispatch(replaceFAANGPoolsWithoutUserData(chainId));
     dispatch(fetchTLV);
+    dispatch(fetchYieldFarmPublicData(chainId));
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account, chainId));
@@ -187,11 +185,12 @@ function Pool() {
   useEffect(() => {
     if (chainId === 56) {
       setFAANGFinishBlock(10611291);
-      setYieldFarmStartBlock(null); //TODO: set yield farm start block
+      setYieldFarmStartBlock(10937500);
     }
 
     if (chainId === 137) {
       setFAANGFinishBlock(18829657);
+      setYieldFarmStartBlock(null);
     }
   }, [chainId]);
 
@@ -257,16 +256,16 @@ function Pool() {
               : "Stake tEXO LPs (Quickswap) for tEXO reward."}
             <br />
             {currentBlock &&
-              currentBlock < farmStartBlock &&
-              !isCurrentBlockLoading &&
-              !isOrchestratorLoading
+            currentBlock < farmStartBlock &&
+            !isCurrentBlockLoading &&
+            !isOrchestratorLoading
               ? "Farming reward will be generated in"
               : null}
           </Typography>
           {currentBlock &&
-            currentBlock < farmStartBlock &&
-            !isCurrentBlockLoading &&
-            !isOrchestratorLoading ? (
+          currentBlock < farmStartBlock &&
+          !isCurrentBlockLoading &&
+          !isOrchestratorLoading ? (
             <Typography variant="h3" color="primary" align="center">
               {poolPageReady ? countDownStringFarm : "Coming Soon"}
             </Typography>
@@ -296,8 +295,8 @@ function Pool() {
             );
           })}
         </div>
-        {!yieldReady && (
-          <div className={styles.ecCompoundSection}>
+        <div className={styles.lpPoolGrid}>
+          {!yieldFarmStartBlock && (
             <Box
               display="flex"
               flexDirection="row"
@@ -319,65 +318,82 @@ function Pool() {
                 </Typography>
               </Box>
             </Box>
-          </div>
-        )}
-        {yieldReady && (
-          <>
-            <div className={styles.countdownContainer}>
-              <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
-                Deposit LPs (PCS V2) for Auto-compounding and tEXO reward.
-                {currentBlock &&
-                  currentBlock < farmStartBlock &&
-                  !isCurrentBlockLoading &&
-                  !isOrchestratorLoading
-                  ? "tEXO reward will be generated in"
-                  : null}
-              </Typography>
-              {currentBlock &&
-                currentBlock < (yieldFarmStartBlock || 0) &&
-                !isCurrentBlockLoading &&
-                !isOrchestratorLoading ? (
+          )}
+          {currentBlock &&
+          currentBlock < (yieldFarmStartBlock || 0) &&
+          !isCurrentBlockLoading &&
+          !isOrchestratorLoading ? (
+            <>
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                textAlign="center"
+                marginTop="7rem"
+              >
+                <img
+                  className={classes.comingSoonLogo}
+                  src="/static/images/icon-white.svg"
+                  alt="logo title"
+                />
+                <Box>
+                  <Typography className={classes.comingSoonText} variant="h1">
+                    Exo-Compound
+                  </Typography>
+                  <Typography className={classes.comingSoonText} variant="h2">
+                    is coming soon
+                  </Typography>
+                </Box>
+              </Box>
+              <div className={styles.countdownContainer}>
                 <Typography variant="h3" color="primary" align="center">
                   {countDownStringStartYieldFarm || "Coming Soon"}
                 </Typography>
-              ) : null}
-            </div>
+              </div>
+            </>
+          ) : null}
+          {Boolean(currentBlock && yieldFarmStartBlock && currentBlock >= yieldFarmStartBlock) && (
+            <>
+              <div className={styles.countdownContainer}>
+                <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
+                  Deposit LPs (PCS V2) for Auto-compounding and tEXO reward.
+                </Typography>
+              </div>
+              <TableContainer className={classes.tableContainer}>
+                <Table aria-label="collapsible table">
+                  <TableBody>
+                    {yieldFarms.map((yieldFarm) => {
+                      let stakingTokenPrice = 0;
 
-            <TableContainer className={classes.tableContainer}>
-              <Table aria-label="collapsible table">
-                <TableBody>
-                  {yieldFarms.map((yieldFarm) => {
-                    let stakingTokenPrice = 0;
-
-                    if (allTokenPrices.data) {
-                      stakingTokenPrice =
-                        allTokenPrices.data[
-                        getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
-                        ];
-                    }
-                    return (
-                      <YieldFarm
-                        isLoading={isDataLoading}
-                        key={yieldFarm.pid}
-                        yieldFarmData={yieldFarm}
-                        selectedAccount={account}
-                        onPoolStateChange={refreshAppGlobalData} // checking
-                        stakingTokenPrice={stakingTokenPrice}
-                        tEXOPrice={tEXOPrice}
-                        tEXOPerBlock={tEXOPerBlock}
-                        onApprove={onYieldApprove}
-                        onAction={onYieldApprove}
-                        allTokenPrices={allTokenPrices.data || []}
-                        totalAllocPoint={totalAllocPoint}
-                      />
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
-        )}
-
+                      if (allTokenPrices.data) {
+                        stakingTokenPrice =
+                          allTokenPrices.data[
+                            getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
+                          ];
+                      }
+                      return (
+                        <YieldFarm
+                          isLoading={isDataLoading}
+                          key={yieldFarm.pid}
+                          yieldFarmData={yieldFarm}
+                          selectedAccount={account}
+                          onPoolStateChange={refreshAppGlobalData} // checking
+                          stakingTokenPrice={stakingTokenPrice}
+                          tEXOPrice={tEXOPrice}
+                          tEXOPerBlock={tEXOPerBlock}
+                          onApprove={onYieldApprove}
+                          onAction={onYieldAction}
+                          allTokenPrices={allTokenPrices.data || []}
+                          totalAllocPoint={totalAllocPoint}
+                        />
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
+        </div>
         <div className={styles.titleSection}>
           <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
             FAANG distribution phase has concluded
@@ -532,7 +548,7 @@ function Pool() {
                 if (allTokenPrices.data) {
                   stakingTokenPrice =
                     allTokenPrices.data[
-                    getAddress(pool.stakingToken.address, chainId)?.toLowerCase()
+                      getAddress(pool.stakingToken.address, chainId)?.toLowerCase()
                     ];
                 }
                 return (
