@@ -169,6 +169,7 @@ function Pool() {
     dispatch(fetchAppPrices(chainId));
     dispatch(replaceFAANGPoolsWithoutUserData(chainId));
     dispatch(fetchTLV);
+    dispatch(fetchYieldFarmPublicData(chainId));
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account, chainId));
@@ -189,6 +190,7 @@ function Pool() {
 
     if (chainId === 137) {
       setFAANGFinishBlock(18829657);
+      setYieldFarmStartBlock(null);
     }
   }, [chainId]);
 
@@ -293,39 +295,64 @@ function Pool() {
             );
           })}
         </div>
-        <div className={styles.ecCompoundSection}>
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            textAlign="center"
-            marginTop="4rem"
-          >
-            <img
-              className={classes.comingSoonLogo}
-              src="/static/images/icon-white.svg"
-              alt="logo title"
-            />
-            <Box>
-              <Typography className={classes.comingSoonText} variant="h1">
-                Exo-Compound
-              </Typography>
-              <Typography className={classes.comingSoonText} variant="h2">
-                is coming soon
-              </Typography>
+        <div className={styles.lpPoolGrid}>
+          {!yieldFarmStartBlock && (
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="center"
+              textAlign="center"
+              marginTop="4rem"
+            >
+              <img
+                className={classes.comingSoonLogo}
+                src="/static/images/icon-white.svg"
+                alt="logo title"
+              />
+              <Box>
+                <Typography className={classes.comingSoonText} variant="h1">
+                  Exo-Compound
+                </Typography>
+                <Typography className={classes.comingSoonText} variant="h2">
+                  is coming soon
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-          <div className={styles.countdownContainer}>
-            {currentBlock &&
-            currentBlock < (yieldFarmStartBlock || 0) &&
-            !isCurrentBlockLoading &&
-            !isOrchestratorLoading ? (
-              <Typography variant="h3" color="primary" align="center">
-                {countDownStringStartYieldFarm || "Coming Soon"}
-              </Typography>
-            ) : null}
-          </div>
-          {Boolean(currentBlock && currentBlock >= yieldFarmStartBlock) && (
+          )}
+          {currentBlock &&
+          currentBlock < (yieldFarmStartBlock || 0) &&
+          !isCurrentBlockLoading &&
+          !isOrchestratorLoading ? (
+            <>
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                textAlign="center"
+                marginTop="7rem"
+              >
+                <img
+                  className={classes.comingSoonLogo}
+                  src="/static/images/icon-white.svg"
+                  alt="logo title"
+                />
+                <Box>
+                  <Typography className={classes.comingSoonText} variant="h1">
+                    Exo-Compound
+                  </Typography>
+                  <Typography className={classes.comingSoonText} variant="h2">
+                    is coming soon
+                  </Typography>
+                </Box>
+              </Box>
+              <div className={styles.countdownContainer}>
+                <Typography variant="h3" color="primary" align="center">
+                  {countDownStringStartYieldFarm || "Coming Soon"}
+                </Typography>
+              </div>
+            </>
+          ) : null}
+          {Boolean(currentBlock && yieldFarmStartBlock && currentBlock >= yieldFarmStartBlock) && (
             <>
               <div className={styles.countdownContainer}>
                 <Typography variant="h5" align="center" style={{ lineHeight: "40px" }}>
@@ -355,7 +382,7 @@ function Pool() {
                           tEXOPrice={tEXOPrice}
                           tEXOPerBlock={tEXOPerBlock}
                           onApprove={onYieldApprove}
-                          onAction={onYieldApprove}
+                          onAction={onYieldAction}
                           allTokenPrices={allTokenPrices.data || []}
                           totalAllocPoint={totalAllocPoint}
                         />

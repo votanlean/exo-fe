@@ -1,26 +1,26 @@
-import { createSlice, Dispatch } from '@reduxjs/toolkit';
-import { getYieldFarms } from 'utils/yieldFarmHelpers';
-import { fetchAssetPoolInfo, fetchStrategyData, fetchYieldFarms } from './helpers';
-import fetchUserData from './helpers/fetchUserData';
+import { createSlice, Dispatch } from "@reduxjs/toolkit";
+import { getYieldFarms } from "utils/yieldFarmHelpers";
+import { fetchAssetPoolInfo, fetchStrategyData, fetchYieldFarms } from "./helpers";
+import fetchUserData from "./helpers/fetchUserData";
 
 const initialState = {
   loading: false,
   data: getYieldFarms().map((yieldFarm) => {
     return {
       ...yieldFarm,
-      underlyingVaultBalance: '0',
+      underlyingVaultBalance: "0",
       userData: {
-        allowance: '0',
-        balance: '0',
-        stakedBalance: '0',
-        inVaultBalance: '0',
-        ecAssetStakedBalance: '0',
-        ecAssetAllowance: '0',
-        tEXOEarned: '0'
-      }
-    }
-  })
-}
+        allowance: "0",
+        balance: "0",
+        stakedBalance: "0",
+        inVaultBalance: "0",
+        ecAssetStakedBalance: "0",
+        ecAssetAllowance: "0",
+        tEXOEarned: "0",
+      },
+    };
+  }),
+};
 
 export const yieldSlice = createSlice({
   name: "yield",
@@ -31,13 +31,13 @@ export const yieldSlice = createSlice({
         const foundByPid = action.payload.find((y) => y.pid === yieldFarm.pid);
 
         if (!foundByPid) {
-          return yieldFarm
+          return yieldFarm;
         }
 
         return {
           ...yieldFarm,
-          ...foundByPid
-        }
+          ...foundByPid,
+        };
       });
 
       return state;
@@ -47,13 +47,13 @@ export const yieldSlice = createSlice({
         const foundByPid = action.payload.find((y) => y.pid === yieldFarm.pid);
 
         if (!foundByPid) {
-          return yieldFarm
+          return yieldFarm;
         }
 
         return {
           ...yieldFarm,
-          ...foundByPid
-        }
+          ...foundByPid,
+        };
       });
 
       return state;
@@ -62,9 +62,9 @@ export const yieldSlice = createSlice({
       state.loading = action.payload;
 
       return state;
-    }
-  }
-})
+    },
+  },
+});
 
 export const { setYieldFarmPublicData, setYieldFarmUserData, setLoading } = yieldSlice.actions;
 
@@ -73,6 +73,10 @@ export const fetchYieldFarmPublicData = (chainId: number) => async (dispatch: Di
 
   try {
     const yieldFarms = getYieldFarms(chainId);
+    if (yieldFarms.length == 0) {
+      //purpose to stop requesting data for polygon
+      throw Error;
+    }
     const yieldFarmPublicData = await fetchYieldFarms(yieldFarms, chainId);
 
     dispatch(setYieldFarmPublicData(yieldFarmPublicData));
@@ -85,22 +89,28 @@ export const fetchYieldFarmPublicData = (chainId: number) => async (dispatch: Di
 
     dispatch(setLoading(false));
   } catch (error) {
+    console.log("catch error");
     dispatch(setLoading(false));
     throw error;
   }
-}
+};
 
-export const fetchYieldUserData = (account: string, chainId: number) => async (dispatch: Dispatch) => {
-  dispatch(setLoading(true));
+export const fetchYieldUserData =
+  (account: string, chainId: number) => async (dispatch: Dispatch) => {
+    dispatch(setLoading(true));
 
-  try {
-    const yieldFarms = getYieldFarms(chainId);
-    const yieldFarmUserData = await fetchUserData(yieldFarms, account, chainId);
+    try {
+      const yieldFarms = getYieldFarms(chainId);
+      if (yieldFarms.length == 0) {
+        //purpose to stop requesting data for polygon
+        throw Error;
+      }
+      const yieldFarmUserData = await fetchUserData(yieldFarms, account, chainId);
 
-    dispatch(setYieldFarmUserData(yieldFarmUserData));
-    dispatch(setLoading(false));
-  } catch (error) {
-    dispatch(setLoading(false));
-    throw error;
-  }
-}
+      dispatch(setYieldFarmUserData(yieldFarmUserData));
+      dispatch(setLoading(false));
+    } catch (error) {
+      dispatch(setLoading(false));
+      throw error;
+    }
+  };
