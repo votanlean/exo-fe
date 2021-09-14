@@ -27,6 +27,9 @@ export const yieldSlice = createSlice({
   initialState,
   reducers: {
     setYieldFarmPublicData: (state, action) => {
+      if (state.data.length != action.payload.length) {
+        state.data = action.payload;
+      }
       state.data = state.data.map((yieldFarm) => {
         const foundByPid = action.payload.find((y) => y.pid === yieldFarm.pid);
 
@@ -89,7 +92,6 @@ export const fetchYieldFarmPublicData = (chainId: number) => async (dispatch: Di
 
     dispatch(setLoading(false));
   } catch (error) {
-    console.log("catch error");
     dispatch(setLoading(false));
     throw error;
   }
