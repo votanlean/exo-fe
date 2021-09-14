@@ -56,6 +56,7 @@ export const convertAprToApyYO = (data: any) => {
   };
   const tokenPrice = 1;
   const performanceFee = 0.8;
+  const compoundFrequency = 2;
   const numberOfDays = 365;
   const oneThousandDollarsWorthOfToken = 1000 / tokenPrice;
 
@@ -63,8 +64,9 @@ export const convertAprToApyYO = (data: any) => {
     farmApr: tokenRewardsApr || 0,
     tokenPrice,
     autocompound: true,
+    numberOfDays,
     performanceFee,
-    numberOfDays
+    compoundFrequency
   });
 
   const tokenRewardApy = getRoi({
