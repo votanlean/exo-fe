@@ -1,6 +1,6 @@
 import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => {
+const useStyles = makeStyles((customTheme) => {
   const theme = createMuiTheme({
     breakpoints: {
       values: {
@@ -63,7 +63,7 @@ const useStyles = makeStyles(() => {
       paddingBottom: 0,
       paddingTop: 0,
       borderBottom: 'unset',
-      background: 'rgb(250, 249, 250)',
+      background: customTheme.palette.tableRowBg.default,
     },
     label: {
       fontSize: 16,

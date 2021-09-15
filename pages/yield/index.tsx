@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ChangeEvent, useCallback } from 'react';
 import Head from 'next/head';
-import { Typography, TableContainer, Table, TableBody } from '@material-ui/core';
+import { Typography, TableContainer, Table, TableBody, makeStyles } from '@material-ui/core';
 import { useDebounceCallback } from '@react-hook/debounce'
 import { useWeb3React } from '@web3-react/core';
 import { useDispatch } from 'react-redux';
@@ -21,6 +21,17 @@ import { fetchOrchestratorDataThunk } from 'state/orchestrator/reducer';
 import { fetchAppPrices } from 'state/prices/reducer';
 import { fetchFarmsPublicDataAsync } from 'state/farms/reducer';
 
+const useStyles = makeStyles((theme) => {
+  return {
+    tableContainer: {
+      filter: "drop-shadow(rgba(25, 19, 38, 0.15) 0px 1px 4px)",
+      width: "100%",
+      borderRadius: "16px",
+      background: theme.palette.themeBg.default,
+    },
+  };
+});
+
 export default function Yield() {
   const [searchText, setSearchText] = useState<undefined | null | string>();
 
@@ -29,6 +40,7 @@ export default function Yield() {
   const yieldFarmLoading = useYieldFarmsLoading();
   const orchestratorLoading = useOrchestratorLoading();
   const farmLoading = useFarmsLoading();
+  const tableStyle = useStyles();
 
   const isDataLoading =
     appPriceLoading || texoTokenLoading || yieldFarmLoading || orchestratorLoading || farmLoading;
@@ -92,7 +104,7 @@ export default function Yield() {
           EXO-Compound
         </Typography>
 
-        <TableContainer className={classes.tableContainer}>
+        <TableContainer className={tableStyle.tableContainer}>
           <Table aria-label="collapsible table">
             <TableBody>
               {yieldFarms.map((yieldFarm) => {
