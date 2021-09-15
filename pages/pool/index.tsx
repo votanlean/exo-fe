@@ -349,6 +349,10 @@ function Pool() {
                 <Typography variant="h3" color="primary" align="center">
                   {countDownStringStartYieldFarm || "Coming Soon"}
                 </Typography>
+                <Typography variant="h6" color="primary" align="center">
+                <a target='_blank' href='https://bscscan.com/block/countdown/10938700' >Check explorer for the most accurate countdown</a>
+                </Typography>
+                
               </div>
             </>
           ) : null}
