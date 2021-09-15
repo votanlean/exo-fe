@@ -88,6 +88,7 @@ export const useVaultStake = (vault: Contract) => {
         console.log('txHash: ', txHash);
         setLoading(false);
         console.info(txHash);
+        return txHash;
       } catch (error) {
         setLoading(false);
       }

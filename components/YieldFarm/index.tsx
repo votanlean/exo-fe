@@ -172,31 +172,32 @@ function YieldFarm(props: any) {
     onApprove,
   });
 
-  const onHandleAutoStake = async (isAutoStake: boolean, amountStakeNumber: BigNumber) => {
+  const onHandleAutoStake = async (isAutoStake: boolean, amountStakeNumber: string) => {
     if (isAutoStake) {
       const { stakingToken, ecAssetAllowance, refStake } = dataStakeAllButton;
+      let ref;
+
+      if (refStake) {
+        const cookies = new Cookies();
+        if (cookies.get("ref")) {
+          if (isAddress(rot13(cookies.get("ref")))) {
+            ref = rot13(cookies.get("ref"));
+          }
+        } else {
+          ref = "0x0000000000000000000000000000000000000000";
+        }
+      }
+
+      const decimals = getDecimals(stakingToken.decimals, chainId);
+      const amount = normalizeTokenDecimal(amountStakeNumber, +decimals);
 
       if (+ecAssetAllowance === 0) {
-        //parse to Number
         approve();
+        await onStake(amount, ref, decimals);
       } else {
-        let ref;
-
-        if (refStake) {
-          const cookies = new Cookies();
-          if (cookies.get("ref")) {
-            if (isAddress(rot13(cookies.get("ref")))) {
-              ref = rot13(cookies.get("ref"));
-            }
-          } else {
-            ref = "0x0000000000000000000000000000000000000000";
-          }
-        }
-
-        const decimals = getDecimals(stakingToken.decimals, chainId);
-        await onStake(amountStakeNumber.toString(), ref, decimals);
-        onAction();
+        await onStake(amount, ref, decimals);
       }
+      onAction();
     }
   };
 
