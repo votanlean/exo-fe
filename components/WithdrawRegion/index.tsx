@@ -28,7 +28,7 @@ function WithdrawRegion(props: any) {
         onAction
     } = props || {};
     const [amountWithdrawNumber, setAmountWithdrawNumber] = useState(null);
-    const [unstakeIfNeeded, setUnstakeIfNeeded] = useState(false);
+    const [unstakeIfNeeded, setUnstakeIfNeeded] = useState(true);
 
     const {
         symbol,
