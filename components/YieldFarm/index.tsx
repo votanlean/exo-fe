@@ -34,6 +34,7 @@ import rot13 from 'utils/encode';
 import Cookies from 'universal-cookie';
 import BigNumber from 'bignumber.js';
 import { convertAprToApyYO } from "utils/compoundApyHelpers";
+import { useWeb3React } from "@web3-react/core";
 
 interface IYieldFarmProps {
   farm: any;
@@ -69,6 +70,8 @@ function YieldFarm(props: any) {
     underlyingVaultBalance,
     ecAssetPool,
   } = yieldFarmData;
+
+  const { account } = useWeb3React();
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -362,7 +365,7 @@ function YieldFarm(props: any) {
                   <Typography align="center">tEXO Reward</Typography>
                   <ClaimRewardsAction
                     data={{ id: ecAssetPool.pid, requestingContract: tEXOOrchestratorContract }}
-                    disabled={tEXOEarned <= 0}
+                    disabled={(tEXOEarned <= 0) || (!account)}
                     onAction={onAction}
                   />
                 </Box>
