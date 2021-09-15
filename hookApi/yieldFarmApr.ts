@@ -164,7 +164,7 @@ export const getYieldFarmApr = (
   const tEXOApr = getPoolApr(
     assetTokenPrice, // stakingTokenPrice
     tEXOPrice, // rewardTokenPrice
-    ecAssetBalanceInMc, // totalStaked
+    normalizeTokenDecimal(ecAssetBalanceInMc).toNumber(), // totalStaked
     ecAssetTokenPerBlock, // tokenPerBlock,
     chainId
   );
