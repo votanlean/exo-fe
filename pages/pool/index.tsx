@@ -185,7 +185,7 @@ function Pool() {
   useEffect(() => {
     if (chainId === 56) {
       setFAANGFinishBlock(10611291);
-      setYieldFarmStartBlock(10937500);
+      setYieldFarmStartBlock(10938700);
     }
 
     if (chainId === 137) {
