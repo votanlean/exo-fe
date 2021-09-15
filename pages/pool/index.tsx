@@ -352,7 +352,7 @@ function Pool() {
                 <Typography variant="h6" color="primary" align="center">
                 <a target='_blank' href='https://bscscan.com/block/countdown/10938700' >Check explorer for the most accurate countdown</a>
                 </Typography>
-                
+
               </div>
             </>
           ) : null}
@@ -444,16 +444,16 @@ function Pool() {
           ))}
         </div>
 
-        {currentBlock >= seedingFinishBlock && (
+        {/* {currentBlock >= seedingFinishBlock && (
           <div className={styles.countdownContainer}>
             <Typography variant="h5" color="primary" align="center">
               Seed phase already completed. Deposit paused. Users may withdraw their deposits and
               harvest tEXO for farming.
             </Typography>
           </div>
-        )}
+        )} */}
 
-        {currentBlock < seedingFinishBlock && (
+        {/* {currentBlock < seedingFinishBlock && (
           <div className={styles.countdownContainer}>
             <Typography
               variant="h5"
@@ -541,9 +541,9 @@ function Pool() {
               for audit reports.
             </Typography>
           </div>
-        )}
+        )} */}
 
-        <TableContainer className={classes.tableContainer}>
+        {/* <TableContainer className={classes.tableContainer}>
           <Table aria-label="collapsible table">
             <TableBody>
               {poolsData.map((pool) => {
@@ -572,7 +572,7 @@ function Pool() {
               })}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> */}
       </div>
     </Paper>
   );
