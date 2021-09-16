@@ -141,7 +141,7 @@ const CommonROIDialog = ({
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              {tokenEarnedPerThousand1D}
+              {tokenEarnedPerThousand1D.toFixed(2)}
             </Typography>
           </div>
           <div>
@@ -160,7 +160,7 @@ const CommonROIDialog = ({
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              {tokenEarnedPerThousand7D}
+              {tokenEarnedPerThousand7D.toFixed(2)}
             </Typography>
           </div>
           <div>
@@ -179,7 +179,7 @@ const CommonROIDialog = ({
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              {tokenEarnedPerThousand30D}
+              {tokenEarnedPerThousand30D.toFixed(2)}
             </Typography>
           </div>
           <div>
@@ -198,7 +198,7 @@ const CommonROIDialog = ({
           </div>
           <div>
             <Typography variant="caption" className={classes.tbody}>
-              {tokenEarnedPerThousand365D}
+              {tokenEarnedPerThousand365D.toFixed(2)}
             </Typography>
           </div>
         </Box>

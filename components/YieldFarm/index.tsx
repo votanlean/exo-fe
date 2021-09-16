@@ -107,7 +107,9 @@ function YieldFarm(props: any) {
     priceUnderlyingPerFullShare.times(userVaultTokenBalance.plus(userECAssetStakedBalance)),
     +decimal
   );
-  const totalPriceUnderlyingDeposit = (new BigNumber(lpTotalInQuoteTokenVault)).times(new BigNumber(stakingTokenPrice));
+  const totalPriceUnderlyingDeposit = (new BigNumber(lpTotalInQuoteTokenVault)).times(new BigNumber(stakingTokenPrice)); // total liquidity
+  const underlyingBalanceInVault = new BigNumber(underlyingVaultBalance);
+  const liquidityStakedUser = userCompoundBalance.times(totalPriceUnderlyingDeposit).div(underlyingBalanceInVault);
 
   useEffect(() => {
     if (!isLoading) {
@@ -249,12 +251,17 @@ function YieldFarm(props: any) {
               <Typography variant="h6" className={classes.label}>
                 {normalizeTokenDecimal(userCompoundBalance, +decimal).toFixed(8)} {symbol}
               </Typography>
+              <Typography variant="caption">
+                $
+                {liquidityStakedUser > 0 ? liquidityStakedUser.toFixed(2) : "0.00"}
+              </Typography>
             </TableCell>
           </>
         )}
         <TableCell style={{ padding: "24px 16px" }}>
           <Typography variant="caption">Deposits($)</Typography>
           <Typography variant="h6" className={classes.label}>
+            $
             {numberWithCommas(
               totalPriceUnderlyingDeposit.toFixed(2)
             )}
