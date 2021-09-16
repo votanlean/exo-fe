@@ -6,6 +6,7 @@ import { getOrchestratorAddress } from 'utils/addressHelpers';
 import orchestratorABI from 'config/abi/TEXOOrchestrator.json';
 import { getSeedingPools } from 'utils/poolHelpers';
 import { getFarms } from 'utils/farmsHelpers';
+import { getEcAssetPool } from 'utils/ecAssetPoolHelpers'
 export const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState: {
@@ -37,9 +38,15 @@ export const fetchUserInfoDataThunk =
         name: 'pendingTEXO',
         params: [farm.id, account],
       }));
+      const ecAssetPools = getEcAssetPool(chainId)
+      const callsECP = ecAssetPools.map((farm) => ({
+        address: getOrchestratorAddress(chainId),
+        name: 'pendingTEXO',
+        params: [farm.id, account],
+      }));
       const pendingTEXOBalances = await multicall(
         orchestratorABI,
-        [...callsLP, ...callsSP],
+        [...callsLP, ...callsSP, ...callsECP],
         chainId,
       );
       const pendingTEXOSum = pendingTEXOBalances.reduce((accum, earning) => {
