@@ -211,9 +211,18 @@ function YieldFarm(props: any) {
     <Fragment>
       <TableRow className={classes.root} onClick={() => setOpen(!open)}>
         <TableCell style={{ padding: "24px 16px" }} component="th" scope="row">
-          <Box display="flex" alignItems="center">
-            <img src={icon1} alt={title} className={classes.poolImg1} />
-            <img src={icon2} alt={title} className={classes.poolImg2} />
+          <Box 
+            display="flex"
+            alignItems="center"
+            justifyContent={isMobile ? "center" : "flex-start"}
+            flexDirection={isMobile ? "column" : "row"}
+          >
+            <Box
+              display="flex"
+            >
+              <img src={icon1} alt={title} className={classes.poolImg1} />
+              <img src={icon2} alt={title} className={classes.poolImg2} />
+            </Box>
             <Typography className={classes.poolTitle}>{title}</Typography>
           </Box>
         </TableCell>
@@ -223,16 +232,14 @@ function YieldFarm(props: any) {
             <Typography variant="h6" className={classes.label}>
               {(!allApy?.apy.isNaN() && allApy?.apy.isFinite()) ? `${allApy?.apy.toFixed(2)}%` : '0%'}
             </Typography>
-            {!isTablet ? (
-              <RoiAction
-                DialogComponent={YieldFarmROIDialog}
-                apr={allApr}
-                tokenPrice={1} // in dollar
-                autocompound
-                performanceFee={0.8}
-                compoundFrequency={2}
-              />
-            ) : null}
+            <RoiAction
+              DialogComponent={YieldFarmROIDialog}
+              apr={allApr}
+              tokenPrice={1} // in dollar
+              autocompound
+              performanceFee={0.8}
+              compoundFrequency={2}
+            />
           </Box>
         </TableCell>
         {!isTablet && (
@@ -245,18 +252,14 @@ function YieldFarm(props: any) {
             </TableCell>
           </>
         )}
-        {!isTablet && (
-          <>
-            <TableCell style={{ padding: "24px 16px" }}>
-              <Typography variant="caption">Deposits($)</Typography>
-              <Typography variant="h6" className={classes.label}>
-                {numberWithCommas(
-                  totalPriceUnderlyingDeposit.toFixed(2)
-                )}
-              </Typography>
-            </TableCell>
-          </>
-        )}
+        <TableCell style={{ padding: "24px 16px" }}>
+          <Typography variant="caption">Deposits($)</Typography>
+          <Typography variant="h6" className={classes.label}>
+            {numberWithCommas(
+              totalPriceUnderlyingDeposit.toFixed(2)
+            )}
+          </Typography>
+        </TableCell>
         <TableCell style={{ padding: "24px 16px" }}>
           <Box display="flex" alignItems="center">
             {!isTablet ? <Typography variant="caption">Details</Typography> : null}
