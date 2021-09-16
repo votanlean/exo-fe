@@ -31,7 +31,7 @@ const useStyles = makeStyles((customTheme) => {
         width: 24,
         height: 24,
         borderRadius: 12,
-        marginRight: 5,
+        marginRight: -5,
       },
     },
     poolImg2: {
@@ -45,12 +45,15 @@ const useStyles = makeStyles((customTheme) => {
         width: 24,
         height: 24,
         borderRadius: 12,
-        marginRight: 5,
+        marginRight: 0,
       },
     },
     poolTitle: {
       fontWeight: 600,
       fontSize: 16,
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 12
+      },
     },
     aprIconButton: {
       marginLeft: 8,
