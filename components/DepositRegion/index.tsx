@@ -46,6 +46,7 @@ function DepositRegion(props: any) {
     const [isAutoStake, setIsAutoStake] = useState(true);
 
     const isTablet = useMediaQuery('(max-width: 768px)');
+    const isMobile = useMediaQuery('(max-width: 600px)');
 
     const {
         allowance,
@@ -91,10 +92,10 @@ function DepositRegion(props: any) {
             display="flex"
             flexDirection={isTablet ? "column" : "row"}
             marginBottom="10px"
-            alignItems="center"
+            alignItems={(isTablet || isMobile) ? "" : "center"}
         >
             <Box
-                width="47%"
+                width={(isTablet || isMobile) ? "100%" : "47%"}
             >
                 <Box
                     display="flex"

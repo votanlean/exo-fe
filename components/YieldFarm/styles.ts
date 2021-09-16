@@ -101,7 +101,12 @@ const useStyles = makeStyles((customTheme) => {
       justifyContent: 'space-between',
       alignItems: 'center',
       marginTop: '4px',
-            marginBottom: '4px'
+      marginBottom: '4px',
+      [theme.breakpoints.down('sm')]: {
+        width: 'auto',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
     },
     buttonBoxItem: {
             "&:not(:first-child)": {
