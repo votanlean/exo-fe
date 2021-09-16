@@ -372,7 +372,7 @@ function Pool() {
                       if (allTokenPrices.data) {
                         stakingTokenPrice =
                           allTokenPrices.data[
-                            getAddress(yieldFarm.underlying.address, chainId)?.toLowerCase()
+                            getAddress(yieldFarm.underlying.quote.address, chainId)?.toLowerCase()
                           ];
                       }
                       return (

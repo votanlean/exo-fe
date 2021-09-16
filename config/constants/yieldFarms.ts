@@ -1,4 +1,5 @@
 import { bnbEcAssetPools } from "./ecAssetPools";
+import tokens from "./tokens";
 
 export enum STRATEGY_TYPES {
   PANCAKESWAP = "pancakeswap",
@@ -27,6 +28,7 @@ export const bnbVaults: any[] = [
         5600: '0x572274F3f1a2d4016d85EB1BA2c4DA671805218e',
         56: '0x572274F3f1a2d4016d85EB1BA2c4DA671805218e'
       },
+      quote: tokens.wbnb
     },
     ecAssetPool: bnbEcAssetPools[0],
     depositFeeBP: 0,
@@ -71,6 +73,7 @@ export const bnbVaults: any[] = [
         5600: '0x19F4F3Cdaae6923b387566161a10Dc517a0D11aF',
         56: '0x19F4F3Cdaae6923b387566161a10Dc517a0D11aF'
       },
+      quote:tokens.busd
     },
     ecAssetPool: bnbEcAssetPools[1],
     depositFeeBP: 0,
@@ -117,6 +120,7 @@ export const bnbVaults: any[] = [
         5600: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
         56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16'
       },
+      quote:tokens.wbnb
     },
     ecAssetPool: bnbEcAssetPools[2],
     depositFeeBP: 0,
@@ -161,6 +165,7 @@ export const bnbVaults: any[] = [
         5600: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
         56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
       },
+      quote: tokens.wbnb
     },
     ecAssetPool: bnbEcAssetPools[3],
     depositFeeBP: 0,
@@ -205,6 +210,7 @@ export const bnbVaults: any[] = [
         5600: '0x804678fa97d91B974ec2af3c843270886528a9E6',
         56: '0x804678fa97d91B974ec2af3c843270886528a9E6'
       },
+      quote: tokens.busd
     },
     ecAssetPool: bnbEcAssetPools[4],
     depositFeeBP: 0,
@@ -249,6 +255,7 @@ export const bnbVaults: any[] = [
         5600: '0x61EB789d75A95CAa3fF50ed7E47b96c132fEc082',
         56: '0x61EB789d75A95CAa3fF50ed7E47b96c132fEc082'
       },
+      quote: tokens.wbnb
     },
     ecAssetPool: bnbEcAssetPools[5],
     depositFeeBP: 0,
@@ -293,6 +300,7 @@ export const bnbVaults: any[] = [
         5600: '0x74E4716E431f45807DCF19f284c7aA99F18a4fbc',
         56: '0x74E4716E431f45807DCF19f284c7aA99F18a4fbc'
       },
+      quote:tokens.wbnb
     },
     ecAssetPool: bnbEcAssetPools[6],
     depositFeeBP: 0,
@@ -338,6 +346,7 @@ export const bnbVaults: any[] = [
         5600: '0x7EFaEf62fDdCCa950418312c6C91Aef321375A00',
         56: '0x7EFaEf62fDdCCa950418312c6C91Aef321375A00'
       },
+      quote:tokens.busd
     },
     ecAssetPool: bnbEcAssetPools[7],
     depositFeeBP: 0,
@@ -382,6 +391,7 @@ export const bnbVaults: any[] = [
         5600: '0x2354ef4DF11afacb85a5C7f98B624072ECcddbB1',
         56: '0x2354ef4DF11afacb85a5C7f98B624072ECcddbB1'
       },
+      quote: tokens.busd
     },
     ecAssetPool: bnbEcAssetPools[8],
     depositFeeBP: 0,
@@ -426,6 +436,7 @@ export const bnbVaults: any[] = [
         5600: '0xEc6557348085Aa57C72514D67070dC863C0a5A8c',
         56: '0xEc6557348085Aa57C72514D67070dC863C0a5A8c'
       },
+      quote:tokens.usdt
     },
     ecAssetPool: bnbEcAssetPools[9],
     depositFeeBP: 0,
