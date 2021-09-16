@@ -80,6 +80,7 @@ function YieldFarm(props: any) {
   const [allApr, setAllApr] = useState(null);
 
   const isTablet = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 600px)');
 
   const {
     balance,
@@ -267,7 +268,10 @@ function YieldFarm(props: any) {
       <TableRow>
         <TableCell className={classes.collapseRow} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1} paddingY="16px">
+            <Box
+              margin={1}
+              paddingY="16px"
+            >
               {isToggleView ? (
                 <WithdrawRegion
                   yieldFarmData={yieldFarmData}
@@ -308,7 +312,10 @@ function YieldFarm(props: any) {
                     disabled={!(inVaultBalance > 0)}
                   />
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle" />
+                {!isMobile && !isTablet ? 
+                  <Divider orientation="vertical" flexItem={true} variant="middle" /> :
+                  <Divider orientation="horizontal" variant="fullWidth" />
+                }
                 <Box className={classes.rowDetail} width="33%" flexDirection="column">
                   <Typography>Staked For tEXO</Typography>
                   <Typography className={"text-right"}>
@@ -350,8 +357,16 @@ function YieldFarm(props: any) {
                     </Typography>
                   </Box>
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle" />
-                <Box className={classes.rowDetail} flex={1} flexDirection="column" width="25%">
+                {!isMobile && !isTablet ? 
+                  <Divider orientation="vertical" flexItem={true} variant="middle" /> :
+                  <Divider orientation="horizontal" variant="fullWidth" />
+                }
+                <Box 
+                  className={classes.rowDetail}
+                  flex={1}
+                  flexDirection="column"
+                  width="25%"
+                >
                   <Typography>
                     Total <span style={{ fontWeight: "bold" }}>tEXO</span> Earned
                   </Typography>
@@ -360,7 +375,10 @@ function YieldFarm(props: any) {
                     {" tEXO"}
                   </Typography>
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle" />
+                {!isMobile && !isTablet ? 
+                  <Divider orientation="vertical" flexItem={true} variant="middle" /> :
+                  <Divider orientation="horizontal" variant="fullWidth" />
+                }
                 <Box className={classes.buttonBoxItem} flex={1} flexDirection="column">
                   <Typography align="center">tEXO Reward</Typography>
                   <ClaimRewardsAction
@@ -369,7 +387,10 @@ function YieldFarm(props: any) {
                     onAction={onAction}
                   />
                 </Box>
-                <Divider orientation="vertical" flexItem={true} variant="middle" />
+                {!isMobile && !isTablet ? 
+                  <Divider orientation="vertical" flexItem={true} variant="middle" /> :
+                  <Divider orientation="horizontal" variant="fullWidth" />
+                }
                 <Box className={classes.buttonBoxItem} flex={1}>
                   <Button className={classes.buttonToggle} onClick={onToggleView}>
                     <Typography>{isToggleView ? "Deposit" : "Withdraw"}</Typography>
@@ -377,7 +398,11 @@ function YieldFarm(props: any) {
                   </Button>
                 </Box>
               </Box>
-              <Box paddingRight="10px" display="flex" flexDirection="row">
+              <Box 
+                paddingRight="10px" 
+                display="flex" 
+                flexDirection={(isTablet || isMobile) ? "column" : "row"}
+              >
                 <Box marginRight="10px">
                   <a
                     className={classes.linkDetail}

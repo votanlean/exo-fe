@@ -54,6 +54,7 @@ function WithdrawRegion(props: any) {
     const classes = useStyles();
 
     const isTablet = useMediaQuery('(max-width: 768px)');
+    const isMobile = useMediaQuery('(max-width: 600px)');
 
     const {
         allowance,
@@ -92,10 +93,10 @@ function WithdrawRegion(props: any) {
             display="flex"
             flexDirection={isTablet ? "column" : "row"}
             marginBottom="10px"
-            alignItems="center"
+            alignItems={(isTablet || isMobile) ? "" : "center"}
         >
             <Box
-                width="47%"
+                width={(isTablet || isMobile) ? "100%" : "47%"}
             >
                 <Box
                     display="flex"
