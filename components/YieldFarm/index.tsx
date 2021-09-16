@@ -69,6 +69,7 @@ function YieldFarm(props: any) {
     underlying,
     underlyingVaultBalance,
     ecAssetPool,
+    lpTotalInQuoteTokenVault
   } = yieldFarmData;
 
   const { account } = useWeb3React();
@@ -106,6 +107,7 @@ function YieldFarm(props: any) {
     priceUnderlyingPerFullShare.times(userVaultTokenBalance.plus(userECAssetStakedBalance)),
     +decimal
   );
+  const totalPriceUnderlyingDeposit = (new BigNumber(lpTotalInQuoteTokenVault)).times(new BigNumber(stakingTokenPrice));
 
   useEffect(() => {
     if (!isLoading) {
@@ -249,10 +251,7 @@ function YieldFarm(props: any) {
               <Typography variant="caption">Deposits($)</Typography>
               <Typography variant="h6" className={classes.label}>
                 {numberWithCommas(
-                  normalizeTokenDecimal(
-                    underlyingVaultBalance,
-                    +getDecimals(underlying.decimals, chainId)
-                  ).toFixed(2)
+                  totalPriceUnderlyingDeposit.toFixed(2)
                 )}
               </Typography>
             </TableCell>
