@@ -259,15 +259,6 @@ function YieldFarm(props: any) {
           </>
         )}
         <TableCell style={{ padding: "24px 16px" }}>
-          <Typography variant="caption">Deposits($)</Typography>
-          <Typography variant="h6" className={classes.label}>
-            $
-            {numberWithCommas(
-              totalPriceUnderlyingDeposit.toFixed(2)
-            )}
-          </Typography>
-        </TableCell>
-        <TableCell style={{ padding: "24px 16px" }}>
           <Box display="flex" alignItems="center">
             {!isTablet ? <Typography variant="caption">Details</Typography> : null}
             {open ? <KeyboardArrowUp fontSize="small" /> : <KeyboardArrowDown fontSize="small" />}
@@ -346,13 +337,21 @@ function YieldFarm(props: any) {
                   <Box alignItems="left">
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(!allApy?.lpRewardsApr.isNaN() && allApy?.lpRewardsApr.isFinite() && allApy?.lpRewardsApr !== 0) ? allApy?.lpRewardsApr?.toFixed(2) : 0}%:
+                        {Number(totalPriceUnderlyingDeposit) !== 0 ? numberWithCommas(
+                          totalPriceUnderlyingDeposit.toFixed(2)
+                        ) : 0}:
+                      </span>
+                      Total Liquidity($)
+                    </Typography>
+                    <Typography>
+                      <span style={{ fontWeight: "bold" }}>
+                        {(!allApy?.lpRewardsApr.isNaN() && allApy?.lpRewardsApr.isFinite() && Number(allApy?.lpRewardsApr) !== 0) ? allApy?.lpRewardsApr?.toFixed(2) : 0}%:
                       </span>
                       Liquidity Provider APY
                     </Typography>
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(!allApy?.tokenRewardApy.isNaN() && allApy?.tokenRewardApy.isFinite() && allApy?.tokenRewardApy !== 0) ? allApy?.tokenRewardApy?.toFixed(2) : 0}%:
+                        {(!allApy?.tokenRewardApy.isNaN() && allApy?.tokenRewardApy.isFinite() && Number(allApy?.tokenRewardApy) !== 0) ? allApy?.tokenRewardApy?.toFixed(2) : 0}%:
                       </span>
                       {vaultId === 0 || vaultId === 1
                         ? "Auto harvested tEXO"
@@ -360,7 +359,7 @@ function YieldFarm(props: any) {
                     </Typography>
                     <Typography>
                       <span style={{ fontWeight: "bold" }}>
-                        {(!allApy?.tEXOApr.isNaN() && allApy?.tEXOApr.isFinite() && allApy?.tEXOApr !== 0) ? allApy?.tEXOApr?.toFixed(2) : 0}%:
+                        {(!allApy?.tEXOApr.isNaN() && allApy?.tEXOApr.isFinite() && Number(allApy?.tEXOApr) !== 0) ? allApy?.tEXOApr?.toFixed(2) : 0}%:
                       </span>
                       tEXO rewards
                     </Typography>
