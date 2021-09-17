@@ -116,7 +116,7 @@ export const useTotalValue = (): BigNumber => {
       total = total.plus(totalPriceUnderlyingDeposit)
     })
 
-    setYieldFarmValue(total.toNumber())
+    setYieldFarmValue(total.toNumber() || 0)
   }, [yieldFarms])
 
   value = value.plus(yieldFarmsValue)

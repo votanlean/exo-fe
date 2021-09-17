@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import { useWeb3React } from "@web3-react/core";
 import dayjs from "dayjs";
@@ -168,8 +168,8 @@ function Pool() {
     dispatch(replacePoolWithoutUserDataAsync(chainId));
     dispatch(fetchAppPrices(chainId));
     dispatch(replaceFAANGPoolsWithoutUserData(chainId));
-    dispatch(fetchTLV);
     dispatch(fetchYieldFarmPublicData(chainId));
+    dispatch(fetchTLV);
 
     if (account) {
       dispatch(fetchFarmUserDataAsync(account, chainId));
@@ -256,16 +256,16 @@ function Pool() {
               : "Stake tEXO LPs (Quickswap) for tEXO reward."}
             <br />
             {currentBlock &&
-            currentBlock < farmStartBlock &&
-            !isCurrentBlockLoading &&
-            !isOrchestratorLoading
+              currentBlock < farmStartBlock &&
+              !isCurrentBlockLoading &&
+              !isOrchestratorLoading
               ? "Farming reward will be generated in"
               : null}
           </Typography>
           {currentBlock &&
-          currentBlock < farmStartBlock &&
-          !isCurrentBlockLoading &&
-          !isOrchestratorLoading ? (
+            currentBlock < farmStartBlock &&
+            !isCurrentBlockLoading &&
+            !isOrchestratorLoading ? (
             <Typography variant="h3" color="primary" align="center">
               {poolPageReady ? countDownStringFarm : "Coming Soon"}
             </Typography>
@@ -320,9 +320,9 @@ function Pool() {
             </Box>
           )}
           {currentBlock &&
-          currentBlock < (yieldFarmStartBlock || 0) &&
-          !isCurrentBlockLoading &&
-          !isOrchestratorLoading ? (
+            currentBlock < (yieldFarmStartBlock || 0) &&
+            !isCurrentBlockLoading &&
+            !isOrchestratorLoading ? (
             <>
               <Box
                 display="flex"
@@ -350,7 +350,7 @@ function Pool() {
                   {countDownStringStartYieldFarm || "Coming Soon"}
                 </Typography>
                 <Typography variant="h6" color="primary" align="center">
-                <a target='_blank' href='https://bscscan.com/block/countdown/10938700' >Check explorer for the most accurate countdown</a>
+                  <a target='_blank' href='https://bscscan.com/block/countdown/10938700' >Check explorer for the most accurate countdown</a>
                 </Typography>
 
               </div>
@@ -372,7 +372,7 @@ function Pool() {
                       if (allTokenPrices.data) {
                         stakingTokenPrice =
                           allTokenPrices.data[
-                            getAddress(yieldFarm.underlying.quote.address, chainId)?.toLowerCase()
+                          getAddress(yieldFarm.underlying.quote.address, chainId)?.toLowerCase()
                           ];
                       }
                       return (
