@@ -42,7 +42,7 @@ export const fetchUserInfoDataThunk =
       const callsECP = ecAssetPools.map((farm) => ({
         address: getOrchestratorAddress(chainId),
         name: 'pendingTEXO',
-        params: [farm.id, account],
+        params: [farm.pid, account],
       }));
       const pendingTEXOBalances = await multicall(
         orchestratorABI,
