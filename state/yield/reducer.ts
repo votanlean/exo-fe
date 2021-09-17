@@ -27,19 +27,16 @@ export const yieldSlice = createSlice({
   initialState,
   reducers: {
     setYieldFarmPublicData: (state, action) => {
-      if (state.data.length != action.payload.length) {
-        state.data = action.payload;
-      }
-      state.data = state.data.map((yieldFarm) => {
-        const foundByPid = action.payload.find((y) => y.pid === yieldFarm.pid);
+      state.data = action.payload.map((yieldFarm) => {
+        const foundByPid = state.data.find((y) => y.pid === yieldFarm.pid);
 
         if (!foundByPid) {
           return yieldFarm;
         }
 
         return {
-          ...yieldFarm,
           ...foundByPid,
+          ...yieldFarm,
         };
       });
 
@@ -76,9 +73,12 @@ export const fetchYieldFarmPublicData = (chainId: number) => async (dispatch: Di
 
   try {
     const yieldFarms = getYieldFarms(chainId);
+
     if (yieldFarms.length == 0) {
       //purpose to stop requesting data for polygon
-      throw Error;
+      dispatch(setYieldFarmPublicData([]))
+      dispatch(setLoading(false));
+      return
     }
     const yieldFarmPublicData = await fetchYieldFarms(yieldFarms, chainId);
 
