@@ -336,32 +336,32 @@ function YieldFarm(props: any) {
                   <Typography align="left">Vault Details</Typography>
                   <Box alignItems="left">
                     <Typography>
+                      {"Total Liquidity: "}
                       <span style={{ fontWeight: "bold" }}>
-                        {Number(totalPriceUnderlyingDeposit) !== 0 ? numberWithCommas(
+                        ${Number(totalPriceUnderlyingDeposit) !== 0 ? numberWithCommas(
                           totalPriceUnderlyingDeposit.toFixed(2)
-                        ) : 0}:
+                        ) : 0}
                       </span>
-                      Total Liquidity($)
                     </Typography>
                     <Typography>
+                      {"Liquidity Provider APY: "}
                       <span style={{ fontWeight: "bold" }}>
-                        {(!allApy?.lpRewardsApr.isNaN() && allApy?.lpRewardsApr.isFinite() && Number(allApy?.lpRewardsApr) !== 0) ? allApy?.lpRewardsApr?.toFixed(2) : 0}%:
+                        {(!allApy?.lpRewardsApr.isNaN() && allApy?.lpRewardsApr.isFinite() && Number(allApy?.lpRewardsApr) !== 0) ? allApy?.lpRewardsApr?.toFixed(2) : 0}%
                       </span>
-                      Liquidity Provider APY
                     </Typography>
                     <Typography>
-                      <span style={{ fontWeight: "bold" }}>
-                        {(!allApy?.tokenRewardApy.isNaN() && allApy?.tokenRewardApy.isFinite() && Number(allApy?.tokenRewardApy) !== 0) ? allApy?.tokenRewardApy?.toFixed(2) : 0}%:
-                      </span>
                       {vaultId === 0 || vaultId === 1
-                        ? "Auto harvested tEXO"
-                        : "Auto harvested CAKE"}
+                        ? "Auto harvested tEXO: "
+                        : "Auto harvested CAKE: "}
+                      <span style={{ fontWeight: "bold" }}>
+                        {(!allApy?.tokenRewardApy.isNaN() && allApy?.tokenRewardApy.isFinite() && Number(allApy?.tokenRewardApy) !== 0) ? allApy?.tokenRewardApy?.toFixed(2) : 0}%
+                      </span>
                     </Typography>
                     <Typography>
+                      {"tEXO rewards: "}
                       <span style={{ fontWeight: "bold" }}>
-                        {(!allApy?.tEXOApr.isNaN() && allApy?.tEXOApr.isFinite() && Number(allApy?.tEXOApr) !== 0) ? allApy?.tEXOApr?.toFixed(2) : 0}%:
+                        {(!allApy?.tEXOApr.isNaN() && allApy?.tEXOApr.isFinite() && Number(allApy?.tEXOApr) !== 0) ? allApy?.tEXOApr?.toFixed(2) : 0}%
                       </span>
-                      tEXO rewards
                     </Typography>
                   </Box>
                 </Box>
