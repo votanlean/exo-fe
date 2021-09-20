@@ -278,7 +278,7 @@ function YieldFarm(props: any) {
       </TableRow>
       <TableRow className={classes.tableRow}>
         <TableCell className={classes.collapseRow} colSpan={7}>
-          <OverLay positionAbsolute open={isToggleOverLay}/>
+          <OverLay positionAbsolute open={isToggleOverLay} backgroundColor={"rgba(255, 255, 255, 0.5)"}/>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box
               margin={1}
