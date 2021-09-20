@@ -16,7 +16,7 @@ import { normalizeTokenDecimal } from 'utils/bigNumber';
 
 function StakeAllAction(props: any) {
     const classes = useStyles();
-    const { disabled, data, onApprove, onAction } = props || {};
+    const { disabled, data, onApprove, onAction, onOpenOverLay, onCloseOverLay } = props || {};
     const {
         id,
         requestingContract,
@@ -39,6 +39,7 @@ function StakeAllAction(props: any) {
     });
 
     const handleConfirmStake = async () => {
+        onOpenOverLay();
         if (+ecAssetAllowance === 0) { //parse to Number
             approve();
         } else {
@@ -59,6 +60,7 @@ function StakeAllAction(props: any) {
             await onStake(amount, ref, decimals);
             onAction();
         }
+        onCloseOverLay();
     };
 
     return (

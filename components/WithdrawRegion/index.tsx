@@ -25,7 +25,9 @@ function WithdrawRegion(props: any) {
     const {
         yieldFarmData = {},
         data,
-        onAction
+        onAction,
+        onOpenOverLay,
+        onCloseOverLay
     } = props || {};
     const [amountWithdrawNumber, setAmountWithdrawNumber] = useState(null);
     const [unstakeIfNeeded, setUnstakeIfNeeded] = useState(true);
@@ -136,6 +138,8 @@ function WithdrawRegion(props: any) {
                             disabled={isDisabled}
                             onAction={onAction}
                             onWithdrawComplete={onWithdrawComplete}
+                            onOpenOverLay={onOpenOverLay}
+                            onCloseOverLay={onCloseOverLay}
                         />
                     </Box>
                 </>
