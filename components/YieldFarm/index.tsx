@@ -35,6 +35,7 @@ import Cookies from 'universal-cookie';
 import BigNumber from 'bignumber.js';
 import { convertAprToApyYO } from "utils/compoundApyHelpers";
 import { useWeb3React } from "@web3-react/core";
+import OverLay from "components/OverLay";
 
 interface IYieldFarmProps {
   farm: any;
@@ -79,6 +80,7 @@ function YieldFarm(props: any) {
   const [isToggleView, setIsToggleView] = useState(false);
   const [allApy, setAllApy] = useState(null);
   const [allApr, setAllApr] = useState(null);
+  const [isToggleOverLay, setIsToggleOverLay] = useState(false);
 
   const isTablet = useMediaQuery("(max-width: 768px)");
   const isMobile = useMediaQuery('(max-width: 600px)');
@@ -206,8 +208,17 @@ function YieldFarm(props: any) {
         await onStake(amount, ref, decimals);
       }
       onAction();
+      onCloseOverLay();
     }
   };
+
+  const onOpenOverLay = () => {
+    setIsToggleOverLay(true);
+  };
+
+  const onCloseOverLay = () => {
+    setIsToggleOverLay(false);
+  }
 
   return (
     <Fragment>
@@ -265,8 +276,9 @@ function YieldFarm(props: any) {
           </Box>
         </TableCell>
       </TableRow>
-      <TableRow>
+      <TableRow className={classes.tableRow}>
         <TableCell className={classes.collapseRow} colSpan={7}>
+          <OverLay positionAbsolute open={isToggleOverLay} backgroundColor={"rgba(255, 255, 255, 0.5)"}/>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box
               margin={1}
@@ -277,6 +289,8 @@ function YieldFarm(props: any) {
                   yieldFarmData={yieldFarmData}
                   data={dataButton}
                   onAction={onAction}
+                  onOpenOverLay={onOpenOverLay}
+                  onCloseOverLay={onCloseOverLay}
                 />
               ) : (
                 <DepositRegion
@@ -285,6 +299,8 @@ function YieldFarm(props: any) {
                   onAction={onAction}
                   onApprove={onApprove}
                   onHandleAutoStake={onHandleAutoStake}
+                  onOpenOverLay={onOpenOverLay}
+                  onCloseOverLay={onCloseOverLay}
                 />
               )}
               <Divider orientation="horizontal" variant="fullWidth" />
@@ -310,6 +326,8 @@ function YieldFarm(props: any) {
                     onApprove={onApprove}
                     data={dataStakeAllButton}
                     disabled={!(inVaultBalance > 0)}
+                    onOpenOverLay={onOpenOverLay}
+                    onCloseOverLay={onCloseOverLay}
                   />
                 </Box>
                 {!isMobile && !isTablet ? 
@@ -393,6 +411,8 @@ function YieldFarm(props: any) {
                     data={{ id: ecAssetPool.pid, requestingContract: tEXOOrchestratorContract }}
                     disabled={(tEXOEarned <= 0) || (!account)}
                     onAction={onAction}
+                    onOpenOverLay={onOpenOverLay}
+                    onCloseOverLay={onCloseOverLay}
                   />
                 </Box>
                 {!isMobile && !isTablet ? 

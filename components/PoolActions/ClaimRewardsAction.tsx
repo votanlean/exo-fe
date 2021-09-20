@@ -8,13 +8,21 @@ import { useStyles } from "./styles";
 
 function ClaimRewardsAction(props: any) {
   const classes = useStyles();
-  const { disabled, data, onAction = () => {} } = props || {};
+  const { 
+    disabled,
+    data,
+    onOpenOverLay,
+    onCloseOverLay,
+    onAction = () => {},
+  } = props || {};
   const { requestingContract, id } = data || {};
 
   const { onReward, isLoading } = useHarvest(requestingContract, id);
   const handleClick = async () => {
+    onOpenOverLay();
     await onReward();
     onAction();
+    onCloseOverLay();
   };
 
   return (

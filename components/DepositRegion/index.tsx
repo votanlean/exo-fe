@@ -32,6 +32,8 @@ function DepositRegion(props: any) {
         onApprove,
         onAction,
         onHandleAutoStake,
+        onOpenOverLay,
+        onCloseOverLay
     } = props || {};
 
     const {
@@ -80,6 +82,8 @@ function DepositRegion(props: any) {
         setAmountStakeNumber('');
         if (isAutoStake) {
             onHandleAutoStake(isAutoStake, newBalance);
+        } else {
+            onCloseOverLay();
         }
     }
 
@@ -135,6 +139,8 @@ function DepositRegion(props: any) {
                             onStakeComplete={onStakeComplete}
                             onAction={onAction}
                             isAutoStake={isAutoStake}
+                            onOpenOverLay={onOpenOverLay}
+                            onCloseOverLay={onCloseOverLay}
                         />
                     </Box>
                 </>

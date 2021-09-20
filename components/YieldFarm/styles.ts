@@ -131,7 +131,10 @@ const useStyles = makeStyles((customTheme) => {
       marginTop: '21px',
       display: 'flex',
       justifyContent: 'space-between'
-    }
+    },
+    tableRow: {
+      position: 'relative'
+    },
   };
 });
 

@@ -12,7 +12,16 @@ import BigNumber from 'bignumber.js';
 
 function WithdrawVaultAction(props: any) {
   const classes = useStyles();
-  const { disabled, data, onAction, onWithdrawComplete, amountWithdrawNumber, unstakeIfNeeded } = props || {};
+  const { 
+    disabled,
+    data,
+    onAction,
+    onWithdrawComplete,
+    amountWithdrawNumber,
+    unstakeIfNeeded,
+    onOpenOverLay,
+    onCloseOverLay
+  } = props || {};
   const {
     ecAssetPoolId,
     requestingContract: vaultContract,
@@ -31,6 +40,7 @@ function WithdrawVaultAction(props: any) {
   const ecAssetInVaultBalance = normalizeTokenDecimal(inVaultBalance, +decimals);
 
   const handleConfirmWithdraw = async () => {
+    onOpenOverLay();
     if (unstakeIfNeeded && amount.gt(ecAssetInVaultBalance)) {
       const missingPart = amount.minus(ecAssetInVaultBalance);
       await onUnstake(missingPart.toString(), decimals);
@@ -40,6 +50,7 @@ function WithdrawVaultAction(props: any) {
     }
     onAction();
     onWithdrawComplete();
+    onCloseOverLay();
   };
 
   return (

@@ -13,7 +13,7 @@ import { getYieldFarms } from 'utils/yieldFarmHelpers';
 
 function StakeVaultAction(props: any) {
   const classes = useStyles();
-  const { data, amountStakeNumber, onAction, onStakeComplete, pid } = props || {};
+  const { data, amountStakeNumber, onAction, onStakeComplete, pid, onOpenOverLay, onCloseOverLay } = props || {};
   const {
     requestingContract: vaultContract,
     maxAmountStake,
@@ -27,6 +27,7 @@ function StakeVaultAction(props: any) {
   const { id: chainId } = useNetwork();
 
   const handleConfirmStake = async () => {
+    onOpenOverLay();
     const decimals = getDecimals(stakingToken.decimals, chainId);
     const yieldFarms = getYieldFarms(chainId);
 
