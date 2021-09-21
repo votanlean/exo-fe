@@ -104,19 +104,9 @@ const getAprsForFarmGroup = async (addresses: string[], blockWeekAgo: number): P
 const fetchAndUpdateLPsAPR = async () => {
   // pids before 250 are inactive farms from v1 and failed v2 migration
   const lowerCaseAddresses = bnbVaults
-    .filter(vault => vault.strategy && vault.strategy.type && vault.strategy.type === STRATEGY_TYPES.PANCAKESWAP)
-    .filter((vault) => {
-      if (!vault.strategy.pool.id[chainId]) {
-        return false;
-      }
-
-      if (vault.strategy.pool.id[chainId] < 250) {
-        return false;
-      }
-
-      return true;
-    })
-    .map((vault) => vault.underlying.address[chainId].toLowerCase())
+    .map((vault) => vault.underlying.address[chainId].toLowerCase()
+    )
+  console.log(lowerCaseAddresses)
   console.info(`Fetching farm data for ${lowerCaseAddresses.length} addresses`)
   // Split it into chunks of 30 addresses to avoid gateway timeout
   const addressesInGroups = chunk(lowerCaseAddresses, 30)
