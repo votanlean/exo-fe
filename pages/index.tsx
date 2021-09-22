@@ -208,6 +208,13 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <section className="road-map">
+        <div className='road-map container'>
+          <div className="items-center">
+            <img className='road-map-img' src="/static/images/road-map.png" alt="techrate" />
+          </div>
+        </div>
+      </section>
     </Box>
   );
 };
