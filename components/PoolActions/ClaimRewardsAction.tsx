@@ -19,10 +19,15 @@ function ClaimRewardsAction(props: any) {
 
   const { onReward, isLoading } = useHarvest(requestingContract, id);
   const handleClick = async () => {
-    onOpenOverLay();
+    if (onOpenOverLay) {
+      onOpenOverLay();
+    }
     await onReward();
     onAction();
-    onCloseOverLay();
+
+    if (onCloseOverLay) {
+      onCloseOverLay();
+    }
   };
 
   return (
