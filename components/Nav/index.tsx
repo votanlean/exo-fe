@@ -22,6 +22,7 @@ import styles from './nav.module.scss';
 const data = [
   { title: 'Home', path: '/' },
   { title: 'Pool', path: '/pool' },
+  { title: 'Tycoon', path: 'https://exotycoon.exonium.one' },
   { title: 'Exchange', path: '/exchange' },
   { title: 'tASSET', path: '/tASSET' },
   { title: 'GOV', path: '/governance' },
